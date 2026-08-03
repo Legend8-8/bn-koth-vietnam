@@ -1,4 +1,4 @@
-Bro-Nation KOTH Vietnam - Testing
+Bro-Nation KOTH Vietnam — Testing
 
 1. Purpose
 
@@ -21,7 +21,7 @@ Features affecting networking, locality, authoritative state, respawning, join-i
 
 3. Test Levels
 
-Level 1 - Mission Load
+Level 1 — Mission Load
 
 Verify:
 
@@ -32,7 +32,7 @@ Verify:
 - no immediate script errors occur;
 - no required class or asset is missing.
 
-Level 2 - Local Development
+Level 2 — Local Development
 
 Verify the feature in Eden or Hosted Multiplayer.
 
@@ -46,7 +46,7 @@ Examples:
 
 Local development testing is useful for quick iteration but is not final multiplayer validation.
 
-Level 3 - Dedicated Server
+Level 3 — Dedicated Server
 
 Verify:
 

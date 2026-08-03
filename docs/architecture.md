@@ -1,4 +1,4 @@
-Bro-Nation KOTH Vietnam - Architecture
+Bro-Nation KOTH Vietnam — Architecture
 
 1. Purpose
 
@@ -32,7 +32,7 @@ bn_koth_fnc_zone_getPopulation
 bn_koth_fnc_zone_updateControl
 bn_koth_fnc_scoring_addTeamScore
 
-Functions from external libraries retain their original prefixes and must not use the bn_koth_fnc_ prefix.
+Functions from external libraries retain their original prefixes and must not use the `bn_koth_fnc_` prefix.
 
 KOTH functions must not be added to the Paradigm repository unless they are genuinely generic and useful outside KOTH.
 
@@ -60,7 +60,7 @@ mission/
 
 5. Folder Ownership
 
-config/
+"config/"
 
 Contains values and definitions, not active gameplay loops.
 
@@ -75,13 +75,13 @@ Examples:
 - loadout definitions;
 - reward values.
 
-functions/common/
+"functions/common/"
 
 Contains small utilities used by multiple systems.
 
 A function belongs here only when it is not owned by one specific gameplay system.
 
-functions/round/
+"functions/round/"
 
 Contains:
 
@@ -92,7 +92,7 @@ Contains:
 - resetting a round;
 - declaring a winner.
 
-functions/teams/
+"functions/teams/"
 
 Contains:
 
@@ -102,7 +102,7 @@ Contains:
 - faction information;
 - side switching rules.
 
-functions/zone/
+"functions/zone/"
 
 Contains:
 
@@ -112,7 +112,7 @@ Contains:
 - publishing zone state;
 - detecting control changes.
 
-functions/scoring/
+"functions/scoring/"
 
 Contains:
 
@@ -122,7 +122,7 @@ Contains:
 - score limit checks;
 - future personal reward handling.
 
-functions/respawn/
+"functions/respawn/"
 
 Contains:
 
@@ -131,7 +131,7 @@ Contains:
 - spawn protection;
 - valid spawn selection.
 
-functions/loadouts/
+"functions/loadouts/"
 
 Contains:
 
@@ -139,7 +139,7 @@ Contains:
 - validating equipment;
 - future equipment purchase handling.
 
-functions/vehicles/
+"functions/vehicles/"
 
 Contains:
 
@@ -149,7 +149,7 @@ Contains:
 - abandonment and cleanup;
 - future vehicle purchases.
 
-functions/progression/
+"functions/progression/"
 
 Contains future:
 
@@ -159,7 +159,7 @@ Contains future:
 - currency;
 - player statistics.
 
-functions/persistence/
+"functions/persistence/"
 
 Contains future:
 
@@ -170,7 +170,7 @@ Contains future:
 
 No other system may communicate directly with the database.
 
-functions/ui/
+"functions/ui/"
 
 Contains client-side presentation:
 
@@ -298,3 +298,15 @@ The project does not initially depend on:
 External dependencies must not be introduced without a documented reason and agreement from the project maintainers.
 
 Code may be informed by patterns used in other Bro-Nation projects, but KOTH-specific code must be implemented and owned by this repository.
+
+12. Definition of Complete
+
+A feature is complete only when:
+
+- its files are in the correct system folder;
+- its public functions are documented;
+- locality is correct;
+- client inputs are validated;
+- no unrelated system behaviour is duplicated;
+- it has been tested on a dedicated server;
+- relevant documentation has been updated.

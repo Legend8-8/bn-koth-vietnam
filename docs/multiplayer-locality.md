@@ -1,4 +1,4 @@
-Bro-Nation KOTH Vietnam - Multiplayer Locality
+Bro-Nation KOTH Vietnam — Multiplayer Locality
 
 1. Purpose
 
@@ -58,7 +58,7 @@ Headless-client AI processing| Headless client when introduced
 
 4. Initialisation Files
 
-initServer.sqf
+"initServer.sqf"
 
 Used for server-only startup.
 
@@ -70,7 +70,7 @@ Examples:
 - initialising team score;
 - selecting the active location.
 
-initPlayerLocal.sqf
+"initPlayerLocal.sqf"
 
 Runs once for each player on their own machine.
 
@@ -83,7 +83,7 @@ Examples:
 
 This file must account for join-in-progress players.
 
-initPlayerServer.sqf
+"initPlayerServer.sqf"
 
 Runs on the server when a player joins.
 
@@ -94,7 +94,7 @@ Examples:
 - sending the current round state to the joining player;
 - loading future persistent data.
 
-init.sqf
+"init.sqf"
 
 Must not become a dumping ground.
 
@@ -184,7 +184,7 @@ Locality must not be guessed from where a function happened to be called.
 
 10. Performance
 
-Do not use eachFrame for zone control, scoring or database activity.
+Do not use "eachFrame" for zone control, scoring or database activity.
 
 Suggested initial intervals:
 
