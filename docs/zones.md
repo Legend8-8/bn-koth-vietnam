@@ -15,7 +15,7 @@ For Cam Lao Nam, keep all potential zones in the same mission.sqm and select one
 
 3. What Defines a Zone
 
-Each zone is defined by location ID in maps/<map_name>/config/locations.hpp under CfgBnKothLocations.
+Each zone is defined by location ID in maps/<map_name>/map_config/locations.hpp under CfgBnKothLocations.
 
 Each location should include:
 
@@ -70,7 +70,7 @@ Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
 
 1. Add zone + respawn markers in mission.sqm (via Eden).
 2. Name markers clearly (example: hue_zone, hue_respawn_west, hue_respawn_east).
-3. Add class hue in maps/<map_name>/config/locations.hpp.
+3. Add class hue in maps/<map_name>/map_config/locations.hpp.
 4. Give zone-specific objects Eden variable names with prefix <locationId>_ (for example hue_...).
 5. Set defaultLocationId to hue for testing.
 6. Start mission and verify only hue markers/objects are active.

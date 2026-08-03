@@ -1,5 +1,4 @@
 import ctypes
-import os
 from pathlib import Path
 import shutil
 import sys
@@ -49,52 +48,15 @@ def remove_excluded_paths(target_folder, excluded_names):
         replace_path(target_folder / name)
 
 
-def symlink_into_target(target, source, overwrite=False):
-    for path in source.iterdir():
-        target_path = target / path.name
-
-        if target_path.exists():
-            if not overwrite:
-                continue
-            replace_path(target_path)
-
-        target_path.symlink_to(path, target_is_directory=path.is_dir())
-
-
-def copy_into_target(target, source, overwrite=False):
-    for path in source.iterdir():
-        target_path = target / path.name
-
-        if target_path.exists():
-            if not overwrite:
-                continue
-            replace_path(target_path)
-
-        if path.is_dir():
-            shutil.copytree(path, target_path)
-        else:
-            shutil.copy2(path, target_path)
-
-
-def ensure_merged_config_links(target_folder, content_root, map_folder):
+def ensure_shared_config_link(target_folder, content_root):
     target_config = target_folder / "config"
-
-    # Clean up old layout where config may have been linked directly from map folder.
-    if target_config.exists() and (target_config.is_symlink() or target_config.is_file()):
-        target_config.unlink()
-
-    if not target_config.exists():
-        target_config.mkdir(parents=True, exist_ok=True)
-
     shared_config = content_root / "config"
-    if shared_config.exists() and shared_config.is_dir():
-        copy_into_target(target_config, shared_config, overwrite=False)
 
-    if map_folder is not None:
-        map_config = map_folder / "config"
-        if map_config.exists() and map_config.is_dir():
-            # Map config overrides shared config file names.
-            copy_into_target(target_config, map_config, overwrite=True)
+    if target_config.exists():
+        replace_path(target_config)
+
+    if shared_config.exists() and shared_config.is_dir():
+        target_config.symlink_to(shared_config, target_is_directory=True)
 
 
 def mission_folder_name(map_folder_name):
@@ -164,8 +126,8 @@ def main():
         print("Symlinking shared mission content...")
         symlink_immediate_children(target_folder, content_root, exclude=exclude)
 
-        print("Merging config (shared + map)...")
-        ensure_merged_config_links(target_folder, content_root, map_folder)
+        print("Relinking shared config folder...")
+        ensure_shared_config_link(target_folder, content_root)
 
     print("Done.")
     input("Press any key to exit...")
