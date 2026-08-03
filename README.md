@@ -92,8 +92,20 @@ Project decisions and technical rules are documented in:
 - ""docs/architecture.md"" (docs/architecture.md) — code organisation and system ownership;
 - ""docs/multiplayer-locality.md"" (docs/multiplayer-locality.md) — server, client and object locality;
 - ""docs/testing.md"" (docs/testing.md) — testing requirements and checklists.
+- ""docs/development.md"" (docs/development.md) — local dev setup and build tooling.
+- ""docs/zones.md"" (docs/zones.md) — multi-zone configuration and one-mission workflow.
 
 Contributors must read these documents before implementing a major system.
+
+Local Developer Tooling
+
+Windows helper scripts are included in the repository root:
+
+- setup_dev_environment.py
+- build.py
+- user_paths_example.py
+
+These scripts are intentionally similar to the Mike-Force local workflow.
 
 Proposed Mission Structure
 
