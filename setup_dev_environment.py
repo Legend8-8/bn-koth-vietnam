@@ -7,10 +7,6 @@ import sys
 import user_paths
 
 
-MISSION_STEM = getattr(user_paths, "MISSION_STEM", "")
-LEGACY_MISSION_FOLDER_NAME = getattr(user_paths, "MISSION_FOLDER_NAME", "")
-
-
 def is_admin():
     try:
         return bool(ctypes.windll.shell32.IsUserAnAdmin())
@@ -102,11 +98,7 @@ def ensure_merged_config_links(target_folder, content_root, map_folder):
 
 
 def mission_folder_name(map_folder_name):
-    if MISSION_STEM:
-        return f"{MISSION_STEM}.{map_folder_name}"
-    if LEGACY_MISSION_FOLDER_NAME:
-        return LEGACY_MISSION_FOLDER_NAME
-    raise ValueError("Set MISSION_STEM or MISSION_FOLDER_NAME in user_paths.py")
+    return f"bn_koth_vietnam.{map_folder_name}"
 
 
 def get_map_folders(content_root):
@@ -138,9 +130,7 @@ def main():
     if map_folders:
         mission_targets = [(map_folder.name, mission_folder_name(map_folder.name), map_folder) for map_folder in map_folders]
     else:
-        if not LEGACY_MISSION_FOLDER_NAME:
-            raise ValueError("No maps folder found and MISSION_FOLDER_NAME is not set in user_paths.py")
-        mission_targets = [("", LEGACY_MISSION_FOLDER_NAME, None)]
+        raise ValueError("No mission-ready map folders found under maps/; expected maps/<map_name>/mission.sqm")
 
     exclude = {
         ".git",

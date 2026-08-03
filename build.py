@@ -5,8 +5,6 @@ import user_paths
 
 
 ARMA_MISSIONS_FOLDER = Path(user_paths.MISSIONS_PATH)
-MISSION_STEM = getattr(user_paths, "MISSION_STEM", "")
-LEGACY_MISSION_FOLDER_NAME = getattr(user_paths, "MISSION_FOLDER_NAME", "")
 
 # We do not need these in release-like output.
 BLACKLISTED_FOLDERS = [
@@ -74,11 +72,7 @@ def copy_repo_fallback(repo_root, target_folder):
 
 
 def mission_folder_name(map_folder_name):
-    if MISSION_STEM:
-        return f"{MISSION_STEM}.{map_folder_name}"
-    if LEGACY_MISSION_FOLDER_NAME:
-        return LEGACY_MISSION_FOLDER_NAME
-    raise ValueError("Set MISSION_STEM or MISSION_FOLDER_NAME in user_paths.py")
+    return f"bn_koth_vietnam.{map_folder_name}"
 
 
 def get_map_folders(content_root):
@@ -183,9 +177,7 @@ def main():
     if map_folders:
         mission_targets = [(map_folder.name, mission_folder_name(map_folder.name), map_folder) for map_folder in map_folders]
     else:
-        if not LEGACY_MISSION_FOLDER_NAME:
-            raise ValueError("No maps folder found and MISSION_FOLDER_NAME is not set in user_paths.py")
-        mission_targets = [("", LEGACY_MISSION_FOLDER_NAME, None)]
+        raise ValueError("No mission-ready map folders found under maps/; expected maps/<map_name>/mission.sqm")
 
     for map_name, mission_name, map_folder in mission_targets:
         source_folder = ARMA_MISSIONS_FOLDER / mission_name
