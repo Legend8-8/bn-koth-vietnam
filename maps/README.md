@@ -10,7 +10,7 @@ Put map-specific mission overrides in one folder per map:
 Typical per-map files:
 
 - mission.sqm
-- config/locations.hpp
+- map_config/locations.hpp
 - optional map-only assets or scripts
 
 Tooling behavior:
@@ -22,4 +22,4 @@ Tooling behavior:
 Important:
 
 - If a map folder is missing mission.sqm, that generated mission folder will not be playable yet.
-- Put map-specific zone config in maps/<map_name>/config/locations.hpp.
+- Put map-specific zone config in maps/<map_name>/map_config/locations.hpp.

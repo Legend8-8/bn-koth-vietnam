@@ -133,24 +133,17 @@ def copy_into_target(target, source, overwrite=False):
             shutil.copy2(item, target_item)
 
 
-def merge_config_into_output(content_root, map_folder, target_folder):
+def merge_config_into_output(content_root, target_folder):
     target_config = target_folder / "config"
 
-    if target_config.exists() and (target_config.is_symlink() or target_config.is_file()):
-        target_config.unlink()
-
-    if not target_config.exists():
-        target_config.mkdir(parents=True, exist_ok=True)
+    # Rebuild config from shared source to avoid stale files in output.
+    if target_config.exists():
+        replace_path(target_config)
+    target_config.mkdir(parents=True, exist_ok=True)
 
     shared_config = content_root / "config"
     if shared_config.exists() and shared_config.is_dir():
         copy_into_target(target_config, shared_config, overwrite=False)
-
-    if map_folder is not None:
-        map_config = map_folder / "config"
-        if map_config.exists() and map_config.is_dir():
-            # Map config overrides shared config file names.
-            copy_into_target(target_config, map_config, overwrite=True)
 
 
 def trim_output(target_folder):
@@ -216,7 +209,7 @@ def main():
 
         copy_repo_fallback(content_root, target_folder)
 
-        merge_config_into_output(content_root, map_folder, target_folder)
+        merge_config_into_output(content_root, target_folder)
 
         print("Trimming output...")
         trim_output(target_folder)
