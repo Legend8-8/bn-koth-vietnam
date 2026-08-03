@@ -5,10 +5,10 @@ class EditorData
 	angleGridStep=0.2617994;
 	scaleGridStep=1;
 	autoGroupingDist=10;
-	toggles=1025;
+	toggles=1057;
 	class ItemIDProvider
 	{
-		nextID=4;
+		nextID=13;
 	};
 	class MarkerIDProvider
 	{
@@ -16,23 +16,26 @@ class EditorData
 	};
 	class Camera
 	{
-		pos[]={16464.553,51.605,3381.853};
-		dir[]={0,-0.70710683,0.70710683};
-		up[]={0,0.70710677,0.70710677};
-		aside[]={0.99999994,0,-0};
+		pos[]={16855.715,83.543701,3996.0266};
+		dir[]={-0.12711006,-0.72325307,0.67878425};
+		up[]={-0.13312338,0.69058311,0.71089613};
+		aside[]={0.98291481,7.4505806e-09,0.18406196};
 	};
 };
 binarizationWanted=0;
-sourceName="bn-koth-vietnam";
+sourceName="bn_koth_vietnam";
 addons[]=
 {
-	"A3_Ui_F"
+	"A3_Ui_F",
+	"structures_f_vietnam_c",
+	"A3_Modules_F",
+	"characters_f_vietnam_c"
 };
 class AddonsMetaData
 {
 	class List
 	{
-		items=1;
+		items=4;
 		class Item0
 		{
 			className="A3_Ui_F";
@@ -40,7 +43,32 @@ class AddonsMetaData
 			author="Bohemia Interactive";
 			url="https://www.arma3.com";
 		};
+		class Item1
+		{
+			className="structures_f_vietnam_c";
+			name="structures_f_vietnam_c";
+			author="Savage Game Design";
+			url="https://www.arma3.com";
+		};
+		class Item2
+		{
+			className="A3_Modules_F";
+			name="Arma 3 Alpha - Scripted Modules";
+			author="Bohemia Interactive";
+			url="https://www.arma3.com";
+		};
+		class Item3
+		{
+			className="characters_f_vietnam_c";
+			name="characters_f_vietnam_c";
+			author="Savage Game Design";
+			url="https://www.arma3.com";
+		};
 	};
+};
+dlcs[]=
+{
+	"VN"
 };
 randomSeed=10594417;
 class ScenarioData
@@ -129,7 +157,7 @@ class Mission
 	};
 	class Entities
 	{
-		items=3;
+		items=9;
 		class Item0
 		{
 			dataType="Marker";
@@ -149,7 +177,7 @@ class Mission
 		class Item1
 		{
 			dataType="Marker";
-			position[]={15509.233,36.576935,3730.1001};
+			position[]={15503.407,36.560001,3735.575};
 			name="saigon_respawn_east";
 			type="Empty";
 			id=2;
@@ -157,10 +185,287 @@ class Mission
 		class Item2
 		{
 			dataType="Marker";
-			position[]={16955.311,26.290001,3839.7803};
+			position[]={16928.121,26.221567,4052.3091};
 			name="saigon_respawn_west";
 			type="Empty";
 			id=3;
+		};
+		class Item3
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={16930.115,28.189342,4050.198};
+				angles[]={0,3.6651914,0};
+			};
+			side="Empty";
+			flags=5;
+			class Attributes
+			{
+				name="saigon_east_tent";
+				disableSimulation=1;
+			};
+			id=4;
+			type="Land_vn_tent_02_03";
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item4
+		{
+			dataType="Logic";
+			class PositionInfo
+			{
+				position[]={16933.359,26.26269,4051.2217};
+				angles[]={6.2651882,0,0};
+			};
+			areaSize[]={27.8125,0,27.8125};
+			flags=1;
+			id=5;
+			type="ModuleHideTerrainObjects_F";
+			atlOffset=0.060699463;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="#filter";
+					expression="_this setVariable [""#filter"",_value]";
+					class Value
+					{
+						class data
+						{
+							singleType="SCALAR";
+							value=15;
+						};
+					};
+				};
+				class Attribute1
+				{
+					property="#hideLocally";
+					expression="_this setVariable [""#hideLocally"",_value]";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=2;
+			};
+		};
+		class Item5
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={15502.432,38.565781,3734.511};
+				angles[]={0,3.6651914,0};
+			};
+			side="Empty";
+			flags=5;
+			class Attributes
+			{
+				name="saigon_west_tent_1";
+				disableSimulation=1;
+			};
+			id=7;
+			type="Land_vn_tent_02_03";
+			atlOffset=3.8146973e-06;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item6
+		{
+			dataType="Logic";
+			class PositionInfo
+			{
+				position[]={15505.676,36.623405,3735.5349};
+				angles[]={6.2651882,0,0};
+			};
+			areaSize[]={27.8125,0,27.8125};
+			flags=1;
+			id=8;
+			type="ModuleHideTerrainObjects_F";
+			atlOffset=0.060699463;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="#filter";
+					expression="_this setVariable [""#filter"",_value]";
+					class Value
+					{
+						class data
+						{
+							singleType="SCALAR";
+							value=15;
+						};
+					};
+				};
+				class Attribute1
+				{
+					property="#hideLocally";
+					expression="_this setVariable [""#hideLocally"",_value]";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=2;
+			};
+		};
+		class Item7
+		{
+			dataType="Group";
+			side="West";
+			class Entities
+			{
+				items=1;
+				class Item0
+				{
+					dataType="Object";
+					class PositionInfo
+					{
+						position[]={16847.344,26.381437,4038.7651};
+					};
+					side="West";
+					flags=7;
+					class Attributes
+					{
+						isPlayable=1;
+					};
+					id=10;
+					type="vn_b_men_sog_07";
+					class CustomAttributes
+					{
+						class Attribute0
+						{
+							property="speaker";
+							expression="_this setspeaker _value;";
+							class Value
+							{
+								class data
+								{
+									singleType="STRING";
+									value="Male07ENG";
+								};
+							};
+						};
+						class Attribute1
+						{
+							property="pitch";
+							expression="_this setpitch _value;";
+							class Value
+							{
+								class data
+								{
+									singleType="SCALAR";
+									value=1.03;
+								};
+							};
+						};
+						nAttributes=2;
+					};
+				};
+			};
+			class Attributes
+			{
+			};
+			id=9;
+		};
+		class Item8
+		{
+			dataType="Group";
+			side="East";
+			class Entities
+			{
+				items=1;
+				class Item0
+				{
+					dataType="Object";
+					class PositionInfo
+					{
+						position[]={16850.58,26.381437,4040.0339};
+					};
+					side="East";
+					flags=7;
+					class Attributes
+					{
+						isPlayable=1;
+					};
+					id=12;
+					type="vn_o_men_nva_04";
+					class CustomAttributes
+					{
+						class Attribute0
+						{
+							property="speaker";
+							expression="_this setspeaker _value;";
+							class Value
+							{
+								class data
+								{
+									singleType="STRING";
+									value="VIE";
+								};
+							};
+						};
+						class Attribute1
+						{
+							property="pitch";
+							expression="_this setpitch _value;";
+							class Value
+							{
+								class data
+								{
+									singleType="SCALAR";
+									value=0.97000003;
+								};
+							};
+						};
+						nAttributes=2;
+					};
+				};
+			};
+			class Attributes
+			{
+			};
+			id=11;
 		};
 	};
 };
