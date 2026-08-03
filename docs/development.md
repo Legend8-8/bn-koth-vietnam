@@ -1,0 +1,29 @@
+Bro-Nation KOTH Vietnam - Development Setup
+
+1. Purpose
+
+This repo includes local Windows tooling similar to Mike-Force:
+
+- setup_dev_environment.py: creates/syncs linked mission folders in your Arma missions path.
+- build.py: creates clean output copies in build_output/ for packaging/testing.
+
+2. First-Time Setup
+
+1. Review and edit user_paths.py.
+2. Run setup_dev_environment.py as administrator.
+3. Launch Arma 3 and open a generated mission folder such as bn_koth_vietnam.cam_lao_nam.
+
+3. Build Output
+
+Run build.py to export trimmed mission folders for all maps under maps/<map_name>/.
+
+4. Multi-Map Layout
+
+- Shared mission content remains at repo root.
+- Map-specific overrides go in maps/<map_name>/ (for example maps/cam_lao_nam/mission.sqm).
+- Target mission folders are named as <MISSION_STEM>.<map_name>.
+
+5. Notes
+
+- user_paths.py is gitignored as machine-local config.
+- If links already exist, setup_dev_environment.py only adds missing links.
