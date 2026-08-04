@@ -1,4 +1,4 @@
-Bro-Nation KOTH Vietnam - Game Design
+Bro-Nation KOTH Vietnam — Game Design
 
 1. Project Summary
 
