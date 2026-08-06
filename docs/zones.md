@@ -48,8 +48,9 @@ You can still use objects[] for explicit object names, but it is optional.
 
 At location activation time:
 
-- active location objects are kept;
-- non-active location objects can be deleted by server setup.
+- active location static objects are enabled and visible;
+- non-active static objects are hidden/disabled but not deleted;
+- runtime-created AO objects may be tracked/cleaned up separately.
 
 6. Runtime Flow
 
@@ -62,7 +63,7 @@ That function:
 - publishes BN_KOTH_activeLocationId;
 - publishes BN_KOTH_activeZoneMarker and active respawn markers;
 - hides inactive location markers;
-- optionally deletes non-active location objects using <locationId>_ prefix matching (and objects[] entries if provided).
+- deactivates non-active static location objects using <locationId>_ prefix matching (and objects[] entries if provided), while keeping them reactivatable.
 
 Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
 
