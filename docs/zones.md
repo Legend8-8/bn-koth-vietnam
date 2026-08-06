@@ -15,7 +15,7 @@ For Cam Lao Nam, keep all potential zones in the same mission.sqm and select one
 
 3. What Defines a Zone
 
-Each zone is defined by location ID in maps/<map_name>/config/locations.hpp under CfgBnKothLocations.
+Each zone is defined by location ID in maps/<map_name>/map_config/locations.hpp under CfgBnKothLocations.
 
 Each location should include:
 
@@ -48,8 +48,9 @@ You can still use objects[] for explicit object names, but it is optional.
 
 At location activation time:
 
-- active location objects are kept;
-- non-active location objects can be deleted by server setup.
+- active location static objects are enabled and visible;
+- non-active static objects are hidden/disabled but not deleted;
+- runtime-created AO objects may be tracked/cleaned up separately.
 
 6. Runtime Flow
 
@@ -62,7 +63,7 @@ That function:
 - publishes BN_KOTH_activeLocationId;
 - publishes BN_KOTH_activeZoneMarker and active respawn markers;
 - hides inactive location markers;
-- optionally deletes non-active location objects using <locationId>_ prefix matching (and objects[] entries if provided).
+- deactivates non-active static location objects using <locationId>_ prefix matching (and objects[] entries if provided), while keeping them reactivatable.
 
 Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
 
@@ -70,7 +71,7 @@ Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
 
 1. Add zone + respawn markers in mission.sqm (via Eden).
 2. Name markers clearly (example: hue_zone, hue_respawn_west, hue_respawn_east).
-3. Add class hue in maps/<map_name>/config/locations.hpp.
+3. Add class hue in maps/<map_name>/map_config/locations.hpp.
 4. Give zone-specific objects Eden variable names with prefix <locationId>_ (for example hue_...).
 5. Set defaultLocationId to hue for testing.
 6. Start mission and verify only hue markers/objects are active.

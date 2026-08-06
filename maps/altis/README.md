@@ -5,4 +5,4 @@ This map folder is scaffolded for future work.
 Required before playtesting:
 
 - mission.sqm
-- config/locations.hpp (already added)
+- map_config/locations.hpp

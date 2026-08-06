@@ -107,31 +107,41 @@ Windows helper scripts are included in the repository root:
 
 These scripts are intentionally similar to the Mike-Force local workflow.
 
-Proposed Mission Structure
+Repository Structure
 
-mission/
-└── bn_koth_vietnam.cam_lao_nam/
-    ├── config/
-    ├── functions/
-    │   ├── common/
-    │   ├── round/
-    │   ├── teams/
-    │   ├── zone/
-    │   ├── scoring/
-    │   ├── respawn/
-    │   ├── loadouts/
-    │   ├── vehicles/
-    │   ├── progression/
-    │   ├── persistence/
-    │   └── ui/
-    ├── ui/
-    ├── images/
-    ├── sounds/
-    ├── strings/
-    ├── description.ext
-    ├── initServer.sqf
-    ├── initPlayerLocal.sqf
-    └── initPlayerServer.sqf
+Shared source of truth lives at repository root:
+
+bn-koth-vietnam/
+├── config/
+├── functions/
+│   ├── common/
+│   ├── round/
+│   ├── teams/
+│   ├── zone/
+│   ├── scoring/
+│   ├── respawn/
+│   └── ui/
+├── ui/
+├── images/
+├── sounds/
+├── strings/
+├── description.ext
+├── initServer.sqf
+├── initPlayerLocal.sqf
+├── initPlayerServer.sqf
+└── maps/
+    └── <terrain>/
+        ├── mission.sqm
+        └── map_config/
+            └── locations.hpp
+
+Runtime terrain-specific AO/location config is owned only by:
+
+maps/<terrain>/map_config/locations.hpp
+
+Development mission folders (for example bn_koth_vietnam.cam_lao_nam in Arma
+MPMissions) are generated/symlinked outputs and are not source-of-truth repo
+structure.
 
 Folders should be created when they are required. Empty systems do not need placeholder implementation files.
 

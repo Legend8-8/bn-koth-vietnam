@@ -1,1 +1,10 @@
-// Placeholder: scoring intervals, score limits, and reward values belong here.
+class CfgBnKothScoring
+{
+	scoreLimit = 100;
+	scoreTick = 1;
+	scoreTickInterval = 5;
+
+	prepareDuration = 10;
+	endingDuration = 8;
+	resetDuration = 5;
+};
