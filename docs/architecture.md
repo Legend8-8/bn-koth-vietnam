@@ -38,25 +38,42 @@ KOTH functions must not be added to the Paradigm repository unless they are genu
 
 4. Repository Organisation
 
-mission/
-└── bn_koth_vietnam.cam_lao_nam/
-    ├── config/
-    ├── functions/
-    │   ├── common/
-    │   ├── round/
-    │   ├── teams/
-    │   ├── zone/
-    │   ├── scoring/
-    │   ├── respawn/
-    │   ├── loadouts/
-    │   ├── vehicles/
-    │   ├── progression/
-    │   ├── persistence/
-    │   └── ui/
-    ├── ui/
-    ├── images/
-    ├── sounds/
-    └── strings/
+bn-koth-vietnam/
+├── config/
+├── functions/
+│   ├── common/
+│   ├── round/
+│   ├── teams/
+│   ├── zone/
+│   ├── scoring/
+│   ├── respawn/
+│   ├── loadouts/
+│   ├── vehicles/
+│   ├── progression/
+│   ├── persistence/
+│   └── ui/
+├── ui/
+├── images/
+├── sounds/
+├── strings/
+├── description.ext
+├── init.sqf
+├── initServer.sqf
+├── initPlayerLocal.sqf
+├── initPlayerServer.sqf
+└── maps/
+    └── <terrain>/
+        ├── mission.sqm
+        └── map_config/locations.hpp
+
+Shared gameplay/config/tooling remain at repository root.
+
+Terrain-specific AO/location runtime configuration is owned by:
+
+maps/<terrain>/map_config/locations.hpp
+
+Generated/symlinked Arma mission folders are development outputs, not
+repository source-of-truth structure.
 
 5. Folder Ownership
 
