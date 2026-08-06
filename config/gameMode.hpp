@@ -14,3 +14,9 @@ class Header
     minPlayers = 1;
     maxPlayers = 64;
 };
+
+class CfgBnKothDebug
+{
+    // Development default for the current prototype cycle.
+    enabled = 1;
+};

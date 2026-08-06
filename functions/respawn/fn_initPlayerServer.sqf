@@ -1,7 +1,13 @@
 /*
     File: fn_initPlayerServer.sqf
+    Author: tylervip
     Description: Prepares server-side player state for respawn system.
     Execution: Server
+    Parameters:
+        0: Player object <OBJECT>
+    Returns:
+        None
+    Public: Yes
 */
 
 params ["_player"];

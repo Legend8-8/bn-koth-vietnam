@@ -1,7 +1,13 @@
 /*
     File: fn_initServer.sqf
+    Author: tylervip
     Description: Starts periodic zone control evaluation.
     Execution: Server
+    Parameters:
+        None
+    Returns:
+        None
+    Public: Yes
 */
 
 if (!isServer) exitWith {};
