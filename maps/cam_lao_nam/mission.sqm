@@ -1533,7 +1533,7 @@ class Mission
 		{
 			dataType="Marker";
 			position[]={16933.123,26.27,4055.199};
-			name="saigon_west_base_zone ";
+			name="saigon_west_base_zone";
 			markerType="ELLIPSE";
 			type="";
 			colorName="ColorBlue";
