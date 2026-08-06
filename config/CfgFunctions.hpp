@@ -6,29 +6,30 @@ class CfgFunctions
 
         class common
         {
-            file = "functions/common";
+            file = "functions\common";
             class log {};
             class publicState {};
         };
 
         class round
         {
-            file = "functions/round";
+            file = "functions\round";
             class initServer {};
             class setState {};
             class getState {};
+            class endWithWinner {};
             class resetRound {};
         };
 
         class teams
         {
-            file = "functions/teams";
+            file = "functions\teams";
             class validateSide {};
         };
 
         class zone
         {
-            file = "functions/zone";
+            file = "functions\zone";
             class initServer {};
             class setActiveLocation {};
             class evaluateControl {};
@@ -36,48 +37,26 @@ class CfgFunctions
 
         class scoring
         {
-            file = "functions/scoring";
+            file = "functions\scoring";
             class initServer {};
             class awardControlTick {};
         };
 
         class respawn
         {
-            file = "functions/respawn";
+            file = "functions\respawn";
             class initPlayerServer {};
-        };
-
-        class loadouts
-        {
-            file = "functions/loadouts";
-            class request {};
-        };
-
-        class vehicles
-        {
-            file = "functions/vehicles";
-            class requestSpawn {};
-        };
-
-        class progression
-        {
-            file = "functions/progression";
-            class addXp {};
-        };
-
-        class persistence
-        {
-            file = "functions/persistence";
-            class savePlayer {};
         };
 
         class ui
         {
-            file = "functions/ui";
+            file = "functions\ui";
             class initPlayerLocal {};
             class requestState {};
             class sendStateToClient {};
             class receiveState {};
+            class toggleDebugDisplay {};
+            class debugDisplayLoop {};
         };
     };
 };

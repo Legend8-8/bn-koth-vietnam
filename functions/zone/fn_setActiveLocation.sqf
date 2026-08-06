@@ -1,10 +1,17 @@
 /*
     File: fn_setActiveLocation.sqf
+    Author: tylervip
     Description: Activates one configured location ID and publishes marker state.
     Execution: Server
+    Parameters:
+        0: Location ID to activate <STRING>
+        1: Deactivate inactive static objects <BOOL> (default: true)
+    Returns:
+        True on success, otherwise false <BOOL>
+    Public: Yes
 */
 
-params [["_locationId", "", [""]], ["_deleteInactiveObjects", true, [true]]];
+params [["_locationId", "", [""]], ["_deactivateInactiveObjects", true, [true]]];
 
 if (!isServer) exitWith {false};
 
@@ -56,35 +63,51 @@ private _activeEastRespawn = getText (_activeCfg >> "respawnEastMarker");
 
 } forEach ("true" configClasses _locationsCfg);
 
-if (_deleteInactiveObjects) then {
+if (_deactivateInactiveObjects) then {
+    private _staticObjectsByLocation = createHashMap;
+
+    // Collect static Eden objects for each configured location once, then apply
+    // active/inactive state without deleting objects from the mission.
     {
         private _cfg = _x;
         private _cfgName = configName _cfg;
+        private _collected = [];
 
-        if !(_cfgName isEqualTo _locationId) then {
-            // First delete explicit object list from config.
-            {
-                private _objName = _x;
-                private _obj = missionNamespace getVariable [_objName, objNull];
-                if (!isNull _obj) then {
-                    deleteVehicle _obj;
+        {
+            private _objName = _x;
+            private _obj = missionNamespace getVariable [_objName, objNull];
+
+            if ((typeName _obj) isEqualTo "OBJECT" && {!isNull _obj}) then {
+                _collected pushBackUnique _obj;
+            };
+        } forEach (getArray (_cfg >> "objects"));
+
+        private _prefix = format ["%1_", _cfgName];
+
+        {
+            private _varName = _x;
+
+            if ((_varName find _prefix) isEqualTo 0) then {
+                private _value = missionNamespace getVariable [_varName, objNull];
+                if ((typeName _value) isEqualTo "OBJECT" && {!isNull _value}) then {
+                    _collected pushBackUnique _value;
                 };
-            } forEach (getArray (_cfg >> "objects"));
+            };
+        } forEach (allVariables missionNamespace);
 
-            // Then delete any Eden object variables that follow the <locationId>_ prefix convention.
-            private _prefix = format ["%1_", _cfgName];
+        _staticObjectsByLocation set [_cfgName, _collected];
+    } forEach ("true" configClasses _locationsCfg);
 
-            {
-                private _varName = _x;
+    {
+        private _cfg = _x;
+        private _cfgName = configName _cfg;
+        private _isActive = (_cfgName isEqualTo _locationId);
+        private _locationObjects = _staticObjectsByLocation getOrDefault [_cfgName, []];
 
-                if ((_varName find _prefix) isEqualTo 0) then {
-                    private _value = missionNamespace getVariable [_varName, objNull];
-                    if ((typeName _value) isEqualTo "OBJECT" && {!isNull _value}) then {
-                        deleteVehicle _value;
-                    };
-                };
-            } forEach (allVariables missionNamespace);
-        };
+        {
+            _x hideObjectGlobal (!_isActive);
+            _x enableSimulationGlobal _isActive;
+        } forEach _locationObjects;
     } forEach ("true" configClasses _locationsCfg);
 };
 
