@@ -1,5 +1,6 @@
 author = "Bro-Nation";
-onLoadName = "Bro-Nation KOTH Vietnam";
+onLoadName = "Vietnam KOTH Test";
+overviewText = "King of the Hill";
 onLoadMission = "Server-authoritative KOTH prototype for S.O.G. Prairie Fire.";
 loadScreen = "";
 

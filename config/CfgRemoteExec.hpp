@@ -11,7 +11,31 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_teams_requestSelection
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_round_requestVote
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
         class bn_koth_fnc_ui_receiveState
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_ui_selectControlledUnit
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_ui_notify
         {
             allowedTargets = 1;
             jip = 0;

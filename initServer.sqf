@@ -38,9 +38,7 @@ if ((count _resolvedSides) < 2) then {
 
 missionNamespace setVariable ["BN_KOTH_playableSides", _resolvedSides, true];
 
-private _defaultLocationId = getText (missionConfigFile >> "CfgBnKothSettings" >> "defaultLocationId");
-[_defaultLocationId] call bn_koth_fnc_zone_setActiveLocation;
-
+[] call bn_koth_fnc_teams_initServer;
 [] call bn_koth_fnc_round_initServer;
 [] call bn_koth_fnc_zone_initServer;
 [] call bn_koth_fnc_scoring_initServer;

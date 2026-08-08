@@ -1,6 +1,7 @@
 /*
     File: fn_receiveState.sqf
     Author: tylervip
+    Edited: Legend
     Description: Receives and applies server state snapshot on client.
     Execution: Client
     Parameters:
@@ -15,3 +16,44 @@ params ["_payload"];
 if (!hasInterface) exitWith {};
 
 missionNamespace setVariable ["BN_KOTH_clientSnapshot", _payload];
+
+if !(_payload isEqualType createHashMap) exitWith {};
+
+private _keyMap = createHashMapFromArray [
+    ["roundState", "BN_KOTH_roundState"],
+    ["playerStates", "BN_KOTH_playerStates"],
+    ["playerTeamAssignments", "BN_KOTH_playerTeamAssignments"],
+    ["teamCounts", "BN_KOTH_teamCounts"],
+    ["activeParticipants", "BN_KOTH_activeParticipants"],
+    ["selectedLocationId", "BN_KOTH_selectedLocationId"],
+    ["previousLocationId", "BN_KOTH_previousLocationId"],
+    ["activeLocationId", "BN_KOTH_activeLocationId"],
+    ["activeZoneMarker", "BN_KOTH_activeZoneMarker"],
+    ["activeRespawnWestMarker", "BN_KOTH_activeRespawnWestMarker"],
+    ["activeRespawnEastMarker", "BN_KOTH_activeRespawnEastMarker"],
+    ["voteOpen", "BN_KOTH_voteOpen"],
+    ["voteCandidates", "BN_KOTH_voteCandidates"],
+    ["voteTotals", "BN_KOTH_voteTotals"],
+    ["votesByUid", "BN_KOTH_votesByUid"],
+    ["voteEndAt", "BN_KOTH_voteEndAt"],
+    ["zoneState", "BN_KOTH_zoneState"],
+    ["zoneController", "BN_KOTH_zoneController"],
+    ["zonePopulation", "BN_KOTH_zonePopulation"],
+    ["winningSide", "BN_KOTH_winningSide"],
+    ["teamScores", "BN_KOTH_teamScores"],
+    ["scoreLimit", "BN_KOTH_scoreLimit"],
+    ["prepareEndAt", "BN_KOTH_prepareEndAt"],
+    ["endingEndAt", "BN_KOTH_endingEndAt"],
+    ["resetEndAt", "BN_KOTH_resetEndAt"]
+];
+
+{
+    private _key = _x;
+    private _value = _payload get _key;
+    missionNamespace setVariable [_key, _value];
+
+    private _bnKey = _keyMap getOrDefault [_key, ""];
+    if !(_bnKey isEqualTo "") then {
+        missionNamespace setVariable [_bnKey, _value];
+    };
+} forEach (keys _payload);

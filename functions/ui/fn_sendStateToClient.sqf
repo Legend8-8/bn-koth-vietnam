@@ -25,13 +25,25 @@ if ((count _playableSides) < 2) then {
 
 private _payload = createHashMapFromArray [
     ["roundState", missionNamespace getVariable ["BN_KOTH_roundState", "WAITING"]],
+    ["playerStates", missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap]],
+    ["playerTeamAssignments", missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap]],
+    ["teamCounts", missionNamespace getVariable ["BN_KOTH_teamCounts", createHashMapFromArray [[_playableSides select 0, 0], [_playableSides select 1, 0]]]],
+    ["activeParticipants", missionNamespace getVariable ["BN_KOTH_activeParticipants", []]],
+    ["selectedLocationId", missionNamespace getVariable ["BN_KOTH_selectedLocationId", ""]],
+    ["previousLocationId", missionNamespace getVariable ["BN_KOTH_previousLocationId", ""]],
     ["activeLocationId", missionNamespace getVariable ["BN_KOTH_activeLocationId", ""]],
     ["activeZoneMarker", missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""]],
     ["activeRespawnWestMarker", missionNamespace getVariable ["BN_KOTH_activeRespawnWestMarker", ""]],
     ["activeRespawnEastMarker", missionNamespace getVariable ["BN_KOTH_activeRespawnEastMarker", ""]],
+    ["voteOpen", missionNamespace getVariable ["BN_KOTH_voteOpen", false]],
+    ["voteCandidates", missionNamespace getVariable ["BN_KOTH_voteCandidates", []]],
+    ["voteTotals", missionNamespace getVariable ["BN_KOTH_voteTotals", createHashMap]],
+    ["votesByUid", missionNamespace getVariable ["BN_KOTH_votesByUid", createHashMap]],
+    ["voteEndAt", missionNamespace getVariable ["BN_KOTH_voteEndAt", -1]],
     ["zoneState", missionNamespace getVariable ["BN_KOTH_zoneState", "NEUTRAL"]],
     ["zoneController", missionNamespace getVariable ["BN_KOTH_zoneController", sideUnknown]],
     ["zonePopulation", missionNamespace getVariable ["BN_KOTH_zonePopulation", [0, 0]]],
+    ["winningSide", missionNamespace getVariable ["BN_KOTH_winningSide", sideUnknown]],
     [
         "teamScores",
         missionNamespace getVariable [
