@@ -13,6 +13,14 @@
 
 if (!isServer) exitWith {sideUnknown};
 
+private _roundState = [] call bn_koth_fnc_round_getState;
+if !(_roundState isEqualTo "ACTIVE") exitWith {
+    ["BN_KOTH_zoneController", sideUnknown] call bn_koth_fnc_common_publicState;
+    ["BN_KOTH_zoneState", "NEUTRAL"] call bn_koth_fnc_common_publicState;
+    ["BN_KOTH_zonePopulation", [0, 0]] call bn_koth_fnc_common_publicState;
+    sideUnknown
+};
+
 private _marker = missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""];
 if (_marker isEqualTo "") exitWith {
     if !(missionNamespace getVariable ["BN_KOTH_warnedMissingZoneMarker", false]) then {
@@ -32,10 +40,17 @@ if ((count _playableSides) < 2) then {
 private _sideA = _playableSides select 0;
 private _sideB = _playableSides select 1;
 
+private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
+private _activeLookup = createHashMap;
+{
+    _activeLookup set [_x, true];
+} forEach _activeParticipants;
+
 private _players = allPlayers select {
     alive _x
     && {!(_x getVariable ["BIS_revive_incapacitated", false])}
     && {[(side group _x)] call bn_koth_fnc_teams_validateSide}
+    && {_activeLookup getOrDefault [getPlayerUID _x, false]}
     && {_x inArea _marker}
 };
 

@@ -1,6 +1,6 @@
 /*
     File: fn_requestState.sqf
-    Author: Legend
+    Author: tylervip
     Description: Client requests state; server validates caller and responds.
     Execution: Client/Server
     Parameters:
@@ -11,7 +11,7 @@
 */
 
 if (hasInterface && {!isServer}) exitWith {
-    [] remoteExecCall ["bn_koth_fnc_ui_requestState", 2];
+    [] remoteExec ["bn_koth_fnc_ui_requestState", 2];
 };
 
 if (hasInterface && {isServer}) exitWith {
@@ -34,6 +34,21 @@ private _requester = objNull;
 
 if (isNull _requester) exitWith {
     [format ["Rejected state request: no player for owner %1", _requestOwner], "WARN"] call bn_koth_fnc_common_log;
+};
+
+private _uid = getPlayerUID _requester;
+if !(_uid isEqualTo "") then {
+    private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
+    private _record = _records getOrDefault [_uid, objNull];
+
+    if (_record isEqualTo objNull) then {
+        [format ["ui_requestState fallback: missing player record for UID=%1 owner=%2; attempting registration.", _uid, _requestOwner], "WARN"] call bn_koth_fnc_common_log;
+        private _registered = [_requester] call bn_koth_fnc_teams_registerPlayer;
+
+        if (!_registered) then {
+            [format ["ui_requestState fallback registration deferred/failed UID=%1 owner=%2", _uid, _requestOwner], "WARN"] call bn_koth_fnc_common_log;
+        };
+    };
 };
 
 private _now = serverTime;

@@ -2,19 +2,23 @@
     File: fn_setActiveLocation.sqf
     Author: tylervip
     Edited: Legend
-    Description: Activates one configured location ID and publishes marker state.
+    Description: Activates one configured location ID and publishes marker/base-zone state.
     Execution: Server
     Parameters:
         0: Location ID to activate <STRING>
-        1: Deactivate inactive static objects <BOOL> (default: true)
     Returns:
         True on success, otherwise false <BOOL>
     Public: Yes
 */
 
-params [["_locationId", "", [""]], ["_deactivateInactiveObjects", true, [true]]];
+params [["_locationId", "", [""]]];
 
 if (!isServer) exitWith {false};
+
+if !([_locationId] call bn_koth_fnc_round_isLocationValid) exitWith {
+    [format ["Rejected setActiveLocation for invalid location '%1'", _locationId], "ERROR"] call bn_koth_fnc_common_log;
+    false
+};
 
 private _locationsCfg = missionConfigFile >> "CfgBnKothLocations";
 if !(isClass _locationsCfg) exitWith {
@@ -22,24 +26,19 @@ if !(isClass _locationsCfg) exitWith {
     false
 };
 
-if (_locationId isEqualTo "") then {
-    _locationId = getText (missionConfigFile >> "CfgBnKothSettings" >> "defaultLocationId");
-};
-
 private _activeCfg = _locationsCfg >> _locationId;
-if !(isClass _activeCfg) exitWith {
-    [format ["Unknown location ID: %1", _locationId], "ERROR"] call bn_koth_fnc_common_log;
-    false
-};
-
 private _activeZoneMarker = getText (_activeCfg >> "zoneMarker");
 private _activeWestRespawn = getText (_activeCfg >> "respawnWestMarker");
 private _activeEastRespawn = getText (_activeCfg >> "respawnEastMarker");
+private _activeWestBaseZone = getText (_activeCfg >> "westBaseZoneMarker");
+private _activeEastBaseZone = getText (_activeCfg >> "eastBaseZoneMarker");
 
 ["BN_KOTH_activeLocationId", _locationId] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeZoneMarker", _activeZoneMarker] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeRespawnWestMarker", _activeWestRespawn] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeRespawnEastMarker", _activeEastRespawn] call bn_koth_fnc_common_publicState;
+["BN_KOTH_activeWestBaseZoneMarker", _activeWestBaseZone] call bn_koth_fnc_common_publicState;
+["BN_KOTH_activeEastBaseZoneMarker", _activeEastBaseZone] call bn_koth_fnc_common_publicState;
 
 {
     private _cfg = _x;
@@ -64,52 +63,19 @@ private _activeEastRespawn = getText (_activeCfg >> "respawnEastMarker");
 
 } forEach ("true" configClasses _locationsCfg);
 
-if (_deactivateInactiveObjects) then {
-    private _staticObjectsByLocation = createHashMap;
-
-    // Collect static Eden objects for each configured location once, then apply
-    // active/inactive state without deleting objects from the mission.
+private _cache = [] call bn_koth_fnc_zone_cacheStaticObjects;
+if (_cache isEqualType createHashMap) then {
     {
-        private _cfg = _x;
-        private _cfgName = configName _cfg;
-        private _collected = [];
-
-        {
-            private _objName = _x;
-            private _obj = missionNamespace getVariable [_objName, objNull];
-
-            if ((typeName _obj) isEqualTo "OBJECT" && {!isNull _obj}) then {
-                _collected pushBackUnique _obj;
-            };
-        } forEach (getArray (_cfg >> "objects"));
-
-        private _prefix = format ["%1_", _cfgName];
-
-        {
-            private _varName = _x;
-
-            if ((_varName find _prefix) isEqualTo 0) then {
-                private _value = missionNamespace getVariable [_varName, objNull];
-                if ((typeName _value) isEqualTo "OBJECT" && {!isNull _value}) then {
-                    _collected pushBackUnique _value;
-                };
-            };
-        } forEach (allVariables missionNamespace);
-
-        _staticObjectsByLocation set [_cfgName, _collected];
-    } forEach ("true" configClasses _locationsCfg);
-
-    {
-        private _cfg = _x;
-        private _cfgName = configName _cfg;
+        private _cfgName = _x;
         private _isActive = (_cfgName isEqualTo _locationId);
-        private _locationObjects = _staticObjectsByLocation getOrDefault [_cfgName, []];
+        private _locationObjects = _cache getOrDefault [_cfgName, []];
 
         {
-            _x hideObjectGlobal (!_isActive);
-            _x enableSimulationGlobal _isActive;
+            if (!isNull _x) then {
+                _x hideObjectGlobal (!_isActive);
+            };
         } forEach _locationObjects;
-    } forEach ("true" configClasses _locationsCfg);
+    } forEach (keys _cache);
 };
 
 [format ["Active location set: %1 (%2)", _locationId, _activeZoneMarker]] call bn_koth_fnc_common_log;
