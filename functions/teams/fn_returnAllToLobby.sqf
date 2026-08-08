@@ -43,6 +43,7 @@ private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", create
         _record set ["assignedSide", sideUnknown];
         _record set ["voteLocationId", ""];
         _record set ["state", "LOBBY"];
+        _record set ["deployed", false];
         _records set [_uid, _record];
     };
 } forEach (keys _records);

@@ -41,16 +41,50 @@ private _sideA = _playableSides select 0;
 private _sideB = _playableSides select 1;
 
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
+private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 private _activeLookup = createHashMap;
 {
     _activeLookup set [_x, true];
 } forEach _activeParticipants;
 
 private _players = allPlayers select {
+    private _uid = getPlayerUID _x;
+    private _record = if (_records isEqualType createHashMap) then {
+        _records getOrDefault [_uid, createHashMap]
+    } else {
+        createHashMap
+    };
+    private _recordState = if (_record isEqualType createHashMap) then {
+        _record getOrDefault ["state", "LOBBY"]
+    } else {
+        "LOBBY"
+    };
+    private _recordDeployed = if (_record isEqualType createHashMap) then {
+        _record getOrDefault ["deployed", false]
+    } else {
+        false
+    };
+    private _recordAssignedSide = if (_record isEqualType createHashMap) then {
+        _record getOrDefault ["assignedSide", sideUnknown]
+    } else {
+        sideUnknown
+    };
+    private _recordUnit = if (_record isEqualType createHashMap) then {
+        _record getOrDefault ["currentUnit", objNull]
+    } else {
+        objNull
+    };
+
     alive _x
     && {!(_x getVariable ["BIS_revive_incapacitated", false])}
     && {[(side group _x)] call bn_koth_fnc_teams_validateSide}
     && {_activeLookup getOrDefault [getPlayerUID _x, false]}
+    && {_record isEqualType createHashMap}
+    && {_recordState isEqualTo "ACTIVE"}
+    && {_recordDeployed}
+    && {_recordAssignedSide in _playableSides}
+    && {!isNull _recordUnit}
+    && {_recordUnit isEqualTo _x}
     && {_x inArea _marker}
 };
 
