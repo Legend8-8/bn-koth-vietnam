@@ -1,6 +1,7 @@
 /*
     File: fn_sendStateToClient.sqf
     Author: tylervip
+    Edited: Legend
     Description: Sends a mission snapshot from server to one client.
     Execution: Server
     Parameters:

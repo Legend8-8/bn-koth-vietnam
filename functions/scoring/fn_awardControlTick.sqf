@@ -1,6 +1,7 @@
 /*
     File: fn_awardControlTick.sqf
     Author: tylervip
+    Edited: Legend
     Description: Awards score tick to controlling side.
     Execution: Server
     Parameters:
@@ -36,7 +37,7 @@ private _newScore = _current + _tick;
 _scores set [_controller, _newScore];
 missionNamespace setVariable ["BN_KOTH_teamScores", _scores, true];
 
-[format ["Score tick: %1 -> %2", _controller, _newScore]] call bn_koth_fnc_log;
+[format ["Score tick: %1 -> %2", _controller, _newScore]] call bn_koth_fnc_common_log;
 
 if (_newScore >= _scoreLimit) then {
     [_controller] call bn_koth_fnc_round_endWithWinner;

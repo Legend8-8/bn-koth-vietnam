@@ -1,6 +1,7 @@
 /*
     File: fn_evaluateControl.sqf
     Author: tylervip
+    Edited: Legend
     Description: Computes zone population and controlling side.
     Execution: Server
     Parameters:
@@ -16,7 +17,7 @@ private _marker = missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""];
 if (_marker isEqualTo "") exitWith {
     if !(missionNamespace getVariable ["BN_KOTH_warnedMissingZoneMarker", false]) then {
         missionNamespace setVariable ["BN_KOTH_warnedMissingZoneMarker", true];
-        ["Zone evaluation skipped: BN_KOTH_activeZoneMarker is empty.", "WARN"] call bn_koth_fnc_log;
+        ["Zone evaluation skipped: BN_KOTH_activeZoneMarker is empty.", "WARN"] call bn_koth_fnc_common_log;
     };
     sideUnknown
 };
@@ -61,15 +62,15 @@ private _previousController = missionNamespace getVariable ["BN_KOTH_zoneControl
 private _previousState = missionNamespace getVariable ["BN_KOTH_zoneState", "NEUTRAL"];
 
 if (!(_previousController isEqualTo _controller)) then {
-    [format ["Zone controller changed to %1", _controller]] call bn_koth_fnc_log;
+    [format ["Zone controller changed to %1", _controller]] call bn_koth_fnc_common_log;
 };
 
 if !(_previousState isEqualTo _zoneState) then {
-    [format ["Zone state changed to %1", _zoneState]] call bn_koth_fnc_log;
+    [format ["Zone state changed to %1", _zoneState]] call bn_koth_fnc_common_log;
 };
 
-["BN_KOTH_zoneController", _controller] call bn_koth_fnc_publicState;
-["BN_KOTH_zoneState", _zoneState] call bn_koth_fnc_publicState;
-["BN_KOTH_zonePopulation", [_sideACount, _sideBCount]] call bn_koth_fnc_publicState;
+["BN_KOTH_zoneController", _controller] call bn_koth_fnc_common_publicState;
+["BN_KOTH_zoneState", _zoneState] call bn_koth_fnc_common_publicState;
+["BN_KOTH_zonePopulation", [_sideACount, _sideBCount]] call bn_koth_fnc_common_publicState;
 
 _controller

@@ -1,6 +1,7 @@
 /*
     File: fn_initServer.sqf
     Author: tylervip
+    Edited: Legend
     Description: Initializes authoritative round state and starts the lifecycle manager.
     Execution: Server
     Parameters:
@@ -13,7 +14,7 @@
 if (!isServer) exitWith {};
 
 if (missionNamespace getVariable ["BN_KOTH_roundManagerRunning", false]) exitWith {
-    ["Round manager already running.", "WARN"] call bn_koth_fnc_log;
+    ["Round manager already running.", "WARN"] call bn_koth_fnc_common_log;
 };
 
 missionNamespace setVariable ["BN_KOTH_roundManagerRunning", true];
@@ -28,11 +29,11 @@ missionNamespace setVariable [
     createHashMapFromArray [[_playableSides select 0, 0], [_playableSides select 1, 0]],
     true
 ];
-["BN_KOTH_winningSide", sideUnknown] call bn_koth_fnc_publicState;
+["BN_KOTH_winningSide", sideUnknown] call bn_koth_fnc_common_publicState;
 
-["BN_KOTH_roundState", "WAITING"] call bn_koth_fnc_publicState;
-["BN_KOTH_zoneState", "NEUTRAL"] call bn_koth_fnc_publicState;
-["BN_KOTH_zoneController", sideUnknown] call bn_koth_fnc_publicState;
+["BN_KOTH_roundState", "WAITING"] call bn_koth_fnc_common_publicState;
+["BN_KOTH_zoneState", "NEUTRAL"] call bn_koth_fnc_common_publicState;
+["BN_KOTH_zoneController", sideUnknown] call bn_koth_fnc_common_publicState;
 
 [] spawn {
     while {true} do {
