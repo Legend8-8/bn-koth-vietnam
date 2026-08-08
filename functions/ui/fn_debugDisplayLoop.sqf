@@ -1,6 +1,6 @@
 /*
     File: fn_debugDisplayLoop.sqf
-    Author: tylervip
+    Author: Legend
     Description: Renders a lightweight local debug display from replicated client state.
     Execution: Client
     Parameters:

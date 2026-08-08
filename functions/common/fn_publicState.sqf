@@ -1,6 +1,7 @@
 /*
     File: fn_publicState.sqf
     Author: tylervip
+    Edited: Legend
     Description: Sets and broadcasts mission namespace state when changed.
     Execution: Server
     Parameters:
@@ -24,5 +25,5 @@ if (!_forcePublish && {!(_existing isEqualType _sentinel && {_existing isEqualTo
 };
 
 missionNamespace setVariable [_key, _value, true];
-[format ["Published state %1", _key]] call bn_koth_fnc_log;
+[format ["Published state %1", _key]] call bn_koth_fnc_common_log;
 true

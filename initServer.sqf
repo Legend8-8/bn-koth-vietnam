@@ -33,7 +33,7 @@ private _resolvedSides = [];
 
 if ((count _resolvedSides) < 2) then {
 	_resolvedSides = [west, east];
-	["CfgBnKothTeams.playableSides missing/invalid. Falling back to [WEST, EAST].", "WARN"] call bn_koth_fnc_log;
+	["CfgBnKothTeams.playableSides missing/invalid. Falling back to [WEST, EAST].", "WARN"] call bn_koth_fnc_common_log;
 };
 
 missionNamespace setVariable ["BN_KOTH_playableSides", _resolvedSides, true];

@@ -1,6 +1,7 @@
 /*
     File: fn_initPlayerLocal.sqf
     Author: tylervip
+    Edited: Legend
     Description: Initializes local UI hooks.
     Execution: Client
     Parameters:

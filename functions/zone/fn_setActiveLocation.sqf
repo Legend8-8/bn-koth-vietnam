@@ -1,6 +1,7 @@
 /*
     File: fn_setActiveLocation.sqf
     Author: tylervip
+    Edited: Legend
     Description: Activates one configured location ID and publishes marker state.
     Execution: Server
     Parameters:
@@ -17,7 +18,7 @@ if (!isServer) exitWith {false};
 
 private _locationsCfg = missionConfigFile >> "CfgBnKothLocations";
 if !(isClass _locationsCfg) exitWith {
-    ["CfgBnKothLocations missing.", "ERROR"] call bn_koth_fnc_log;
+    ["CfgBnKothLocations missing.", "ERROR"] call bn_koth_fnc_common_log;
     false
 };
 
@@ -27,7 +28,7 @@ if (_locationId isEqualTo "") then {
 
 private _activeCfg = _locationsCfg >> _locationId;
 if !(isClass _activeCfg) exitWith {
-    [format ["Unknown location ID: %1", _locationId], "ERROR"] call bn_koth_fnc_log;
+    [format ["Unknown location ID: %1", _locationId], "ERROR"] call bn_koth_fnc_common_log;
     false
 };
 
@@ -35,10 +36,10 @@ private _activeZoneMarker = getText (_activeCfg >> "zoneMarker");
 private _activeWestRespawn = getText (_activeCfg >> "respawnWestMarker");
 private _activeEastRespawn = getText (_activeCfg >> "respawnEastMarker");
 
-["BN_KOTH_activeLocationId", _locationId] call bn_koth_fnc_publicState;
-["BN_KOTH_activeZoneMarker", _activeZoneMarker] call bn_koth_fnc_publicState;
-["BN_KOTH_activeRespawnWestMarker", _activeWestRespawn] call bn_koth_fnc_publicState;
-["BN_KOTH_activeRespawnEastMarker", _activeEastRespawn] call bn_koth_fnc_publicState;
+["BN_KOTH_activeLocationId", _locationId] call bn_koth_fnc_common_publicState;
+["BN_KOTH_activeZoneMarker", _activeZoneMarker] call bn_koth_fnc_common_publicState;
+["BN_KOTH_activeRespawnWestMarker", _activeWestRespawn] call bn_koth_fnc_common_publicState;
+["BN_KOTH_activeRespawnEastMarker", _activeEastRespawn] call bn_koth_fnc_common_publicState;
 
 {
     private _cfg = _x;
@@ -111,6 +112,6 @@ if (_deactivateInactiveObjects) then {
     } forEach ("true" configClasses _locationsCfg);
 };
 
-[format ["Active location set: %1 (%2)", _locationId, _activeZoneMarker]] call bn_koth_fnc_log;
+[format ["Active location set: %1 (%2)", _locationId, _activeZoneMarker]] call bn_koth_fnc_common_log;
 
 true

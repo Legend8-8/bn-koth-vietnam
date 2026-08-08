@@ -1,6 +1,6 @@
 /*
     File: fn_validateSide.sqf
-    Author: tylervip
+    Author: Legend
     Description: Returns true if side is currently playable.
     Execution: Any
     Parameters:

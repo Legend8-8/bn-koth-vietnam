@@ -1,6 +1,6 @@
 /*
     File: fn_toggleDebugDisplay.sqf
-    Author: tylervip
+    Author: Legend
     Description: Enables or disables the local development debug display.
     Execution: Client
     Parameters:
