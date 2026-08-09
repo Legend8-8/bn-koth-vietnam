@@ -45,6 +45,8 @@ private _payload = createHashMapFromArray [
     ["zoneController", missionNamespace getVariable ["BN_KOTH_zoneController", sideUnknown]],
     ["zonePopulation", missionNamespace getVariable ["BN_KOTH_zonePopulation", [0, 0]]],
     ["winningSide", missionNamespace getVariable ["BN_KOTH_winningSide", sideUnknown]],
+    ["maxPlayers", missionNamespace getVariable ["BN_KOTH_maxPlayers", 100]],
+    ["maxTeamPlayers", missionNamespace getVariable ["BN_KOTH_maxTeamPlayers", 50]],
     [
         "teamScores",
         missionNamespace getVariable [

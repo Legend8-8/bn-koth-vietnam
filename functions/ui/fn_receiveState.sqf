@@ -40,6 +40,8 @@ private _keyMap = createHashMapFromArray [
     ["zoneState", "BN_KOTH_zoneState"],
     ["zoneController", "BN_KOTH_zoneController"],
     ["zonePopulation", "BN_KOTH_zonePopulation"],
+    ["maxPlayers", "BN_KOTH_maxPlayers"],
+    ["maxTeamPlayers", "BN_KOTH_maxTeamPlayers"],
     ["winningSide", "BN_KOTH_winningSide"],
     ["teamScores", "BN_KOTH_teamScores"],
     ["scoreLimit", "BN_KOTH_scoreLimit"],

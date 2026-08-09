@@ -22,6 +22,7 @@ if (isNull _display) exitWith {};
 
 private _scoringCfg = missionConfigFile >> "CfgBnKothScoring";
 private _headerCfg = missionConfigFile >> "Header";
+private _lobbyCfg = missionConfigFile >> "CfgBnKothLobby";
 
 private _roundState = missionNamespace getVariable ["BN_KOTH_roundState", "WAITING"];
 private _voteOpen = missionNamespace getVariable ["BN_KOTH_voteOpen", false];
@@ -41,7 +42,24 @@ private _votesByUid = missionNamespace getVariable ["BN_KOTH_votesByUid", create
 private _scoreLimit = missionNamespace getVariable ["BN_KOTH_scoreLimit", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreLimit")} else {100}];
 private _scoreTick = missionNamespace getVariable ["BN_KOTH_scoreTick", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTick")} else {1}];
 private _scoreTickInterval = missionNamespace getVariable ["BN_KOTH_scoreTickInterval", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {5}];
-private _maxPlayers = if (isClass _headerCfg) then {getNumber (_headerCfg >> "maxPlayers")} else {64};
+private _maxPlayers = missionNamespace getVariable [
+    "BN_KOTH_maxPlayers",
+    if (isClass _lobbyCfg) then {getNumber (_lobbyCfg >> "maxPlayers")} else {
+        if (isClass _headerCfg) then {getNumber (_headerCfg >> "maxPlayers")} else {100}
+    }
+];
+private _teamCap = missionNamespace getVariable [
+    "BN_KOTH_maxTeamPlayers",
+    if (isClass _lobbyCfg) then {getNumber (_lobbyCfg >> "maxTeamPlayers")} else {50}
+];
+
+if (_maxPlayers < 1) then {
+    _maxPlayers = 1;
+};
+
+if (_teamCap < 1) then {
+    _teamCap = 1;
+};
 
 private _westCount = 0;
 private _eastCount = 0;
@@ -52,7 +70,6 @@ if (_teamCounts isEqualType createHashMap) then {
 
 private _allSelected = _westCount + _eastCount;
 private _currentPlayerCount = if (_playerNames isEqualType createHashMap) then {count (keys _playerNames)} else {_allSelected};
-private _teamCap = floor (((_maxPlayers max 2) / 2) max 1);
 
 private _myUid = getPlayerUID player;
 private _myAssignedSide = sideUnknown;
@@ -83,6 +100,25 @@ private _resolveLocationName = {
     };
 
     toUpper _locationId
+};
+
+private _resolveLocationMeta = {
+    params ["_locationId"];
+
+    if (_locationId isEqualTo "") exitWith {
+        ["NONE", "", ""]
+    };
+
+    private _cfg = missionConfigFile >> "CfgBnKothLocations" >> _locationId;
+    if !(isClass _cfg) exitWith {
+        [toUpper _locationId, "", ""]
+    };
+
+    private _name = [_locationId] call _resolveLocationName;
+    private _description = getText (_cfg >> "description");
+    private _image = getText (_cfg >> "image");
+
+    [_name, _description, _image]
 };
 
 private _describePlayerState = {
@@ -220,16 +256,21 @@ private _voteEntries = [];
 for "_i" from 0 to 2 do {
     if (_i < count _voteCandidates) then {
         private _locationId = _voteCandidates select _i;
-        private _locationName = toUpper ([_locationId] call _resolveLocationName);
+        private _meta = [_locationId] call _resolveLocationMeta;
+        private _locationName = _meta select 0;
+        private _locationDescription = _meta select 1;
+        private _locationImage = _meta select 2;
         private _votes = if (_voteTotals isEqualType createHashMap) then {
             _voteTotals getOrDefault [_locationId, 0]
         } else {
             0
         };
 
-        _voteEntries pushBack [_locationName, _votes, _myVoteLocationId isEqualTo _locationId];
+        _voteEntries pushBack [_locationName, _locationDescription, _locationImage, _votes, _myVoteLocationId isEqualTo _locationId];
     };
 };
+
+private _previousMeta = [_previousLocationId] call _resolveLocationMeta;
 
 private _voteTimerText = "VOTE CLOSED";
 if (_voteOpen) then {
@@ -295,7 +336,8 @@ private _voteHelpText = if (_voteOpen) then {
 };
 
 private _voteView = createHashMapFromArray [
-    ["previousLocationName", toUpper ([_previousLocationId] call _resolveLocationName)],
+    ["previousLocationName", _previousMeta select 0],
+    ["previousLocationImage", _previousMeta select 2],
     ["voteEntries", _voteEntries],
     ["voteAllowed", _voteAllowed],
     ["voteTimerText", _voteTimerText],

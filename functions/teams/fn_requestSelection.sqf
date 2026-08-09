@@ -109,6 +109,22 @@ private _opposingSide = if (_requestedSide isEqualTo _sideA) then {_sideB} else 
 private _opposingCount = _teamCounts getOrDefault [_opposingSide, 0];
 
 private _lobbyCfg = missionConfigFile >> "CfgBnKothLobby";
+private _maxTeamPlayers = missionNamespace getVariable [
+    "BN_KOTH_maxTeamPlayers",
+    if (isClass _lobbyCfg) then {getNumber (_lobbyCfg >> "maxTeamPlayers")} else {50}
+];
+if (_maxTeamPlayers < 1) then {
+    _maxTeamPlayers = 1;
+};
+
+if (_requestedCount > _maxTeamPlayers) exitWith {
+    _records set [_uid, _record];
+    missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+
+    [_ownerId, format ["Team request rejected: %1 is full (%2/%2).", toUpper _requestedSideName, _maxTeamPlayers]] call bn_koth_fnc_teams_notifyPlayer;
+    [format ["Rejected team assignment UID=%1 side=%2 by team cap (%3).", _uid, _requestedSide, _maxTeamPlayers], "WARN"] call bn_koth_fnc_common_log;
+};
+
 private _maxDiff = if (isClass _lobbyCfg) then {getNumber (_lobbyCfg >> "maxTeamDifference")} else {1};
 if (_maxDiff < 0) then {
     _maxDiff = 0;

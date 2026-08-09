@@ -108,7 +108,7 @@ class BN_KOTH_RscLobby
             y = BN_KOTH_MAIN_Y + BN_KOTH_PANEL_BORDER;
             w = BN_KOTH_WEST_W - BN_KOTH_PANEL_BORDER * 2;
             h = BN_KOTH_MAIN_H * 0.38;
-            text = "";
+            text = "images\ui\lobby\west_panel.jpg";
         };
 
         class BgWestArtTint: BN_KOTH_Lobby_Background
@@ -182,7 +182,7 @@ class BN_KOTH_RscLobby
             y = BN_KOTH_MAIN_Y + BN_KOTH_PANEL_BORDER;
             w = BN_KOTH_EAST_W - BN_KOTH_PANEL_BORDER * 2;
             h = BN_KOTH_MAIN_H * 0.38;
-            text = "";
+            text = "images\ui\lobby\east_panel.jpg";
         };
 
         class BgEastArtTint: BN_KOTH_Lobby_Background
@@ -318,47 +318,39 @@ class BN_KOTH_RscLobby
 
     class controls
     {
-        class HeaderLogo: BN_KOTH_Lobby_Emblem
-        {
-            text = "images\ui\lobby\bn_avatar.paa";
-            x = BN_KOTH_UI_X + safeZoneW * 0.008;
-            y = BN_KOTH_UI_Y + safeZoneH * 0.01;
-            w = safeZoneW * 0.06;
-            h = BN_KOTH_TOPBAR_H - safeZoneH * 0.02;
-        };
+		class HeaderBrand: BN_KOTH_RscStructuredText
+		{
+			idc = BN_KOTH_IDC_HEADER_BRAND;
+			text = "<t font='PuristaSemiBold' color='#E6E0D4' size='0.88'>BRO-NATION</t><br/><t font='PuristaSemiBold' color='#F2EEE6' size='1.46'>KOTH <t color='#C85D39'>VIETNAM</t></t>";
+			x = BN_KOTH_UI_X + safeZoneW * 0.012;
+			y = BN_KOTH_UI_Y + safeZoneH * 0.012;
+			w = BN_KOTH_UI_W * 0.26;
+			h = safeZoneH * 0.058;
+		};
 
-        class HeaderBrand: BN_KOTH_RscStructuredText
-        {
-            idc = BN_KOTH_IDC_HEADER_BRAND;
-            text = "<t color='#E6E0D4' size='0.88'>BRO-NATION</t><br/><t color='#F2EEE6' size='1.46'>KOTH <t color='#C85D39'>VIETNAM</t></t>";
-            x = BN_KOTH_UI_X + safeZoneW * 0.065;
-            y = BN_KOTH_UI_Y + safeZoneH * 0.012;
-            w = BN_KOTH_UI_W * 0.20;
-            h = safeZoneH * 0.058;
-        };
+		class HeaderTagline: BN_KOTH_Lobby_SectionLabel
+		{
+			idc = BN_KOTH_IDC_HEADER_TAGLINE;
+			text = "ALIS AQUILAE";
+			x = BN_KOTH_UI_X + safeZoneW * 0.013;
+			y = BN_KOTH_UI_Y + safeZoneH * 0.062;
+			w = BN_KOTH_UI_W * 0.25;
+			h = safeZoneH * 0.02;
+			colorText[] = {0.84, 0.71, 0.33, 1};
+		};
 
-        class HeaderTagline: BN_KOTH_Lobby_SectionLabel
-        {
-            idc = BN_KOTH_IDC_HEADER_TAGLINE;
-            text = "ALIS AQUILAE";
-            x = BN_KOTH_UI_X + safeZoneW * 0.066;
-            y = BN_KOTH_UI_Y + safeZoneH * 0.062;
-            w = BN_KOTH_UI_W * 0.18;
-            h = safeZoneH * 0.02;
-            colorText[] = {0.84, 0.71, 0.33, 1};
-        };
-
-        class HeaderStatus: BN_KOTH_Lobby_Title
-        {
-            idc = BN_KOTH_IDC_HEADER_STATUS;
-            text = "LOBBY";
-            style = 2;
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.33;
-            y = BN_KOTH_UI_Y + safeZoneH * 0.015;
-            w = BN_KOTH_UI_W * 0.31;
-            h = safeZoneH * 0.04;
-            sizeEx = "0.043 * safeZoneH";
-        };
+		class HeaderStatus: BN_KOTH_Lobby_Title
+		{
+			idc = BN_KOTH_IDC_HEADER_STATUS;
+			font = "PuristaSemiBold";
+			text = "LOBBY";
+			style = 2;
+			x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.33;
+			y = BN_KOTH_UI_Y + safeZoneH * 0.015;
+			w = BN_KOTH_UI_W * 0.31;
+			h = safeZoneH * 0.04;
+			sizeEx = "0.043 * safeZoneH";
+		};
 
         class HeaderSubstatus: BN_KOTH_Lobby_Subtitle
         {
@@ -375,7 +367,7 @@ class BN_KOTH_RscLobby
         class HeaderPlayers: BN_KOTH_Lobby_Subtitle
         {
             idc = BN_KOTH_IDC_HEADER_PLAYERS;
-            text = "0 / 64 PLAYERS";
+            text = "0 / -- PLAYERS";
             style = 2;
             x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.71;
             y = BN_KOTH_UI_Y + safeZoneH * 0.018;
@@ -430,50 +422,65 @@ class BN_KOTH_RscLobby
             colorText[] = {0.90, 0.90, 0.88, 0.88};
         };
 
-        class WestTitle: BN_KOTH_Lobby_Title
-        {
-            idc = BN_KOTH_IDC_WEST_TITLE;
-            text = "WEST";
-            x = BN_KOTH_WEST_X + safeZoneW * 0.08;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.018;
-            w = BN_KOTH_WEST_W * 0.60;
-            h = safeZoneH * 0.04;
-            sizeEx = "0.048 * safeZoneH";
-            colorText[] = {0.40, 0.75, 1, 1};
-        };
+		class WestEmblem: BN_KOTH_Lobby_Emblem
+		{
+			idc = -1;
+			x = BN_KOTH_WEST_X + BN_KOTH_WEST_W * 0.035;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.028;
+			w = safeZoneH * 0.130;
+			h = safeZoneH * 0.130;
+			text = "images\ui\lobby\west_emblem.paa";
+		};
 
-        class WestSubtitle: BN_KOTH_Lobby_Subtitle
-        {
-            idc = BN_KOTH_IDC_WEST_SUBTITLE;
-            text = "United States Forces";
-            x = BN_KOTH_WEST_X + safeZoneW * 0.08;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.061;
-            w = BN_KOTH_WEST_W * 0.85;
-            h = safeZoneH * 0.025;
-            colorText[] = {0.90, 0.93, 0.96, 0.86};
-        };
+		class WestTitle: BN_KOTH_Lobby_Title
+		{
+			idc = BN_KOTH_IDC_WEST_TITLE;
+			text = "WEST";
+			style = 2;
+			font = "PuristaSemiBold";
+			x = BN_KOTH_WEST_X + BN_KOTH_WEST_W * 0.30;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.020;
+			w = BN_KOTH_WEST_W * 0.52;
+			h = safeZoneH * 0.045;
+			sizeEx = "0.050 * safeZoneH";
+			colorText[] = {0.40, 0.75, 1, 1};
+		};
 
-        class WestCountLabel: BN_KOTH_Lobby_SectionLabel
-        {
-            text = "PLAYERS";
-            x = BN_KOTH_WEST_X + safeZoneW * 0.083;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.142;
-            w = safeZoneW * 0.05;
-            h = safeZoneH * 0.016;
-            colorText[] = {0.82, 0.88, 0.94, 0.72};
-        };
+		class WestSubtitle: BN_KOTH_Lobby_Subtitle
+		{
+			idc = BN_KOTH_IDC_WEST_SUBTITLE;
+			text = "UNITED STATES FORCES";
+			style = 2;
+			x = BN_KOTH_WEST_X + BN_KOTH_WEST_W * 0.30;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.067;
+			w = BN_KOTH_WEST_W * 0.52;
+			h = safeZoneH * 0.026;
+			colorText[] = {0.90, 0.93, 0.96, 0.90};
+		};
 
-        class WestCount: BN_KOTH_Lobby_Value
-        {
-            idc = BN_KOTH_IDC_WEST_COUNT;
-            text = "0 / 32";
-            x = BN_KOTH_WEST_X + safeZoneW * 0.08;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.105;
-            w = safeZoneW * 0.11;
-            h = safeZoneH * 0.042;
-            sizeEx = "0.043 * safeZoneH";
-            colorText[] = {0.88, 0.94, 1, 1};
-        };
+		class WestCount: BN_KOTH_Lobby_Value
+		{
+			idc = BN_KOTH_IDC_WEST_COUNT;
+			text = "0 / --";
+			style = 2;
+			x = BN_KOTH_WEST_X + BN_KOTH_WEST_W * 0.30;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.105;
+			w = BN_KOTH_WEST_W * 0.52;
+			h = safeZoneH * 0.045;
+			sizeEx = "0.043 * safeZoneH";
+			colorText[] = {0.88, 0.94, 1, 1};
+		};
+
+		class WestCountLabel: BN_KOTH_Lobby_SectionLabel
+		{
+			text = "PLAYERS";
+			style = 2;
+			x = BN_KOTH_WEST_X + BN_KOTH_WEST_W * 0.30;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.150;
+			w = BN_KOTH_WEST_W * 0.52;
+			h = safeZoneH * 0.018;
+			colorText[] = {0.82, 0.88, 0.94, 0.78};
+		};
 
         class WestPlayersLabel: BN_KOTH_Lobby_SectionLabel
         {
@@ -520,40 +527,42 @@ class BN_KOTH_RscLobby
             action = "['WEST'] call bn_koth_fnc_teams_requestSelection;";
         };
 
-        class WestHint: BN_KOTH_Lobby_FinePrint
-        {
-            idc = BN_KOTH_IDC_WEST_HINT;
-            text = "Teams are balanced for a better experience.";
-            x = BN_KOTH_WEST_X + safeZoneW * 0.02;
-            y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H * 0.95;
-            w = BN_KOTH_WEST_W - safeZoneW * 0.04;
-            h = safeZoneH * 0.016;
-            style = 2;
-            colorText[] = {0.82, 0.84, 0.88, 0.68};
-        };
+		class WestHint: BN_KOTH_Lobby_FinePrint
+		{
+			idc = BN_KOTH_IDC_WEST_HINT;
+			text = "Teams are balanced for a better experience.";
+			x = BN_KOTH_WEST_X + safeZoneW * 0.02;
+			y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H * 0.956;
+			w = BN_KOTH_WEST_W - safeZoneW * 0.04;
+			h = safeZoneH * 0.018;
+			style = 2;
+			sizeEx = "0.017 * safeZoneH";
+			colorText[] = {0.82, 0.84, 0.88, 0.72};
+		};
 
-        class CenterEmblem: BN_KOTH_Lobby_Emblem
-        {
-            idc = BN_KOTH_IDC_CENTER_EMBLEM;
-            text = "images\ui\lobby\bn_avatar.paa";
-            x = BN_KOTH_CENTER_X + safeZoneW * 0.012;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.02;
-            w = BN_KOTH_CENTER_W - safeZoneW * 0.024;
-            h = safeZoneH * 0.13;
-        };
+		class CenterEmblem: BN_KOTH_Lobby_Emblem
+		{
+			idc = BN_KOTH_IDC_CENTER_EMBLEM;
+			text = "images\ui\lobby\bn_avatar.paa";
+			x = BN_KOTH_CENTER_X + (BN_KOTH_CENTER_W - safeZoneH * 0.140) / 2;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.012;
+			w = safeZoneH * 0.140;
+			h = safeZoneH * 0.140;
+		};
 
-        class CenterTitle: BN_KOTH_Lobby_Title
-        {
-            idc = BN_KOTH_IDC_CENTER_TITLE;
-            text = "SPECTATOR / LOBBY";
-            style = 2;
-            x = BN_KOTH_CENTER_X + safeZoneW * 0.012;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.157;
-            w = BN_KOTH_CENTER_W - safeZoneW * 0.024;
-            h = safeZoneH * 0.036;
-            sizeEx = "0.031 * safeZoneH";
-            colorText[] = {0.92, 0.92, 0.92, 1};
-        };
+		class CenterTitle: BN_KOTH_Lobby_Title
+		{
+			idc = BN_KOTH_IDC_CENTER_TITLE;
+			text = "SPECTATOR / LOBBY";
+			style = 2;
+			font = "PuristaSemiBold";
+			x = BN_KOTH_CENTER_X;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.160;
+			w = BN_KOTH_CENTER_W;
+			h = safeZoneH * 0.040;
+			sizeEx = "0.030 * safeZoneH";
+			colorText[] = {0.92, 0.92, 0.92, 1};
+		};
 
         class CenterBrand: BN_KOTH_Lobby_SectionLabel
         {
@@ -566,16 +575,17 @@ class BN_KOTH_RscLobby
             colorText[] = {0.85, 0.73, 0.34, 0.88};
         };
 
-        class CenterSubtitle: BN_KOTH_Lobby_Subtitle
-        {
-            idc = BN_KOTH_IDC_CENTER_SUBTITLE;
-            text = "Wait here, spectate, or join a team to participate.";
-            style = 2;
-            x = BN_KOTH_CENTER_X + safeZoneW * 0.012;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.228;
-            w = BN_KOTH_CENTER_W - safeZoneW * 0.024;
-            h = safeZoneH * 0.04;
-        };
+		class CenterSubtitle: BN_KOTH_Lobby_Subtitle
+		{
+			idc = BN_KOTH_IDC_CENTER_SUBTITLE;
+			text = "Wait here or join a team.";
+			style = 2;
+			x = BN_KOTH_CENTER_X + safeZoneW * 0.008;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.228;
+			w = BN_KOTH_CENTER_W - safeZoneW * 0.016;
+			h = safeZoneH * 0.04;
+			sizeEx = "0.018 * safeZoneH";
+		};
 
         class CenterMotto: BN_KOTH_Lobby_SectionLabel
         {
@@ -598,50 +608,65 @@ class BN_KOTH_RscLobby
             text = "<t align='center' size='1.0'>Waiting for mission state...</t>";
         };
 
-        class EastTitle: BN_KOTH_Lobby_Title
-        {
-            idc = BN_KOTH_IDC_EAST_TITLE;
-            text = "EAST";
-            x = BN_KOTH_EAST_X + safeZoneW * 0.08;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.018;
-            w = BN_KOTH_EAST_W * 0.60;
-            h = safeZoneH * 0.04;
-            sizeEx = "0.048 * safeZoneH";
-            colorText[] = {1, 0.45, 0.45, 1};
-        };
+		class EastEmblem: BN_KOTH_Lobby_Emblem
+		{
+			idc = -1;
+			x = BN_KOTH_EAST_X + BN_KOTH_EAST_W * 0.035;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.028;
+			w = safeZoneH * 0.130;
+			h = safeZoneH * 0.130;
+			text = "images\ui\lobby\east_emblem.paa";
+		};
 
-        class EastSubtitle: BN_KOTH_Lobby_Subtitle
-        {
-            idc = BN_KOTH_IDC_EAST_SUBTITLE;
-            text = "North Vietnamese Army";
-            x = BN_KOTH_EAST_X + safeZoneW * 0.08;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.061;
-            w = BN_KOTH_EAST_W * 0.85;
-            h = safeZoneH * 0.025;
-            colorText[] = {0.96, 0.90, 0.90, 0.86};
-        };
+		class EastTitle: BN_KOTH_Lobby_Title
+		{
+			idc = BN_KOTH_IDC_EAST_TITLE;
+			text = "EAST";
+			style = 2;
+			font = "PuristaSemiBold";
+			x = BN_KOTH_EAST_X + BN_KOTH_EAST_W * 0.30;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.020;
+			w = BN_KOTH_EAST_W * 0.52;
+			h = safeZoneH * 0.045;
+			sizeEx = "0.050 * safeZoneH";
+			colorText[] = {1, 0.45, 0.45, 1};
+		};
 
-        class EastCountLabel: BN_KOTH_Lobby_SectionLabel
-        {
-            text = "PLAYERS";
-            x = BN_KOTH_EAST_X + safeZoneW * 0.083;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.142;
-            w = safeZoneW * 0.05;
-            h = safeZoneH * 0.016;
-            colorText[] = {0.94, 0.82, 0.82, 0.72};
-        };
+		class EastSubtitle: BN_KOTH_Lobby_Subtitle
+		{
+			idc = BN_KOTH_IDC_EAST_SUBTITLE;
+			text = "NORTH VIETNAMESE ARMY";
+			style = 2;
+			x = BN_KOTH_EAST_X + BN_KOTH_EAST_W * 0.30;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.067;
+			w = BN_KOTH_EAST_W * 0.52;
+			h = safeZoneH * 0.026;
+			colorText[] = {0.96, 0.90, 0.90, 0.90};
+		};
 
-        class EastCount: BN_KOTH_Lobby_Value
-        {
-            idc = BN_KOTH_IDC_EAST_COUNT;
-            text = "0 / 32";
-            x = BN_KOTH_EAST_X + safeZoneW * 0.08;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.105;
-            w = safeZoneW * 0.11;
-            h = safeZoneH * 0.042;
-            sizeEx = "0.043 * safeZoneH";
-            colorText[] = {1, 0.92, 0.92, 1};
-        };
+		class EastCount: BN_KOTH_Lobby_Value
+		{
+			idc = BN_KOTH_IDC_EAST_COUNT;
+			text = "0 / --";
+			style = 2;
+			x = BN_KOTH_EAST_X + BN_KOTH_EAST_W * 0.30;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.105;
+			w = BN_KOTH_EAST_W * 0.52;
+			h = safeZoneH * 0.045;
+			sizeEx = "0.043 * safeZoneH";
+			colorText[] = {1, 0.92, 0.92, 1};
+		};
+
+		class EastCountLabel: BN_KOTH_Lobby_SectionLabel
+		{
+			text = "PLAYERS";
+			style = 2;
+			x = BN_KOTH_EAST_X + BN_KOTH_EAST_W * 0.30;
+			y = BN_KOTH_MAIN_Y + safeZoneH * 0.150;
+			w = BN_KOTH_EAST_W * 0.52;
+			h = safeZoneH * 0.018;
+			colorText[] = {0.94, 0.82, 0.82, 0.78};
+		};
 
         class EastPlayersLabel: BN_KOTH_Lobby_SectionLabel
         {
@@ -688,17 +713,18 @@ class BN_KOTH_RscLobby
             action = "['EAST'] call bn_koth_fnc_teams_requestSelection;";
         };
 
-        class EastHint: BN_KOTH_Lobby_FinePrint
-        {
-            idc = BN_KOTH_IDC_EAST_HINT;
-            text = "Switch teams anytime before deployment.";
-            x = BN_KOTH_EAST_X + safeZoneW * 0.02;
-            y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H * 0.95;
-            w = BN_KOTH_EAST_W - safeZoneW * 0.04;
-            h = safeZoneH * 0.016;
-            style = 2;
-            colorText[] = {0.90, 0.82, 0.82, 0.68};
-        };
+		class EastHint: BN_KOTH_Lobby_FinePrint
+		{
+			idc = BN_KOTH_IDC_EAST_HINT;
+			text = "Switch teams anytime before deployment.";
+			x = BN_KOTH_EAST_X + safeZoneW * 0.02;
+			y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H * 0.956;
+			w = BN_KOTH_EAST_W - safeZoneW * 0.04;
+			h = safeZoneH * 0.018;
+			style = 2;
+			sizeEx = "0.017 * safeZoneH";
+			colorText[] = {0.90, 0.82, 0.82, 0.72};
+		};
 
         class VoteTitle: BN_KOTH_Lobby_Title
         {
@@ -749,11 +775,21 @@ class BN_KOTH_RscLobby
         {
             idc = BN_KOTH_IDC_VOTE_PREVIOUS_VALUE;
             text = "NONE";
-            x = BN_KOTH_VOTE_X + safeZoneW * 0.012;
+            x = BN_KOTH_VOTE_X + BN_KOTH_VOTE_W * 0.26;
             y = BN_KOTH_MAIN_Y + safeZoneH * 0.185;
-            w = BN_KOTH_VOTE_W - safeZoneW * 0.024;
+            w = BN_KOTH_VOTE_W * 0.68;
             h = safeZoneH * 0.026;
             colorText[] = {0.96, 0.94, 0.88, 0.94};
+        };
+
+        class VotePreviousImage: BN_KOTH_Lobby_Picture
+        {
+            idc = BN_KOTH_IDC_VOTE_PREVIOUS_IMAGE;
+            text = "";
+            x = BN_KOTH_VOTE_X + safeZoneW * 0.012;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.168;
+            w = BN_KOTH_VOTE_W * 0.22;
+            h = safeZoneH * 0.042;
         };
 
         class VoteLocationsLabel: BN_KOTH_Lobby_SectionLabel
@@ -775,6 +811,17 @@ class BN_KOTH_RscLobby
             w = BN_KOTH_VOTE_W * 0.46;
             h = safeZoneH * 0.064;
             action = "[0] call bn_koth_fnc_round_requestVote;";
+            sizeEx = "0.018 * safeZoneH";
+        };
+
+        class VoteImage1: BN_KOTH_Lobby_Picture
+        {
+            idc = BN_KOTH_IDC_VOTE_IMAGE_1;
+            text = "";
+            x = BN_KOTH_VOTE_X + safeZoneW * 0.012;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.255;
+            w = BN_KOTH_VOTE_W * 0.22;
+            h = safeZoneH * 0.052;
         };
 
         class VoteTotal1: BN_KOTH_Lobby_Value
@@ -788,6 +835,17 @@ class BN_KOTH_RscLobby
             colorText[] = {0.95, 0.94, 0.90, 1};
         };
 
+        class VoteDesc1: BN_KOTH_Lobby_FinePrint
+        {
+            idc = BN_KOTH_IDC_VOTE_DESC_1;
+            text = "";
+            x = BN_KOTH_VOTE_X + BN_KOTH_VOTE_W * 0.26;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.279;
+            w = BN_KOTH_VOTE_W * 0.46;
+            h = safeZoneH * 0.029;
+            colorText[] = {0.82, 0.8, 0.76, 0.88};
+        };
+
         class VoteCandidate2: VoteCandidate1
         {
             idc = BN_KOTH_IDC_VOTE_CANDIDATE_2;
@@ -795,10 +853,22 @@ class BN_KOTH_RscLobby
             action = "[1] call bn_koth_fnc_round_requestVote;";
         };
 
+        class VoteImage2: VoteImage1
+        {
+            idc = BN_KOTH_IDC_VOTE_IMAGE_2;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.335;
+        };
+
         class VoteTotal2: VoteTotal1
         {
             idc = BN_KOTH_IDC_VOTE_TOTAL_2;
             y = BN_KOTH_MAIN_Y + safeZoneH * 0.346;
+        };
+
+        class VoteDesc2: VoteDesc1
+        {
+            idc = BN_KOTH_IDC_VOTE_DESC_2;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.359;
         };
 
         class VoteCandidate3: VoteCandidate1
@@ -808,10 +878,22 @@ class BN_KOTH_RscLobby
             action = "[2] call bn_koth_fnc_round_requestVote;";
         };
 
+        class VoteImage3: VoteImage1
+        {
+            idc = BN_KOTH_IDC_VOTE_IMAGE_3;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.415;
+        };
+
         class VoteTotal3: VoteTotal1
         {
             idc = BN_KOTH_IDC_VOTE_TOTAL_3;
             y = BN_KOTH_MAIN_Y + safeZoneH * 0.426;
+        };
+
+        class VoteDesc3: VoteDesc1
+        {
+            idc = BN_KOTH_IDC_VOTE_DESC_3;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.439;
         };
 
         class VoteHelp: BN_KOTH_Lobby_Body

@@ -20,10 +20,16 @@ if !(_viewModel isEqualType createHashMap) exitWith {};
 
 (_display displayCtrl BN_KOTH_IDC_HEADER_STATUS) ctrlSetText (_viewModel getOrDefault ["statusTitle", "LOBBY"]);
 (_display displayCtrl BN_KOTH_IDC_HEADER_SUBSTATUS) ctrlSetText (_viewModel getOrDefault ["statusSubtitle", "Waiting for mission state"]);
+private _lobbyCfg = missionConfigFile >> "CfgBnKothLobby";
+private _defaultMaxPlayers = if (isClass _lobbyCfg) then {getNumber (_lobbyCfg >> "maxPlayers")} else {100};
+if (_defaultMaxPlayers < 1) then {
+    _defaultMaxPlayers = 1;
+};
+
 (_display displayCtrl BN_KOTH_IDC_HEADER_PLAYERS) ctrlSetText format [
     "%1 / %2 PLAYERS",
     _viewModel getOrDefault ["playerCount", 0],
-    _viewModel getOrDefault ["maxPlayers", 64]
+    _viewModel getOrDefault ["maxPlayers", _defaultMaxPlayers]
 ];
 (_display displayCtrl BN_KOTH_IDC_HEADER_RIGHT_TITLE) ctrlSetText (_viewModel getOrDefault ["rightStatusTitle", "ROUND STATUS"]);
 (_display displayCtrl BN_KOTH_IDC_HEADER_RIGHT_VALUE) ctrlSetText (_viewModel getOrDefault ["rightStatusValue", "WAITING FOR TEAMS"]);

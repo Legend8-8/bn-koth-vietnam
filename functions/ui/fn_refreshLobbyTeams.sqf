@@ -20,11 +20,23 @@ if !(_viewModel isEqualType createHashMap) exitWith {};
 
 private _westCount = _viewModel getOrDefault ["westCount", 0];
 private _eastCount = _viewModel getOrDefault ["eastCount", 0];
-private _teamCap = _viewModel getOrDefault ["teamCap", 32];
+private _lobbyCfg = missionConfigFile >> "CfgBnKothLobby";
+private _defaultTeamCap = if (isClass _lobbyCfg) then {getNumber (_lobbyCfg >> "maxTeamPlayers")} else {50};
+if (_defaultTeamCap < 1) then {
+    _defaultTeamCap = 1;
+};
+
+private _teamCap = _viewModel getOrDefault ["teamCap", _defaultTeamCap];
+if (_teamCap < 1) then {
+    _teamCap = 1;
+};
+
 private _westRows = _viewModel getOrDefault ["westRows", []];
 private _eastRows = _viewModel getOrDefault ["eastRows", []];
 private _myAssignedSide = _viewModel getOrDefault ["myAssignedSide", sideUnknown];
 private _selectionLocked = _viewModel getOrDefault ["selectionLocked", false];
+private _westFull = _westCount >= _teamCap;
+private _eastFull = _eastCount >= _teamCap;
 
 (_display displayCtrl BN_KOTH_IDC_WEST_COUNT) ctrlSetText format ["%1 / %2", _westCount, _teamCap];
 (_display displayCtrl BN_KOTH_IDC_EAST_COUNT) ctrlSetText format ["%1 / %2", _eastCount, _teamCap];
@@ -57,25 +69,32 @@ private _renderRows = {
 private _westJoinCtrl = _display displayCtrl BN_KOTH_IDC_WEST_JOIN;
 private _eastJoinCtrl = _display displayCtrl BN_KOTH_IDC_EAST_JOIN;
 
-_westJoinCtrl ctrlEnable (!_selectionLocked);
-_eastJoinCtrl ctrlEnable (!_selectionLocked);
+_westJoinCtrl ctrlEnable (!_selectionLocked && {!_westFull});
+_eastJoinCtrl ctrlEnable (!_selectionLocked && {!_eastFull});
 
 _westJoinCtrl ctrlSetBackgroundColor [0.1, 0.34, 0.63, 0.92];
 _eastJoinCtrl ctrlSetBackgroundColor [0.62, 0.16, 0.14, 0.92];
 
+_westJoinCtrl ctrlSetText (if (_westFull) then {"WEST FULL"} else {"JOIN WEST TEAM"});
+_eastJoinCtrl ctrlSetText (if (_eastFull) then {"EAST FULL"} else {"JOIN EAST TEAM"});
+
 if (_myAssignedSide isEqualTo west) then {
     _westJoinCtrl ctrlSetText "WEST SELECTED";
-    _eastJoinCtrl ctrlSetText "JOIN EAST TEAM";
+    if (!_eastFull) then {
+        _eastJoinCtrl ctrlSetText "JOIN EAST TEAM";
+    };
     _westJoinCtrl ctrlSetBackgroundColor [0.4, 0.34, 0.12, 0.92];
 };
 
 if (_myAssignedSide isEqualTo east) then {
-    _westJoinCtrl ctrlSetText "JOIN WEST TEAM";
+    if (!_westFull) then {
+        _westJoinCtrl ctrlSetText "JOIN WEST TEAM";
+    };
     _eastJoinCtrl ctrlSetText "EAST SELECTED";
     _eastJoinCtrl ctrlSetBackgroundColor [0.4, 0.34, 0.12, 0.92];
 };
 
 if (_myAssignedSide isEqualTo sideUnknown) then {
-    _westJoinCtrl ctrlSetText "JOIN WEST TEAM";
-    _eastJoinCtrl ctrlSetText "JOIN EAST TEAM";
+    _westJoinCtrl ctrlSetText (if (_westFull) then {"WEST FULL"} else {"JOIN WEST TEAM"});
+    _eastJoinCtrl ctrlSetText (if (_eastFull) then {"EAST FULL"} else {"JOIN EAST TEAM"});
 };
