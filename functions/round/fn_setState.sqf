@@ -107,6 +107,7 @@ switch (_newState) do {
 
             if (_record isEqualType createHashMap) then {
                 _record set ["state", "ACTIVE"];
+                _record set ["deployed", true];
                 _records set [_uid, _record];
             };
         } forEach _activeParticipants;

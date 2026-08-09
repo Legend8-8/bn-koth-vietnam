@@ -44,6 +44,12 @@ if (_cache isEqualType createHashMap) then {
     } forEach (keys _cache);
 };
 
+{
+    if !((markerShape _x) isEqualTo "") then {
+        deleteMarker _x;
+    };
+} forEach ["respawn_west", "respawn_east"];
+
 ["BN_KOTH_activeLocationId", ""] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeZoneMarker", ""] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeRespawnWestMarker", ""] call bn_koth_fnc_common_publicState;

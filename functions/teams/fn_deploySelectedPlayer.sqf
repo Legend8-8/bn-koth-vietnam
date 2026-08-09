@@ -6,12 +6,13 @@
     Parameters:
         0: Player UID <STRING>
         1: Target logical state after handoff <STRING> (default: "ACTIVE")
+        2: Allowed source states before deployment <ARRAY> (default: ["TEAM_SELECTED"])
     Returns:
         True on successful deployment, otherwise false <BOOL>
     Public: Yes
 */
 
-params ["_uid", ["_targetState", "ACTIVE", [""]]];
+params ["_uid", ["_targetState", "ACTIVE", [""]], ["_allowedSourceStates", ["TEAM_SELECTED"], [[]]]];
 
 if (!isServer) exitWith {false};
 if (_uid isEqualTo "") exitWith {false};
@@ -37,7 +38,7 @@ private _ownerId = _record getOrDefault ["ownerId", -1];
 private _state = _record getOrDefault ["state", "LOBBY"];
 private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
 
-if (_ownerId <= 0 || {!(_state isEqualTo "TEAM_SELECTED")}) exitWith {
+if (_ownerId <= 0 || {!(_state in _allowedSourceStates)}) exitWith {
     [format ["Single-player deployment blocked for UID %1: invalid owner/state (%2)", _uid, _state], "WARN"] call bn_koth_fnc_common_log;
     false
 };
@@ -87,6 +88,15 @@ if (!_transferOk) exitWith {
 };
 
 _gameplayUnit setPosATL _spawnPos;
+
+_records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
+_record = _records getOrDefault [_uid, createHashMap];
+if (_record isEqualType createHashMap) then {
+    _record set ["deployed", true];
+    _records set [_uid, _record];
+    missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+};
+
 _activeParticipants pushBackUnique _uid;
 ["BN_KOTH_activeParticipants", _activeParticipants] call bn_koth_fnc_common_publicState;
 [] call bn_koth_fnc_teams_publishState;
