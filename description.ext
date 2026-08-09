@@ -5,3 +5,4 @@
 #include "config\teams.hpp"
 #include "config\CfgFunctions.hpp"
 #include "config\CfgRemoteExec.hpp"
+#include "config\CfgServer.hpp"
