@@ -33,12 +33,63 @@ private _activeEastRespawn = getText (_activeCfg >> "respawnEastMarker");
 private _activeWestBaseZone = getText (_activeCfg >> "westBaseZoneMarker");
 private _activeEastBaseZone = getText (_activeCfg >> "eastBaseZoneMarker");
 
+private _nativeWestRespawnMarker = "respawn_west";
+private _nativeEastRespawnMarker = "respawn_east";
+
+private _ensureNativeRespawnMarker = {
+    params ["_markerName"];
+
+    if ((markerShape _markerName) isEqualTo "") then {
+        createMarker [_markerName, [0, 0, 0]];
+    };
+
+    // Keep native side respawn markers invisible; they are mechanics-only.
+    _markerName setMarkerShape "ICON";
+    _markerName setMarkerType "Empty";
+    _markerName setMarkerAlpha 0;
+};
+
+private _applyNativeRespawnMarker = {
+    params ["_nativeMarker", "_sourceMarker", "_label"];
+
+    if (_sourceMarker isEqualTo "") exitWith {
+        [format ["Active location missing %1 source marker name", _label], "WARN"] call bn_koth_fnc_common_log;
+        false
+    };
+
+    if ((markerShape _sourceMarker) isEqualTo "") exitWith {
+        [format ["Active location source marker '%1' missing for %2", _sourceMarker, _label], "WARN"] call bn_koth_fnc_common_log;
+        false
+    };
+
+    _nativeMarker setMarkerPos (markerPos _sourceMarker);
+    _nativeMarker setMarkerDir (markerDir _sourceMarker);
+    _nativeMarker setMarkerType "Empty";
+    _nativeMarker setMarkerAlpha 0;
+    true
+};
+
 ["BN_KOTH_activeLocationId", _locationId] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeZoneMarker", _activeZoneMarker] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeRespawnWestMarker", _activeWestRespawn] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeRespawnEastMarker", _activeEastRespawn] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeWestBaseZoneMarker", _activeWestBaseZone] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeEastBaseZoneMarker", _activeEastBaseZone] call bn_koth_fnc_common_publicState;
+
+[_nativeWestRespawnMarker] call _ensureNativeRespawnMarker;
+[_nativeEastRespawnMarker] call _ensureNativeRespawnMarker;
+
+private _westApplied = [_nativeWestRespawnMarker, _activeWestRespawn, "WEST native respawn"] call _applyNativeRespawnMarker;
+private _eastApplied = [_nativeEastRespawnMarker, _activeEastRespawn, "EAST native respawn"] call _applyNativeRespawnMarker;
+
+if (_westApplied && _eastApplied) then {
+    [format [
+        "Native side respawn markers updated for AO '%1': west=%2 east=%3",
+        _locationId,
+        _activeWestRespawn,
+        _activeEastRespawn
+    ]] call bn_koth_fnc_common_log;
+};
 
 {
     private _cfg = _x;

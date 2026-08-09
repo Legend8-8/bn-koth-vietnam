@@ -61,7 +61,10 @@ class CfgFunctions
 
         class respawn
         {
+            class respawn_initServer {file = "functions\respawn\fn_initServer.sqf";};
             class respawn_initPlayerServer {file = "functions\respawn\fn_initPlayerServer.sqf";};
+            class respawn_handlePlayerDeath {file = "functions\respawn\fn_handlePlayerDeath.sqf";};
+            class respawn_handlePlayerRespawn {file = "functions\respawn\fn_handlePlayerRespawn.sqf";};
         };
 
         class ui

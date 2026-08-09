@@ -84,6 +84,15 @@ private _activeParticipants = [];
     };
 
     _gameplayUnit setPosATL _spawnPos;
+
+    _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
+    _record = _records getOrDefault [_uid, createHashMap];
+    if (_record isEqualType createHashMap) then {
+        _record set ["deployed", true];
+        _records set [_uid, _record];
+        missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+    };
+
     _activeParticipants pushBackUnique _uid;
 
     [format ["Gameplay representation assigned and deployed UID=%1 side=%2 AO=%3", _uid, _assignedSide, _activeLocationId]] call bn_koth_fnc_common_log;
