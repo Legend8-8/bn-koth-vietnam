@@ -23,6 +23,7 @@ private _keyMap = createHashMapFromArray [
     ["roundState", "BN_KOTH_roundState"],
     ["playerStates", "BN_KOTH_playerStates"],
     ["playerTeamAssignments", "BN_KOTH_playerTeamAssignments"],
+    ["playerNames", "BN_KOTH_playerNames"],
     ["teamCounts", "BN_KOTH_teamCounts"],
     ["activeParticipants", "BN_KOTH_activeParticipants"],
     ["selectedLocationId", "BN_KOTH_selectedLocationId"],
@@ -57,3 +58,8 @@ private _keyMap = createHashMapFromArray [
         missionNamespace setVariable [_bnKey, _value];
     };
 } forEach (keys _payload);
+
+[] call bn_koth_fnc_ui_evaluateStateReadiness;
+
+[] call bn_koth_fnc_ui_updateLobbyLifecycle;
+[] call bn_koth_fnc_ui_refreshLobby;

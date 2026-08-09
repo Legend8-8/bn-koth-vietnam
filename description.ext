@@ -3,5 +3,6 @@
 #include "config\lobby.hpp"
 #include "config\scoring.hpp"
 #include "config\teams.hpp"
+#include "ui\ui.hpp"
 #include "config\CfgFunctions.hpp"
 #include "config\CfgRemoteExec.hpp"

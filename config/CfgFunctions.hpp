@@ -67,6 +67,15 @@ class CfgFunctions
         class ui
         {
             class ui_initPlayerLocal {file = "functions\ui\fn_initPlayerLocal.sqf";};
+            class ui_evaluateStateReadiness {file = "functions\ui\fn_evaluateStateReadiness.sqf";};
+            class ui_openLobby {file = "functions\ui\fn_openLobby.sqf";};
+            class ui_closeLobby {file = "functions\ui\fn_closeLobby.sqf";};
+            class ui_refreshLobby {file = "functions\ui\fn_refreshLobby.sqf";};
+            class ui_refreshLobbyHeader {file = "functions\ui\fn_refreshLobbyHeader.sqf";};
+            class ui_refreshLobbyTeams {file = "functions\ui\fn_refreshLobbyTeams.sqf";};
+            class ui_refreshLobbyCenter {file = "functions\ui\fn_refreshLobbyCenter.sqf";};
+            class ui_refreshLobbyVote {file = "functions\ui\fn_refreshLobbyVote.sqf";};
+            class ui_updateLobbyLifecycle {file = "functions\ui\fn_updateLobbyLifecycle.sqf";};
             class ui_requestState {file = "functions\ui\fn_requestState.sqf";};
             class ui_sendStateToClient {file = "functions\ui\fn_sendStateToClient.sqf";};
             class ui_receiveState {file = "functions\ui\fn_receiveState.sqf";};

@@ -20,6 +20,7 @@ if ((count _playableSides) < 2) then {
 missionNamespace setVariable ["BN_KOTH_playerRecords", createHashMap];
 ["BN_KOTH_playerStates", createHashMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_playerTeamAssignments", createHashMap] call bn_koth_fnc_common_publicState;
+["BN_KOTH_playerNames", createHashMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_teamCounts", createHashMapFromArray [[_playableSides select 0, 0], [_playableSides select 1, 0]]] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeParticipants", []] call bn_koth_fnc_common_publicState;
 

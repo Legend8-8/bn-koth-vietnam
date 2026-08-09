@@ -26,4 +26,8 @@ selectPlayer _targetUnit;
 
 diag_log format ["[BN_KOTH][INFO] ui_selectControlledUnit result switched=%1 current=%2", player isEqualTo _targetUnit, typeOf player];
 
+if (player isEqualTo _targetUnit) then {
+    [] call bn_koth_fnc_ui_evaluateStateReadiness;
+};
+
 player isEqualTo _targetUnit

@@ -19,5 +19,5 @@ class Header
 class CfgBnKothDebug
 {
     // Development default for the current prototype cycle.
-    enabled = 1;
+    enabled = 0;
 };
