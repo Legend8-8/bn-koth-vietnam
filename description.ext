@@ -6,3 +6,4 @@
 #include "ui\ui.hpp"
 #include "config\CfgFunctions.hpp"
 #include "config\CfgRemoteExec.hpp"
+#include "config\CfgServer.hpp"
