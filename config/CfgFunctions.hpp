@@ -67,6 +67,17 @@ class CfgFunctions
             class respawn_handlePlayerRespawn {file = "functions\respawn\fn_handlePlayerRespawn.sqf";};
         };
 
+        class vehicles
+        {
+            class vehicles_initServer {file = "functions\vehicles\fn_initServer.sqf";};
+            class vehicles_buildActiveLocationSlots {file = "functions\vehicles\fn_buildActiveLocationSlots.sqf";};
+            class vehicles_isSpawnAreaClear {file = "functions\vehicles\fn_isSpawnAreaClear.sqf";};
+            class vehicles_spawnManagedSlot {file = "functions\vehicles\fn_spawnManagedSlot.sqf";};
+            class vehicles_cleanupManagedVehicles {file = "functions\vehicles\fn_cleanupManagedVehicles.sqf";};
+            class vehicles_monitorManagedVehicles {file = "functions\vehicles\fn_monitorManagedVehicles.sqf";};
+            class vehicles_requestSpawn {file = "functions\vehicles\fn_requestSpawn.sqf";};
+        };
+
         class ui
         {
             class ui_initPlayerLocal {file = "functions\ui\fn_initPlayerLocal.sqf";};
