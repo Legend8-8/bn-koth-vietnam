@@ -1,6 +1,7 @@
 class CfgBnKothLobby
 {
     voteDuration = 30;
+    earlyVoteGracePeriod = 5;
     candidateCount = 3;
     maxPlayers = 100;
     maxTeamPlayers = 50;

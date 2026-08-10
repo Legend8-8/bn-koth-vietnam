@@ -77,6 +77,8 @@ if (_playerAssignments isEqualType createHashMap) then {
     _myAssignedSide = _playerAssignments getOrDefault [_myUid, sideUnknown];
 };
 
+private _mySelectionValid = [_myAssignedSide] call bn_koth_fnc_teams_validateSide;
+
 private _myState = "LOBBY";
 if (_playerStates isEqualType createHashMap) then {
     _myState = _playerStates getOrDefault [_myUid, "LOBBY"];
@@ -249,7 +251,8 @@ private _voteAllowed = (
     _roundState isEqualTo "WAITING"
     && {_voteOpen}
     && {!_isDeployed}
-    && {!(_myState in ["ACTIVE", "DEPLOYING", "RETURNING"])}
+    && {_myState isEqualTo "TEAM_SELECTED"}
+    && {_mySelectionValid}
 );
 
 private _voteEntries = [];
@@ -284,13 +287,15 @@ if (_voteOpen) then {
         } else {
             str _seconds
         };
-        _voteTimerText = format ["VOTE TIMER %1:%2", _minutes, _secondsText];
+        _voteTimerText = format ["%1:%2", _minutes, _secondsText];
     } else {
-        _voteTimerText = "VOTE TIMER --:--";
+        _voteTimerText = "--:--";
     };
 } else {
     if (_roundState isEqualTo "PREPARING") then {
-        _voteTimerText = format ["SELECTED AO %1", toUpper ([_selectedLocationId] call _resolveLocationName)];
+        _voteTimerText = "SELECTED";
+    } else {
+        _voteTimerText = "CLOSED";
     };
 };
 
@@ -326,7 +331,11 @@ private _centerView = createHashMapFromArray [
 ];
 
 private _voteHelpText = if (_voteOpen) then {
-    "Vote for the next objective location."
+    if (_voteAllowed) then {
+        "Vote for the next objective location."
+    } else {
+        "Join a team to vote for the next objective location."
+    }
 } else {
     if (_roundState isEqualTo "PREPARING") then {
         "Objective selected. Deployment in progress."
