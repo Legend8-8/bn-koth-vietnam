@@ -79,7 +79,7 @@ _westJoinCtrl ctrlSetText (if (_westFull) then {"WEST FULL"} else {"JOIN WEST TE
 _eastJoinCtrl ctrlSetText (if (_eastFull) then {"EAST FULL"} else {"JOIN EAST TEAM"});
 
 if (_myAssignedSide isEqualTo west) then {
-    _westJoinCtrl ctrlSetText "WEST SELECTED";
+    _westJoinCtrl ctrlSetText "RETURN TO LOBBY";
     if (!_eastFull) then {
         _eastJoinCtrl ctrlSetText "JOIN EAST TEAM";
     };
@@ -90,7 +90,7 @@ if (_myAssignedSide isEqualTo east) then {
     if (!_westFull) then {
         _westJoinCtrl ctrlSetText "JOIN WEST TEAM";
     };
-    _eastJoinCtrl ctrlSetText "EAST SELECTED";
+    _eastJoinCtrl ctrlSetText "RETURN TO LOBBY";
     _eastJoinCtrl ctrlSetBackgroundColor [0.4, 0.34, 0.12, 0.92];
 };
 

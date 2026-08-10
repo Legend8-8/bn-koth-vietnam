@@ -18,6 +18,7 @@ class CfgFunctions
             class round_endWithWinner {file = "functions\round\fn_endWithWinner.sqf";};
             class round_resetRound {file = "functions\round\fn_resetRound.sqf";};
             class round_openVote {file = "functions\round\fn_openVote.sqf";};
+            class round_prepareVoteCandidates {file = "functions\round\fn_prepareVoteCandidates.sqf";};
             class round_requestVote {file = "functions\round\fn_requestVote.sqf";};
             class round_resolveVote {file = "functions\round\fn_resolveVote.sqf";};
             class round_selectVoteCandidates {file = "functions\round\fn_selectVoteCandidates.sqf";};
@@ -32,6 +33,7 @@ class CfgFunctions
             class teams_registerPlayer {file = "functions\teams\fn_registerPlayer.sqf";};
             class teams_removePlayer {file = "functions\teams\fn_removePlayer.sqf";};
             class teams_requestSelection {file = "functions\teams\fn_requestSelection.sqf";};
+            class teams_returnSelectedPlayerToLobby {file = "functions\teams\fn_returnSelectedPlayerToLobby.sqf";};
             class teams_publishState {file = "functions\teams\fn_publishState.sqf";};
             class teams_getEligibleSelectedUids {file = "functions\teams\fn_getEligibleSelectedUids.sqf";};
             class teams_getPlayerByOwner {file = "functions\teams\fn_getPlayerByOwner.sqf";};

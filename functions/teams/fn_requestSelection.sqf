@@ -4,7 +4,7 @@
     Description: Handles client team selection requests with authoritative balance validation.
     Execution: Client/Server
     Parameters:
-        0: Requested side name (WEST/EAST) <STRING>
+        0: Requested side name or lobby-return semantic (WEST/EAST/LOBBY) <STRING>
     Returns:
         None
     Public: Yes
@@ -50,11 +50,6 @@ if (_uid in _activeParticipants || {_playerState in ["ACTIVE", "DEPLOYING", "RET
     [format ["Rejected team swap for already active/deploying UID=%1 logicalState=%2", _uid, _playerState], "WARN"] call bn_koth_fnc_common_log;
 };
 
-if (_roundState isEqualTo "ACTIVE" && {!(_playerState isEqualTo "LOBBY")}) exitWith {
-    [_ownerId, "Active-round joining requires lobby state before side selection."] call bn_koth_fnc_teams_notifyPlayer;
-    [format ["Rejected ACTIVE JIP team request for non-lobby UID=%1 logicalState=%2", _uid, _playerState], "WARN"] call bn_koth_fnc_common_log;
-};
-
 private _now = serverTime;
 private _lastRequestAt = _record getOrDefault ["lastTeamRequestAt", -999];
 if ((_now - _lastRequestAt) < 0.25) exitWith {
@@ -62,8 +57,37 @@ if ((_now - _lastRequestAt) < 0.25) exitWith {
 };
 _record set ["lastTeamRequestAt", _now];
 
+private _requestedSemantic = toUpper _requestedSideName;
+if (_requestedSemantic isEqualTo "LOBBY") exitWith {
+    if !(_roundState isEqualTo "WAITING") exitWith {
+        [_ownerId, "Return to lobby is only available during WAITING."] call bn_koth_fnc_teams_notifyPlayer;
+        [format ["Rejected lobby-return request outside WAITING from UID %1 state=%2", _uid, _roundState], "WARN"] call bn_koth_fnc_common_log;
+    };
+
+    if !(_playerState isEqualTo "TEAM_SELECTED") exitWith {
+        [_ownerId, "Return to lobby rejected: you are not currently team selected."] call bn_koth_fnc_teams_notifyPlayer;
+        [format ["Rejected lobby-return request from non-selected UID=%1 logicalState=%2", _uid, _playerState], "WARN"] call bn_koth_fnc_common_log;
+    };
+
+    private _returned = [_uid] call bn_koth_fnc_teams_returnSelectedPlayerToLobby;
+    if (_returned) then {
+        [format ["Team return-to-lobby accepted UID=%1", _uid], "INFO"] call bn_koth_fnc_common_log;
+    };
+    if (_returned) then {
+        [_ownerId, "Returned to lobby."] call bn_koth_fnc_teams_notifyPlayer;
+    } else {
+        [_ownerId, "Return to lobby failed."] call bn_koth_fnc_teams_notifyPlayer;
+    };
+    false
+};
+
+if (_roundState isEqualTo "ACTIVE" && {!(_playerState isEqualTo "LOBBY")}) exitWith {
+    [_ownerId, "Active-round joining requires lobby state before side selection."] call bn_koth_fnc_teams_notifyPlayer;
+    [format ["Rejected ACTIVE JIP team request for non-lobby UID=%1 logicalState=%2", _uid, _playerState], "WARN"] call bn_koth_fnc_common_log;
+};
+
 private _requestedSide = sideUnknown;
-switch (toUpper _requestedSideName) do {
+switch (_requestedSemantic) do {
     case "WEST": {_requestedSide = west;};
     case "EAST": {_requestedSide = east;};
     case "RESISTANCE": {_requestedSide = resistance;};

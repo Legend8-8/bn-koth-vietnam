@@ -64,12 +64,17 @@ missionNamespace setVariable [
                     ["BN_KOTH_voteCandidates", []] call bn_koth_fnc_common_publicState;
                     ["BN_KOTH_votesByUid", createHashMap] call bn_koth_fnc_common_publicState;
                     [] call bn_koth_fnc_round_updateVoteTotals;
+                    [] call bn_koth_fnc_round_prepareVoteCandidates;
                     ["Lobby vote cancelled: eligible team-selected participant count dropped to zero.", "WARN"] call bn_koth_fnc_common_log;
+                } else {
+                    [] call bn_koth_fnc_round_prepareVoteCandidates;
                 };
             } else {
                 missionNamespace setVariable ["BN_KOTH_waitingDormantLogged", false];
 
                 if (!_voteOpen) then {
+                    [] call bn_koth_fnc_round_prepareVoteCandidates;
+
                     if !(missionNamespace getVariable ["BN_KOTH_waitingEligibleLogged", false]) then {
                         missionNamespace setVariable ["BN_KOTH_waitingEligibleLogged", true];
                         [format ["WAITING eligible threshold reached (%1); opening vote.", _eligibleCount], "INFO"] call bn_koth_fnc_common_log;

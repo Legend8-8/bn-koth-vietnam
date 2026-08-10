@@ -53,4 +53,5 @@ missionNamespace setVariable [
 [] call bn_koth_fnc_round_updateVoteTotals;
 
 ["WAITING"] call bn_koth_fnc_round_setState;
+[] call bn_koth_fnc_round_prepareVoteCandidates;
 true

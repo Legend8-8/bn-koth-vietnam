@@ -248,27 +248,7 @@ class BN_KOTH_RscLobby
             h = safeZoneH * 0.064;
             colorBackground[] = {0.09, 0.09, 0.08, 0.90};
         };
-
-        class BgVoteThumb1: BN_KOTH_Lobby_Background
-        {
-            x = BN_KOTH_VOTE_X + safeZoneW * 0.012;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.255;
-            w = BN_KOTH_VOTE_W * 0.22;
-            h = safeZoneH * 0.052;
-            colorBackground[] = {0.14, 0.14, 0.12, 0.72};
-        };
-
-        class BgVoteThumb2: BgVoteThumb1
-        {
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.335;
-        };
-
-        class BgVoteThumb3: BgVoteThumb1
-        {
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.415;
-        };
-
-        class BgVoteFooter: BN_KOTH_Lobby_Background
+class BgVoteFooter: BN_KOTH_Lobby_Background
         {
             x = BN_KOTH_VOTE_X + safeZoneW * 0.006;
             y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H - safeZoneH * 0.12;
@@ -524,7 +504,7 @@ class BN_KOTH_RscLobby
             h = safeZoneH * 0.058;
             colorBackground[] = {0.10, 0.34, 0.63, 0.92};
             colorBackgroundActive[] = {0.15, 0.44, 0.78, 1};
-            action = "['WEST'] call bn_koth_fnc_teams_requestSelection;";
+            action = "private _uid = getPlayerUID player; private _assignedSide = sideUnknown; private _assignments = missionNamespace getVariable ['BN_KOTH_playerTeamAssignments', createHashMap]; if (_assignments isEqualType createHashMap && {_uid isNotEqualTo ''}) then {_assignedSide = _assignments getOrDefault [_uid, sideUnknown];}; if (_assignedSide isEqualTo west) then {['LOBBY'] call bn_koth_fnc_teams_requestSelection;} else {['WEST'] call bn_koth_fnc_teams_requestSelection;};";
         };
 
 		class WestHint: BN_KOTH_Lobby_FinePrint
@@ -710,7 +690,7 @@ class BN_KOTH_RscLobby
             h = safeZoneH * 0.058;
             colorBackground[] = {0.62, 0.16, 0.14, 0.92};
             colorBackgroundActive[] = {0.78, 0.22, 0.18, 1};
-            action = "['EAST'] call bn_koth_fnc_teams_requestSelection;";
+            action = "private _uid = getPlayerUID player; private _assignedSide = sideUnknown; private _assignments = missionNamespace getVariable ['BN_KOTH_playerTeamAssignments', createHashMap]; if (_assignments isEqualType createHashMap && {_uid isNotEqualTo ''}) then {_assignedSide = _assignments getOrDefault [_uid, sideUnknown];}; if (_assignedSide isEqualTo east) then {['LOBBY'] call bn_koth_fnc_teams_requestSelection;} else {['EAST'] call bn_koth_fnc_teams_requestSelection;};";
         };
 
 		class EastHint: BN_KOTH_Lobby_FinePrint
@@ -743,9 +723,9 @@ class BN_KOTH_RscLobby
             idc = BN_KOTH_IDC_VOTE_TIMER;
             text = "VOTE TIMER --:--";
             style = 1;
-            x = BN_KOTH_VOTE_X + BN_KOTH_VOTE_W * 0.73;
+            x = BN_KOTH_VOTE_X + BN_KOTH_VOTE_W * 0.54;
             y = BN_KOTH_MAIN_Y + safeZoneH * 0.022;
-            w = BN_KOTH_VOTE_W * 0.21;
+            w = BN_KOTH_VOTE_W * 0.40;
             h = safeZoneH * 0.025;
             colorText[] = {0.96, 0.82, 0.32, 1};
         };
@@ -775,24 +755,13 @@ class BN_KOTH_RscLobby
         {
             idc = BN_KOTH_IDC_VOTE_PREVIOUS_VALUE;
             text = "NONE";
-            x = BN_KOTH_VOTE_X + BN_KOTH_VOTE_W * 0.26;
+            x = BN_KOTH_VOTE_X + safeZoneW * 0.012;
             y = BN_KOTH_MAIN_Y + safeZoneH * 0.185;
-            w = BN_KOTH_VOTE_W * 0.68;
+            w = BN_KOTH_VOTE_W - safeZoneW * 0.024;
             h = safeZoneH * 0.026;
             colorText[] = {0.96, 0.94, 0.88, 0.94};
         };
-
-        class VotePreviousImage: BN_KOTH_Lobby_Picture
-        {
-            idc = BN_KOTH_IDC_VOTE_PREVIOUS_IMAGE;
-            text = "";
-            x = BN_KOTH_VOTE_X + safeZoneW * 0.012;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.168;
-            w = BN_KOTH_VOTE_W * 0.22;
-            h = safeZoneH * 0.042;
-        };
-
-        class VoteLocationsLabel: BN_KOTH_Lobby_SectionLabel
+class VoteLocationsLabel: BN_KOTH_Lobby_SectionLabel
         {
             text = "POSSIBLE LOCATIONS";
             x = BN_KOTH_VOTE_X + safeZoneW * 0.012;
@@ -806,32 +775,22 @@ class BN_KOTH_RscLobby
         {
             idc = BN_KOTH_IDC_VOTE_CANDIDATE_1;
             text = "CANDIDATE";
-            x = BN_KOTH_VOTE_X + BN_KOTH_VOTE_W * 0.26;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.25;
-            w = BN_KOTH_VOTE_W * 0.46;
-            h = safeZoneH * 0.064;
+            x = BN_KOTH_VOTE_X + safeZoneW * 0.010;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.250;
+            w = BN_KOTH_VOTE_W - safeZoneW * 0.020;
+            h = safeZoneH * 0.072;
             action = "[0] call bn_koth_fnc_round_requestVote;";
-            sizeEx = "0.018 * safeZoneH";
+            sizeEx = "0.020 * safeZoneH";
         };
-
-        class VoteImage1: BN_KOTH_Lobby_Picture
-        {
-            idc = BN_KOTH_IDC_VOTE_IMAGE_1;
-            text = "";
-            x = BN_KOTH_VOTE_X + safeZoneW * 0.012;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.255;
-            w = BN_KOTH_VOTE_W * 0.22;
-            h = safeZoneH * 0.052;
-        };
-
-        class VoteTotal1: BN_KOTH_Lobby_Value
+class VoteTotal1: BN_KOTH_Lobby_Value
         {
             idc = BN_KOTH_IDC_VOTE_TOTAL_1;
             text = "0";
-            x = BN_KOTH_VOTE_X + BN_KOTH_VOTE_W * 0.75;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.266;
-            w = BN_KOTH_VOTE_W * 0.18;
-            h = safeZoneH * 0.03;
+            style = 1;
+            x = BN_KOTH_VOTE_X + BN_KOTH_VOTE_W * 0.78;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.260;
+            w = BN_KOTH_VOTE_W * 0.15;
+            h = safeZoneH * 0.030;
             colorText[] = {0.95, 0.94, 0.90, 1};
         };
 
@@ -839,61 +798,48 @@ class BN_KOTH_RscLobby
         {
             idc = BN_KOTH_IDC_VOTE_DESC_1;
             text = "";
-            x = BN_KOTH_VOTE_X + BN_KOTH_VOTE_W * 0.26;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.279;
-            w = BN_KOTH_VOTE_W * 0.46;
-            h = safeZoneH * 0.029;
+            x = BN_KOTH_VOTE_X + safeZoneW * 0.014;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.292;
+            w = BN_KOTH_VOTE_W * 0.76;
+            h = safeZoneH * 0.023;
+            sizeEx = "0.0145 * safeZoneH";
             colorText[] = {0.82, 0.8, 0.76, 0.88};
         };
 
         class VoteCandidate2: VoteCandidate1
         {
             idc = BN_KOTH_IDC_VOTE_CANDIDATE_2;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.33;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.334;
             action = "[1] call bn_koth_fnc_round_requestVote;";
         };
-
-        class VoteImage2: VoteImage1
-        {
-            idc = BN_KOTH_IDC_VOTE_IMAGE_2;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.335;
-        };
-
-        class VoteTotal2: VoteTotal1
+class VoteTotal2: VoteTotal1
         {
             idc = BN_KOTH_IDC_VOTE_TOTAL_2;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.346;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.344;
         };
 
         class VoteDesc2: VoteDesc1
         {
             idc = BN_KOTH_IDC_VOTE_DESC_2;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.359;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.376;
         };
 
         class VoteCandidate3: VoteCandidate1
         {
             idc = BN_KOTH_IDC_VOTE_CANDIDATE_3;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.41;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.418;
             action = "[2] call bn_koth_fnc_round_requestVote;";
         };
-
-        class VoteImage3: VoteImage1
-        {
-            idc = BN_KOTH_IDC_VOTE_IMAGE_3;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.415;
-        };
-
-        class VoteTotal3: VoteTotal1
+class VoteTotal3: VoteTotal1
         {
             idc = BN_KOTH_IDC_VOTE_TOTAL_3;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.426;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.428;
         };
 
         class VoteDesc3: VoteDesc1
         {
             idc = BN_KOTH_IDC_VOTE_DESC_3;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.439;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.460;
         };
 
         class VoteHelp: BN_KOTH_Lobby_Body

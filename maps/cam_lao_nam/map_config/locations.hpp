@@ -18,7 +18,7 @@ class CfgBnKothLocations
     {
         displayName = "Saigon";
         description = "Urban city center. Dense streets and close-quarters fighting.";
-        image = "images\\ui\\lobby\\saigon.jpg";
+        image = "images\ui\lobby\west_panel.jpg";
         zoneMarker = "saigon_zone";
         respawnWestMarker = "saigon_respawn_west";
         respawnEastMarker = "saigon_respawn_east";
@@ -34,7 +34,7 @@ class CfgBnKothLocations
     {
         displayName = "Hue";
         description = "Riverside city. Long sightlines and strong defensive positions.";
-        image = "images\\ui\\lobby\\hue.jpg";
+        image = "images\ui\lobby\hue.jpg";
         zoneMarker = "hue_zone";
         respawnWestMarker = "hue_respawn_west";
         respawnEastMarker = "hue_respawn_east";
@@ -50,7 +50,7 @@ class CfgBnKothLocations
     {
         displayName = "Hanoi";
         description = "Capital outskirts. Open areas and village combat.";
-        image = "images\\ui\\lobby\\hanoi.jpg";
+        image = "images\ui\lobby\hanoi.jpg";
         zoneMarker = "hanoi_zone";
         respawnWestMarker = "hanoi_respawn_west";
         respawnEastMarker = "hanoi_respawn_east";
