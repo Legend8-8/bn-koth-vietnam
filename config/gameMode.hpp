@@ -2,7 +2,7 @@ class Header
 {
     gameType = "KOTH";
     minPlayers = 1;
-    maxPlayers = 64;
+    maxPlayers = 100;
 };
 author = "Bro-Nation";
 onLoadName = "Vietnam KOTH Test";
