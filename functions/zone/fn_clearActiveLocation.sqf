@@ -56,5 +56,8 @@ if (_cache isEqualType createHashMap) then {
 ["BN_KOTH_activeRespawnEastMarker", ""] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeWestBaseZoneMarker", ""] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeEastBaseZoneMarker", ""] call bn_koth_fnc_common_publicState;
+["BN_KOTH_priorityZoneActive", false] call bn_koth_fnc_common_publicState;
+["BN_KOTH_priorityZonePosition", [0, 0, 0]] call bn_koth_fnc_common_publicState;
+["BN_KOTH_priorityZoneSize", [0, 0]] call bn_koth_fnc_common_publicState;
 
 ["Active AO cleared and static content hidden."] call bn_koth_fnc_common_log;

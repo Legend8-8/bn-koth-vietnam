@@ -16,10 +16,10 @@ class EditorData
 	};
 	class Camera
 	{
-		pos[]={17576.234,135.11101,9082.0361};
-		dir[]={0.00015596794,-0.95068961,0.31014425};
-		up[]={0.00047809078,0.31014362,0.95068961};
-		aside[]={1,0,-0.0005028884};
+		pos[]={17511.652,221.25377,9082.5518};
+		dir[]={-0.77025652,-0.62851644,-0.10807819};
+		up[]={-0.62242097,0.77779144,-0.087334514};
+		aside[]={-0.13895307,1.2804776e-07,0.99030256};
 	};
 };
 binarizationWanted=0;
@@ -6085,7 +6085,7 @@ class Mission
 			position[]={16584.195,26.379999,3926.907};
 			name="saigon_west_free_ground_spawnpoint";
 			type="Empty";
-			angle=209.9888;
+			angle=209.98874;
 			id=294;
 		};
 		class Item129
@@ -6103,7 +6103,7 @@ class Mission
 			position[]={16596.684,26.379999,3946.947};
 			name="saigon_west_free_air_spawnpoint";
 			type="Empty";
-			angle=209.73643;
+			angle=209.7364;
 			id=296;
 		};
 		class Item131
@@ -6121,7 +6121,7 @@ class Mission
 			position[]={16608.447,26.379999,3966.5139};
 			name="saigon_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=212.7309;
+			angle=212.73083;
 			id=298;
 		};
 		class Item133
@@ -6368,7 +6368,7 @@ class Mission
 			position[]={17146.031,5.9536939,9266.5762};
 			name="hue_west_free_air_spawnpoint";
 			type="Empty";
-			angle=104.92566;
+			angle=104.92562;
 			id=308;
 		};
 		class Item143
@@ -6386,7 +6386,7 @@ class Mission
 			position[]={17140.207,5.9788671,9263.4277};
 			name="hue_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=55.462631;
+			angle=55.462616;
 			id=310;
 		};
 		class Item145
@@ -6642,7 +6642,7 @@ class Mission
 			position[]={13429.34,3.3288426,13299.709};
 			name="hanoi_east_free_sea_spawnpoint";
 			type="Empty";
-			angle=259.38974;
+			angle=259.38971;
 			id=321;
 		};
 		class Item156

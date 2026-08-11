@@ -75,3 +75,14 @@ Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
 4. Give zone-specific objects Eden variable names with prefix <locationId>_ (for example hue_...).
 5. Set defaultLocationId to hue for testing.
 6. Start mission and verify only hue markers/objects are active.
+
+8. Dynamic Priority Zone
+
+The zone system also supports a moving priority area inside the active AO.
+
+- The priority zone is a smaller ellipse inside the active zone marker.
+- Its size is derived from the active AO size and defaults to roughly 10% of the main AO dimensions.
+- It continuously drifts through the AO at a slow movement speed while staying inside valid AO space.
+- Players inside the priority zone count as two players for objective control weighting.
+- Main AO players continue to count normally.
+- The priority zone is published as a visible marker so players can read the current objective hotspot.

@@ -51,6 +51,7 @@ class CfgFunctions
             class zone_clearActiveLocation {file = "functions\zone\fn_clearActiveLocation.sqf";};
             class zone_cacheStaticObjects {file = "functions\zone\fn_cacheStaticObjects.sqf";};
             class zone_evaluateControl {file = "functions\zone\fn_evaluateControl.sqf";};
+            class zone_updatePriorityZone {file = "functions\zone\fn_updatePriorityZone.sqf";};
         };
 
         class scoring
