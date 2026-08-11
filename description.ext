@@ -2,6 +2,7 @@
 #include "map_config\locations.hpp"
 #include "config\lobby.hpp"
 #include "config\scoring.hpp"
+#include "config\vehicles.hpp"
 #include "config\teams.hpp"
 #include "config\CfgFunctions.hpp"
 #include "config\CfgRemoteExec.hpp"

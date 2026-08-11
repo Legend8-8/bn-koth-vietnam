@@ -5,10 +5,10 @@ class EditorData
 	angleGridStep=0.2617994;
 	scaleGridStep=1;
 	autoGroupingDist=10;
-	toggles=1;
+	toggles=1029;
 	class ItemIDProvider
 	{
-		nextID=331;
+		nextID=335;
 	};
 	class MarkerIDProvider
 	{
@@ -16,10 +16,9 @@ class EditorData
 	};
 	class Camera
 	{
-		pos[]={17576.234,135.11101,9082.0361};
-		dir[]={0.00015596794,-0.95068961,0.31014425};
-		up[]={0.00047809078,0.31014362,0.95068961};
-		aside[]={1,0,-0.0005028884};
+		pos[]={16037.021,39.98,6964.751};
+		dir[]={0,-0.70710683,0.70710683};
+		up[]={0,0.70710671,0.70710683};
 	};
 };
 binarizationWanted=0;
@@ -677,13 +676,15 @@ class Mission
 			dataType="Logic";
 			class PositionInfo
 			{
-				position[]={12647,1.5380028,13393};
-				angles[]={0,2.0944653,0};
+				position[]={12647.852,1.538,13388.855};
+				angles[]={0,1.8683997,0};
 			};
-			areaSize[]={27.8125,0,27.8125};
+			areaSize[]={27.476816,0,30.337999};
+			areaIsRectangle=1;
 			flags=1;
 			id=75;
 			type="ModuleHideTerrainObjects_F";
+			atlOffset=0.018000007;
 			class CustomAttributes
 			{
 				class Attribute0
@@ -754,14 +755,14 @@ class Mission
 			dataType="Logic";
 			class PositionInfo
 			{
-				position[]={13436.832,4.249671,13284.056};
+				position[]={13431.208,4.249671,13305.05};
 				angles[]={0,2.0944653,0};
 			};
-			areaSize[]={27.8125,0,27.8125};
+			areaSize[]={43.18119,0,43.18119};
 			flags=1;
 			id=77;
 			type="ModuleHideTerrainObjects_F";
-			atlOffset=0.033344269;
+			atlOffset=0.79607248;
 			class CustomAttributes
 			{
 				class Attribute0
@@ -6073,55 +6074,61 @@ class Mission
 		class Item127
 		{
 			dataType="Marker";
-			position[]={15989.778,26.379999,3362.9897};
+			position[]={15992.342,26.379999,3392.3298};
 			name="saigon_east_free_ground_spawnpoint";
 			type="Empty";
-			angle=62.491127;
+			colorName="ColorOrange";
+			angle=55.64436;
 			id=293;
 		};
 		class Item128
 		{
 			dataType="Marker";
-			position[]={16584.195,26.379999,3926.907};
+			position[]={16585.176,26.379999,3929.8657};
 			name="saigon_west_free_ground_spawnpoint";
 			type="Empty";
-			angle=209.9888;
+			colorName="ColorOrange";
+			angle=209.9886;
 			id=294;
 		};
 		class Item129
 		{
 			dataType="Marker";
-			position[]={15986.476,26.379999,3368.4316};
+			position[]={15992.011,26.379999,3364.9785};
 			name="saigon_east_free_air_spawnpoint";
 			type="Empty";
-			angle=58.866646;
+			colorName="ColorOrange";
+			angle=324.16553;
 			id=295;
 		};
 		class Item130
 		{
 			dataType="Marker";
-			position[]={16596.684,26.379999,3946.947};
+			position[]={16601.768,26.379999,3955.4592};
 			name="saigon_west_free_air_spawnpoint";
 			type="Empty";
-			angle=209.73643;
+			colorName="ColorOrange";
+			angle=209.7364;
 			id=296;
 		};
 		class Item131
 		{
 			dataType="Marker";
-			position[]={15983.051,26.379999,3373.8518};
+			position[]={16004.148,26.379999,3341.7749};
 			name="saigon_east_free_sea_spawnpoint";
 			type="Empty";
-			angle=58.576267;
+			colorName="ColorOrange";
+			angle=58.576;
 			id=297;
 		};
 		class Item132
 		{
 			dataType="Marker";
-			position[]={16608.447,26.379999,3966.5139};
+			position[]={16616.922,26.472284,3981.1145};
 			name="saigon_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=212.7309;
+			colorName="ColorOrange";
+			angle=212.73076;
 			id=298;
 		};
 		class Item133
@@ -6235,8 +6242,8 @@ class Mission
 			dataType="Object";
 			class PositionInfo
 			{
-				position[]={16623.766,26.379999,3908.7395};
-				angles[]={0,5.2514105,0};
+				position[]={16623.328,26.379999,3902.9888};
+				angles[]={0,3.6527808,0};
 			};
 			side="Empty";
 			flags=4;
@@ -6270,8 +6277,8 @@ class Mission
 			dataType="Object";
 			class PositionInfo
 			{
-				position[]={16631.193,26.379999,3920.6062};
-				angles[]={0,5.2716894,0};
+				position[]={16641.674,26.379999,3933.8491};
+				angles[]={0,3.6736133,0};
 			};
 			side="Empty";
 			flags=4;
@@ -6305,8 +6312,8 @@ class Mission
 			dataType="Object";
 			class PositionInfo
 			{
-				position[]={16638.623,26.379999,3932.4731};
-				angles[]={0,5.2716894,0};
+				position[]={16660.672,26.379999,3959.8665};
+				angles[]={0,3.6544318,0};
 			};
 			side="Empty";
 			flags=4;
@@ -6338,55 +6345,61 @@ class Mission
 		class Item139
 		{
 			dataType="Marker";
-			position[]={17883.316,3.6700001,9176.6123};
+			position[]={17884.68,3.6700001,9181.0625};
 			name="hue_east_free_ground_spawnpoint";
 			type="Empty";
-			angle=294.15857;
+			colorName="ColorOrange";
+			angle=280.77216;
 			id=305;
 		};
 		class Item140
 		{
 			dataType="Marker";
-			position[]={17151.75,5.9417381,9269.5654};
+			position[]={17156.754,5.9672508,9264.3955};
 			name="hue_west_free_ground_spawnpoint";
 			type="Empty";
+			colorName="ColorOrange";
 			angle=105.91;
 			id=306;
 		};
 		class Item141
 		{
 			dataType="Marker";
-			position[]={17884.898,3.6700001,9164.2168};
+			position[]={17924.424,3.7,9166.3594};
 			name="hue_east_free_air_spawnpoint";
 			type="Empty";
-			angle=294.15857;
+			colorName="ColorOrange";
+			angle=183.05879;
 			id=307;
 		};
 		class Item142
 		{
 			dataType="Marker";
-			position[]={17146.031,5.9536939,9266.5762};
+			position[]={17140.197,6.2399998,9247.8545};
 			name="hue_west_free_air_spawnpoint";
 			type="Empty";
-			angle=104.92566;
+			colorName="ColorOrange";
+			angle=63.274113;
 			id=308;
 		};
 		class Item143
 		{
 			dataType="Marker";
-			position[]={17894.861,3.6700001,9180.0146};
+			position[]={17911.129,3.6700001,9186.5039};
 			name="hue_east_free_sea_spawnpoint";
 			type="Empty";
+			colorName="ColorOrange";
 			angle=294.15857;
 			id=309;
 		};
 		class Item144
 		{
 			dataType="Marker";
-			position[]={17140.207,5.9788671,9263.4277};
+			position[]={17125.713,5.9919338,9271.626};
 			name="hue_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=55.462631;
+			colorName="ColorOrange";
+			angle=55.462593;
 			id=310;
 		};
 		class Item145
@@ -6602,58 +6615,64 @@ class Mission
 		class Item151
 		{
 			dataType="Marker";
-			position[]={13417.964,2.8593652,13315.674};
+			position[]={13422.354,2.9358985,13308.397};
 			name="hanoi_east_free_ground_spawnpoint";
 			type="Empty";
-			angle=259.65305;
+			colorName="ColorOrange";
+			angle=323.85855;
 			id=317;
+			atlOffset=2.3841858e-07;
 		};
 		class Item152
 		{
 			dataType="Marker";
-			position[]={12661.337,2.3135035,13432.004};
+			position[]={12652,2.3520069,13434};
 			name="hanoi_west_free_ground_spawnpoint";
 			type="Empty";
-			angle=87.082848;
+			colorName="ColorOrange";
+			angle=86.111923;
 			id=318;
 		};
 		class Item153
 		{
 			dataType="Marker";
-			position[]={13423.507,2.9681985,13307.834};
+			position[]={13442.935,4.5904102,13315.608};
 			name="hanoi_east_free_air_spawnpoint";
 			type="Empty";
-			angle=258.52826;
+			colorName="ColorOrange";
+			angle=312.36804;
 			id=319;
-			atlOffset=2.3841858e-07;
 		};
 		class Item154
 		{
 			dataType="Marker";
-			position[]={12645.664,2.306267,13431.405};
+			position[]={12653,1.5080029,13378};
 			name="hanoi_west_free_air_spawnpoint";
 			type="Empty";
-			angle=88.004227;
+			colorName="ColorOrange";
+			angle=96.289902;
 			id=320;
 		};
 		class Item155
 		{
 			dataType="Marker";
-			position[]={13429.34,3.3288426,13299.709};
+			position[]={13462.752,4.9175272,13325.715};
 			name="hanoi_east_free_sea_spawnpoint";
 			type="Empty";
-			angle=259.38974;
+			colorName="ColorOrange";
+			angle=37.488155;
 			id=321;
+			atlOffset=4.7683716e-07;
 		};
 		class Item156
 		{
 			dataType="Marker";
-			position[]={12625.188,2.4124489,13430.204};
+			position[]={12617,2.7920191,13432};
 			name="hanoi_west_free_sea_spawnpoint";
 			type="Empty";
+			colorName="ColorOrange";
 			angle=88.063232;
 			id=322;
-			atlOffset=-1.4543533e-05;
 		};
 		class Item157
 		{
@@ -6871,12 +6890,12 @@ class Mission
 			dataType="Logic";
 			class PositionInfo
 			{
-				position[]={16018.105,43.34898,6990.4639};
+				position[]={16017,43,6990};
 			};
 			init="    [] spawn {" \n "        while {isNil ""stopCuratorLoop""} do {" \n "        { _x addCuratorEditableObjects [vehicles + allUnits]} forEach allCurators;" \n "        uisleep 10;" \n "        };" \n "    };";
 			id=330;
 			type="ModuleCurator_F";
-			atlOffset=28.36898;
+			atlOffset=28.02;
 			class CustomAttributes
 			{
 				class Attribute0
