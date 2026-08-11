@@ -248,12 +248,13 @@ class BN_KOTH_RscLobby
             h = safeZoneH * 0.064;
             colorBackground[] = {0.09, 0.09, 0.08, 0.90};
         };
-class BgVoteFooter: BN_KOTH_Lobby_Background
+
+        class BgVoteFooter: BN_KOTH_Lobby_Background
         {
             x = BN_KOTH_VOTE_X + safeZoneW * 0.006;
-            y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H - safeZoneH * 0.12;
+            y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H - safeZoneH * 0.090;
             w = BN_KOTH_VOTE_W - safeZoneW * 0.012;
-            h = safeZoneH * 0.102;
+            h = safeZoneH * 0.070;
             colorBackground[] = {0.10, 0.08, 0.05, 0.86};
         };
 
@@ -276,23 +277,52 @@ class BgVoteFooter: BN_KOTH_Lobby_Background
             colorBackground[] = {0.04, 0.04, 0.04, 0.82};
         };
 
-        class BgBottomHero: BN_KOTH_Lobby_Background
+        class BgBottomLeader1: BN_KOTH_Lobby_Background
         {
-            idc = BN_KOTH_IDC_BOTTOM_PLACEHOLDER;
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.54;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.018;
-            w = BN_KOTH_UI_W * 0.41;
-            h = BN_KOTH_BOTTOM_H - safeZoneH * 0.036;
-            colorBackground[] = {0.08, 0.08, 0.08, 0.88};
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.515;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.047;
+            w = BN_KOTH_UI_W * 0.108;
+            h = BN_KOTH_BOTTOM_H - safeZoneH * 0.062;
+            colorBackground[] = {0.38, 0.31, 0.15, 0.78};
         };
 
-        class BgBottomHeroTint: BN_KOTH_Lobby_Background
+        class BgBottomLeader1Inset: BN_KOTH_Lobby_Background
         {
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.54;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.018;
-            w = BN_KOTH_UI_W * 0.41;
-            h = BN_KOTH_BOTTOM_H - safeZoneH * 0.036;
-            colorBackground[] = {0.03, 0.03, 0.03, 0.58};
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.5165;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.049;
+            w = BN_KOTH_UI_W * 0.105;
+            h = BN_KOTH_BOTTOM_H - safeZoneH * 0.066;
+            colorBackground[] = {0.055, 0.055, 0.05, 0.96};
+        };
+
+        class BgBottomLeader2: BgBottomLeader1
+        {
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.630;
+        };
+
+        class BgBottomLeader2Inset: BgBottomLeader1Inset
+        {
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.6315;
+        };
+
+        class BgBottomLeader3: BgBottomLeader1
+        {
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.745;
+        };
+
+        class BgBottomLeader3Inset: BgBottomLeader1Inset
+        {
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.7465;
+        };
+
+        class BgBottomLeader4: BgBottomLeader1
+        {
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.860;
+        };
+
+        class BgBottomLeader4Inset: BgBottomLeader1Inset
+        {
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.8615;
         };
     };
 
@@ -344,17 +374,34 @@ class BgVoteFooter: BN_KOTH_Lobby_Background
             colorText[] = {0.88, 0.71, 0.23, 1};
         };
 
-        class HeaderPlayers: BN_KOTH_Lobby_Subtitle
-        {
-            idc = BN_KOTH_IDC_HEADER_PLAYERS;
-            text = "0 / -- PLAYERS";
-            style = 2;
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.71;
-            y = BN_KOTH_UI_Y + safeZoneH * 0.018;
-            w = BN_KOTH_UI_W * 0.15;
-            h = safeZoneH * 0.026;
-            colorText[] = {0.95, 0.94, 0.90, 0.94};
-        };
+class HeaderPlayersLabel: BN_KOTH_Lobby_SectionLabel
+{
+    idc = BN_KOTH_IDC_HEADER_PLAYERS_LABEL;
+    text = "PLAYERS";
+    style = 2;
+
+    x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.71;
+    y = BN_KOTH_UI_Y + safeZoneH * 0.018;
+    w = BN_KOTH_UI_W * 0.15;
+    h = safeZoneH * 0.018;
+
+    colorText[] = {0.78, 0.76, 0.70, 0.72};
+};
+
+class HeaderPlayers: BN_KOTH_Lobby_Subtitle
+{
+    idc = BN_KOTH_IDC_HEADER_PLAYERS;
+    text = "0 / 100";
+    style = 2;
+
+    x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.71;
+    y = BN_KOTH_UI_Y + safeZoneH * 0.047;
+    w = BN_KOTH_UI_W * 0.15;
+    h = safeZoneH * 0.022;
+
+    sizeEx = "0.024 * safeZoneH";
+    colorText[] = {0.95, 0.94, 0.90, 0.94};
+};
 
         class HeaderRightTitle: BN_KOTH_Lobby_SectionLabel
         {
@@ -579,14 +626,148 @@ class BgVoteFooter: BN_KOTH_Lobby_Background
         };
 
         class CenterInfo: BN_KOTH_RscStructuredText
-        {
-            idc = BN_KOTH_IDC_CENTER_INFO;
-            x = BN_KOTH_CENTER_X + safeZoneW * 0.015;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.318;
-            w = BN_KOTH_CENTER_W - safeZoneW * 0.03;
-            h = BN_KOTH_MAIN_H - safeZoneH * 0.34;
-            text = "<t align='center' size='1.0'>Waiting for mission state...</t>";
-        };
+{
+    idc = BN_KOTH_IDC_CENTER_INFO;
+    x = 0;
+    y = 0;
+    w = 0;
+    h = 0;
+    show = 0;
+};
+
+        class CenterScoreTitle: BN_KOTH_Lobby_SectionLabel
+{
+    idc = BN_KOTH_IDC_CENTER_SCORE_TITLE;
+    text = "ROUND SCORE";
+    style = 2;
+
+    x = BN_KOTH_CENTER_X + safeZoneW * 0.010;
+    y = BN_KOTH_MAIN_Y + safeZoneH * 0.325;
+    w = BN_KOTH_CENTER_W - safeZoneW * 0.020;
+    h = safeZoneH * 0.024;
+
+    sizeEx = "0.019 * safeZoneH";
+    colorText[] = {0.88, 0.84, 0.72, 0.92};
+};
+
+class CenterWestLabel: BN_KOTH_Lobby_SectionLabel
+{
+    text = "WEST";
+    style = 0;
+
+    x = BN_KOTH_CENTER_X + safeZoneW * 0.012;
+    y = BN_KOTH_MAIN_Y + safeZoneH * 0.370;
+    w = BN_KOTH_CENTER_W * 0.34;
+    h = safeZoneH * 0.020;
+
+    colorText[] = {0.40, 0.75, 1, 0.90};
+};
+
+class CenterWestScore: BN_KOTH_Lobby_Value
+{
+    idc = BN_KOTH_IDC_CENTER_WEST_SCORE;
+    text = "42";
+    style = 1;
+
+    x = BN_KOTH_CENTER_X + BN_KOTH_CENTER_W * 0.58;
+    y = BN_KOTH_MAIN_Y + safeZoneH * 0.360;
+    w = BN_KOTH_CENTER_W * 0.28;
+    h = safeZoneH * 0.034;
+
+    sizeEx = "0.030 * safeZoneH";
+    colorText[] = {0.40, 0.75, 1, 1};
+};
+
+class CenterWestBarBg: BN_KOTH_Lobby_Background
+{
+    idc = BN_KOTH_IDC_CENTER_WEST_BAR_BG;
+
+    x = BN_KOTH_CENTER_X + safeZoneW * 0.012;
+    y = BN_KOTH_MAIN_Y + safeZoneH * 0.405;
+    w = BN_KOTH_CENTER_W - safeZoneW * 0.024;
+    h = safeZoneH * 0.018;
+
+    colorBackground[] = {0.03, 0.05, 0.07, 0.94};
+};
+
+class CenterWestBar: BN_KOTH_Lobby_Background
+{
+    idc = BN_KOTH_IDC_CENTER_WEST_BAR;
+
+    x = BN_KOTH_CENTER_X + safeZoneW * 0.012;
+    y = BN_KOTH_MAIN_Y + safeZoneH * 0.405;
+    w = (BN_KOTH_CENTER_W - safeZoneW * 0.024) * 0.42;
+    h = safeZoneH * 0.018;
+
+    colorBackground[] = {0.10, 0.34, 0.63, 0.96};
+};
+
+class CenterEastLabel: BN_KOTH_Lobby_SectionLabel
+{
+    text = "EAST";
+    style = 0;
+
+    x = BN_KOTH_CENTER_X + safeZoneW * 0.012;
+    y = BN_KOTH_MAIN_Y + safeZoneH * 0.450;
+    w = BN_KOTH_CENTER_W * 0.34;
+    h = safeZoneH * 0.020;
+
+    colorText[] = {1, 0.45, 0.45, 0.90};
+};
+
+class CenterEastScore: BN_KOTH_Lobby_Value
+{
+    idc = BN_KOTH_IDC_CENTER_EAST_SCORE;
+    text = "37";
+    style = 1;
+
+    x = BN_KOTH_CENTER_X + BN_KOTH_CENTER_W * 0.58;
+    y = BN_KOTH_MAIN_Y + safeZoneH * 0.440;
+    w = BN_KOTH_CENTER_W * 0.28;
+    h = safeZoneH * 0.034;
+
+    sizeEx = "0.030 * safeZoneH";
+    colorText[] = {1, 0.45, 0.45, 1};
+};
+
+class CenterEastBarBg: BN_KOTH_Lobby_Background
+{
+    idc = BN_KOTH_IDC_CENTER_EAST_BAR_BG;
+
+    x = BN_KOTH_CENTER_X + safeZoneW * 0.012;
+    y = BN_KOTH_MAIN_Y + safeZoneH * 0.485;
+    w = BN_KOTH_CENTER_W - safeZoneW * 0.024;
+    h = safeZoneH * 0.018;
+
+    colorBackground[] = {0.07, 0.03, 0.03, 0.94};
+};
+
+class CenterEastBar: BN_KOTH_Lobby_Background
+{
+    idc = BN_KOTH_IDC_CENTER_EAST_BAR;
+
+    x = BN_KOTH_CENTER_X + safeZoneW * 0.012;
+    y = BN_KOTH_MAIN_Y + safeZoneH * 0.485;
+    w = (BN_KOTH_CENTER_W - safeZoneW * 0.024) * 0.37;
+    h = safeZoneH * 0.018;
+
+    colorBackground[] = {0.62, 0.16, 0.14, 0.96};
+};
+
+class CenterScoreLimit: BN_KOTH_Lobby_FinePrint
+{
+    idc = BN_KOTH_IDC_CENTER_SCORE_LIMIT;
+    text = "FIRST TO 100";
+    style = 2;
+
+    x = BN_KOTH_CENTER_X + safeZoneW * 0.010;
+    y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H * 0.956;
+    w = BN_KOTH_CENTER_W - safeZoneW * 0.020;
+    h = safeZoneH * 0.018;
+
+    sizeEx = "0.015 * safeZoneH";
+    colorText[] = {0.82, 0.80, 0.72, 0.74};
+};
 
 		class EastEmblem: BN_KOTH_Lobby_Emblem
 		{
@@ -800,9 +981,9 @@ class VoteTotal1: BN_KOTH_Lobby_Value
             text = "";
             x = BN_KOTH_VOTE_X + safeZoneW * 0.014;
             y = BN_KOTH_MAIN_Y + safeZoneH * 0.292;
-            w = BN_KOTH_VOTE_W * 0.76;
+            w = BN_KOTH_VOTE_W * 0.70;
             h = safeZoneH * 0.023;
-            sizeEx = "0.0145 * safeZoneH";
+            sizeEx = "0.0135 * safeZoneH";
             colorText[] = {0.82, 0.8, 0.76, 0.88};
         };
 
@@ -847,10 +1028,10 @@ class VoteTotal3: VoteTotal1
             idc = BN_KOTH_IDC_VOTE_HELP;
             text = "Vote for the next objective location.";
             x = BN_KOTH_VOTE_X + safeZoneW * 0.012;
-            y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H - safeZoneH * 0.084;
+            y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H - safeZoneH * 0.075;
             w = BN_KOTH_VOTE_W - safeZoneW * 0.024;
-            h = safeZoneH * 0.058;
-            sizeEx = "0.017 * safeZoneH";
+            h = safeZoneH * 0.040;
+            sizeEx = "0.016 * safeZoneH";
             colorText[] = {0.88, 0.86, 0.82, 0.86};
         };
 
@@ -875,16 +1056,144 @@ class VoteTotal3: VoteTotal1
             text = "<t size='0.95'>Two teams fight to capture and hold the objective.</t>";
         };
 
-        class BottomPlaceholderLabel: BN_KOTH_Lobby_FinePrint
+        class BottomLeadersTitle: BN_KOTH_Lobby_Title
         {
-            idc = BN_KOTH_IDC_BOTTOM_PLACEHOLDER_LABEL;
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.56;
-            y = BN_KOTH_BOTTOM_Y + BN_KOTH_BOTTOM_H * 0.62;
-            w = BN_KOTH_UI_W * 0.35;
+            idc = BN_KOTH_IDC_BOTTOM_LEADERS_TITLE;
+            text = "LIVE LEADERS";
+            style = 2;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.515;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.010;
+            w = BN_KOTH_UI_W * 0.453;
+            h = safeZoneH * 0.030;
+            sizeEx = "0.022 * safeZoneH";
+            colorText[] = {0.88, 0.84, 0.72, 0.92};
+        };
+
+        class BottomLeader1Label: BN_KOTH_Lobby_SectionLabel
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_1_LABEL;
+            text = "MOST DEADLY";
+            style = 2;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.520;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.060;
+            w = BN_KOTH_UI_W * 0.098;
+            h = safeZoneH * 0.018;
+            sizeEx = "0.014 * safeZoneH";
+            colorText[] = {0.86, 0.70, 0.42, 0.92};
+        };
+
+        class BottomLeader1Name: BN_KOTH_Lobby_Subtitle
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_1_NAME;
+            text = "Mongo";
+            style = 2;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.520;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.085;
+            w = BN_KOTH_UI_W * 0.098;
+            h = safeZoneH * 0.030;
+            sizeEx = "0.024 * safeZoneH";
+            colorText[] = {0.96, 0.95, 0.92, 1};
+        };
+
+        class BottomLeader1Value: BN_KOTH_Lobby_Value
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_1_VALUE;
+            text = "18 KILLS";
+            style = 2;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.520;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.122;
+            w = BN_KOTH_UI_W * 0.098;
+            h = safeZoneH * 0.024;
+            sizeEx = "0.019 * safeZoneH";
+            colorText[] = {0.88, 0.82, 0.70, 0.94};
+        };
+
+        class BottomLeader2Label: BottomLeader1Label
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_2_LABEL;
+            text = "OBJECTIVE LEADER";
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.635;
+        };
+        class BottomLeader2Name: BottomLeader1Name
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_2_NAME;
+            text = "Tyler";
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.635;
+        };
+        class BottomLeader2Value: BottomLeader1Value
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_2_VALUE;
+            text = "624 PTS";
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.635;
+        };
+
+        class BottomLeader3Label: BottomLeader1Label
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_3_LABEL;
+            text = "BEST STREAK";
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.750;
+        };
+        class BottomLeader3Name: BottomLeader1Name
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_3_NAME;
+            text = "Legend";
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.750;
+        };
+        class BottomLeader3Value: BottomLeader1Value
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_3_VALUE;
+            text = "7 KILLS";
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.750;
+        };
+
+        class BottomLeader4Label: BottomLeader1Label
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_4_LABEL;
+            text = "TOP MEDIC";
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.865;
+        };
+        class BottomLeader4Name: BottomLeader1Name
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_4_NAME;
+            text = "Doc";
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.865;
+        };
+        class BottomLeader4Value: BottomLeader1Value
+        {
+            idc = BN_KOTH_IDC_BOTTOM_LEADER_4_VALUE;
+            text = "12 REVIVES";
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.865;
+        };
+
+        class BottomDiscordLabel: BN_KOTH_Lobby_SectionLabel
+        {
+            idc = BN_KOTH_IDC_BOTTOM_DISCORD_LABEL;
+            text = "BRO-NATION COMMUNITY";
+            style = 2;
+            x = BN_KOTH_CENTER_X + (BN_KOTH_CENTER_W - BN_KOTH_UI_W * 0.115) / 2;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.070;
+            w = BN_KOTH_UI_W * 0.115;
+            h = safeZoneH * 0.018;
+            sizeEx = "0.014 * safeZoneH";
+            colorText[] = {0.78, 0.76, 0.70, 0.72};
+        };
+
+        class BottomDiscordButton: BN_KOTH_RscButton
+        {
+            idc = BN_KOTH_IDC_BOTTOM_DISCORD_BUTTON;
+            text = "JOIN DISCORD";
+            x = BN_KOTH_CENTER_X + (BN_KOTH_CENTER_W - BN_KOTH_UI_W * 0.095) / 2;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.100;
+            w = BN_KOTH_UI_W * 0.095;
             h = safeZoneH * 0.038;
-            style = 1;
-            text = "BRO-NATION\nALIS AQUILAE";
-            colorText[] = {0.86, 0.79, 0.57, 0.70};
+            sizeEx = "0.018 * safeZoneH";
+            colorBackground[] = {0.38, 0.31, 0.15, 0.88};
+            colorBackgroundActive[] = {0.52, 0.40, 0.16, 1};
+            colorBackgroundDisabled[] = {0.12, 0.12, 0.11, 0.65};
+            colorText[] = {0.96, 0.94, 0.86, 1};
+            colorFocused[] = {0.52, 0.40, 0.16, 1};
+            tooltip = "Join the Bro-Nation Discord community";
+            action = "openURL 'https://discord.gg/haNcSAEhKS'";
         };
     };
 };

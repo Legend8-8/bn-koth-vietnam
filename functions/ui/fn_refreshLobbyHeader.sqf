@@ -26,8 +26,27 @@ if (_defaultMaxPlayers < 1) then {
     _defaultMaxPlayers = 1;
 };
 
+private _scoreTick = _viewModel getOrDefault ["scoreTick", 1];
+private _scoreTickInterval = _viewModel getOrDefault ["scoreTickInterval", 5];
+private _scoreLimit = _viewModel getOrDefault ["scoreLimit", 100];
+
+if (_scoreTick < 0) then {
+    _scoreTick = 0;
+};
+
+if (_scoreTickInterval < 1) then {
+    _scoreTickInterval = 1;
+};
+
+if (_scoreLimit < 1) then {
+    _scoreLimit = 1;
+};
+
+private _pointLabel = if (_scoreTick isEqualTo 1) then {"point"} else {"points"};
+private _secondLabel = if (_scoreTickInterval isEqualTo 1) then {"second"} else {"seconds"};
+
 (_display displayCtrl BN_KOTH_IDC_HEADER_PLAYERS) ctrlSetText format [
-    "%1 / %2 PLAYERS",
+    "%1 / %2",
     _viewModel getOrDefault ["playerCount", 0],
     _viewModel getOrDefault ["maxPlayers", _defaultMaxPlayers]
 ];
@@ -37,8 +56,10 @@ if (_defaultMaxPlayers < 1) then {
 (_display displayCtrl BN_KOTH_IDC_BOTTOM_TITLE) ctrlSetText "MODE INFO";
 
 (_display displayCtrl BN_KOTH_IDC_BOTTOM_DESCRIPTION) ctrlSetStructuredText parseText format [
-    "<t size='1.04' color='#E8E2D6'>King of the Hill - Vietnam</t><br/><br/><t color='#D5D0C7'>Two teams fight to capture and hold the objective.</t><br/><t color='#BEB7AB'>Control the zone to earn %1 point every %2 seconds.</t><br/><t color='#BEB7AB'>Eliminate enemies, hold the zone, and defend your position.</t><br/><t color='#BEB7AB'>First team to reach %3 wins the round.</t>",
-    _viewModel getOrDefault ["scoreTick", 1],
-    _viewModel getOrDefault ["scoreTickInterval", 5],
-    _viewModel getOrDefault ["scoreLimit", 100]
+    "<t size='1.04' color='#E8E2D6'>King of the Hill - Vietnam</t><br/><br/><t color='#D5D0C7'>Two teams fight to capture and hold the objective.</t><br/><t color='#BEB7AB'>Control the zone to earn %1 %2 every %3 %4.</t><br/><t color='#BEB7AB'>Eliminate enemies, hold the zone, and defend your position.</t><br/><t color='#BEB7AB'>First team to reach %5 wins the round.</t>",
+    _scoreTick,
+    _pointLabel,
+    _scoreTickInterval,
+    _secondLabel,
+    _scoreLimit
 ];

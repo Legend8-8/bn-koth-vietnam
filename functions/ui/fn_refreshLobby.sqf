@@ -39,6 +39,10 @@ private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParti
 private _voteCandidates = missionNamespace getVariable ["BN_KOTH_voteCandidates", []];
 private _voteTotals = missionNamespace getVariable ["BN_KOTH_voteTotals", createHashMap];
 private _votesByUid = missionNamespace getVariable ["BN_KOTH_votesByUid", createHashMap];
+private _teamScores = missionNamespace getVariable [
+    "BN_KOTH_teamScores",
+    createHashMapFromArray [[west, 0], [east, 0]]
+];
 private _scoreLimit = missionNamespace getVariable ["BN_KOTH_scoreLimit", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreLimit")} else {100}];
 private _scoreTick = missionNamespace getVariable ["BN_KOTH_scoreTick", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTick")} else {1}];
 private _scoreTickInterval = missionNamespace getVariable ["BN_KOTH_scoreTickInterval", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {5}];
@@ -61,11 +65,30 @@ if (_teamCap < 1) then {
     _teamCap = 1;
 };
 
+if (_scoreLimit < 1) then {
+    _scoreLimit = 1;
+};
+
+if (_scoreTick < 0) then {
+    _scoreTick = 0;
+};
+
+if (_scoreTickInterval < 1) then {
+    _scoreTickInterval = 1;
+};
+
 private _westCount = 0;
 private _eastCount = 0;
 if (_teamCounts isEqualType createHashMap) then {
     _westCount = _teamCounts getOrDefault [west, 0];
     _eastCount = _teamCounts getOrDefault [east, 0];
+};
+
+private _westScore = 0;
+private _eastScore = 0;
+if (_teamScores isEqualType createHashMap) then {
+    _westScore = _teamScores getOrDefault [west, 0];
+    _eastScore = _teamScores getOrDefault [east, 0];
 };
 
 private _allSelected = _westCount + _eastCount;
@@ -324,6 +347,8 @@ private _teamView = createHashMapFromArray [
 
 private _centerView = createHashMapFromArray [
     ["scoreLimit", _scoreLimit],
+    ["westScore", _westScore],
+    ["eastScore", _eastScore],
     ["roundTimeLimitText", "NONE"],
     ["vehiclesText", "SERVER RULES"],
     ["friendlyFireText", "SERVER RULES"],
