@@ -31,6 +31,8 @@ if (_slots isEqualType createHashMap) then {
     } forEach _slotIds;
 };
 
+_deletedCount = _deletedCount + ([] call bn_koth_fnc_vehicles_cleanupManagedWrecks);
+
 missionNamespace setVariable ["BN_KOTH_vehicleManagedSlots", createHashMap];
 missionNamespace setVariable ["BN_KOTH_vehicleManagedSlotIds", []];
 

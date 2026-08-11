@@ -37,6 +37,10 @@ while {missionNamespace getVariable ["BN_KOTH_vehicleMonitorRunning", false]} do
 
         if (isNull _vehicle || {!alive _vehicle}) then {
             if (_respawnAt < 0) then {
+                if (!isNull _vehicle) then {
+                    deleteVehicle _vehicle;
+                };
+
                 _slotData set ["vehicle", objNull];
                 _slotData set ["emptySince", -1];
                 _slotData set ["respawnAt", serverTime + _cooldown];
