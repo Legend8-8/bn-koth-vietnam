@@ -30,6 +30,7 @@ if (_uid isEqualTo "") exitWith {false};
 private _playerStates = missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap];
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 private _nativeSuppressed = uiNamespace getVariable ["BN_KOTH_lobbyNativeMenuSuppressed", false];
+private _nativeActive = uiNamespace getVariable ["BN_KOTH_lobbyNativeMenuActive", false];
 private _nativeRestorePending = uiNamespace getVariable ["BN_KOTH_lobbyNativeMenuRestorePending", false];
 
 if !(_playerStates isEqualType createHashMap) exitWith {false};
@@ -61,7 +62,7 @@ if (_shouldOpen) then {
         [] call bn_koth_fnc_ui_closeLobby;
     };
 
-    if (_isDeployed) then {
+    if (_isDeployed && {!_nativeActive}) then {
         uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuSuppressed", false];
         uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuActive", false];
         uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuRestorePending", false];

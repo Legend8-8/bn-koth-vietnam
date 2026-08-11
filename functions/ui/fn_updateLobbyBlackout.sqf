@@ -22,7 +22,7 @@ private _isDeployed = false;
 if (_stateReady && {!(_uid isEqualTo "")}) then {
     if (_playerStates isEqualType createHashMap && {_uid in (keys _playerStates)}) then {
         private _myState = _playerStates getOrDefault [_uid, "LOBBY"];
-        _isDeployed = (_uid in _activeParticipants) || {_myState in ["ACTIVE", "DEPLOYING", "RETURNING", "RESPAWNING"]};
+        _isDeployed = (_uid in _activeParticipants) || {_myState in ["ACTIVE", "RESPAWNING"]};
     };
 };
 

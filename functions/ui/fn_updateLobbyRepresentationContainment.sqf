@@ -24,7 +24,7 @@ if (_stateReady && {!(_uid isEqualTo "")} && {_playerStates isEqualType createHa
     _isReady = true;
 };
 
-private _gameplayReady = (_uid in _activeParticipants) || {_myState isEqualTo "ACTIVE"};
+private _gameplayReady = (_uid in _activeParticipants) || {_myState in ["ACTIVE", "RESPAWNING"]};
 private _shouldContain = _isReady && {!_gameplayReady} && {_myState in ["LOBBY", "TEAM_SELECTED", "DEPLOYING"]};
 
 private _previousUnit = uiNamespace getVariable ["BN_KOTH_lobbyContainedUnit", objNull];

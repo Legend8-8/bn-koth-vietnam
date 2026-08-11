@@ -35,7 +35,6 @@ private _existing = uiNamespace getVariable ["BN_KOTH_lobbyDisplay", displayNull
 if (!isNull _existing) exitWith {
     [] call bn_koth_fnc_ui_refreshLobby;
     [] call _startRefreshLoop;
-    [] call bn_koth_fnc_ui_updateLobbyBlackout;
     true
 };
 
@@ -45,7 +44,5 @@ if (_opened) then {
     [] call bn_koth_fnc_ui_refreshLobby;
     [] call _startRefreshLoop;
 };
-
-[] call bn_koth_fnc_ui_updateLobbyBlackout;
 
 _opened
