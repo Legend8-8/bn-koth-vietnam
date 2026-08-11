@@ -6,7 +6,7 @@ class CfgBnKothVehicles
     monitorIntervalSeconds = 1;
 
     // Empty this long with zero player crew before recycle.
-    abandonmentTimeoutSeconds = 300;
+    abandonmentTimeoutSeconds = 10;
 
     // Safe spawn checks for managed free vehicles.
     spawnClearRadiusMeters = 8;
@@ -18,6 +18,9 @@ class CfgBnKothVehicles
     respawnCooldownGroundSeconds = 10;
     respawnCooldownAirSeconds = 20;
     respawnCooldownSeaSeconds = 15;
+
+    // Command vehicle respawn delay after destruction.
+    commandVehicleRespawnCooldownSeconds = 30;
 
     // Default vehicle classes per category.
     groundVehicleClass = "vn_b_wheeled_m54_02_sog";
@@ -31,4 +34,9 @@ class CfgBnKothVehicles
     eastGroundVehicleClass = "";
     eastAirVehicleClass = "";
     eastSeaVehicleClass = "";
+
+    // Command vehicle classes used by command mapboard teleport.
+    // Must be explicitly set.
+    westCommandVehicleClass = "vn_b_armor_m577_01";
+    eastCommandVehicleClass = "vn_b_armor_m577_01";
 };

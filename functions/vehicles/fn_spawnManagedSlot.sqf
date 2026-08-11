@@ -22,6 +22,13 @@ if !(_slotData isEqualType createHashMap) exitWith {false};
 private _existingVehicle = _slotData getOrDefault ["vehicle", objNull];
 if (!isNull _existingVehicle && {alive _existingVehicle}) exitWith {true};
 
+if (!isNull _existingVehicle && {!alive _existingVehicle}) then {
+    deleteVehicle _existingVehicle;
+    _slotData set ["vehicle", objNull];
+    _slots set [_slotId, _slotData];
+    missionNamespace setVariable ["BN_KOTH_vehicleManagedSlots", _slots];
+};
+
 private _markerName = _slotData getOrDefault ["markerName", ""];
 private _vehicleClass = _slotData getOrDefault ["vehicleClass", ""];
 private _side = _slotData getOrDefault ["side", sideUnknown];
@@ -114,6 +121,8 @@ private _vehicle = createVehicle [_vehicleClass, _spawnPos, [], 0, "NONE"];
 _vehicle setDir _spawnDir;
 _vehicle setPosATL _spawnPos;
 _vehicle lock 0;
+[_vehicle] call bn_koth_fnc_vehicles_clearVehicleInventory;
+[_vehicle] call bn_koth_fnc_vehicles_addVehicleInventory;
 
 _vehicle setVariable ["BN_KOTH_isManagedFreeVehicle", true, true];
 _vehicle setVariable ["BN_KOTH_managedVehicleSlotId", _slotId, true];

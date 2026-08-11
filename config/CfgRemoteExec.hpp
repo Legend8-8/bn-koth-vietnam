@@ -40,6 +40,18 @@ class CfgRemoteExec
             allowedTargets = 1;
             jip = 0;
         };
+
+        class bn_koth_fnc_vehicles_mobileRespawn_requestTeleport
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_vehicles_mobileRespawn_executeTeleport
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
     };
 
     class Commands
