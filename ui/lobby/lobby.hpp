@@ -31,7 +31,7 @@ class BN_KOTH_RscLobby
     idd = BN_KOTH_IDD_LOBBY;
     movingEnable = 0;
     enableSimulation = 1;
-    onLoad = "uiNamespace setVariable ['BN_KOTH_lobbyDisplay', _this select 0]; [] call bn_koth_fnc_ui_refreshLobby;";
+    onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_lobbyDisplay', _display]; _display displayAddEventHandler ['KeyDown', '_this call bn_koth_fnc_ui_handleLobbyKeyDown']; [] call bn_koth_fnc_ui_refreshLobby;";
     onUnload = "uiNamespace setVariable ['BN_KOTH_lobbyDisplay', displayNull];";
 
     class controlsBackground

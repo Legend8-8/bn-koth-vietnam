@@ -28,3 +28,5 @@ if (isNull _display) then {
 if (!isNull _display) then {
     _display closeDisplay 2;
 };
+
+[] call bn_koth_fnc_ui_updateLobbyBlackout;

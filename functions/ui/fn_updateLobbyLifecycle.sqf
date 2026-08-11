@@ -17,6 +17,10 @@ if (!hasInterface) exitWith {false};
 private _stateReady = missionNamespace getVariable ["BN_KOTH_stateReady", false];
 if (!_stateReady) exitWith {false};
 
+[] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;
+
+private _initialPreloadFinished = uiNamespace getVariable ["BN_KOTH_initialPreloadFinished", false];
+
 private _roundState = missionNamespace getVariable ["BN_KOTH_roundState", ""];
 if !(_roundState in ["WAITING", "PREPARING", "ACTIVE", "ENDING", "RESETTING"]) exitWith {false};
 
@@ -25,14 +29,23 @@ if (_uid isEqualTo "") exitWith {false};
 
 private _playerStates = missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap];
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
+private _nativeSuppressed = uiNamespace getVariable ["BN_KOTH_lobbyNativeMenuSuppressed", false];
+private _nativeRestorePending = uiNamespace getVariable ["BN_KOTH_lobbyNativeMenuRestorePending", false];
 
 if !(_playerStates isEqualType createHashMap) exitWith {false};
 if !(_uid in (keys _playerStates)) exitWith {false};
 
 private _myState = _playerStates getOrDefault [_uid, "LOBBY"];
 
-private _isDeployed = (_uid in _activeParticipants) || {_myState in ["ACTIVE", "DEPLOYING", "RETURNING"]};
-private _shouldOpen = !_isDeployed;
+private _isDeployed = (_uid in _activeParticipants) || {_myState in ["ACTIVE", "RESPAWNING"]};
+private _shouldOpen = !_isDeployed && {_initialPreloadFinished};
+
+if (_nativeRestorePending && {isNull (findDisplay 49)} && {!dialog} && {!isNull (findDisplay 46)}) then {
+    uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuSuppressed", false];
+    uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuActive", false];
+    uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuRestorePending", false];
+    _nativeSuppressed = false;
+};
 
 private _display = uiNamespace getVariable ["BN_KOTH_lobbyDisplay", displayNull];
 if (isNull _display) then {
@@ -40,13 +53,21 @@ if (isNull _display) then {
 };
 
 if (_shouldOpen) then {
-    if (isNull _display && {!isNull (findDisplay 46)}) then {
+    if (!_nativeSuppressed && {isNull _display} && {!isNull (findDisplay 46)}) then {
         [] call bn_koth_fnc_ui_openLobby;
     };
 } else {
     if (!isNull _display) then {
         [] call bn_koth_fnc_ui_closeLobby;
     };
+
+    if (_isDeployed) then {
+        uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuSuppressed", false];
+        uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuActive", false];
+        uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuRestorePending", false];
+    };
 };
+
+[] call bn_koth_fnc_ui_updateLobbyBlackout;
 
 _shouldOpen

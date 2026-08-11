@@ -7,3 +7,5 @@
 #include "config\CfgFunctions.hpp"
 #include "config\CfgRemoteExec.hpp"
 #include "config\CfgServer.hpp"
+
+onPauseScript = "functions\ui\pauseOnLoad.sqf";

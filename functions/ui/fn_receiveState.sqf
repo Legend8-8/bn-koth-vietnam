@@ -62,6 +62,8 @@ private _keyMap = createHashMapFromArray [
 } forEach (keys _payload);
 
 [] call bn_koth_fnc_ui_evaluateStateReadiness;
+[] call bn_koth_fnc_ui_updateLobbyBlackout;
+[] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;
 
 [] call bn_koth_fnc_ui_updateLobbyLifecycle;
 [] call bn_koth_fnc_ui_refreshLobby;

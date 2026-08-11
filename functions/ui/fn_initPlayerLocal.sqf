@@ -13,13 +13,36 @@
 
 if (!hasInterface) exitWith {};
 
+uiNamespace setVariable ["BN_KOTH_initialPreloadFinished", false];
+
+addMissionEventHandler [
+    "PreloadFinished",
+    {
+        if (uiNamespace getVariable ["BN_KOTH_initialPreloadFinished", false]) exitWith {
+            removeMissionEventHandler ["PreloadFinished", _thisEventHandler];
+        };
+
+        uiNamespace setVariable ["BN_KOTH_initialPreloadFinished", true];
+        removeMissionEventHandler ["PreloadFinished", _thisEventHandler];
+        [] call bn_koth_fnc_ui_updateLobbyLifecycle;
+    }
+];
+
 private _debugCfg = missionConfigFile >> "CfgBnKothDebug";
 private _debugEnabled = if (isClass _debugCfg) then {(getNumber (_debugCfg >> "enabled")) > 0} else {false};
 
 missionNamespace setVariable ["BN_KOTH_debugEnabled", _debugEnabled];
 missionNamespace setVariable ["BN_KOTH_stateReady", false];
+uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuSuppressed", false];
+uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuActive", false];
+uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuRestorePending", false];
+uiNamespace setVariable ["BN_KOTH_lobbyBlackoutVisible", false];
+uiNamespace setVariable ["BN_KOTH_lobbyContainedUnit", objNull];
+uiNamespace setVariable ["BN_KOTH_lobbyContainmentApplied", false];
 
 [_debugEnabled] call bn_koth_fnc_ui_toggleDebugDisplay;
+[] call bn_koth_fnc_ui_updateLobbyBlackout;
+[] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;
 
 if (isNil {missionNamespace getVariable "BN_KOTH_lifecycleHooksInstalled"}) then {
     missionNamespace setVariable ["BN_KOTH_lifecycleHooksInstalled", true];
@@ -41,7 +64,7 @@ if (_existingLifecycleLoop isEqualTo scriptNull || {scriptDone _existingLifecycl
     private _lifecycleHandle = [] spawn {
         while {hasInterface} do {
             [] call bn_koth_fnc_ui_updateLobbyLifecycle;
-            sleep 1;
+            sleep 0.25;
         };
 
         missionNamespace setVariable ["BN_KOTH_lobbyLifecycleLoopHandle", scriptNull];

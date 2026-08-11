@@ -74,6 +74,9 @@ class CfgFunctions
         {
             class ui_initPlayerLocal {file = "functions\ui\fn_initPlayerLocal.sqf";};
             class ui_evaluateStateReadiness {file = "functions\ui\fn_evaluateStateReadiness.sqf";};
+            class ui_updateLobbyBlackout {file = "functions\ui\fn_updateLobbyBlackout.sqf";};
+            class ui_updateLobbyRepresentationContainment {file = "functions\ui\fn_updateLobbyRepresentationContainment.sqf";};
+            class ui_handleLobbyKeyDown {file = "functions\ui\fn_handleLobbyKeyDown.sqf";};
             class ui_openLobby {file = "functions\ui\fn_openLobby.sqf";};
             class ui_closeLobby {file = "functions\ui\fn_closeLobby.sqf";};
             class ui_refreshLobby {file = "functions\ui\fn_refreshLobby.sqf";};
