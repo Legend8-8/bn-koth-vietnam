@@ -40,6 +40,7 @@ private _keyMap = createHashMapFromArray [
     ["zoneState", "BN_KOTH_zoneState"],
     ["zoneController", "BN_KOTH_zoneController"],
     ["zonePopulation", "BN_KOTH_zonePopulation"],
+    ["scoreProgress", "BN_KOTH_scoreProgress"],
     ["maxPlayers", "BN_KOTH_maxPlayers"],
     ["maxTeamPlayers", "BN_KOTH_maxTeamPlayers"],
     ["winningSide", "BN_KOTH_winningSide"],
@@ -66,4 +67,5 @@ private _keyMap = createHashMapFromArray [
 [] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;
 
 [] call bn_koth_fnc_ui_updateLobbyLifecycle;
+[] call bn_koth_fnc_ui_refreshHud;
 [] call bn_koth_fnc_ui_refreshLobby;

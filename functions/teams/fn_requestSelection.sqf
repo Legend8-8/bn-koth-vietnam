@@ -208,6 +208,5 @@ if (_roundState isEqualTo "ACTIVE") then {
         };
     };
 
-    [_ownerId, format ["Team assignment accepted: %1", _requestedSide]] call bn_koth_fnc_teams_notifyPlayer;
     [format ["Team assignment accepted UID=%1 side=%2", _uid, _requestedSide]] call bn_koth_fnc_common_log;
 };

@@ -14,31 +14,53 @@
 
 if (!hasInterface) exitWith {false};
 
+private _syncHud = {
+    params ["_isDeployed"];
+    [_isDeployed] call bn_koth_fnc_ui_updateHudLifecycle;
+};
+
 private _stateReady = missionNamespace getVariable ["BN_KOTH_stateReady", false];
-if (!_stateReady) exitWith {false};
+if (!_stateReady) exitWith {
+    [false] call _syncHud;
+    false
+};
 
 [] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;
 
 private _initialPreloadFinished = uiNamespace getVariable ["BN_KOTH_initialPreloadFinished", false];
 
 private _roundState = missionNamespace getVariable ["BN_KOTH_roundState", ""];
-if !(_roundState in ["WAITING", "PREPARING", "ACTIVE", "ENDING", "RESETTING"]) exitWith {false};
+if !(_roundState in ["WAITING", "PREPARING", "ACTIVE", "ENDING", "RESETTING"]) exitWith {
+    [false] call _syncHud;
+    false
+};
 
 private _uid = getPlayerUID player;
-if (_uid isEqualTo "") exitWith {false};
+if (_uid isEqualTo "") exitWith {
+    [false] call _syncHud;
+    false
+};
 
 private _playerStates = missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap];
+if !(_playerStates isEqualType createHashMap) exitWith {
+    [false] call _syncHud;
+    false
+};
+
+if !(_uid in (keys _playerStates)) exitWith {
+    [false] call _syncHud;
+    false
+};
+
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 private _nativeSuppressed = uiNamespace getVariable ["BN_KOTH_lobbyNativeMenuSuppressed", false];
 private _nativeActive = uiNamespace getVariable ["BN_KOTH_lobbyNativeMenuActive", false];
 private _nativeRestorePending = uiNamespace getVariable ["BN_KOTH_lobbyNativeMenuRestorePending", false];
 
-if !(_playerStates isEqualType createHashMap) exitWith {false};
-if !(_uid in (keys _playerStates)) exitWith {false};
-
 private _myState = _playerStates getOrDefault [_uid, "LOBBY"];
-
 private _isDeployed = (_uid in _activeParticipants) || {_myState in ["ACTIVE", "RESPAWNING"]};
+[_isDeployed] call _syncHud;
+
 private _shouldOpen = !_isDeployed && {_initialPreloadFinished};
 
 if (_nativeRestorePending && {isNull (findDisplay 49)} && {!dialog} && {!isNull (findDisplay 46)}) then {

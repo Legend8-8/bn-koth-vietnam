@@ -59,6 +59,7 @@ class CfgFunctions
         class scoring
         {
             class scoring_initServer {file = "functions\scoring\fn_initServer.sqf";};
+            class scoring_resetProgress {file = "functions\scoring\fn_resetProgress.sqf";};
             class scoring_awardControlTick {file = "functions\scoring\fn_awardControlTick.sqf";};
         };
 
@@ -74,6 +75,8 @@ class CfgFunctions
         {
             class ui_initPlayerLocal {file = "functions\ui\fn_initPlayerLocal.sqf";};
             class ui_evaluateStateReadiness {file = "functions\ui\fn_evaluateStateReadiness.sqf";};
+            class ui_updateHudLifecycle {file = "functions\ui\fn_updateHudLifecycle.sqf";};
+            class ui_refreshHud {file = "functions\ui\fn_refreshHud.sqf";};
             class ui_updateLobbyBlackout {file = "functions\ui\fn_updateLobbyBlackout.sqf";};
             class ui_updateLobbyRepresentationContainment {file = "functions\ui\fn_updateLobbyRepresentationContainment.sqf";};
             class ui_handleLobbyKeyDown {file = "functions\ui\fn_handleLobbyKeyDown.sqf";};

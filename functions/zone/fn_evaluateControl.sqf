@@ -5,11 +5,13 @@
     Description: Computes zone population and controlling side.
     Execution: Server
     Parameters:
-        None
+        0: Skip scoring update after publishing zone state <BOOL> (optional)
     Returns:
         Controlling side or sideUnknown <SIDE>
     Public: Yes
 */
+
+params [["_skipScoringUpdate", false, [false]]];
 
 if (!isServer) exitWith {sideUnknown};
 
@@ -18,6 +20,9 @@ if !(_roundState isEqualTo "ACTIVE") exitWith {
     ["BN_KOTH_zoneController", sideUnknown] call bn_koth_fnc_common_publicState;
     ["BN_KOTH_zoneState", "NEUTRAL"] call bn_koth_fnc_common_publicState;
     ["BN_KOTH_zonePopulation", [0, 0]] call bn_koth_fnc_common_publicState;
+    if (!_skipScoringUpdate) then {
+        [] call bn_koth_fnc_scoring_awardControlTick;
+    };
     sideUnknown
 };
 
@@ -26,6 +31,9 @@ if (_marker isEqualTo "") exitWith {
     if !(missionNamespace getVariable ["BN_KOTH_warnedMissingZoneMarker", false]) then {
         missionNamespace setVariable ["BN_KOTH_warnedMissingZoneMarker", true];
         ["Zone evaluation skipped: BN_KOTH_activeZoneMarker is empty.", "WARN"] call bn_koth_fnc_common_log;
+    };
+    if (!_skipScoringUpdate) then {
+        [] call bn_koth_fnc_scoring_awardControlTick;
     };
     sideUnknown
 };
@@ -121,5 +129,9 @@ if !(_previousState isEqualTo _zoneState) then {
 ["BN_KOTH_zoneController", _controller] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_zoneState", _zoneState] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_zonePopulation", [_sideACount, _sideBCount]] call bn_koth_fnc_common_publicState;
+
+if (!_skipScoringUpdate) then {
+    [] call bn_koth_fnc_scoring_awardControlTick;
+};
 
 _controller

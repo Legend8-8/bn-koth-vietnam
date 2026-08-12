@@ -30,6 +30,7 @@ if !(_activeLocationId isEqualTo "") then {
 
 [] call bn_koth_fnc_teams_returnAllToLobby;
 [] call bn_koth_fnc_zone_clearActiveLocation;
+[] call bn_koth_fnc_scoring_resetProgress;
 
 private _playableSides = missionNamespace getVariable ["BN_KOTH_playableSides", [west, east]];
 if ((count _playableSides) < 2) then {

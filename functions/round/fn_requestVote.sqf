@@ -101,5 +101,3 @@ if (_previous isEqualTo "") then {
 } else {
     [format ["Vote changed UID=%1 from=%2 to=%3", _uid, _previous, _requestedLocationId]] call bn_koth_fnc_common_log;
 };
-
-[_ownerId, format ["Vote submitted: %1", _requestedLocationId]] call bn_koth_fnc_teams_notifyPlayer;

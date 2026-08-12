@@ -39,6 +39,8 @@ uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuRestorePending", false];
 uiNamespace setVariable ["BN_KOTH_lobbyBlackoutVisible", false];
 uiNamespace setVariable ["BN_KOTH_lobbyContainedUnit", objNull];
 uiNamespace setVariable ["BN_KOTH_lobbyContainmentApplied", false];
+uiNamespace setVariable ["BN_KOTH_hudVisible", false];
+uiNamespace setVariable ["BN_KOTH_hudDisplay", displayNull];
 
 [_debugEnabled] call bn_koth_fnc_ui_toggleDebugDisplay;
 [] call bn_koth_fnc_ui_updateLobbyBlackout;
@@ -57,6 +59,26 @@ if (isNil {missionNamespace getVariable "BN_KOTH_lifecycleHooksInstalled"}) then
         [] call bn_koth_fnc_ui_updateLobbyLifecycle;
         [] call bn_koth_fnc_ui_refreshLobby;
     };
+};
+
+"BN_KOTH_scoreProgress" addPublicVariableEventHandler {
+    [] call bn_koth_fnc_ui_refreshHud;
+};
+
+"BN_KOTH_teamScores" addPublicVariableEventHandler {
+    [] call bn_koth_fnc_ui_refreshHud;
+};
+
+"BN_KOTH_zoneState" addPublicVariableEventHandler {
+    [] call bn_koth_fnc_ui_refreshHud;
+};
+
+"BN_KOTH_zoneController" addPublicVariableEventHandler {
+    [] call bn_koth_fnc_ui_refreshHud;
+};
+
+"BN_KOTH_scoreLimit" addPublicVariableEventHandler {
+    [] call bn_koth_fnc_ui_refreshHud;
 };
 
 private _existingLifecycleLoop = missionNamespace getVariable ["BN_KOTH_lobbyLifecycleLoopHandle", scriptNull];
