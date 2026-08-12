@@ -106,12 +106,6 @@ while {missionNamespace getVariable ["BN_KOTH_commandTeleportMonitorRunning", fa
     private _westBoardRef = getText (_activeCfg >> "westCommand_mapboard");
     private _eastBoardRef = getText (_activeCfg >> "eastCommand_mapboard");
 
-    missionNamespace setVariable [
-        "BN_KOTH_commandBoardDefs",
-        [["WEST", _westBoardRef], ["EAST", _eastBoardRef]],
-        true
-    ];
-
     private _vehiclesBySide = createHashMap;
     private _currentVehiclesBySide = missionNamespace getVariable ["BN_KOTH_commandVehicles", createHashMap];
     private _specs = [
@@ -198,15 +192,26 @@ while {missionNamespace getVariable ["BN_KOTH_commandTeleportMonitorRunning", fa
             _vehicle setDir _spawnDir;
             _vehicle setPosATL _spawnPos;
             _vehicle lock 0;
+            [_vehicle, _side, _sideToken] call _trackVehicle;
             [_vehicle] call bn_koth_fnc_vehicles_clearVehicleInventory;
             [_vehicle] call bn_koth_fnc_vehicles_addVehicleInventory;
             _respawnAtBySide set [_sideToken, -1];
+        } else {
+            [_vehicle, _side, _sideToken] call _trackVehicle;
         };
 
-        [_vehicle, _side, _sideToken] call _trackVehicle;
         _vehiclesBySide set [_sideToken, _vehicle];
     } forEach _specs;
 
-    missionNamespace setVariable ["BN_KOTH_commandVehicles", _vehiclesBySide, true];
+    private _currentPublishedVehicles = missionNamespace getVariable ["BN_KOTH_commandVehicles", createHashMap];
+    if !(_currentPublishedVehicles isEqualTo _vehiclesBySide) then {
+        missionNamespace setVariable ["BN_KOTH_commandVehicles", _vehiclesBySide, true];
+    };
+
+    private _boardDefs = [["WEST", _westBoardRef], ["EAST", _eastBoardRef]];
+    private _currentBoardDefs = missionNamespace getVariable ["BN_KOTH_commandBoardDefs", []];
+    if !(_currentBoardDefs isEqualTo _boardDefs) then {
+        missionNamespace setVariable ["BN_KOTH_commandBoardDefs", _boardDefs, true];
+    };
     uiSleep 2;
 };

@@ -121,13 +121,14 @@ private _vehicle = createVehicle [_vehicleClass, _spawnPos, [], 0, "NONE"];
 _vehicle setDir _spawnDir;
 _vehicle setPosATL _spawnPos;
 _vehicle lock 0;
-[_vehicle] call bn_koth_fnc_vehicles_clearVehicleInventory;
-[_vehicle] call bn_koth_fnc_vehicles_addVehicleInventory;
 
 _vehicle setVariable ["BN_KOTH_isManagedFreeVehicle", true, true];
 _vehicle setVariable ["BN_KOTH_managedVehicleSlotId", _slotId, true];
 _vehicle setVariable ["BN_KOTH_managedVehicleCategory", _category, true];
 _vehicle setVariable ["BN_KOTH_managedVehicleSide", _side, true];
+
+[_vehicle] call bn_koth_fnc_vehicles_clearVehicleInventory;
+[_vehicle] call bn_koth_fnc_vehicles_addVehicleInventory;
 
 _slotData set ["vehicle", _vehicle];
 _slotData set ["respawnAt", -1];

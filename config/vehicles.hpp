@@ -6,7 +6,7 @@ class CfgBnKothVehicles
     monitorIntervalSeconds = 1;
 
     // Empty this long with zero player crew before recycle.
-    abandonmentTimeoutSeconds = 10;
+    abandonmentTimeoutSeconds = 300;
 
     // Safe spawn checks for managed free vehicles.
     spawnClearRadiusMeters = 8;
@@ -21,6 +21,9 @@ class CfgBnKothVehicles
 
     // Command vehicle respawn delay after destruction.
     commandVehicleRespawnCooldownSeconds = 30;
+
+    // Anti-spam delay between server-authoritative command-teleport requests.
+    commandTeleportRequestCooldownSeconds = 10;
 
     // Default vehicle classes per category.
     groundVehicleClass = "vn_b_wheeled_m54_02_sog";
