@@ -116,5 +116,6 @@ if !(_uid in _activeParticipants) then {
 };
 
 [] call bn_koth_fnc_teams_publishState;
+[_newUnit] call bn_koth_fnc_curator_init;
 [format ["Respawn redeploy success UID=%1 side=%2", _uid, _assignedSide], "INFO"] call bn_koth_fnc_common_log;
 true

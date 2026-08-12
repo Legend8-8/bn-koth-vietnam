@@ -38,5 +38,7 @@ diag_log format ["[BN_KOTH][INFO] initPlayerServer native call owner=%1 uid='%2'
 
 	[format ["initPlayerServer registration complete owner=%1 uid='%2' attempts=%3", owner _playerObj, getPlayerUID _playerObj, _attempt], "INFO"] call bn_koth_fnc_common_log;
 
+	[_playerObj] call bn_koth_fnc_curator_init;
+
 	[_playerObj] call bn_koth_fnc_ui_sendStateToClient;
 };

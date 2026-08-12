@@ -19,6 +19,12 @@ class CfgBnKothVehicles
     respawnCooldownAirSeconds = 20;
     respawnCooldownSeaSeconds = 15;
 
+    // Command vehicle respawn delay after destruction.
+    commandVehicleRespawnCooldownSeconds = 30;
+
+    // Anti-spam delay between server-authoritative command-teleport requests.
+    commandTeleportRequestCooldownSeconds = 10;
+
     // Default vehicle classes per category.
     groundVehicleClass = "vn_b_wheeled_m54_02_sog";
     airVehicleClass = "vn_b_air_ch47_02_01";
@@ -31,4 +37,9 @@ class CfgBnKothVehicles
     eastGroundVehicleClass = "";
     eastAirVehicleClass = "";
     eastSeaVehicleClass = "";
+
+    // Command vehicle classes used by command mapboard teleport.
+    // Must be explicitly set.
+    westCommandVehicleClass = "vn_b_armor_m577_01";
+    eastCommandVehicleClass = "vn_b_armor_m577_01";
 };
