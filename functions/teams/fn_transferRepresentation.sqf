@@ -57,7 +57,7 @@ if (!isNull _targetUnit && {(owner _targetUnit) isEqualTo _ownerId}) exitWith {
     _records set [_uid, _record];
     missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
-    [_targetUnit] call bn_koth_fnc_curator_init;
+    [_targetUnit, _uid] call bn_koth_fnc_curator_init;
 
     true
 };

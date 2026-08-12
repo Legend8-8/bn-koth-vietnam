@@ -23,12 +23,6 @@ class CfgRemoteExec
             jip = 0;
         };
 
-        class bn_koth_fnc_curator_init
-        {
-            allowedTargets = 2;
-            jip = 0;
-        };
-
         class bn_koth_fnc_ui_receiveState
         {
             allowedTargets = 1;
