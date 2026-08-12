@@ -6,16 +6,15 @@
     Execution: Server
     Parameters:
         0: Player unit <OBJECT>
+        1: Known player UID <STRING> (optional)
     Returns:
         None
     Public: Yes
 */
 
-params ["_player"];
+params ["_player", ["_knownUID", "", [""]]];
 
-if (!isServer) exitWith {
-    [_player] remoteExecCall ["bn_koth_fnc_curator_init", 2];
-};
+if (!isServer) exitWith {};
 
 if (isNull _player) exitWith {
     ["Curator init rejected: player object is null.", "WARN"] call bn_koth_fnc_common_log;
@@ -26,7 +25,11 @@ private _curatorUIDs = [
     "76561198976258425"  // Legend
 ];
 
-private _playerUID = getPlayerUID _player;
+private _playerUID = if (_knownUID isEqualTo "") then {
+    getPlayerUID _player
+} else {
+    _knownUID
+};
 if (_playerUID isEqualTo "") exitWith {
     [format ["Curator init rejected: could not resolve UID for %1", _player], "WARN"] call bn_koth_fnc_common_log;
 };
