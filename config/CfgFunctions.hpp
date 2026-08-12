@@ -10,6 +10,11 @@ class CfgFunctions
             class common_publicState {file = "functions\common\fn_publicState.sqf";};
         };
 
+        class curator
+        {
+            class curator_init {file = "functions\curator\fn_curator_init.sqf";};
+        };
+
         class round
         {
             class round_initServer {file = "functions\round\fn_initServer.sqf";};
