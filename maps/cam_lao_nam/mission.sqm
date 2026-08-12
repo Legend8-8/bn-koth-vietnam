@@ -6099,7 +6099,7 @@ class Mission
 			position[]={16585.176,26.379999,3929.8657};
 			name="saigon_west_free_ground_spawnpoint";
 			type="Empty";
-			angle=209.98874;
+			angle=209.9888;
 			id=294;
 		};
 		class Item129
@@ -6118,7 +6118,7 @@ class Mission
 			position[]={16601.768,26.379999,3955.4592};
 			name="saigon_west_free_air_spawnpoint";
 			type="Empty";
-			angle=209.7364;
+			angle=209.73643;
 			id=296;
 		};
 		class Item131
@@ -6137,7 +6137,7 @@ class Mission
 			position[]={16616.922,26.472284,3981.1145};
 			name="saigon_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=212.73083;
+			angle=212.7309;
 			id=298;
 		};
 		class Item133
@@ -6387,7 +6387,7 @@ class Mission
 			position[]={17140.197,6.2399998,9247.8545};
 			name="hue_west_free_air_spawnpoint";
 			type="Empty";
-			angle=104.92562;
+			angle=104.92566;
 			id=308;
 		};
 		class Item143
@@ -6406,7 +6406,7 @@ class Mission
 			position[]={17110,6.1479955,9266};
 			name="hue_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=55.462616;
+			angle=55.462631;
 			id=310;
 		};
 		class Item145
@@ -6666,7 +6666,7 @@ class Mission
 			position[]={13462.752,4.9175272,13325.715};
 			name="hanoi_east_free_sea_spawnpoint";
 			type="Empty";
-			angle=259.38971;
+			angle=259.38974;
 			id=321;
 			atlOffset=4.7683716e-07;
 		};
