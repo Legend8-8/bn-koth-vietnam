@@ -40,7 +40,9 @@ private _vehicleDetails = [];
 
 if (_includePlayers) then {
     _playerBlockers = allPlayers select {
-        alive _x && {_x distance2D _spawnPos <= _effectiveRadius}
+        alive _x
+        && {_x isKindOf "CAManBase"}
+        && {_x distance2D _spawnPos <= _effectiveRadius}
     };
 
     {
@@ -56,6 +58,8 @@ if (_includePlayers) then {
 if (_includeVehicles) then {
     _vehicleBlockers = vehicles select {
         alive _x
+        && {_x isKindOf "AllVehicles"}
+        && {!(_x isKindOf "CAManBase")}
         && {_x distance2D _spawnPos <= _effectiveRadius}
         && {!(_x isEqualTo _excludedVehicle)}
     };
