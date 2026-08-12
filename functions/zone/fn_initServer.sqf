@@ -13,6 +13,12 @@
 
 if (!isServer) exitWith {};
 
+if (missionNamespace getVariable ["BN_KOTH_zoneManagerRunning", false]) exitWith {
+    ["Zone manager already running.", "WARN"] call bn_koth_fnc_common_log;
+};
+
+missionNamespace setVariable ["BN_KOTH_zoneManagerRunning", true];
+
 private _zoneCfg = missionConfigFile >> "CfgBnKothZone";
 private _readNumber = {
     params ["_name", "_fallback"];
@@ -52,7 +58,7 @@ missionNamespace setVariable ["BN_KOTH_priorityZoneMarkerTieBrush", ["priorityMa
     private _controlInterval = 1;
     private _nextControlAt = serverTime;
 
-    while {true} do {
+    while {missionNamespace getVariable ["BN_KOTH_zoneManagerRunning", false]} do {
         if (([] call bn_koth_fnc_round_getState) isEqualTo "ACTIVE") then {
             [] call bn_koth_fnc_zone_updatePriorityZone;
         };
@@ -65,4 +71,6 @@ missionNamespace setVariable ["BN_KOTH_priorityZoneMarkerTieBrush", ["priorityMa
 
         sleep (missionNamespace getVariable ["BN_KOTH_priorityZoneMoveTickInterval", 0.5]);
     };
+
+    missionNamespace setVariable ["BN_KOTH_zoneManagerRunning", false];
 };
