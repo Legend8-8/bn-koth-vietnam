@@ -80,9 +80,19 @@ Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
 
 The zone system also supports a moving priority area inside the active AO.
 
-- The priority zone is a smaller ellipse inside the active zone marker.
-- Its size is derived from the active AO size and defaults to roughly 10% of the main AO dimensions.
-- It continuously drifts through the AO at a slow movement speed while staying inside valid AO space.
+- The priority zone is a smaller rectangle aligned with the active zone marker.
+- Its default footprint area is twice the original 10%-dimension priority zone while preserving the same aspect ratio.
+- Each dimension uses a ratio of approximately 0.1414 of the AO dimensions, with a minimum half-size of approximately 8.49 metres.
+- It moves on a 0.5-second server tick, advancing a nominal 0.25 metres per tick in every AO (0.5 metres per second).
+- Actual elapsed server time is used for movement so scheduler delays do not reduce its real-time speed.
+- The complete priority-zone footprint remains inside the active AO, including rotated and elliptical AOs.
 - Players inside the priority zone count as two players for objective control weighting.
 - Main AO players continue to count normally.
-- The priority zone is published as a visible marker so players can read the current objective hotspot.
+- Its appearance uses raw eligible-player counts inside the priority zone, independently of control weighting:
+  - no WEST or EAST players: green with a solid fill;
+  - more WEST than EAST players: blue with a solid fill;
+  - more EAST than WEST players: red with a solid fill;
+  - equal nonzero WEST and EAST players: purple with diagonal lines.
+- The server owns movement and control weighting; control evaluation does not advance movement.
+- The server also owns priority-zone appearance decisions and broadcasts marker changes only when the color or brush changes.
+- A global marker provides client and join-in-progress visibility of the current objective hotspot.

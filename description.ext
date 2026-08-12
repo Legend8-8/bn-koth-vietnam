@@ -1,5 +1,6 @@
 #include "config\gameMode.hpp"
 #include "map_config\locations.hpp"
+#include "config\zones.hpp"
 #include "config\lobby.hpp"
 #include "config\scoring.hpp"
 #include "config\teams.hpp"

@@ -31,7 +31,6 @@ if (_marker isEqualTo "") exitWith {
 };
 
 missionNamespace setVariable ["BN_KOTH_warnedMissingZoneMarker", false];
-[] call bn_koth_fnc_zone_updatePriorityZone;
 
 private _playableSides = missionNamespace getVariable ["BN_KOTH_playableSides", [west, east]];
 if ((count _playableSides) < 2) then {
@@ -48,10 +47,10 @@ private _activeLookup = createHashMap;
     _activeLookup set [_x, true];
 } forEach _activeParticipants;
 
-private _priorityZoneMarker = missionNamespace getVariable ["BN_KOTH_priorityZoneMarker", ""];
+private _priorityZoneMarker = "BN_KOTH_priorityZoneMarker";
 private _priorityZoneActive = missionNamespace getVariable ["BN_KOTH_priorityZoneActive", false];
-private _priorityZonePosition = missionNamespace getVariable ["BN_KOTH_priorityZonePosition", [0, 0, 0]];
-private _priorityZoneSize = missionNamespace getVariable ["BN_KOTH_priorityZoneSize", [6, 6]];
+private _priorityZoneControlWeight = missionNamespace getVariable ["BN_KOTH_priorityZoneControlWeight", 2];
+private _priorityZoneAvailable = _priorityZoneActive && {!((markerShape _priorityZoneMarker) isEqualTo "")};
 private _players = allPlayers select {
     private _uid = getPlayerUID _x;
     private _record = if (_records isEqualType createHashMap) then {
@@ -95,28 +94,71 @@ private _players = allPlayers select {
 
 private _sideACount = 0;
 private _sideBCount = 0;
+private _priorityWestCount = 0;
+private _priorityEastCount = 0;
 
 {
     private _player = _x;
     private _side = side group _player;
-    private _priorityWidth = if ((count _priorityZoneSize) > 0) then {_priorityZoneSize select 0} else {6};
-    private _priorityHeight = if ((count _priorityZoneSize) > 1) then {_priorityZoneSize select 1} else {6};
-    private _inPriority = if (_priorityZoneActive && {!(_priorityZoneMarker isEqualTo "")}) then {_player inArea [_priorityZonePosition, _priorityWidth, _priorityHeight, 0, true]} else {false};
+    private _inPriority = if (_priorityZoneAvailable) then {
+        _player inArea _priorityZoneMarker
+    } else {
+        false
+    };
+    private _controlWeight = if (_inPriority) then {_priorityZoneControlWeight} else {1};
 
     if (_side isEqualTo _sideA) then {
-        _sideACount = _sideACount + 1;
-        if (_inPriority) then {
-            _sideACount = _sideACount + 1;
-        };
+        _sideACount = _sideACount + _controlWeight;
     } else {
         if (_side isEqualTo _sideB) then {
-            _sideBCount = _sideBCount + 1;
-            if (_inPriority) then {
-                _sideBCount = _sideBCount + 1;
+            _sideBCount = _sideBCount + _controlWeight;
+        };
+    };
+
+    if (_inPriority) then {
+        if (_side isEqualTo west) then {
+            _priorityWestCount = _priorityWestCount + 1;
+        } else {
+            if (_side isEqualTo east) then {
+                _priorityEastCount = _priorityEastCount + 1;
             };
         };
     };
 } forEach _players;
+
+if (_priorityZoneAvailable) then {
+    private _targetColor = missionNamespace getVariable ["BN_KOTH_priorityZoneMarkerColor", "ColorGreen"];
+    private _targetBrush = missionNamespace getVariable ["BN_KOTH_priorityZoneMarkerBrush", "Solid"];
+
+    if (_priorityWestCount > _priorityEastCount) then {
+        _targetColor = missionNamespace getVariable ["BN_KOTH_priorityZoneMarkerWestColor", "ColorBlue"];
+    } else {
+        if (_priorityEastCount > _priorityWestCount) then {
+            _targetColor = missionNamespace getVariable ["BN_KOTH_priorityZoneMarkerEastColor", "ColorRed"];
+        } else {
+            if ((_priorityWestCount > 0) && {_priorityEastCount > 0}) then {
+                _targetColor = missionNamespace getVariable ["BN_KOTH_priorityZoneMarkerTieColor", "ColorCIV"];
+                _targetBrush = missionNamespace getVariable ["BN_KOTH_priorityZoneMarkerTieBrush", "FDiagonal"];
+            };
+        };
+    };
+
+    private _colorChanged = !((markerColor _priorityZoneMarker) isEqualTo _targetColor);
+    private _brushChanged = !((markerBrush _priorityZoneMarker) isEqualTo _targetBrush);
+
+    if (_colorChanged && {_brushChanged}) then {
+        _priorityZoneMarker setMarkerColorLocal _targetColor;
+        _priorityZoneMarker setMarkerBrush _targetBrush;
+    } else {
+        if (_colorChanged) then {
+            _priorityZoneMarker setMarkerColor _targetColor;
+        } else {
+            if (_brushChanged) then {
+                _priorityZoneMarker setMarkerBrush _targetBrush;
+            };
+        };
+    };
+};
 
 private _controller = sideUnknown;
 private _zoneState = "NEUTRAL";
