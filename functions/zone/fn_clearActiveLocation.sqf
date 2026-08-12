@@ -74,5 +74,6 @@ missionNamespace setVariable ["BN_KOTH_warnedPriorityZoneTooLarge", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZonePosition", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMarker", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneSize", nil];
+[] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
 
 ["Active AO cleared and static content hidden."] call bn_koth_fnc_common_log;
