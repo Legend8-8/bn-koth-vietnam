@@ -11,6 +11,17 @@ FILTERING
 - rejected items: {'range_placeholder': 2, 'non_player_item': 7}
 - rejected magazines: {'helper_or_vehicle_magazine': 363, 'helper_or_base_magazine': 4, 'vehicle_magazine': 110, 'helper_or_fake_magazine': 1}
 
+SOURCE AFFILIATIONS (FACTUAL)
+- WEST evidence only: 77
+- EAST evidence only: 33
+- INDEPENDENT evidence only: 3
+- WEST+EAST shared evidence: 1
+- WEST+INDEPENDENT shared evidence: 22
+- EAST+INDEPENDENT shared evidence: 13
+- WEST+EAST+INDEPENDENT shared evidence: 10
+- no affiliation evidence: 68
+- ambiguous/shared (including INDEPENDENT-only): 49
+
 RELATIONSHIPS
 - weapon-magazine links: 999
 - weapon-attachment links: 111

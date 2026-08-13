@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 
 from tools.sog_catalogue.catalogue import CatalogueError, parse_all_pages, parse_main_table
-from tools.sog_catalogue.classify import build_base_candidate_groups, find_variant_base_candidate
+from tools.sog_catalogue.classify import build_base_candidate_groups, build_catalogue, derive_source_affiliations, find_variant_base_candidate
 from tools.sog_catalogue.validate import build_progression_rows, validate_catalogue
 
 
@@ -122,6 +122,21 @@ class ValidationTests(unittest.TestCase):
 
 
 class ClassificationTests(unittest.TestCase):
+    def test_used_by_survives_into_catalogue_and_west_affiliation_derives(self) -> None:
+        parsed_pages, _counts = parse_all_pages({"weapons": WEAPONS_SAMPLE, "items": ITEMS_SAMPLE, "magazines": MAGAZINES_SAMPLE})
+        catalogue, _summary = build_catalogue(parsed_pages, overrides={})
+        weapon = next(record for record in catalogue["weapons"] if record["class"] == "vn_m16")
+        self.assertIn("vn_b_men_sog_07", weapon["usedBy"])
+        self.assertEqual(["WEST"], weapon["sourceAffiliations"])
+
+    def test_source_affiliation_derivation_east_and_independent(self) -> None:
+        self.assertEqual(["EAST"], derive_source_affiliations(["vn_o_men_nva_04"]))
+        self.assertEqual(["INDEPENDENT"], derive_source_affiliations(["vn_i_men_army_02"]))
+
+    def test_source_affiliation_mixed_and_missing_are_not_collapsed(self) -> None:
+        self.assertEqual(["WEST", "EAST"], derive_source_affiliations(["vn_b_men_sog_07", "vn_o_men_nva_04"]))
+        self.assertEqual([], derive_source_affiliations(["not_side_prefixed_class"]))
+
     def test_base_magazine_groups_collapse_tracer_pair(self) -> None:
         weapon = {"weaponType": "smg"}
         magazine_map = {

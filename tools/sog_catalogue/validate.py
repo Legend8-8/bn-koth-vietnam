@@ -102,6 +102,17 @@ def render_report(catalogue: dict[str, Any], warnings: dict[str, list[str]]) -> 
     sections.extend(
         [
             "",
+            "SOURCE AFFILIATIONS (FACTUAL)",
+            f"- WEST evidence only: {summary['sourceAffiliations']['weaponBuckets']['WEST']}",
+            f"- EAST evidence only: {summary['sourceAffiliations']['weaponBuckets']['EAST']}",
+            f"- INDEPENDENT evidence only: {summary['sourceAffiliations']['weaponBuckets']['INDEPENDENT']}",
+            f"- WEST+EAST shared evidence: {summary['sourceAffiliations']['weaponBuckets']['WEST+EAST']}",
+            f"- WEST+INDEPENDENT shared evidence: {summary['sourceAffiliations']['weaponBuckets']['WEST+INDEPENDENT']}",
+            f"- EAST+INDEPENDENT shared evidence: {summary['sourceAffiliations']['weaponBuckets']['EAST+INDEPENDENT']}",
+            f"- WEST+EAST+INDEPENDENT shared evidence: {summary['sourceAffiliations']['weaponBuckets']['WEST+EAST+INDEPENDENT']}",
+            f"- no affiliation evidence: {summary['sourceAffiliations']['weaponBuckets']['NONE']}",
+            f"- ambiguous/shared (including INDEPENDENT-only): {summary['sourceAffiliations']['ambiguousOrShared']}",
+            "",
             "RELATIONSHIPS",
             f"- weapon-magazine links: {summary['relationships']['weaponMagazineLinks']}",
             f"- weapon-attachment links: {summary['relationships']['weaponAttachmentLinks']}",

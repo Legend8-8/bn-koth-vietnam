@@ -44,9 +44,7 @@ class CfgBnKothArsenal
         // Future generated factual compatibility data attaches here.
         class Compatibility
         {
-            class WeaponMagazines {};
-            class WeaponAttachments {};
-            class WeaponVariants {};
+            #include "generated\sog_catalogue.hpp"
         };
     };
 };

@@ -100,6 +100,7 @@ SECONDARY_LAUNCHER_CATEGORIES = {
     "grenade_40mm",
     "launcher_round",
 }
+AFFILIATION_ORDER = ("WEST", "EAST", "INDEPENDENT")
 
 
 def build_catalogue(parsed_pages: dict[str, list[dict[str, Any]]], overrides: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -183,6 +184,8 @@ def filter_weapon_rows(rows: list[dict[str, Any]], overrides: dict[str, Any], su
                 "muzzles": {},
                 "compatibleMagazines": [],
                 "compatibleAttachments": [],
+                "usedBy": sort_unique(row["usedBy"]),
+                "sourceAffiliations": derive_source_affiliations(row["usedBy"]),
                 "baseMagazine": None,
                 "baseMagazineConfidence": "unknown",
                 "baseMagazineCandidates": [],
@@ -229,6 +232,8 @@ def filter_item_rows(rows: list[dict[str, Any]], overrides: dict[str, Any], summ
                 "magazines": sort_unique([value for value in row["magazines"] if value.startswith("vn_")]),
                 "compatibleWeapons": [],
                 "traits": derive_item_traits(class_name, item_type, row),
+                "usedBy": sort_unique(row["usedBy"]),
+                "sourceAffiliations": derive_source_affiliations(row["usedBy"]),
             }
         )
 
@@ -262,6 +267,8 @@ def filter_magazine_rows(rows: list[dict[str, Any]], overrides: dict[str, Any], 
                 "ammoClass": row["ammoClass"],
                 "category": category,
                 "traits": traits,
+                "usedBy": sort_unique(row["usedBy"]),
+                "sourceAffiliations": derive_source_affiliations(row["usedBy"]),
                 "compatibleWeapons": sort_unique([value for value in row["usedBy"] if value.startswith("vn_")]),
             }
         )
@@ -409,6 +416,17 @@ def classify_magazine_category(row: dict[str, Any]) -> str:
     if "light machine gun" in description or "belt" in display_name or "drum" in display_name or "box" in display_name:
         return "lmg_mag"
     return "rifle_mag"
+
+def derive_source_affiliations(used_by: list[str]) -> list[str]:
+    evidence = set()
+    for class_name in used_by:
+        if class_name.startswith("vn_b_"):
+            evidence.add("WEST")
+        elif class_name.startswith("vn_o_"):
+            evidence.add("EAST")
+        elif class_name.startswith("vn_i_"):
+            evidence.add("INDEPENDENT")
+    return [value for value in AFFILIATION_ORDER if value in evidence]
 
 
 def derive_item_traits(class_name: str, item_type: str, row: dict[str, Any]) -> list[str]:
@@ -1076,6 +1094,7 @@ def finalize_summary(
     derived = 0
     ambiguous_variants = 0
     multi_muzzle_confidence = relationships["multiMuzzleWeapons"] - relationships["ambiguousMuzzleGrouping"]
+    affiliation_buckets: Counter[str] = Counter()
 
     for weapon in weapons:
         confidence = weapon["baseMagazineConfidence"]
@@ -1098,6 +1117,12 @@ def finalize_summary(
             derived += 1
         elif weapon["variantCandidateOf"]:
             ambiguous_variants += 1
+
+        source_affiliations = weapon.get("sourceAffiliations", [])
+        if not source_affiliations:
+            affiliation_buckets["NONE"] += 1
+        else:
+            affiliation_buckets["+".join(source_affiliations)] += 1
 
     progression = build_progression_counts(weapons, items)
 
@@ -1135,6 +1160,26 @@ def finalize_summary(
             "derived": derived,
             "ambiguous": ambiguous_variants,
             "overrides": len([entry for entry in summary["overridesApplied"] if entry.startswith("variantOf:") or entry.startswith("family:")]),
+        },
+        "sourceAffiliations": {
+            "weaponBuckets": {
+                "WEST": affiliation_buckets.get("WEST", 0),
+                "EAST": affiliation_buckets.get("EAST", 0),
+                "INDEPENDENT": affiliation_buckets.get("INDEPENDENT", 0),
+                "WEST+EAST": affiliation_buckets.get("WEST+EAST", 0),
+                "WEST+INDEPENDENT": affiliation_buckets.get("WEST+INDEPENDENT", 0),
+                "EAST+INDEPENDENT": affiliation_buckets.get("EAST+INDEPENDENT", 0),
+                "WEST+EAST+INDEPENDENT": affiliation_buckets.get("WEST+EAST+INDEPENDENT", 0),
+                "NONE": affiliation_buckets.get("NONE", 0),
+            },
+            "ambiguousOrShared": (
+                affiliation_buckets.get("WEST+EAST", 0)
+                + affiliation_buckets.get("WEST+INDEPENDENT", 0)
+                + affiliation_buckets.get("EAST+INDEPENDENT", 0)
+                + affiliation_buckets.get("WEST+EAST+INDEPENDENT", 0)
+                + affiliation_buckets.get("INDEPENDENT", 0)
+            ),
+            "noEvidence": affiliation_buckets.get("NONE", 0),
         },
         "orphans": {
             "missingMagazines": len(relationships["missingMagazines"]),
