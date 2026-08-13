@@ -57,6 +57,23 @@ if (_cache isEqualType createHashMap) then {
 ["BN_KOTH_activeWestBaseZoneMarker", ""] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeEastBaseZoneMarker", ""] call bn_koth_fnc_common_publicState;
 
+private _priorityMarker = "BN_KOTH_priorityZoneMarker";
+private _priorityZoneWasActive = missionNamespace getVariable ["BN_KOTH_priorityZoneActive", false];
+if (_priorityZoneWasActive && {!((markerShape _priorityMarker) isEqualTo "")}) then {
+    _priorityMarker setMarkerAlpha 0;
+};
+
+missionNamespace setVariable ["BN_KOTH_priorityZoneActive", false];
+missionNamespace setVariable ["BN_KOTH_priorityZoneAoMarker", nil];
+missionNamespace setVariable ["BN_KOTH_priorityZoneHeading", nil];
+missionNamespace setVariable ["BN_KOTH_priorityZoneLastUpdateAt", nil];
+missionNamespace setVariable ["BN_KOTH_warnedUnsupportedPriorityAoShape", nil];
+missionNamespace setVariable ["BN_KOTH_warnedPriorityZoneTooLarge", nil];
+
+// Remove obsolete numerical/public state. The global marker is client presentation.
+missionNamespace setVariable ["BN_KOTH_priorityZonePosition", nil];
+missionNamespace setVariable ["BN_KOTH_priorityZoneMarker", nil];
+missionNamespace setVariable ["BN_KOTH_priorityZoneSize", nil];
 [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
 
 ["Active AO cleared and static content hidden."] call bn_koth_fnc_common_log;
