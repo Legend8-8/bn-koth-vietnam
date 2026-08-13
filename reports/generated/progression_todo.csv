@@ -1,0 +1,438 @@
+Asset,Type,ProgressionRequired,Families,UsedByCount,UsedBy,RelatedWeapons,Reason
+vn_20mm_dgn_wp_mag,Magazine,YES,kbkg,1,vn_kbkg_gl,,additional compatible magazine
+vn_20mm_f1n60_frag_mag,Magazine,YES,kbkg,1,vn_kbkg_gl,,additional compatible magazine
+vn_20mm_kgn_frag_mag,Magazine,YES,kbkg,1,vn_kbkg_gl,,additional compatible magazine
+vn_20mm_pgn60_heat_mag,Magazine,YES,kbkg,1,vn_kbkg_gl,,additional compatible magazine
+vn_22mm_cs_mag,Magazine,YES,m1903;m1_garand;m1carbine;m2carbine;m4956;sks,6,vn_m1903_gl;vn_m1_garand_gl;vn_m1carbine_gl;vn_m2carbine_gl;vn_m4956_gl;vn_sks_gl,,additional compatible magazine
+vn_22mm_he_mag,Magazine,YES,m4956,1,vn_m4956_gl,,additional compatible magazine
+vn_22mm_lume_mag,Magazine,YES,m1903;m1_garand;m1carbine;m2carbine;m4956;sks,6,vn_m1903_gl;vn_m1_garand_gl;vn_m1carbine_gl;vn_m2carbine_gl;vn_m4956_gl;vn_sks_gl,,additional compatible magazine
+vn_22mm_m17_frag_mag,Magazine,YES,m1903;m1_garand;m1carbine;m2carbine,4,vn_m1903_gl;vn_m1_garand_gl;vn_m1carbine_gl;vn_m2carbine_gl,,additional compatible magazine
+vn_22mm_m19_wp_mag,Magazine,YES,m1903;m1_garand;m1carbine;m2carbine;m4956;sks,6,vn_m1903_gl;vn_m1_garand_gl;vn_m1carbine_gl;vn_m2carbine_gl;vn_m4956_gl;vn_sks_gl,,additional compatible magazine
+vn_22mm_m1a2_frag_mag,Magazine,YES,m1903;m1_garand;m1carbine;m2carbine,4,vn_m1903_gl;vn_m1_garand_gl;vn_m1carbine_gl;vn_m2carbine_gl,,additional compatible magazine
+vn_22mm_m22_smoke_mag,Magazine,YES,m1903;m1_garand;m1carbine;m2carbine;m4956;sks,6,vn_m1903_gl;vn_m1_garand_gl;vn_m1carbine_gl;vn_m2carbine_gl;vn_m4956_gl;vn_sks_gl,,additional compatible magazine
+vn_22mm_m60_frag_mag,Magazine,YES,sks,1,vn_sks_gl,,additional compatible magazine
+vn_22mm_m60_heat_mag,Magazine,YES,sks,1,vn_sks_gl,,additional compatible magazine
+vn_22mm_m61_frag_mag,Magazine,YES,l1a1,2,vn_l1a1_01_gl;vn_l1a1_02_gl,,additional compatible magazine
+vn_22mm_m9_heat_mag,Magazine,YES,m1903;m1_garand;m1carbine;m2carbine;m4956,5,vn_m1903_gl;vn_m1_garand_gl;vn_m1carbine_gl;vn_m2carbine_gl;vn_m4956_gl,,additional compatible magazine
+vn_22mm_n94_heat_mag,Magazine,YES,l1a1,2,vn_l1a1_01_gl;vn_l1a1_02_gl,,additional compatible magazine
+vn_40mm_m381_he_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m397_ab_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m406_he_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m433_hedp_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m576_buck_mag,Magazine,YES,m79,2,vn_m79;vn_m79_p,,additional compatible magazine
+vn_40mm_m583_flare_w_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m651_cs_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m661_flare_g_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m662_flare_r_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m680_smoke_w_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m682_smoke_r_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m695_flare_y_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m715_smoke_g_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m716_smoke_y_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_40mm_m717_smoke_p_mag,Magazine,YES,l1a1;l34a1;m16;m79;xm16e1;xm177,13,vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l34a1_xm148;vn_m16_m203;vn_m16_m203_camo;vn_m16_xm148;vn_m79;vn_m79_p;vn_xm16e1_xm148;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_xm148;vn_xm177_xm148_camo,,additional compatible magazine
+vn_ak_01,Weapon,YES,ak,0,,,weapon
+vn_b_camo_k98k,Attachment,YES,k98k,1,vn_k98k_mrk_camo,,compatible attachment
+vn_b_camo_m14,Attachment,YES,m14;m21,2,vn_m14_sd;vn_m21_sd,,compatible attachment
+vn_b_camo_m14a1,Attachment,YES,m14a1,2,vn_m14a1_camo;vn_m14a1_nvg,,compatible attachment
+vn_b_camo_m1_garand,Attachment,YES,m1_garand,1,vn_m1_garand_sniper,,compatible attachment
+vn_b_camo_m36,Attachment,YES,m36,1,vn_m36_camo,,compatible attachment
+vn_b_camo_m40a1,Attachment,YES,m40a1,1,vn_m40a1_sniper_sd,,compatible attachment
+vn_b_camo_svd,Attachment,YES,svd,1,vn_svd_sniper_camo,,compatible attachment
+vn_b_camo_vz54,Attachment,YES,vz54,1,vn_vz54_sniper_camo,,compatible attachment
+vn_b_carbine,Attachment,YES,m1carbine;m2carbine,2,vn_m1carbine_bayo;vn_m2carbine_bayo,,compatible attachment
+vn_b_k98k,Attachment,YES,k98k,1,vn_k98k_bayo,,compatible attachment
+vn_b_l1a1,Attachment,YES,f1_smg;l1a1,3,vn_f1_smg_bayo;vn_l1a1_01_bayo;vn_l1a1_02_bayo,,compatible attachment
+vn_b_m14,Attachment,YES,m14,1,vn_m14_bayo,,compatible attachment
+vn_b_m16,Attachment,YES,m16;m16_usaf;xm16e1,3,vn_m16_bayo;vn_m16_usaf_bayo;vn_xm16e1_bayo,,compatible attachment
+vn_b_m1897,Attachment,YES,m1897,1,vn_m1897_bayo,,compatible attachment
+vn_b_m1903,Attachment,YES,m1903,2,vn_m1903_bayo;vn_m1903_sniper,,compatible attachment
+vn_b_m1_garand,Attachment,YES,m1_garand,1,vn_m1_garand_bayo,,compatible attachment
+vn_b_m36,Attachment,YES,m36,1,vn_m36_bayo,,compatible attachment
+vn_b_m38,Attachment,YES,m1891;m38;m9130,3,vn_m1891_bayo;vn_m38_bayo;vn_m9130_bayo,,compatible attachment
+vn_b_m4956,Attachment,YES,m4956,1,vn_m4956_bayo,,compatible attachment
+vn_b_sks,Attachment,YES,sks,1,vn_sks_bayo,,compatible attachment
+vn_b_type56,Attachment,YES,type56,1,vn_type56_bayo,,compatible attachment
+vn_bipod_m14,Attachment,YES,m14a1,2,vn_m14a1_bipod;vn_m14a1_sniper,,compatible attachment
+vn_bipod_m16,Attachment,YES,m16;xm16e1,3,vn_m16_sniper;vn_m16_sniper_sd;vn_xm16e1_sniper,,compatible attachment
+vn_bipod_m1918,Attachment,YES,m1918,1,vn_m1918_bipod,,compatible attachment
+vn_bipod_m63a,Attachment,YES,m63a_cdo;m63a_lmg,2,vn_m63a_cdo_bipod;vn_m63a_lmg_bipod,,compatible attachment
+vn_carbine_15_mag,Magazine,YES,m1carbine;m2carbine;m3carbine,9,vn_m1carbine;vn_m1carbine_bayo;vn_m1carbine_gl;vn_m1carbine_sniper;vn_m2carbine;vn_m2carbine_bayo;vn_m2carbine_gl;vn_m2carbine_sniper;vn_m3carbine,,additional compatible magazine
+vn_carbine_15_t_mag,Magazine,YES,m1carbine;m2carbine;m3carbine,9,vn_m1carbine;vn_m1carbine_bayo;vn_m1carbine_gl;vn_m1carbine_sniper;vn_m2carbine;vn_m2carbine_bayo;vn_m2carbine_gl;vn_m2carbine_sniper;vn_m3carbine,,additional compatible magazine
+vn_carbine_30_mag,Magazine,YES,m1carbine;m2carbine;m3carbine,9,vn_m1carbine;vn_m1carbine_bayo;vn_m1carbine_gl;vn_m1carbine_sniper;vn_m2carbine;vn_m2carbine_bayo;vn_m2carbine_gl;vn_m2carbine_sniper;vn_m3carbine,,additional compatible magazine
+vn_carbine_30_t_mag,Magazine,YES,m1carbine;m2carbine;m3carbine,9,vn_m1carbine;vn_m1carbine_bayo;vn_m1carbine_gl;vn_m1carbine_sniper;vn_m2carbine;vn_m2carbine_bayo;vn_m2carbine_gl;vn_m2carbine_sniper;vn_m3carbine,,additional compatible magazine
+vn_dp28,Weapon,YES,dp28,0,,,weapon
+vn_dp28_mag,Base Magazine,NO,dp28,1,vn_dp28,,included base magazine
+vn_f1_smg,Weapon,YES,f1_smg,0,,,weapon
+vn_f1_smg_bayo,Derived Weapon,NO,f1_smg,0,,vn_f1_smg,confirmed derived of vn_f1_smg
+vn_f1_smg_mag,Base Magazine,NO,f1_smg;l2a3;l34a1,7,vn_f1_smg;vn_f1_smg_bayo;vn_l2a3;vn_l2a3_f;vn_l34a1;vn_l34a1_f;vn_l34a1_xm148,,included base magazine
+vn_f1_smg_t_mag,Magazine,YES,f1_smg;l2a3;l34a1,7,vn_f1_smg;vn_f1_smg_bayo;vn_l2a3;vn_l2a3_f;vn_l34a1;vn_l34a1_f;vn_l34a1_xm148,,additional compatible magazine
+vn_fkb1_pm,Weapon,YES,fkb1_pm,0,,,weapon
+vn_fkb1_pm_sd,Derived Weapon,NO,fkb1_pm,0,,vn_fkb1_pm,confirmed derived of vn_fkb1_pm
+vn_gau5a,Weapon,YES,gau5a,0,,,weapon
+vn_gau5a_mrk,Derived Weapon,NO,gau5a,0,,vn_gau5a,confirmed derived of vn_gau5a
+vn_hd,Weapon,YES,hd,0,,,weapon
+vn_hd_mag,Base Magazine,NO,hd,1,vn_hd,,included base magazine
+vn_hp,Weapon,YES,hp,0,,,weapon
+vn_hp_mag,Base Magazine,NO,hp;m1carbine,3,vn_hp;vn_hp_sd;vn_m1carbine_shorty,,included base magazine
+vn_hp_sd,Derived Weapon,NO,hp,0,,vn_hp,confirmed derived of vn_hp
+vn_izh54,Weapon,YES,izh54,0,,,weapon
+vn_izh54_mag,Base Magazine,NO,izh54,3,vn_izh54;vn_izh54_p;vn_izh54_shorty,,included base magazine
+vn_izh54_p,Weapon,YES,izh54,0,,,weapon
+vn_izh54_shorty,Weapon,YES,izh54,0,,,weapon
+vn_izh54_so_mag,Magazine,YES,izh54,2,vn_izh54_p;vn_izh54_shorty,,additional compatible magazine
+vn_k50m,Weapon,YES,k50m,0,,,weapon
+vn_k98k,Weapon,YES,k98k,0,,,weapon
+vn_k98k_bayo,Derived Weapon,NO,k98k,0,,vn_k98k,confirmed derived of vn_k98k
+vn_k98k_mag,Base Magazine,NO,k98k,4,vn_k98k;vn_k98k_bayo;vn_k98k_mrk;vn_k98k_mrk_camo,,included base magazine
+vn_k98k_mrk,Derived Weapon,NO,k98k,0,,vn_k98k,confirmed derived of vn_k98k
+vn_k98k_mrk_camo,Derived Weapon,NO,k98k,0,,vn_k98k_mrk,confirmed derived of vn_k98k_mrk
+vn_k98k_t_mag,Magazine,YES,k98k,4,vn_k98k;vn_k98k_bayo;vn_k98k_mrk;vn_k98k_mrk_camo,,additional compatible magazine
+vn_kbkg,Weapon,YES,kbkg,0,,,weapon
+vn_kbkg_gl,Weapon,YES,kbkg,0,,,weapon
+vn_kbkg_mag,Magazine,YES,ak;kbkg;type56,5,vn_ak_01;vn_kbkg;vn_kbkg_gl;vn_type56;vn_type56_bayo,,additional compatible magazine
+vn_kbkg_t_mag,Magazine,YES,ak;kbkg;type56,5,vn_ak_01;vn_kbkg;vn_kbkg_gl;vn_type56;vn_type56_bayo,,additional compatible magazine
+vn_l1a1_01,Weapon,YES,l1a1,0,,,weapon
+vn_l1a1_01_bayo,Derived Weapon,NO,l1a1,0,,vn_l1a1_01,confirmed derived of vn_l1a1_01
+vn_l1a1_01_camo,Weapon,YES,l1a1,0,,,weapon
+vn_l1a1_01_gl,Weapon,YES,l1a1,0,,,weapon
+vn_l1a1_01_mrk,Derived Weapon,NO,l1a1,0,,vn_l1a1_01,confirmed derived of vn_l1a1_01
+vn_l1a1_02,Weapon,YES,l1a1,0,,,weapon
+vn_l1a1_02_bayo,Derived Weapon,NO,l1a1,0,,vn_l1a1_01,confirmed derived of vn_l1a1_01
+vn_l1a1_02_camo,Weapon,YES,l1a1,0,,,weapon
+vn_l1a1_02_gl,Weapon,YES,l1a1,0,,,weapon
+vn_l1a1_02_mrk,Derived Weapon,NO,l1a1,0,,vn_l1a1_01,confirmed derived of vn_l1a1_01
+vn_l1a1_03,Weapon,YES,l1a1,0,,,weapon
+vn_l1a1_03_camo,Weapon,YES,l1a1,0,,,weapon
+vn_l1a1_10_mag,Magazine,YES,l1a1;l2a1;l4,16,vn_l1a1_01;vn_l1a1_01_bayo;vn_l1a1_01_camo;vn_l1a1_01_gl;vn_l1a1_01_mrk;vn_l1a1_02;vn_l1a1_02_bayo;vn_l1a1_02_camo;vn_l1a1_02_gl;vn_l1a1_02_mrk;vn_l1a1_03;vn_l1a1_03_camo;vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l2a1_01;vn_l4,,additional compatible magazine
+vn_l1a1_10_t_mag,Magazine,YES,l1a1;l2a1;l4,16,vn_l1a1_01;vn_l1a1_01_bayo;vn_l1a1_01_camo;vn_l1a1_01_gl;vn_l1a1_01_mrk;vn_l1a1_02;vn_l1a1_02_bayo;vn_l1a1_02_camo;vn_l1a1_02_gl;vn_l1a1_02_mrk;vn_l1a1_03;vn_l1a1_03_camo;vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l2a1_01;vn_l4,,additional compatible magazine
+vn_l1a1_20_mag,Magazine,YES,l1a1;l2a1;l4,16,vn_l1a1_01;vn_l1a1_01_bayo;vn_l1a1_01_camo;vn_l1a1_01_gl;vn_l1a1_01_mrk;vn_l1a1_02;vn_l1a1_02_bayo;vn_l1a1_02_camo;vn_l1a1_02_gl;vn_l1a1_02_mrk;vn_l1a1_03;vn_l1a1_03_camo;vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l2a1_01;vn_l4,,additional compatible magazine
+vn_l1a1_20_t_mag,Magazine,YES,l1a1;l2a1;l4,16,vn_l1a1_01;vn_l1a1_01_bayo;vn_l1a1_01_camo;vn_l1a1_01_gl;vn_l1a1_01_mrk;vn_l1a1_02;vn_l1a1_02_bayo;vn_l1a1_02_camo;vn_l1a1_02_gl;vn_l1a1_02_mrk;vn_l1a1_03;vn_l1a1_03_camo;vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l2a1_01;vn_l4,,additional compatible magazine
+vn_l1a1_30_02_mag,Magazine,YES,l1a1;l2a1;l4,16,vn_l1a1_01;vn_l1a1_01_bayo;vn_l1a1_01_camo;vn_l1a1_01_gl;vn_l1a1_01_mrk;vn_l1a1_02;vn_l1a1_02_bayo;vn_l1a1_02_camo;vn_l1a1_02_gl;vn_l1a1_02_mrk;vn_l1a1_03;vn_l1a1_03_camo;vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l2a1_01;vn_l4,,additional compatible magazine
+vn_l1a1_30_02_t_mag,Magazine,YES,l1a1;l2a1;l4,16,vn_l1a1_01;vn_l1a1_01_bayo;vn_l1a1_01_camo;vn_l1a1_01_gl;vn_l1a1_01_mrk;vn_l1a1_02;vn_l1a1_02_bayo;vn_l1a1_02_camo;vn_l1a1_02_gl;vn_l1a1_02_mrk;vn_l1a1_03;vn_l1a1_03_camo;vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l2a1_01;vn_l4,,additional compatible magazine
+vn_l1a1_30_mag,Magazine,YES,l1a1;l2a1;l4,16,vn_l1a1_01;vn_l1a1_01_bayo;vn_l1a1_01_camo;vn_l1a1_01_gl;vn_l1a1_01_mrk;vn_l1a1_02;vn_l1a1_02_bayo;vn_l1a1_02_camo;vn_l1a1_02_gl;vn_l1a1_02_mrk;vn_l1a1_03;vn_l1a1_03_camo;vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l2a1_01;vn_l4,,additional compatible magazine
+vn_l1a1_30_t_mag,Magazine,YES,l1a1;l2a1;l4,16,vn_l1a1_01;vn_l1a1_01_bayo;vn_l1a1_01_camo;vn_l1a1_01_gl;vn_l1a1_01_mrk;vn_l1a1_02;vn_l1a1_02_bayo;vn_l1a1_02_camo;vn_l1a1_02_gl;vn_l1a1_02_mrk;vn_l1a1_03;vn_l1a1_03_camo;vn_l1a1_xm148;vn_l1a1_xm148_camo;vn_l2a1_01;vn_l4,,additional compatible magazine
+vn_l1a1_xm148,Weapon,YES,l1a1,0,,,weapon
+vn_l1a1_xm148_camo,Weapon,YES,l1a1,0,,,weapon
+vn_l2a1_01,Weapon,YES,l2a1,0,,,weapon
+vn_l2a3,Weapon,YES,l2a3,0,,,weapon
+vn_l2a3_f,Weapon,YES,l2a3,0,,,weapon
+vn_l34a1,Weapon,YES,l34a1,0,,,weapon
+vn_l34a1_f,Weapon,YES,l34a1,0,,,weapon
+vn_l34a1_xm148,Weapon,YES,l34a1,0,,,weapon
+vn_l4,Weapon,YES,l4,0,,,weapon
+vn_m10,Weapon,YES,m10,0,,,weapon
+vn_m10_mag,Base Magazine,NO,m10;p38s,3,vn_m10;vn_m10_sd;vn_p38s,,included base magazine
+vn_m10_sd,Derived Weapon,NO,m10,0,,vn_m10,confirmed derived of vn_m10
+vn_m127,Weapon,YES,m127,0,,,weapon
+vn_m127_mag,Magazine,YES,m127,1,vn_m127,,additional compatible magazine
+vn_m128_mag,Magazine,YES,m127,1,vn_m127,,additional compatible magazine
+vn_m129_mag,Magazine,YES,m127,1,vn_m127,,additional compatible magazine
+vn_m14,Weapon,YES,m14,0,,,weapon
+vn_m14_10_mag,Magazine,YES,m14;m14a1;m21,15,vn_m14;vn_m14_bayo;vn_m14_camo;vn_m14_sd;vn_m14a1;vn_m14a1_bipod;vn_m14a1_camo;vn_m14a1_nvg;vn_m14a1_shorty;vn_m14a1_shorty_fs;vn_m14a1_sniper;vn_m21;vn_m21_nvg;vn_m21_nvg_sd;vn_m21_sd,,additional compatible magazine
+vn_m14_10_t_mag,Magazine,YES,m14;m14a1;m21,15,vn_m14;vn_m14_bayo;vn_m14_camo;vn_m14_sd;vn_m14a1;vn_m14a1_bipod;vn_m14a1_camo;vn_m14a1_nvg;vn_m14a1_shorty;vn_m14a1_shorty_fs;vn_m14a1_sniper;vn_m21;vn_m21_nvg;vn_m21_nvg_sd;vn_m21_sd,,additional compatible magazine
+vn_m14_bayo,Derived Weapon,NO,m14,0,,vn_m14,confirmed derived of vn_m14
+vn_m14_camo,Weapon,YES,m14,0,,,weapon
+vn_m14_mag,Magazine,YES,m14;m14a1;m21,15,vn_m14;vn_m14_bayo;vn_m14_camo;vn_m14_sd;vn_m14a1;vn_m14a1_bipod;vn_m14a1_camo;vn_m14a1_nvg;vn_m14a1_shorty;vn_m14a1_shorty_fs;vn_m14a1_sniper;vn_m21;vn_m21_nvg;vn_m21_nvg_sd;vn_m21_sd,,additional compatible magazine
+vn_m14_sd,Derived Weapon,NO,m14,0,,vn_m14,confirmed derived of vn_m14
+vn_m14_t_mag,Magazine,YES,m14;m14a1;m21,15,vn_m14;vn_m14_bayo;vn_m14_camo;vn_m14_sd;vn_m14a1;vn_m14a1_bipod;vn_m14a1_camo;vn_m14a1_nvg;vn_m14a1_shorty;vn_m14a1_shorty_fs;vn_m14a1_sniper;vn_m21;vn_m21_nvg;vn_m21_nvg_sd;vn_m21_sd,,additional compatible magazine
+vn_m14a1,Weapon,YES,m14a1,0,,,weapon
+vn_m14a1_bipod,Derived Weapon,NO,m14a1,0,,vn_m14a1,confirmed derived of vn_m14a1
+vn_m14a1_camo,Derived Weapon,NO,m14a1,0,,vn_m14a1,confirmed derived of vn_m14a1
+vn_m14a1_nvg,Derived Weapon,NO,m14a1,0,,vn_m14a1_camo,confirmed derived of vn_m14a1_camo
+vn_m14a1_shorty,Weapon,YES,m14a1,0,,,weapon
+vn_m14a1_shorty_fs,Derived Weapon,NO,m14a1,0,,vn_m14a1,confirmed derived of vn_m14a1
+vn_m14a1_sniper,Derived Weapon,NO,m14a1,0,,vn_m14a1_bipod,confirmed derived of vn_m14a1_bipod
+vn_m16,Weapon,YES,m16,0,,,weapon
+vn_m16_20_mag,Magazine,YES,gau5a;m16;m16_muzzle;m16_usaf;xm16e1;xm177;xm177_fg;xm177_muzzle;xm177e1,46,vn_gau5a;vn_gau5a_mrk;vn_m16;vn_m16_bayo;vn_m16_camo;vn_m16_m203;vn_m16_m203_camo;vn_m16_mrk;vn_m16_mrk_sd;vn_m16_muzzle;vn_m16_nvg;vn_m16_nvg_sd;vn_m16_sd;vn_m16_sniper;vn_m16_sniper_sd;vn_m16_usaf;vn_m16_usaf_bayo;vn_m16_usaf_mrk;vn_m16_usaf_nvg;vn_m16_usaf_sniper;vn_m16_xm148;vn_xm16e1;vn_xm16e1_bayo;vn_xm16e1_mrk;vn_xm16e1_nvg;vn_xm16e1_sniper;vn_xm16e1_xm148;vn_xm177;vn_xm177_camo;vn_xm177_fg;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_mrk;vn_xm177_muzzle;vn_xm177_nvg;vn_xm177_short;vn_xm177_sniper;vn_xm177_stock;vn_xm177_stock_camo;vn_xm177_xm148;vn_xm177_xm148_camo;vn_xm177e1;vn_xm177e1_camo;vn_xm177e1_mrk;vn_xm177e1_nvg;vn_xm177e1_sniper,,additional compatible magazine
+vn_m16_20_t_mag,Magazine,YES,gau5a;m16;m16_muzzle;m16_usaf;xm16e1;xm177;xm177_fg;xm177_muzzle;xm177e1,46,vn_gau5a;vn_gau5a_mrk;vn_m16;vn_m16_bayo;vn_m16_camo;vn_m16_m203;vn_m16_m203_camo;vn_m16_mrk;vn_m16_mrk_sd;vn_m16_muzzle;vn_m16_nvg;vn_m16_nvg_sd;vn_m16_sd;vn_m16_sniper;vn_m16_sniper_sd;vn_m16_usaf;vn_m16_usaf_bayo;vn_m16_usaf_mrk;vn_m16_usaf_nvg;vn_m16_usaf_sniper;vn_m16_xm148;vn_xm16e1;vn_xm16e1_bayo;vn_xm16e1_mrk;vn_xm16e1_nvg;vn_xm16e1_sniper;vn_xm16e1_xm148;vn_xm177;vn_xm177_camo;vn_xm177_fg;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_mrk;vn_xm177_muzzle;vn_xm177_nvg;vn_xm177_short;vn_xm177_sniper;vn_xm177_stock;vn_xm177_stock_camo;vn_xm177_xm148;vn_xm177_xm148_camo;vn_xm177e1;vn_xm177e1_camo;vn_xm177e1_mrk;vn_xm177e1_nvg;vn_xm177e1_sniper,,additional compatible magazine
+vn_m16_30_mag,Magazine,YES,gau5a;m16;m16_muzzle;m16_usaf;xm16e1;xm177;xm177_fg;xm177_muzzle;xm177e1,46,vn_gau5a;vn_gau5a_mrk;vn_m16;vn_m16_bayo;vn_m16_camo;vn_m16_m203;vn_m16_m203_camo;vn_m16_mrk;vn_m16_mrk_sd;vn_m16_muzzle;vn_m16_nvg;vn_m16_nvg_sd;vn_m16_sd;vn_m16_sniper;vn_m16_sniper_sd;vn_m16_usaf;vn_m16_usaf_bayo;vn_m16_usaf_mrk;vn_m16_usaf_nvg;vn_m16_usaf_sniper;vn_m16_xm148;vn_xm16e1;vn_xm16e1_bayo;vn_xm16e1_mrk;vn_xm16e1_nvg;vn_xm16e1_sniper;vn_xm16e1_xm148;vn_xm177;vn_xm177_camo;vn_xm177_fg;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_mrk;vn_xm177_muzzle;vn_xm177_nvg;vn_xm177_short;vn_xm177_sniper;vn_xm177_stock;vn_xm177_stock_camo;vn_xm177_xm148;vn_xm177_xm148_camo;vn_xm177e1;vn_xm177e1_camo;vn_xm177e1_mrk;vn_xm177e1_nvg;vn_xm177e1_sniper,,additional compatible magazine
+vn_m16_30_t_mag,Magazine,YES,gau5a;m16;m16_muzzle;m16_usaf;xm16e1;xm177;xm177_fg;xm177_muzzle;xm177e1,46,vn_gau5a;vn_gau5a_mrk;vn_m16;vn_m16_bayo;vn_m16_camo;vn_m16_m203;vn_m16_m203_camo;vn_m16_mrk;vn_m16_mrk_sd;vn_m16_muzzle;vn_m16_nvg;vn_m16_nvg_sd;vn_m16_sd;vn_m16_sniper;vn_m16_sniper_sd;vn_m16_usaf;vn_m16_usaf_bayo;vn_m16_usaf_mrk;vn_m16_usaf_nvg;vn_m16_usaf_sniper;vn_m16_xm148;vn_xm16e1;vn_xm16e1_bayo;vn_xm16e1_mrk;vn_xm16e1_nvg;vn_xm16e1_sniper;vn_xm16e1_xm148;vn_xm177;vn_xm177_camo;vn_xm177_fg;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_mrk;vn_xm177_muzzle;vn_xm177_nvg;vn_xm177_short;vn_xm177_sniper;vn_xm177_stock;vn_xm177_stock_camo;vn_xm177_xm148;vn_xm177_xm148_camo;vn_xm177e1;vn_xm177e1_camo;vn_xm177e1_mrk;vn_xm177e1_nvg;vn_xm177e1_sniper,,additional compatible magazine
+vn_m16_40_mag,Magazine,YES,gau5a;m16;m16_muzzle;m16_usaf;xm16e1;xm177;xm177_fg;xm177_muzzle;xm177e1,46,vn_gau5a;vn_gau5a_mrk;vn_m16;vn_m16_bayo;vn_m16_camo;vn_m16_m203;vn_m16_m203_camo;vn_m16_mrk;vn_m16_mrk_sd;vn_m16_muzzle;vn_m16_nvg;vn_m16_nvg_sd;vn_m16_sd;vn_m16_sniper;vn_m16_sniper_sd;vn_m16_usaf;vn_m16_usaf_bayo;vn_m16_usaf_mrk;vn_m16_usaf_nvg;vn_m16_usaf_sniper;vn_m16_xm148;vn_xm16e1;vn_xm16e1_bayo;vn_xm16e1_mrk;vn_xm16e1_nvg;vn_xm16e1_sniper;vn_xm16e1_xm148;vn_xm177;vn_xm177_camo;vn_xm177_fg;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_mrk;vn_xm177_muzzle;vn_xm177_nvg;vn_xm177_short;vn_xm177_sniper;vn_xm177_stock;vn_xm177_stock_camo;vn_xm177_xm148;vn_xm177_xm148_camo;vn_xm177e1;vn_xm177e1_camo;vn_xm177e1_mrk;vn_xm177e1_nvg;vn_xm177e1_sniper,,additional compatible magazine
+vn_m16_40_t_mag,Magazine,YES,gau5a;m16;m16_muzzle;m16_usaf;xm16e1;xm177;xm177_fg;xm177_muzzle;xm177e1,46,vn_gau5a;vn_gau5a_mrk;vn_m16;vn_m16_bayo;vn_m16_camo;vn_m16_m203;vn_m16_m203_camo;vn_m16_mrk;vn_m16_mrk_sd;vn_m16_muzzle;vn_m16_nvg;vn_m16_nvg_sd;vn_m16_sd;vn_m16_sniper;vn_m16_sniper_sd;vn_m16_usaf;vn_m16_usaf_bayo;vn_m16_usaf_mrk;vn_m16_usaf_nvg;vn_m16_usaf_sniper;vn_m16_xm148;vn_xm16e1;vn_xm16e1_bayo;vn_xm16e1_mrk;vn_xm16e1_nvg;vn_xm16e1_sniper;vn_xm16e1_xm148;vn_xm177;vn_xm177_camo;vn_xm177_fg;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_mrk;vn_xm177_muzzle;vn_xm177_nvg;vn_xm177_short;vn_xm177_sniper;vn_xm177_stock;vn_xm177_stock_camo;vn_xm177_xm148;vn_xm177_xm148_camo;vn_xm177e1;vn_xm177e1_camo;vn_xm177e1_mrk;vn_xm177e1_nvg;vn_xm177e1_sniper,,additional compatible magazine
+vn_m16_bayo,Derived Weapon,NO,m16,0,,vn_m16,confirmed derived of vn_m16
+vn_m16_camo,Weapon,YES,m16,0,,,weapon
+vn_m16_m203,Weapon,YES,m16,0,,,weapon
+vn_m16_m203_camo,Weapon,YES,m16,0,,,weapon
+vn_m16_mrk,Derived Weapon,NO,m16,0,,vn_m16,confirmed derived of vn_m16
+vn_m16_mrk_sd,Derived Weapon,NO,m16,0,,vn_m16_sd,confirmed derived of vn_m16_sd
+vn_m16_muzzle,Weapon,YES,m16_muzzle,0,,,weapon
+vn_m16_nvg,Derived Weapon,NO,m16,0,,vn_m16,confirmed derived of vn_m16
+vn_m16_nvg_sd,Derived Weapon,NO,m16,0,,vn_m16_sd,confirmed derived of vn_m16_sd
+vn_m16_sd,Derived Weapon,NO,m16,0,,vn_m16,confirmed derived of vn_m16
+vn_m16_sniper,Derived Weapon,NO,m16,0,,vn_m16,confirmed derived of vn_m16
+vn_m16_sniper_sd,Derived Weapon,NO,m16,0,,vn_m16_sniper,confirmed derived of vn_m16_sniper
+vn_m16_usaf,Weapon,YES,m16_usaf,0,,,weapon
+vn_m16_usaf_bayo,Derived Weapon,NO,m16_usaf,0,,vn_m16_usaf,confirmed derived of vn_m16_usaf
+vn_m16_usaf_mrk,Derived Weapon,NO,m16_usaf,0,,vn_m16_usaf,confirmed derived of vn_m16_usaf
+vn_m16_usaf_nvg,Derived Weapon,NO,m16_usaf,0,,vn_m16_usaf,confirmed derived of vn_m16_usaf
+vn_m16_usaf_sniper,Derived Weapon,NO,m16_usaf,0,,vn_m16_usaf,confirmed derived of vn_m16_usaf
+vn_m16_xm148,Weapon,YES,m16,0,,,weapon
+vn_m1891,Weapon,YES,m1891,0,,,weapon
+vn_m1891_bayo,Derived Weapon,NO,m1891,0,,vn_m1891,confirmed derived of vn_m1891
+vn_m1895,Weapon,YES,m1895,0,,,weapon
+vn_m1895_mag,Base Magazine,NO,m1895,2,vn_m1895;vn_m1895_sd,,included base magazine
+vn_m1895_sd,Derived Weapon,NO,m1895,0,,vn_m1895,confirmed derived of vn_m1895
+vn_m1897,Weapon,YES,m1897,0,,,weapon
+vn_m1897_bayo,Derived Weapon,NO,m1897,0,,vn_m1897,confirmed derived of vn_m1897
+vn_m1897_buck_mag,Magazine,YES,m1897,2,vn_m1897;vn_m1897_bayo,,additional compatible magazine
+vn_m1897_fl_mag,Magazine,YES,m1897,2,vn_m1897;vn_m1897_bayo,,additional compatible magazine
+vn_m1903,Weapon,YES,m1903,0,,,weapon
+vn_m1903_bayo,Derived Weapon,NO,m1903,0,,vn_m1903,confirmed derived of vn_m1903
+vn_m1903_gl,Weapon,YES,m1903,0,,,weapon
+vn_m1903_mag,Base Magazine,NO,m1903,4,vn_m1903;vn_m1903_bayo;vn_m1903_gl;vn_m1903_sniper,,included base magazine
+vn_m1903_sniper,Derived Weapon,NO,m1903,0,,vn_m1903_bayo,confirmed derived of vn_m1903_bayo
+vn_m1903_t_mag,Magazine,YES,m1903,4,vn_m1903;vn_m1903_bayo;vn_m1903_gl;vn_m1903_sniper,,additional compatible magazine
+vn_m1911,Weapon,YES,m1911,0,,,weapon
+vn_m1911_mag,Base Magazine,NO,m1911;mx991_m1911,4,vn_m1911;vn_m1911_sd;vn_mx991_m1911;vn_mx991_m1911_sd,,included base magazine
+vn_m1911_sd,Derived Weapon,NO,m1911,0,,vn_m1911,confirmed derived of vn_m1911
+vn_m1918,Weapon,YES,m1918,0,,,weapon
+vn_m1918_bipod,Derived Weapon,NO,m1918,0,,vn_m1918,confirmed derived of vn_m1918
+vn_m1918_mag,Base Magazine,NO,m1918,2,vn_m1918;vn_m1918_bipod,,included base magazine
+vn_m1918_t_mag,Magazine,YES,m1918,2,vn_m1918;vn_m1918_bipod,,additional compatible magazine
+vn_m1928_mag,Magazine,YES,m1928_tommy;m1928a1_tommy,2,vn_m1928_tommy;vn_m1928a1_tommy,,additional compatible magazine
+vn_m1928_t_mag,Magazine,YES,m1928_tommy;m1928a1_tommy,2,vn_m1928_tommy;vn_m1928a1_tommy,,additional compatible magazine
+vn_m1928_tommy,Weapon,YES,m1928_tommy,0,,,weapon
+vn_m1928a1_tommy,Weapon,YES,m1928a1_tommy,0,,,weapon
+vn_m1_garand,Weapon,YES,m1_garand,0,,,weapon
+vn_m1_garand_bayo,Derived Weapon,NO,m1_garand,0,,vn_m1_garand,confirmed derived of vn_m1_garand
+vn_m1_garand_gl,Weapon,YES,m1_garand,0,,,weapon
+vn_m1_garand_mag,Base Magazine,NO,m1_garand,4,vn_m1_garand;vn_m1_garand_bayo;vn_m1_garand_gl;vn_m1_garand_sniper,,included base magazine
+vn_m1_garand_sniper,Derived Weapon,NO,m1_garand,0,,vn_m1_garand,confirmed derived of vn_m1_garand
+vn_m1_garand_t_mag,Magazine,YES,m1_garand,4,vn_m1_garand;vn_m1_garand_bayo;vn_m1_garand_gl;vn_m1_garand_sniper,,additional compatible magazine
+vn_m1a1_20_mag,Magazine,YES,m1928_tommy;m1928a1_tommy;m1a1_tommy;m1a1_tommy_so,4,vn_m1928_tommy;vn_m1928a1_tommy;vn_m1a1_tommy;vn_m1a1_tommy_so,,additional compatible magazine
+vn_m1a1_20_t_mag,Magazine,YES,m1928_tommy;m1928a1_tommy;m1a1_tommy;m1a1_tommy_so,4,vn_m1928_tommy;vn_m1928a1_tommy;vn_m1a1_tommy;vn_m1a1_tommy_so,,additional compatible magazine
+vn_m1a1_30_mag,Magazine,YES,m1928_tommy;m1928a1_tommy;m1a1_tommy;m1a1_tommy_so,4,vn_m1928_tommy;vn_m1928a1_tommy;vn_m1a1_tommy;vn_m1a1_tommy_so,,additional compatible magazine
+vn_m1a1_30_t_mag,Magazine,YES,m1928_tommy;m1928a1_tommy;m1a1_tommy;m1a1_tommy_so,4,vn_m1928_tommy;vn_m1928a1_tommy;vn_m1a1_tommy;vn_m1a1_tommy_so,,additional compatible magazine
+vn_m1a1_tommy,Weapon,YES,m1a1_tommy,0,,,weapon
+vn_m1a1_tommy_so,Weapon,YES,m1a1_tommy_so,0,,,weapon
+vn_m1carbine,Weapon,YES,m1carbine,0,,,weapon
+vn_m1carbine_bayo,Derived Weapon,NO,m1carbine,0,,vn_m1carbine,confirmed derived of vn_m1carbine
+vn_m1carbine_gl,Weapon,YES,m1carbine,0,,,weapon
+vn_m1carbine_shorty,Weapon,YES,m1carbine,0,,,weapon
+vn_m1carbine_sniper,Derived Weapon,NO,m1carbine,0,,vn_m1carbine,confirmed derived of vn_m1carbine
+vn_m20a1b1_01,Weapon,YES,m20a1b1,0,,,weapon
+vn_m20a1b1_heat_mag,Magazine,YES,m20a1b1,1,vn_m20a1b1_01,,additional compatible magazine
+vn_m20a1b1_wp_mag,Magazine,YES,m20a1b1,1,vn_m20a1b1_01,,additional compatible magazine
+vn_m21,Weapon,YES,m21,0,,,weapon
+vn_m21_nvg,Weapon,YES,m21,0,,,weapon
+vn_m21_nvg_sd,Derived Weapon,NO,m21,0,,vn_m21_nvg,confirmed derived of vn_m21_nvg
+vn_m21_sd,Derived Weapon,NO,m21,0,,vn_m21,confirmed derived of vn_m21
+vn_m2carbine,Weapon,YES,m2carbine,0,,,weapon
+vn_m2carbine_bayo,Derived Weapon,NO,m2carbine,0,,vn_m2carbine,confirmed derived of vn_m2carbine
+vn_m2carbine_gl,Weapon,YES,m2carbine,0,,,weapon
+vn_m2carbine_sniper,Derived Weapon,NO,m2carbine,0,,vn_m2carbine,confirmed derived of vn_m2carbine
+vn_m36,Weapon,YES,m36,0,,,weapon
+vn_m36_bayo,Derived Weapon,NO,m36,0,,vn_m36,confirmed derived of vn_m36
+vn_m36_camo,Weapon,YES,m36,0,,,weapon
+vn_m36_mag,Base Magazine,NO,m36,3,vn_m36;vn_m36_bayo;vn_m36_camo,,included base magazine
+vn_m36_t_mag,Magazine,YES,m36,3,vn_m36;vn_m36_bayo;vn_m36_camo,,additional compatible magazine
+vn_m38,Weapon,YES,m38,0,,,weapon
+vn_m38_bayo,Derived Weapon,NO,m38,0,,vn_m38,confirmed derived of vn_m38
+vn_m38_mag,Base Magazine,NO,m1891;m38;m9130;vz54,10,vn_m1891;vn_m1891_bayo;vn_m38;vn_m38_bayo;vn_m9130;vn_m9130_bayo;vn_m9130_sniper;vn_vz54;vn_vz54_sniper;vn_vz54_sniper_camo,,included base magazine
+vn_m38_t_mag,Magazine,YES,m1891;m38;m9130;vz54,10,vn_m1891;vn_m1891_bayo;vn_m38;vn_m38_bayo;vn_m9130;vn_m9130_bayo;vn_m9130_sniper;vn_vz54;vn_vz54_sniper;vn_vz54_sniper_camo,,additional compatible magazine
+vn_m3a1,Weapon,YES,m3a1,0,,,weapon
+vn_m3a1_mag,Base Magazine,NO,m3a1,2,vn_m3a1;vn_m3sd,,included base magazine
+vn_m3a1_t_mag,Magazine,YES,m3a1,2,vn_m3a1;vn_m3sd,,additional compatible magazine
+vn_m3carbine,Weapon,YES,m3carbine,0,,,weapon
+vn_m3sd,Derived Weapon,NO,m3a1,0,,vn_m3a1,confirmed derived of vn_m3a1
+vn_m40a1,Weapon,YES,m40a1,0,,,weapon
+vn_m40a1_camo,Weapon,YES,m40a1,0,,,weapon
+vn_m40a1_mag,Base Magazine,NO,m40a1,6,vn_m40a1;vn_m40a1_camo;vn_m40a1_nvg;vn_m40a1_nvg_sd;vn_m40a1_sniper;vn_m40a1_sniper_sd,,included base magazine
+vn_m40a1_nvg,Derived Weapon,NO,m40a1,0,,vn_m40a1,confirmed derived of vn_m40a1
+vn_m40a1_nvg_sd,Derived Weapon,NO,m40a1,0,,vn_m40a1_nvg,confirmed derived of vn_m40a1_nvg
+vn_m40a1_sniper,Derived Weapon,NO,m40a1,0,,vn_m40a1,confirmed derived of vn_m40a1
+vn_m40a1_sniper_sd,Derived Weapon,NO,m40a1,0,,vn_m40a1_sniper,confirmed derived of vn_m40a1_sniper
+vn_m40a1_t_mag,Magazine,YES,m40a1,6,vn_m40a1;vn_m40a1_camo;vn_m40a1_nvg;vn_m40a1_nvg_sd;vn_m40a1_sniper;vn_m40a1_sniper_sd,,additional compatible magazine
+vn_m45,Weapon,YES,m45,0,,,weapon
+vn_m45_camo,Weapon,YES,m45,0,,,weapon
+vn_m45_fold,Weapon,YES,m45,0,,,weapon
+vn_m45_mag,Base Magazine,NO,m45,4,vn_m45;vn_m45_camo;vn_m45_fold;vn_m45_sd,,included base magazine
+vn_m45_sd,Derived Weapon,NO,m45,0,,vn_m45,confirmed derived of vn_m45
+vn_m45_t_mag,Magazine,YES,m45,4,vn_m45;vn_m45_camo;vn_m45_fold;vn_m45_sd,,additional compatible magazine
+vn_m4956,Weapon,YES,m4956,0,,,weapon
+vn_m4956_10_mag,Base Magazine,NO,m4956,4,vn_m4956;vn_m4956_bayo;vn_m4956_gl;vn_m4956_sniper,,included base magazine
+vn_m4956_10_t_mag,Magazine,YES,m4956,4,vn_m4956;vn_m4956_bayo;vn_m4956_gl;vn_m4956_sniper,,additional compatible magazine
+vn_m4956_bayo,Derived Weapon,NO,m4956,0,,vn_m4956,confirmed derived of vn_m4956
+vn_m4956_gl,Weapon,YES,m4956,0,,,weapon
+vn_m4956_sniper,Derived Weapon,NO,m4956,0,,vn_m4956,confirmed derived of vn_m4956
+vn_m60,Weapon,YES,m60,0,,,weapon
+vn_m60_100_mag,Magazine,YES,m60,3,vn_m60;vn_m60_shorty;vn_m60_shorty_camo,,additional compatible magazine
+vn_m60_shorty,Weapon,YES,m60,0,,,weapon
+vn_m60_shorty_camo,Weapon,YES,m60,0,,,weapon
+vn_m63a,Weapon,YES,m63a,0,,,weapon
+vn_m63a_100_mag,Magazine,YES,m63a_lmg,2,vn_m63a_lmg;vn_m63a_lmg_bipod,,additional compatible magazine
+vn_m63a_100_t_mag,Magazine,YES,m63a_lmg,2,vn_m63a_lmg;vn_m63a_lmg_bipod,,additional compatible magazine
+vn_m63a_150_mag,Magazine,YES,m63a_cdo,2,vn_m63a_cdo;vn_m63a_cdo_bipod,,additional compatible magazine
+vn_m63a_150_t_mag,Magazine,YES,m63a_cdo,2,vn_m63a_cdo;vn_m63a_cdo_bipod,,additional compatible magazine
+vn_m63a_30_mag,Base Magazine,NO,m63a,1,vn_m63a,,included base magazine
+vn_m63a_30_t_mag,Magazine,YES,m63a,1,vn_m63a,,additional compatible magazine
+vn_m63a_cdo,Weapon,YES,m63a_cdo,0,,,weapon
+vn_m63a_cdo_bipod,Derived Weapon,NO,m63a_cdo,0,,vn_m63a_cdo,confirmed derived of vn_m63a_cdo
+vn_m63a_lmg,Weapon,YES,m63a_lmg,0,,,weapon
+vn_m63a_lmg_bipod,Derived Weapon,NO,m63a_lmg,0,,vn_m63a_lmg,confirmed derived of vn_m63a_lmg
+vn_m712,Weapon,YES,m712,0,,,weapon
+vn_m712_mag,Base Magazine,NO,m712,1,vn_m712,,included base magazine
+vn_m72,Weapon,YES,m72,0,,,weapon
+vn_m72_mag,Magazine,YES,m72,1,vn_m72,,additional compatible magazine
+vn_m79,Weapon,YES,m79,0,,,weapon
+vn_m79_p,Weapon,YES,m79,0,,,weapon
+vn_m9130,Weapon,YES,m9130,0,,,weapon
+vn_m9130_bayo,Derived Weapon,NO,m9130,0,,vn_m9130,confirmed derived of vn_m9130
+vn_m9130_sniper,Derived Weapon,NO,m9130,0,,vn_m9130,confirmed derived of vn_m9130
+vn_mat49,Weapon,YES,mat49,0,,,weapon
+vn_mat49_f,Weapon,YES,mat49,0,,,weapon
+vn_mat49_mag,Base Magazine,NO,mat49,3,vn_mat49;vn_mat49_f;vn_mat49_sd,,included base magazine
+vn_mat49_sd,Derived Weapon,NO,mat49,0,,vn_mat49,confirmed derived of vn_mat49
+vn_mat49_t_mag,Magazine,YES,mat49,3,vn_mat49;vn_mat49_f;vn_mat49_sd,,additional compatible magazine
+vn_mat49_vc,Weapon,YES,mat49_vc,0,,,weapon
+vn_mat49_vc_mag,Magazine,YES,mat49_vc,1,vn_mat49_vc,,additional compatible magazine
+vn_mat49_vc_t_mag,Magazine,YES,mat49_vc,1,vn_mat49_vc,,additional compatible magazine
+vn_mc10,Weapon,YES,mc10,0,,,weapon
+vn_mc10_mag,Base Magazine,NO,mc10,2,vn_mc10;vn_mc10_sd,,included base magazine
+vn_mc10_sd,Derived Weapon,NO,mc10,0,,vn_mc10,confirmed derived of vn_mc10
+vn_mc10_t_mag,Magazine,YES,mc10,2,vn_mc10;vn_mc10_sd,,additional compatible magazine
+vn_mg42,Weapon,YES,mg42,0,,,weapon
+vn_mg42_50_mag,Magazine,YES,mg42,1,vn_mg42,,additional compatible magazine
+vn_mg42_50_t_mag,Magazine,YES,mg42,1,vn_mg42,,additional compatible magazine
+vn_mk1_udg,Weapon,YES,mk1_udg,0,,,weapon
+vn_mk1_udg_mag,Base Magazine,NO,mk1_udg,1,vn_mk1_udg,,included base magazine
+vn_mk22,Weapon,YES,mk22,0,,,weapon
+vn_mk22_mag,Base Magazine,NO,mk22,2,vn_mk22;vn_mk22_sd,,included base magazine
+vn_mk22_sd,Derived Weapon,NO,mk22,0,,vn_mk22,confirmed derived of vn_mk22
+vn_mp40,Weapon,YES,mp40,0,,,weapon
+vn_mp40_mag,Base Magazine,NO,mp40,1,vn_mp40,,included base magazine
+vn_mp40_t_mag,Magazine,YES,mp40,1,vn_mp40,,additional compatible magazine
+vn_mpu,Weapon,YES,mpu,0,,,weapon
+vn_mpu_mag,Base Magazine,NO,mpu,2,vn_mpu;vn_mpu_sd,,included base magazine
+vn_mpu_sd,Derived Weapon,NO,mpu,0,,vn_mpu,confirmed derived of vn_mpu
+vn_mpu_t_mag,Magazine,YES,mpu,2,vn_mpu;vn_mpu_sd,,additional compatible magazine
+vn_mx991_m1911,Weapon,YES,mx991_m1911,0,,,weapon
+vn_mx991_m1911_sd,Derived Weapon,NO,mx991_m1911,0,,vn_mx991_m1911,confirmed derived of vn_mx991_m1911
+vn_o_1_5x_k98k,Attachment,YES,k98k,2,vn_k98k_mrk;vn_k98k_mrk_camo,,compatible attachment
+vn_o_1x_sp_m16,Attachment,YES,gau5a,1,vn_gau5a_mrk,,compatible attachment
+vn_o_3x_l1a1,Attachment,YES,l1a1,2,vn_l1a1_01_mrk;vn_l1a1_02_mrk,,compatible attachment
+vn_o_3x_m84,Attachment,YES,m1_garand;m1carbine;m2carbine,3,vn_m1_garand_sniper;vn_m1carbine_sniper;vn_m2carbine_sniper,,compatible attachment
+vn_o_3x_m9130,Attachment,YES,m9130,1,vn_m9130_sniper,,compatible attachment
+vn_o_3x_sks,Attachment,YES,sks,1,vn_sks_sniper,,compatible attachment
+vn_o_3x_vz54,Attachment,YES,vz54,2,vn_vz54_sniper;vn_vz54_sniper_camo,,compatible attachment
+vn_o_4x_m16,Attachment,YES,m16;m16_usaf;xm16e1;xm177;xm177e1,6,vn_m16_mrk;vn_m16_mrk_sd;vn_m16_usaf_mrk;vn_xm16e1_mrk;vn_xm177_mrk;vn_xm177e1_mrk,,compatible attachment
+vn_o_4x_m4956,Attachment,YES,m4956,1,vn_m4956_sniper,,compatible attachment
+vn_o_4x_svd,Attachment,YES,svd,2,vn_svd_sniper;vn_svd_sniper_camo,,compatible attachment
+vn_o_8x_m1903,Attachment,YES,m1903,1,vn_m1903_sniper,,compatible attachment
+vn_o_9x_m14,Attachment,YES,m14a1;m21,3,vn_m14a1_sniper;vn_m21;vn_m21_sd,,compatible attachment
+vn_o_9x_m16,Attachment,YES,m16;m16_usaf;xm16e1;xm177;xm177e1,6,vn_m16_sniper;vn_m16_sniper_sd;vn_m16_usaf_sniper;vn_xm16e1_sniper;vn_xm177_sniper;vn_xm177e1_sniper,,compatible attachment
+vn_o_9x_m40a1,Attachment,YES,m40a1,2,vn_m40a1_sniper;vn_m40a1_sniper_sd,,compatible attachment
+vn_o_anpvs2_m14,Attachment,YES,m14a1;m21,3,vn_m14a1_nvg;vn_m21_nvg;vn_m21_nvg_sd,,compatible attachment
+vn_o_anpvs2_m16,Attachment,YES,m16;m16_usaf;xm16e1;xm177;xm177e1,6,vn_m16_nvg;vn_m16_nvg_sd;vn_m16_usaf_nvg;vn_xm16e1_nvg;vn_xm177_nvg;vn_xm177e1_nvg,,compatible attachment
+vn_o_anpvs2_m40a1,Attachment,YES,m40a1,2,vn_m40a1_nvg;vn_m40a1_nvg_sd,,compatible attachment
+vn_o_m14_front,Attachment,YES,m14a1,1,vn_m14a1_shorty_fs,,compatible attachment
+vn_p38,Weapon,YES,p38,0,,,weapon
+vn_p38_mag,Base Magazine,NO,p38,2,vn_p38;vn_p38_sd,,included base magazine
+vn_p38_sd,Derived Weapon,NO,p38,0,,vn_p38,confirmed derived of vn_p38
+vn_p38s,Weapon,YES,p38s,0,,,weapon
+vn_pk,Weapon,YES,pk,0,,,weapon
+vn_pk_100_mag,Magazine,YES,pk,1,vn_pk,,additional compatible magazine
+vn_pm,Weapon,YES,pm,0,,,weapon
+vn_pm_mag,Base Magazine,NO,fkb1_pm;pm,4,vn_fkb1_pm;vn_fkb1_pm_sd;vn_pm;vn_pm_sd,,included base magazine
+vn_pm_sd,Derived Weapon,NO,pm,0,,vn_pm,confirmed derived of vn_pm
+vn_ppk,Weapon,YES,ppk,0,,,weapon
+vn_ppk_mag,Base Magazine,NO,ppk,2,vn_ppk;vn_ppk_sd,,included base magazine
+vn_ppk_sd,Derived Weapon,NO,ppk,0,,vn_ppk,confirmed derived of vn_ppk
+vn_pps43,Weapon,YES,pps43,0,,,weapon
+vn_pps52,Weapon,YES,pps52,0,,,weapon
+vn_pps_mag,Base Magazine,NO,pps43;pps52,2,vn_pps43;vn_pps52,,included base magazine
+vn_pps_t_mag,Magazine,YES,pps43;pps52,2,vn_pps43;vn_pps52,,additional compatible magazine
+vn_ppsh41,Weapon,YES,ppsh41,0,,,weapon
+vn_ppsh41_35_mag,Magazine,YES,k50m;ppsh41,2,vn_k50m;vn_ppsh41,,additional compatible magazine
+vn_ppsh41_35_t_mag,Magazine,YES,k50m;ppsh41,2,vn_k50m;vn_ppsh41,,additional compatible magazine
+vn_ppsh41_71_mag,Magazine,YES,k50m;ppsh41,2,vn_k50m;vn_ppsh41,,additional compatible magazine
+vn_ppsh41_71_t_mag,Magazine,YES,k50m;ppsh41,2,vn_k50m;vn_ppsh41,,additional compatible magazine
+vn_rpd,Weapon,YES,rpd,0,,,weapon
+vn_rpd_100_mag,Magazine,YES,rpd;rpd_shorty,3,vn_rpd;vn_rpd_shorty;vn_rpd_shorty_01,,additional compatible magazine
+vn_rpd_125_mag,Magazine,YES,rpd;rpd_shorty,3,vn_rpd;vn_rpd_shorty;vn_rpd_shorty_01,,additional compatible magazine
+vn_rpd_shorty,Weapon,YES,rpd,0,,,weapon
+vn_rpd_shorty_01,Weapon,YES,rpd_shorty,0,,,weapon
+vn_rpg2,Weapon,YES,rpg2,0,,,weapon
+vn_rpg2_fuze_mag,Magazine,YES,rpg2,1,vn_rpg2,,additional compatible magazine
+vn_rpg2_mag,Magazine,YES,rpg2,1,vn_rpg2,,additional compatible magazine
+vn_rpg7,Weapon,YES,rpg7,0,,,weapon
+vn_rpg7_mag,Magazine,YES,rpg7,1,vn_rpg7,,additional compatible magazine
+vn_s_hp,Attachment,YES,hp,1,vn_hp_sd,,compatible attachment
+vn_s_m14,Attachment,YES,m14;m14a1;m21;m40a1,7,vn_m14_sd;vn_m14a1_camo;vn_m14a1_nvg;vn_m21_nvg_sd;vn_m21_sd;vn_m40a1_nvg_sd;vn_m40a1_sniper_sd,,compatible attachment
+vn_s_m16,Attachment,YES,m16,4,vn_m16_mrk_sd;vn_m16_nvg_sd;vn_m16_sd;vn_m16_sniper_sd,,compatible attachment
+vn_s_m1895,Attachment,YES,m1895,1,vn_m1895_sd,,compatible attachment
+vn_s_m1911,Attachment,YES,m1911;mx991_m1911,2,vn_m1911_sd;vn_mx991_m1911_sd,,compatible attachment
+vn_s_m3a1,Attachment,YES,m3a1,1,vn_m3sd,,compatible attachment
+vn_s_m45_camo,Attachment,YES,m45,1,vn_m45_sd,,compatible attachment
+vn_s_mat49,Attachment,YES,mat49,1,vn_mat49_sd,,compatible attachment
+vn_s_mc10,Attachment,YES,mc10,1,vn_mc10_sd,,compatible attachment
+vn_s_mk22,Attachment,YES,m10;mk22,2,vn_m10_sd;vn_mk22_sd,,compatible attachment
+vn_s_mpu,Attachment,YES,mpu,1,vn_mpu_sd,,compatible attachment
+vn_s_pm,Attachment,YES,fkb1_pm;pm,2,vn_fkb1_pm_sd;vn_pm_sd,,compatible attachment
+vn_s_ppk,Attachment,YES,p38;ppk,2,vn_p38_sd;vn_ppk_sd,,compatible attachment
+vn_s_sten,Attachment,YES,sten,1,vn_sten_sd,,compatible attachment
+vn_sa7,Weapon,YES,sa7,0,,,weapon
+vn_sa7_mag,Base Magazine,NO,sa7,1,vn_sa7,,included base magazine
+vn_sa7b,Weapon,YES,sa7b,0,,,weapon
+vn_sa7b_mag,Base Magazine,NO,sa7b,1,vn_sa7b,,included base magazine
+vn_sks,Weapon,YES,sks,0,,,weapon
+vn_sks_bayo,Derived Weapon,NO,sks,0,,vn_sks,confirmed derived of vn_sks
+vn_sks_gl,Weapon,YES,sks,0,,,weapon
+vn_sks_mag,Base Magazine,NO,sks,4,vn_sks;vn_sks_bayo;vn_sks_gl;vn_sks_sniper,,included base magazine
+vn_sks_sniper,Derived Weapon,NO,sks,0,,vn_sks,confirmed derived of vn_sks
+vn_sks_t_mag,Magazine,YES,sks,4,vn_sks;vn_sks_bayo;vn_sks_gl;vn_sks_sniper,,additional compatible magazine
+vn_sten,Weapon,YES,sten,0,,,weapon
+vn_sten_mag,Base Magazine,NO,sten,2,vn_sten;vn_sten_sd,,included base magazine
+vn_sten_sd,Derived Weapon,NO,sten,0,,vn_sten,confirmed derived of vn_sten
+vn_sten_t_mag,Magazine,YES,sten,2,vn_sten;vn_sten_sd,,additional compatible magazine
+vn_svd,Weapon,YES,svd,0,,,weapon
+vn_svd_mag,Base Magazine,NO,svd,3,vn_svd;vn_svd_sniper;vn_svd_sniper_camo,,included base magazine
+vn_svd_sniper,Derived Weapon,NO,svd,0,,vn_svd,confirmed derived of vn_svd
+vn_svd_sniper_camo,Derived Weapon,NO,svd,0,,vn_svd,confirmed derived of vn_svd
+vn_svd_t_mag,Magazine,YES,svd,3,vn_svd;vn_svd_sniper;vn_svd_sniper_camo,,additional compatible magazine
+vn_tt33,Weapon,YES,tt33,0,,,weapon
+vn_tt33_mag,Base Magazine,NO,tt33,1,vn_tt33,,included base magazine
+vn_type56,Weapon,YES,type56,0,,,weapon
+vn_type56_bayo,Derived Weapon,NO,type56,0,,vn_type56,confirmed derived of vn_type56
+vn_type56_mag,Magazine,YES,ak;kbkg;type56,5,vn_ak_01;vn_kbkg;vn_kbkg_gl;vn_type56;vn_type56_bayo,,additional compatible magazine
+vn_type56_t_mag,Magazine,YES,ak;kbkg;type56,5,vn_ak_01;vn_kbkg;vn_kbkg_gl;vn_type56;vn_type56_bayo,,additional compatible magazine
+vn_type64,Weapon,YES,type64,0,,,weapon
+vn_type64_f_smg,Weapon,YES,type64_f_smg,0,,,weapon
+vn_type64_mag,Base Magazine,NO,type64,1,vn_type64,,included base magazine
+vn_type64_smg,Weapon,YES,type64_smg,0,,,weapon
+vn_type64_smg_mag,Base Magazine,NO,type64_f_smg;type64_smg,2,vn_type64_f_smg;vn_type64_smg,,included base magazine
+vn_type64_smg_t_mag,Magazine,YES,type64_f_smg;type64_smg,2,vn_type64_f_smg;vn_type64_smg,,additional compatible magazine
+vn_vz54,Weapon,YES,vz54,0,,,weapon
+vn_vz54_sniper,Derived Weapon,NO,vz54,0,,vn_vz54,confirmed derived of vn_vz54
+vn_vz54_sniper_camo,Derived Weapon,NO,vz54,0,,vn_vz54_sniper,confirmed derived of vn_vz54_sniper
+vn_vz61,Weapon,YES,vz61,0,,,weapon
+vn_vz61_mag,Base Magazine,NO,vz61,2,vn_vz61;vn_vz61_p,,included base magazine
+vn_vz61_p,Weapon,YES,vz61,0,,,weapon
+vn_vz61_t_mag,Magazine,YES,vz61,2,vn_vz61;vn_vz61_p,,additional compatible magazine
+vn_welrod,Weapon,YES,welrod,0,,,weapon
+vn_welrod_mag,Base Magazine,NO,welrod,1,vn_welrod,,included base magazine
+vn_xm16e1,Weapon,YES,xm16e1,0,,,weapon
+vn_xm16e1_bayo,Derived Weapon,NO,xm16e1,0,,vn_xm16e1,confirmed derived of vn_xm16e1
+vn_xm16e1_mrk,Derived Weapon,NO,xm16e1,0,,vn_xm16e1,confirmed derived of vn_xm16e1
+vn_xm16e1_nvg,Derived Weapon,NO,xm16e1,0,,vn_xm16e1,confirmed derived of vn_xm16e1
+vn_xm16e1_sniper,Derived Weapon,NO,xm16e1,0,,vn_xm16e1,confirmed derived of vn_xm16e1
+vn_xm16e1_xm148,Weapon,YES,xm16e1,0,,,weapon
+vn_xm177,Weapon,YES,xm177,0,,,weapon
+vn_xm177_camo,Weapon,YES,xm177,0,,,weapon
+vn_xm177_fg,Weapon,YES,xm177_fg,0,,,weapon
+vn_xm177_m203,Weapon,YES,xm177,0,,,weapon
+vn_xm177_m203_camo,Weapon,YES,xm177,0,,,weapon
+vn_xm177_mrk,Derived Weapon,NO,xm177,0,,vn_xm177,confirmed derived of vn_xm177
+vn_xm177_muzzle,Weapon,YES,xm177_muzzle,0,,,weapon
+vn_xm177_nvg,Derived Weapon,NO,xm177,0,,vn_xm177,confirmed derived of vn_xm177
+vn_xm177_short,Weapon,YES,xm177,0,,,weapon
+vn_xm177_sniper,Derived Weapon,NO,xm177,0,,vn_xm177,confirmed derived of vn_xm177
+vn_xm177_stock,Weapon,YES,xm177,0,,,weapon
+vn_xm177_stock_camo,Weapon,YES,xm177,0,,,weapon
+vn_xm177_xm148,Weapon,YES,xm177,0,,,weapon
+vn_xm177_xm148_camo,Weapon,YES,xm177,0,,,weapon
+vn_xm177e1,Weapon,YES,xm177e1,0,,,weapon
+vn_xm177e1_camo,Weapon,YES,xm177e1,0,,,weapon
+vn_xm177e1_mrk,Derived Weapon,NO,xm177e1,0,,vn_xm177e1,confirmed derived of vn_xm177e1
+vn_xm177e1_nvg,Derived Weapon,NO,xm177e1,0,,vn_xm177e1,confirmed derived of vn_xm177e1
+vn_xm177e1_sniper,Derived Weapon,NO,xm177e1,0,,vn_xm177e1,confirmed derived of vn_xm177e1
