@@ -46,6 +46,10 @@ if (_newState in ["PREPARING", "ENDING", "RESETTING"]) then {
 };
 
 switch (_newState) do {
+    case "WAITING": {
+        [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
+    };
+
     case "PREPARING": {
         ["BN_KOTH_voteOpen", false] call bn_koth_fnc_common_publicState;
 
@@ -88,6 +92,8 @@ switch (_newState) do {
     };
 
     case "ENDING": {
+        [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
+
         private _endingDuration = missionNamespace getVariable ["BN_KOTH_endingDuration", 8];
         ["BN_KOTH_endingEndAt", serverTime + _endingDuration] call bn_koth_fnc_common_publicState;
 
@@ -102,6 +108,11 @@ switch (_newState) do {
     };
 
     case "ACTIVE": {
+        private _slotIds = missionNamespace getVariable ["BN_KOTH_vehicleManagedSlotIds", []];
+        if ((count _slotIds) <= 0) then {
+            [] call bn_koth_fnc_vehicles_buildActiveLocationSlots;
+        };
+
         private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
         private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 
@@ -121,6 +132,8 @@ switch (_newState) do {
     };
 
     case "RESETTING": {
+        [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
+
         [] spawn {
             [] call bn_koth_fnc_round_resetRound;
         };

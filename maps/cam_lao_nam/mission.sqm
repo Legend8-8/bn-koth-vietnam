@@ -5,21 +5,21 @@ class EditorData
 	angleGridStep=0.2617994;
 	scaleGridStep=1;
 	autoGroupingDist=10;
-	toggles=1;
+	toggles=9;
 	class ItemIDProvider
 	{
-		nextID=331;
+		nextID=348;
 	};
 	class MarkerIDProvider
 	{
-		nextID=5;
+		nextID=6;
 	};
 	class Camera
 	{
-		pos[]={17576.234,135.11101,9082.0361};
-		dir[]={0.00015596794,-0.95068961,0.31014425};
-		up[]={0.00047809078,0.31014362,0.95068961};
-		aside[]={1,0,-0.0005028884};
+		pos[]={16670.867,94.069855,3871.6133};
+		dir[]={-0.49815217,-0.60025465,0.62573069};
+		up[]={-0.37386194,0.79980886,0.46960932};
+		aside[]={0.78235018,-1.4901161e-08,0.62283885};
 	};
 };
 binarizationWanted=0;
@@ -30,13 +30,14 @@ addons[]=
 	"structures_f_vietnam_c",
 	"A3_Modules_F",
 	"characters_f_vietnam_c",
-	"A3_Modules_F_Curator_Curator"
+	"A3_Modules_F_Curator_Curator",
+	"objects_f_vietnam_c"
 };
 class AddonsMetaData
 {
 	class List
 	{
-		items=5;
+		items=6;
 		class Item0
 		{
 			className="A3_Ui_F";
@@ -70,6 +71,13 @@ class AddonsMetaData
 			className="A3_Modules_F_Curator";
 			name="Arma 3 Zeus Update - Scripted Modules";
 			author="Bohemia Interactive";
+			url="https://www.arma3.com";
+		};
+		class Item5
+		{
+			className="objects_f_vietnam_c";
+			name="objects_f_vietnam_c";
+			author="Savage Game Design";
 			url="https://www.arma3.com";
 		};
 	};
@@ -165,7 +173,7 @@ class Mission
 	};
 	class Entities
 	{
-		items=164;
+		items=177;
 		class Item0
 		{
 			dataType="Marker";
@@ -458,14 +466,14 @@ class Mission
 			dataType="Logic";
 			class PositionInfo
 			{
-				position[]={17126.438,6.2090015,9255.7842};
+				position[]={17131.436,6.2090015,9257.123};
 				angles[]={0.0060001095,2.0944653,0.015998369};
 			};
-			areaSize[]={27.8125,0,27.8125};
+			areaSize[]={31.470675,0,31.470675};
 			flags=1;
 			id=66;
 			type="ModuleHideTerrainObjects_F";
-			atlOffset=0.060699463;
+			atlOffset=0.049843788;
 			class CustomAttributes
 			{
 				class Attribute0
@@ -619,30 +627,31 @@ class Mission
 		class Item19
 		{
 			dataType="Marker";
-			position[]={13438,4.2660427,13286};
+			position[]={13435.201,4.2563162,13287.148};
 			name="hanoi_respawn_east";
 			text="hanoi_respawn_east";
 			type="Empty";
-			angle=120;
+			angle=194.47121;
 			id=72;
+			atlOffset=0.23128414;
 		};
 		class Item20
 		{
 			dataType="Marker";
-			position[]={12650.562,1.6800961,13396.992};
+			position[]={12650.562,1.6800961,13394.847};
 			name="hanoi_respawn_west";
 			text="hanoi_respawn_west";
 			type="Empty";
 			angle=120;
 			id=73;
-			atlOffset=0.1101743;
+			atlOffset=0.1300962;
 		};
 		class Item21
 		{
 			dataType="Object";
 			class PositionInfo
 			{
-				position[]={12647.734,3.6931143,13396.321};
+				position[]={12647.734,3.6931143,13394.176};
 				angles[]={0,5.7595868,0};
 			};
 			side="Empty";
@@ -677,13 +686,15 @@ class Mission
 			dataType="Logic";
 			class PositionInfo
 			{
-				position[]={12647,1.5380028,13393};
-				angles[]={0,2.0944653,0};
+				position[]={12647.663,1.538,13386.097};
+				angles[]={0,1.8683997,0};
 			};
-			areaSize[]={27.8125,0,27.8125};
+			areaSize[]={26.83494,0,30.337999};
+			areaIsRectangle=1;
 			flags=1;
 			id=75;
 			type="ModuleHideTerrainObjects_F";
+			atlOffset=0.018000007;
 			class CustomAttributes
 			{
 				class Attribute0
@@ -720,8 +731,8 @@ class Mission
 			dataType="Object";
 			class PositionInfo
 			{
-				position[]={13437.568,6.2226038,13287.378};
-				angles[]={0,5.7595868,0};
+				position[]={13436.478,6.1278,13288.29};
+				angles[]={0.010000871,0.77617049,0.081816852};
 			};
 			side="Empty";
 			flags=5;
@@ -731,6 +742,7 @@ class Mission
 			};
 			id=76;
 			type="Land_vn_tent_02_03";
+			atlOffset=0.0037021637;
 			class CustomAttributes
 			{
 				class Attribute0
@@ -754,14 +766,14 @@ class Mission
 			dataType="Logic";
 			class PositionInfo
 			{
-				position[]={13436.832,4.249671,13284.056};
+				position[]={13431.208,4.249671,13305.05};
 				angles[]={0,2.0944653,0};
 			};
-			areaSize[]={27.8125,0,27.8125};
+			areaSize[]={43.18119,0,43.18119};
 			flags=1;
 			id=77;
 			type="ModuleHideTerrainObjects_F";
-			atlOffset=0.033344269;
+			atlOffset=0.79607248;
 			class CustomAttributes
 			{
 				class Attribute0
@@ -796,7 +808,7 @@ class Mission
 		class Item25
 		{
 			dataType="Marker";
-			position[]={12650.563,1.5306714,13391.216};
+			position[]={12650.563,1.5306714,13389.07};
 			name="hanoi_west_base_zone";
 			markerType="ELLIPSE";
 			type="";
@@ -805,20 +817,21 @@ class Mission
 			b=50;
 			angle=120;
 			id=78;
-			atlOffset=-7.2717667e-06;
+			atlOffset=0.010671377;
 		};
 		class Item26
 		{
 			dataType="Marker";
-			position[]={13440,4.4400001,13284};
+			position[]={13433.81,4.4302735,13284.686};
 			name="hanoi_east_base_zone";
 			markerType="ELLIPSE";
 			type="";
 			colorName="ColorRed";
 			a=50;
 			b=50;
-			angle=120;
+			angle=194.47121;
 			id=79;
+			atlOffset=0.50500965;
 		};
 		class Item27
 		{
@@ -6073,16 +6086,17 @@ class Mission
 		class Item127
 		{
 			dataType="Marker";
-			position[]={15989.778,26.379999,3362.9897};
+			position[]={15992.342,26.379999,3392.3298};
 			name="saigon_east_free_ground_spawnpoint";
 			type="Empty";
-			angle=62.491127;
+			colorName="ColorOrange";
+			angle=55.644337;
 			id=293;
 		};
 		class Item128
 		{
 			dataType="Marker";
-			position[]={16584.195,26.379999,3926.907};
+			position[]={16585.176,26.379999,3929.8657};
 			name="saigon_west_free_ground_spawnpoint";
 			type="Empty";
 			angle=209.9888;
@@ -6091,16 +6105,17 @@ class Mission
 		class Item129
 		{
 			dataType="Marker";
-			position[]={15986.476,26.379999,3368.4316};
+			position[]={15992.011,26.379999,3364.9785};
 			name="saigon_east_free_air_spawnpoint";
 			type="Empty";
-			angle=58.866646;
+			colorName="ColorOrange";
+			angle=324.16553;
 			id=295;
 		};
 		class Item130
 		{
 			dataType="Marker";
-			position[]={16596.684,26.379999,3946.947};
+			position[]={16601.768,26.379999,3955.4592};
 			name="saigon_west_free_air_spawnpoint";
 			type="Empty";
 			angle=209.73643;
@@ -6109,16 +6124,17 @@ class Mission
 		class Item131
 		{
 			dataType="Marker";
-			position[]={15983.051,26.379999,3373.8518};
+			position[]={16004.148,26.379999,3341.7749};
 			name="saigon_east_free_sea_spawnpoint";
 			type="Empty";
-			angle=58.576267;
+			colorName="ColorOrange";
+			angle=58.576;
 			id=297;
 		};
 		class Item132
 		{
 			dataType="Marker";
-			position[]={16608.447,26.379999,3966.5139};
+			position[]={16616.922,26.472284,3981.1145};
 			name="saigon_west_free_sea_spawnpoint";
 			type="Empty";
 			angle=212.7309;
@@ -6235,8 +6251,8 @@ class Mission
 			dataType="Object";
 			class PositionInfo
 			{
-				position[]={16623.766,26.379999,3908.7395};
-				angles[]={0,5.2514105,0};
+				position[]={16621.738,26.379999,3901.0251};
+				angles[]={-0,3.6527808,0};
 			};
 			side="Empty";
 			flags=4;
@@ -6270,8 +6286,8 @@ class Mission
 			dataType="Object";
 			class PositionInfo
 			{
-				position[]={16631.193,26.379999,3920.6062};
-				angles[]={0,5.2716894,0};
+				position[]={16644.398,26.379999,3938.1904};
+				angles[]={-0,3.6736133,0};
 			};
 			side="Empty";
 			flags=4;
@@ -6305,8 +6321,8 @@ class Mission
 			dataType="Object";
 			class PositionInfo
 			{
-				position[]={16638.623,26.379999,3932.4731};
-				angles[]={0,5.2716894,0};
+				position[]={16667.182,26.379999,3970.1719};
+				angles[]={-0,3.6544318,0};
 			};
 			side="Empty";
 			flags=4;
@@ -6338,34 +6354,37 @@ class Mission
 		class Item139
 		{
 			dataType="Marker";
-			position[]={17883.316,3.6700001,9176.6123};
+			position[]={17884.68,3.6700001,9181.0615};
 			name="hue_east_free_ground_spawnpoint";
 			type="Empty";
-			angle=294.15857;
+			colorName="ColorOrange";
+			angle=280.77197;
 			id=305;
 		};
 		class Item140
 		{
 			dataType="Marker";
-			position[]={17151.75,5.9417381,9269.5654};
+			position[]={17152,5.9719973,9264};
 			name="hue_west_free_ground_spawnpoint";
 			type="Empty";
+			colorName="ColorOrange";
 			angle=105.91;
 			id=306;
 		};
 		class Item141
 		{
 			dataType="Marker";
-			position[]={17884.898,3.6700001,9164.2168};
+			position[]={17924.424,3.7,9166.3594};
 			name="hue_east_free_air_spawnpoint";
 			type="Empty";
-			angle=294.15857;
+			colorName="ColorOrange";
+			angle=183.05879;
 			id=307;
 		};
 		class Item142
 		{
 			dataType="Marker";
-			position[]={17146.031,5.9536939,9266.5762};
+			position[]={17140.197,6.2399998,9247.8545};
 			name="hue_west_free_air_spawnpoint";
 			type="Empty";
 			angle=104.92566;
@@ -6374,16 +6393,17 @@ class Mission
 		class Item143
 		{
 			dataType="Marker";
-			position[]={17894.861,3.6700001,9180.0146};
+			position[]={17911.129,3.6700001,9186.5039};
 			name="hue_east_free_sea_spawnpoint";
 			type="Empty";
+			colorName="ColorOrange";
 			angle=294.15857;
 			id=309;
 		};
 		class Item144
 		{
 			dataType="Marker";
-			position[]={17140.207,5.9788671,9263.4277};
+			position[]={17110,6.1479955,9266};
 			name="hue_west_free_sea_spawnpoint";
 			type="Empty";
 			angle=55.462631;
@@ -6602,58 +6622,63 @@ class Mission
 		class Item151
 		{
 			dataType="Marker";
-			position[]={13417.964,2.8593652,13315.674};
+			position[]={13422.354,2.9358985,13308.397};
 			name="hanoi_east_free_ground_spawnpoint";
 			type="Empty";
-			angle=259.65305;
+			colorName="ColorOrange";
+			angle=323.85855;
 			id=317;
+			atlOffset=2.3841858e-07;
 		};
 		class Item152
 		{
 			dataType="Marker";
-			position[]={12661.337,2.3135035,13432.004};
+			position[]={12652,2.3520069,13434};
 			name="hanoi_west_free_ground_spawnpoint";
 			type="Empty";
-			angle=87.082848;
+			colorName="ColorOrange";
+			angle=86.111923;
 			id=318;
 		};
 		class Item153
 		{
 			dataType="Marker";
-			position[]={13423.507,2.9681985,13307.834};
+			position[]={13442.935,4.5904102,13315.608};
 			name="hanoi_east_free_air_spawnpoint";
 			type="Empty";
-			angle=258.52826;
+			colorName="ColorOrange";
+			angle=312.36804;
 			id=319;
-			atlOffset=2.3841858e-07;
 		};
 		class Item154
 		{
 			dataType="Marker";
-			position[]={12645.664,2.306267,13431.405};
+			position[]={12653,1.5080029,13378};
 			name="hanoi_west_free_air_spawnpoint";
 			type="Empty";
-			angle=88.004227;
+			colorName="ColorOrange";
+			angle=96.289902;
 			id=320;
 		};
 		class Item155
 		{
 			dataType="Marker";
-			position[]={13429.34,3.3288426,13299.709};
+			position[]={13462.752,4.9175272,13325.715};
 			name="hanoi_east_free_sea_spawnpoint";
 			type="Empty";
 			angle=259.38974;
 			id=321;
+			atlOffset=4.7683716e-07;
 		};
 		class Item156
 		{
 			dataType="Marker";
-			position[]={12625.188,2.4124489,13430.204};
+			position[]={12617,2.7920191,13432};
 			name="hanoi_west_free_sea_spawnpoint";
 			type="Empty";
+			colorName="ColorOrange";
 			angle=88.063232;
 			id=322;
-			atlOffset=-1.4543533e-05;
 		};
 		class Item157
 		{
@@ -6802,7 +6827,7 @@ class Mission
 			class PositionInfo
 			{
 				position[]={12649.457,1.7192944,13407.092};
-				angles[]={6.2771854,0,0.0060001095};
+				angles[]={6.2771816,0,0.0060039326};
 			};
 			side="Empty";
 			flags=4;
@@ -6871,12 +6896,12 @@ class Mission
 			dataType="Logic";
 			class PositionInfo
 			{
-				position[]={16018.105,43.34898,6990.4639};
+				position[]={16017,43,6990};
 			};
 			init="    [] spawn {" \n "        while {isNil ""stopCuratorLoop""} do {" \n "        { _x addCuratorEditableObjects [vehicles + allUnits]} forEach allCurators;" \n "        uisleep 10;" \n "        };" \n "    };";
 			id=330;
 			type="ModuleCurator_F";
-			atlOffset=28.36898;
+			atlOffset=28.02;
 			class CustomAttributes
 			{
 				class Attribute0
@@ -6932,6 +6957,328 @@ class Mission
 					};
 				};
 				nAttributes=4;
+			};
+		};
+		class Item164
+		{
+			dataType="Marker";
+			position[]={16628.713,26.379999,3914.0625};
+			name="saigon_west_command_spawnpoint";
+			type="Empty";
+			colorName="ColorGreen";
+			angle=216.42552;
+			id=335;
+		};
+		class Item165
+		{
+			dataType="Marker";
+			position[]={15976.008,26.379999,3401.1919};
+			name="saigon_east_command_spawnpoint";
+			type="Empty";
+			colorName="ColorGreen";
+			angle=52.899979;
+			id=336;
+		};
+		class Item166
+		{
+			dataType="Marker";
+			position[]={17134,5.928,9277};
+			name="hue_west_command_spawnpoint";
+			type="Empty";
+			colorName="ColorGreen";
+			angle=118.64098;
+			id=337;
+			atlOffset=4.2915344e-06;
+		};
+		class Item167
+		{
+			dataType="Marker";
+			position[]={17881,3.6700001,9154};
+			name="hue_east_command_spawnpoint";
+			type="Empty";
+			colorName="ColorGreen";
+			angle=305.35095;
+			id=338;
+		};
+		class Item168
+		{
+			dataType="Marker";
+			position[]={12682,1.626,13414};
+			name="hanoi_west_command_spawnpoint";
+			type="Empty";
+			colorName="ColorGreen";
+			angle=7.1569972;
+			id=339;
+			atlOffset=6.4373016e-06;
+		};
+		class Item169
+		{
+			dataType="Marker";
+			position[]={13411,3.8080001,13289};
+			name="hanoi_east_command_spawnpoint";
+			type="Empty";
+			colorName="ColorGreen";
+			angle=292.23999;
+			id=340;
+			atlOffset=-2.2411346e-05;
+		};
+		class Item170
+		{
+			dataType="Logic";
+			class PositionInfo
+			{
+				position[]={12684.04,1.6760035,13420.111};
+				angles[]={6.2651882,1.6071513,6.2791886};
+			};
+			areaSize[]={12.140404,0,3.5504069};
+			areaIsRectangle=1;
+			flags=1;
+			id=341;
+			type="ModuleHideTerrainObjects_F";
+			atlOffset=-0.020944953;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="#filter";
+					expression="_this setVariable [""#filter"",_value]";
+					class Value
+					{
+						class data
+						{
+							singleType="SCALAR";
+							value=15;
+						};
+					};
+				};
+				class Attribute1
+				{
+					property="#hideLocally";
+					expression="_this setVariable [""#hideLocally"",_value]";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=2;
+			};
+		};
+		class Item171
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={17131.791,6.1831808,9258.8867};
+				angles[]={0,1.8511136,0};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+				name="hue_west_command_mapboard";
+				disableSimulation=1;
+			};
+			id=342;
+			type="Land_vn_b_prop_mapstand_01";
+			atlOffset=0.0056471825;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item172
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={17896.912,3.7417831,9168.5664};
+				angles[]={0,4.9194374,0};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+				name="hue_east_command_mapboard";
+				disableSimulation=1;
+			};
+			id=343;
+			type="Land_vn_b_prop_mapstand_01";
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item173
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={15981.237,26.451782,3382.9802};
+				angles[]={0,1.1969817,0};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+				name="saigon_east_command_mapboard";
+				disableSimulation=1;
+			};
+			id=344;
+			type="Land_vn_b_prop_mapstand_01";
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item174
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={16608.523,28.48984,3935.6306};
+				angles[]={0,4.2619019,0};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+				name="saigon_west_command_mapboard";
+				disableSimulation=1;
+			};
+			id=345;
+			type="Land_vn_b_prop_mapstand_01";
+			atlOffset=-0.024999619;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item175
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={12649.899,1.6541051,13398.309};
+				angles[]={6.2731905,0.41008255,0.0099949092};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+				name="hanoi_west_command_mapboard";
+				disableSimulation=1;
+			};
+			id=346;
+			type="Land_vn_b_prop_mapstand_01";
+			atlOffset=0.00021457672;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item176
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={13432.077,3.8157196,13289.312};
+				angles[]={0.010000736,4.7631779,0.081821039};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+				name="hanoi_east_command_mapboard";
+				disableSimulation=1;
+			};
+			id=347;
+			type="Land_vn_b_prop_mapstand_01";
+			atlOffset=1.8596649e-05;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
 			};
 		};
 	};

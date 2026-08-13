@@ -10,6 +10,11 @@ class CfgFunctions
             class common_publicState {file = "functions\common\fn_publicState.sqf";};
         };
 
+        class curator
+        {
+            class curator_init {file = "functions\curator\fn_curator_init.sqf";};
+        };
+
         class round
         {
             class round_initServer {file = "functions\round\fn_initServer.sqf";};
@@ -54,6 +59,7 @@ class CfgFunctions
             class zone_clearActiveLocation {file = "functions\zone\fn_clearActiveLocation.sqf";};
             class zone_cacheStaticObjects {file = "functions\zone\fn_cacheStaticObjects.sqf";};
             class zone_evaluateControl {file = "functions\zone\fn_evaluateControl.sqf";};
+            class zone_updatePriorityZone {file = "functions\zone\fn_updatePriorityZone.sqf";};
         };
 
         class scoring
@@ -69,6 +75,27 @@ class CfgFunctions
             class respawn_initPlayerServer {file = "functions\respawn\fn_initPlayerServer.sqf";};
             class respawn_handlePlayerDeath {file = "functions\respawn\fn_handlePlayerDeath.sqf";};
             class respawn_handlePlayerRespawn {file = "functions\respawn\fn_handlePlayerRespawn.sqf";};
+        };
+
+        class vehicles
+        {
+            class vehicles_addVehicleInventory {file = "functions\vehicles\fn_addVehicleInventory.sqf";};
+            class vehicles_initServer {file = "functions\vehicles\fn_initServer.sqf";};
+            class vehicles_buildActiveLocationSlots {file = "functions\vehicles\fn_buildActiveLocationSlots.sqf";};
+            class vehicles_clearVehicleInventory {file = "functions\vehicles\fn_clearVehicleInventory.sqf";};
+            class vehicles_isSpawnAreaClear {file = "functions\vehicles\fn_isSpawnAreaClear.sqf";};
+            class vehicles_spawnManagedSlot {file = "functions\vehicles\fn_spawnManagedSlot.sqf";};
+            class vehicles_cleanupManagedWrecks {file = "functions\vehicles\fn_cleanupManagedWrecks.sqf";};
+            class vehicles_cleanupManagedVehicles {file = "functions\vehicles\fn_cleanupManagedVehicles.sqf";};
+            class vehicles_monitorManagedVehicles {file = "functions\vehicles\fn_monitorManagedVehicles.sqf";};
+            class vehicles_requestSpawn {file = "functions\vehicles\fn_requestSpawn.sqf";};
+            class vehicles_mobileRespawn_init {file = "functions\vehicles\mobile_respawn\fn_init.sqf";};
+            class vehicles_mobileRespawn_monitor {file = "functions\vehicles\mobile_respawn\fn_serverRespawnLoop.sqf";};
+            class vehicles_mobileRespawn_initTeleport {file = "functions\vehicles\mobile_respawn\fn_initTeleport.sqf";};
+            class vehicles_mobileRespawn_getVehicleForSide {file = "functions\vehicles\mobile_respawn\fn_getVehicleForSide.sqf";};
+            class vehicles_mobileRespawn_isTentDeployed {file = "functions\vehicles\mobile_respawn\fn_isTentDeployed.sqf";};
+            class vehicles_mobileRespawn_requestTeleport {file = "functions\vehicles\mobile_respawn\fn_requestTeleport.sqf";};
+            class vehicles_mobileRespawn_executeTeleport {file = "functions\vehicles\mobile_respawn\fn_executeTeleport.sqf";};
         };
 
         class ui
