@@ -790,42 +790,111 @@ Do not recreate template units or rediscover starter loadouts per request.
 
 ## 19. Validation Request Modes
 
-`fn_validateLoadout.sqf` is currently server-only and supports two distinct validation intents.
+`fn_validateLoadout.sqf` is server-only and supports three top-level request modes.
+
+Exactly one top-level mode may be supplied.
 
 ### Configured loadout intent
 
-Conceptually:
-
 ```text
-loadoutId = "starter_west"
+loadoutId
 ```
 
-Used for known canonical configured loadouts.
+Used for known canonical configured loadouts such as starter/default loadouts.
 
-### Primary composition intent
+Legacy array-form configured requests remain supported where existing code still requires them.
 
-Conceptually:
+### Legacy primary composition intent
 
 ```text
-primary:
+primary
     weaponClass
     magazines[]
     attachments[]
 ```
 
-A request must choose one intent.
+This remains supported for backward compatibility with the earlier foundation work.
 
-Providing both is malformed.
+New multi-weapon requests should prefer the `weapons` mode.
 
-Providing neither is malformed.
+### Multi-weapon composition intent
 
-Legacy array-form configured requests remain supported where required by existing code.
+```text
+weapons
+    primary
+        weaponClass
+        magazines[]
+        attachments[]
+
+    handgun
+        weaponClass
+        magazines[]
+        attachments[]
+
+    launcher
+        weaponClass
+        magazines[]
+        attachments[]
+```
+
+The `weapons` map must contain at least one supported slot.
+
+Supported slots are currently:
+
+- `primary`
+- `handgun`
+- `launcher`
+
+Unknown slots are rejected as malformed.
+
+Each populated slot is validated through the single internal:
+
+```text
+bn_koth_fnc_loadouts_validateWeaponComposition
+```
+
+No weapon slot maintains a separate compatibility implementation.
+
+The canonical multi-slot result is returned through:
+
+```text
+validatedWeapons
+```
+
+For backward compatibility, when a primary weapon is present:
+
+```text
+validatedPrimary
+```
+
+continues to mirror the canonical primary result.
+
+Providing more than one top-level intent such as:
+
+```text
+loadoutId + weapons
+primary + weapons
+loadoutId + primary
+```
+
+is malformed and rejected.
 
 ---
 
-## 20. Primary Weapon Composition Validation
+## 20. Weapon Composition Validation
 
-Primary composition validation currently verifies:
+`fn_validateWeaponComposition.sqf` is the single internal owner of factual weapon composition validation.
+
+It is:
+
+```text
+Execution: Server
+Public: No
+```
+
+It validates one weapon slot against the canonical generated S.O.G. Prairie Fire compatibility data.
+
+It currently verifies:
 
 - request structure;
 - weapon classname existence;
@@ -837,15 +906,31 @@ Primary composition validation currently verifies:
 - ambiguous/unresolved structural variant rejection;
 - canonical derived weapon classname.
 
-The server determines the canonical accepted weapon.
+The helper is shared by:
+
+```text
+primary
+handgun
+launcher
+```
+
+`fn_validateLoadout.sqf` remains the higher-level orchestrator responsible for:
+
+- player authority;
+- authoritative side resolution;
+- request mode selection;
+- composition orchestration;
+- future progression entitlement integration.
 
 The client must never provide a trusted final derived classname.
 
+The server constructs the canonical result.
+
 ---
 
-## 21. Proven Structural Variant Example
+## 21. Proven Weapon Composition Examples
 
-Hosted Multiplayer testing has verified the following M16 cases:
+Hosted Multiplayer testing has verified the following M16 structural variant cases:
 
 ```text
 vn_m16
@@ -876,6 +961,32 @@ The server resolves these through generated direct lookup data.
 No runtime classname guessing is performed.
 
 No runtime full-variant scan is required.
+
+Hosted Multiplayer testing has also verified a single multi-slot request containing:
+
+```text
+primary
+    vn_m16 + vn_s_m16
+    → vn_m16_sd
+
+handgun
+    vn_hp
+    → vn_hp
+
+launcher
+    vn_m72
+    → vn_m72
+```
+
+All three were validated through the same internal composition validator and returned together in `validatedWeapons`.
+
+Malformed multi-weapon requests have been verified to reject:
+
+- empty `weapons` maps;
+- non-map `weapons`;
+- unsupported weapon slot names;
+- non-map slot payloads;
+- multiple simultaneous top-level request modes.
 
 ---
 
@@ -1242,10 +1353,19 @@ Current foundation includes:
 - confirmed weapon structural variants;
 - deterministic reverse structural variant index;
 - chained structural variant flattening;
-- server primary weapon composition validation;
+- server-authoritative weapon composition validation;
+- shared internal weapon composition validator;
+- multi-slot `weapons` request validation;
+- primary weapon validation;
+- handgun validation;
+- launcher validation;
+- canonical `validatedWeapons` results;
+- backward-compatible `validatedPrimary` results;
 - malformed request rejection;
 - explicit validation failure codes;
-- Hosted MP validation of starter and primary composition paths.
+- Hosted MP validation of configured starter loadouts;
+- Hosted MP validation of structural M16 variants;
+- Hosted MP validation of combined primary + handgun + launcher requests.
 
 ---
 
@@ -1266,7 +1386,8 @@ The foundation currently does not implement:
 - saved player loadouts;
 - final custom Arsenal UI;
 - public client → server loadout request boundary;
-- complete secondary/launcher/handgun/equipment-slot validation.
+- complete non-weapon equipment-slot validation;
+- progression entitlement checks during loadout validation.
 
 Do not pretend these systems exist by adding temporary shortcuts to loadout code.
 

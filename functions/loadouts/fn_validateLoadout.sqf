@@ -8,7 +8,8 @@
         1: Loadout request <HASHMAP|ARRAY>
            HASHMAP schema (exactly one intent):
              loadoutId <STRING>
-             primary <HASHMAP>
+             primary <HASHMAP> (legacy single-slot composition)
+             weapons <HASHMAP> (primary/launcher/handgun slot maps)
              side <STRING> (optional, cross-check only)
     Returns:
         Validation result <HASHMAP>
@@ -31,6 +32,7 @@ private _fail = {
         ["sideToken", _sideToken],
         ["validatedLoadout", []],
         ["validatedPrimary", createHashMap],
+        ["validatedWeapons", createHashMap],
         ["validatedBy", ""]
     ]
 };
@@ -47,8 +49,10 @@ private _requestedLoadoutId = "";
 private _requestedLoadoutIdRaw = objNull;
 private _requestedSideToken = "";
 private _primaryRequest = createHashMap;
+private _weaponsRequest = createHashMap;
 private _hasLoadoutIntent = false;
 private _hasPrimaryIntent = false;
+private _hasWeaponsIntent = false;
 private _requestMode = "";
 
 if (_request isEqualType createHashMap) then {
@@ -62,6 +66,10 @@ if (_request isEqualType createHashMap) then {
     if (_hasPrimaryIntent) then {
         _primaryRequest = _request getOrDefault ["primary", objNull];
     };
+    _hasWeaponsIntent = "weapons" in _requestKeys;
+    if (_hasWeaponsIntent) then {
+        _weaponsRequest = _request getOrDefault ["weapons", objNull];
+    };
 } else {
     if ((_request isEqualType []) && {(count _request) > 0}) then {
         _hasLoadoutIntent = true;
@@ -69,22 +77,31 @@ if (_request isEqualType createHashMap) then {
     };
 };
 
-if (_hasLoadoutIntent && _hasPrimaryIntent) exitWith {
-    ["ERR_MALFORMED_REQUEST", "Loadout request must choose exactly one mode: loadoutId or primary."] call _fail
-};
+private _intentCount =
+    (if (_hasLoadoutIntent) then {1} else {0}) +
+    (if (_hasPrimaryIntent) then {1} else {0}) +
+    (if (_hasWeaponsIntent) then {1} else {0});
 
-if (!(_hasLoadoutIntent) && !(_hasPrimaryIntent)) exitWith {
-    ["ERR_MALFORMED_REQUEST", "Loadout request missing explicit validation intent."] call _fail
+if (_intentCount != 1) exitWith {
+    ["ERR_MALFORMED_REQUEST", "Loadout request must choose exactly one mode: loadoutId, primary, or weapons."] call _fail
 };
 
 if (_hasPrimaryIntent) then {
     _requestMode = "primary";
 } else {
-    _requestMode = "configured";
+    if (_hasWeaponsIntent) then {
+        _requestMode = "weapons";
+    } else {
+        _requestMode = "configured";
+    };
 };
 
 if ((_requestMode isEqualTo "primary") && {!(_primaryRequest isEqualType createHashMap)}) exitWith {
     ["ERR_MALFORMED_REQUEST", "Primary validation request must provide primary as a map."] call _fail
+};
+
+if ((_requestMode isEqualTo "weapons") && {!(_weaponsRequest isEqualType createHashMap)}) exitWith {
+    ["ERR_MALFORMED_REQUEST", "Weapons validation request must provide weapons as a map."] call _fail
 };
 
 if ((_requestMode isEqualTo "configured") && {!(_requestedLoadoutIdRaw isEqualType "")}) exitWith {
@@ -156,7 +173,7 @@ if !(isClass _arsenalCfg) exitWith {
 private _compatibilityCfg = _arsenalCfg >> "Equipment" >> "Compatibility";
 if !(_requestMode isEqualTo "configured") then {
     if !(isClass _compatibilityCfg) exitWith {
-        ["ERR_COMPATIBILITY_MISSING", "Primary validation requires canonical compatibility config.", _requestedLoadoutId, _authoritativeSideToken] call _fail
+        ["ERR_COMPATIBILITY_MISSING", "Weapon composition validation requires canonical compatibility config.", _requestedLoadoutId, _authoritativeSideToken] call _fail
     };
 };
 
@@ -185,6 +202,105 @@ if (_requestMode isEqualTo "primary") exitWith {
         ["sideToken", _authoritativeSideToken],
         ["validatedLoadout", []],
         ["validatedPrimary", _compositionResult getOrDefault ["validatedWeapon", createHashMap]],
+        ["validatedWeapons", createHashMapFromArray [
+            ["primary", _compositionResult getOrDefault ["validatedWeapon", createHashMap]]
+        ]],
+        ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
+    ]
+};
+
+
+if (_requestMode isEqualTo "weapons") exitWith {
+    private _slotKeys = keys _weaponsRequest;
+    private _supportedSlots = ["primary", "launcher", "handgun"];
+    private _unknownSlotIndex = _slotKeys findIf {!(_x in _supportedSlots)};
+
+    if (_unknownSlotIndex >= 0) exitWith {
+        [
+            "ERR_MALFORMED_REQUEST",
+            format ["Weapons request contains unsupported slot '%1'.", _slotKeys select _unknownSlotIndex],
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    if ((count _slotKeys) <= 0) exitWith {
+        [
+            "ERR_MALFORMED_REQUEST",
+            "Weapons request must contain at least one of: primary, launcher, handgun.",
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    private _validatedWeapons = createHashMap;
+    private _slotFailure = createHashMap;
+
+    private _validateSlot = {
+        params ["_slotName", "_slotToken", "_slotLabel"];
+
+        private _slotRequest = _weaponsRequest getOrDefault [_slotName, objNull];
+        if !(_slotRequest isEqualType createHashMap) exitWith {
+            createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", format ["Weapons.%1 must be a map.", _slotName]]
+            ]
+        };
+
+        [
+            _slotRequest,
+            _compatibilityCfg,
+            _slotToken,
+            _slotLabel
+        ] call bn_koth_fnc_loadouts_validateWeaponComposition
+    };
+
+    if ("primary" in _slotKeys) then {
+        private _primaryResult = ["primary", "PRIMARY", "Primary"] call _validateSlot;
+        if (_primaryResult getOrDefault ["success", false]) then {
+            _validatedWeapons set ["primary", _primaryResult getOrDefault ["validatedWeapon", createHashMap]];
+        } else {
+            _slotFailure = _primaryResult;
+        };
+    };
+
+    if (((count _slotFailure) isEqualTo 0) && {"launcher" in _slotKeys}) then {
+        private _launcherResult = ["launcher", "LAUNCHER", "Launcher"] call _validateSlot;
+        if (_launcherResult getOrDefault ["success", false]) then {
+            _validatedWeapons set ["launcher", _launcherResult getOrDefault ["validatedWeapon", createHashMap]];
+        } else {
+            _slotFailure = _launcherResult;
+        };
+    };
+
+    if (((count _slotFailure) isEqualTo 0) && {"handgun" in _slotKeys}) then {
+        private _handgunResult = ["handgun", "HANDGUN", "Handgun"] call _validateSlot;
+        if (_handgunResult getOrDefault ["success", false]) then {
+            _validatedWeapons set ["handgun", _handgunResult getOrDefault ["validatedWeapon", createHashMap]];
+        } else {
+            _slotFailure = _handgunResult;
+        };
+    };
+
+    if ((count _slotFailure) > 0) exitWith {
+        [
+            _slotFailure getOrDefault ["code", "ERR_WEAPON_COMPOSITION"],
+            _slotFailure getOrDefault ["message", "Weapon composition validation failed."],
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    createHashMapFromArray [
+        ["success", true],
+        ["code", "OK"],
+        ["message", "Weapon composition request validated."],
+        ["loadoutId", ""],
+        ["sideToken", _authoritativeSideToken],
+        ["validatedLoadout", []],
+        ["validatedPrimary", _validatedWeapons getOrDefault ["primary", createHashMap]],
+        ["validatedWeapons", _validatedWeapons],
         ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
     ]
 };
@@ -234,5 +350,6 @@ createHashMapFromArray [
     ["sideToken", _authoritativeSideToken],
     ["validatedLoadout", _validatedLoadout],
     ["validatedPrimary", createHashMap],
+    ["validatedWeapons", createHashMap],
     ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
 ]
