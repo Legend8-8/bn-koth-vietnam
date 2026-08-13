@@ -20,6 +20,7 @@ if ((count _playableSides) < 2) then {
 
 private _stateMap = createHashMap;
 private _assignmentMap = createHashMap;
+private _nameMap = createHashMap;
 private _countsMap = createHashMapFromArray [[_playableSides select 0, 0], [_playableSides select 1, 0]];
 
 {
@@ -29,9 +30,11 @@ private _countsMap = createHashMapFromArray [[_playableSides select 0, 0], [_pla
     if (_record isEqualType createHashMap) then {
         private _state = _record getOrDefault ["state", "LOBBY"];
         private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
+        private _name = _record getOrDefault ["name", _uid];
 
         _stateMap set [_uid, _state];
         _assignmentMap set [_uid, _assignedSide];
+        _nameMap set [_uid, _name];
 
         if (_assignedSide in _playableSides) then {
             private _currentCount = _countsMap getOrDefault [_assignedSide, 0];
@@ -42,4 +45,5 @@ private _countsMap = createHashMapFromArray [[_playableSides select 0, 0], [_pla
 
 ["BN_KOTH_playerStates", _stateMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_playerTeamAssignments", _assignmentMap] call bn_koth_fnc_common_publicState;
+["BN_KOTH_playerNames", _nameMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_teamCounts", _countsMap] call bn_koth_fnc_common_publicState;
