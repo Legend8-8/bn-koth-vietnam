@@ -22,6 +22,10 @@ class CfgBnKothLocations
         zoneMarker = "saigon_zone";
         respawnWestMarker = "saigon_respawn_west";
         respawnEastMarker = "saigon_respawn_east";
+        westCommand_spawnpoint = "saigon_west_command_spawnpoint";
+        eastCommand_spawnpoint = "saigon_east_command_spawnpoint";
+        westCommand_mapboard = "saigon_west_command_mapboard";
+        eastCommand_mapboard = "saigon_east_command_mapboard";
         westBaseZoneMarker = "saigon_west_base_zone";
         eastBaseZoneMarker = "saigon_east_base_zone";
         eastPaidGround_spawnpoint = "saigon_east_paid_ground_spawnpoint";
@@ -50,6 +54,10 @@ class CfgBnKothLocations
         zoneMarker = "hue_zone";
         respawnWestMarker = "hue_respawn_west";
         respawnEastMarker = "hue_respawn_east";
+        westCommand_spawnpoint = "hue_west_command_spawnpoint";
+        eastCommand_spawnpoint = "hue_east_command_spawnpoint";
+        westCommand_mapboard = "hue_west_command_mapboard";
+        eastCommand_mapboard = "hue_east_command_mapboard";
         westBaseZoneMarker = "hue_west_base_zone";
         eastBaseZoneMarker = "hue_east_base_zone";
         eastPaidGround_spawnpoint = "hue_east_paid_ground_spawnpoint";
@@ -78,6 +86,10 @@ class CfgBnKothLocations
         zoneMarker = "hanoi_zone";
         respawnWestMarker = "hanoi_respawn_west";
         respawnEastMarker = "hanoi_respawn_east";
+        westCommand_spawnpoint = "hanoi_west_command_spawnpoint";
+        eastCommand_spawnpoint = "hanoi_east_command_spawnpoint";
+        westCommand_mapboard = "hanoi_west_command_mapboard";
+        eastCommand_mapboard = "hanoi_east_command_mapboard";
         westBaseZoneMarker = "hanoi_west_base_zone";
         eastBaseZoneMarker = "hanoi_east_base_zone";
         eastPaidGround_spawnpoint = "hanoi_east_paid_ground_spawnpoint";

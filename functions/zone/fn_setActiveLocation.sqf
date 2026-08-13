@@ -129,6 +129,11 @@ if (_cache isEqualType createHashMap) then {
     } forEach (keys _cache);
 };
 
+private _roundState = [] call bn_koth_fnc_round_getState;
+if (_roundState in ["PREPARING", "ACTIVE"]) then {
+    [] call bn_koth_fnc_vehicles_buildActiveLocationSlots;
+};
+
 [format ["Active location set: %1 (%2)", _locationId, _activeZoneMarker]] call bn_koth_fnc_common_log;
 
 true
