@@ -39,6 +39,7 @@ if (_votesByUid isEqualType createHashMap) then {
 };
 
 [] call bn_koth_fnc_round_updateVoteTotals;
+[] call bn_koth_fnc_round_maybeShortenVoteDeadline;
 [] call bn_koth_fnc_teams_publishState;
 
 [format ["Removed disconnected player UID=%1 from lobby/team/vote state", _uid]] call bn_koth_fnc_common_log;

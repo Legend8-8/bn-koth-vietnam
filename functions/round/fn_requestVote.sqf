@@ -45,8 +45,15 @@ if !(_roundState isEqualTo "WAITING" && {_voteOpen}) exitWith {
 };
 
 private _state = _record getOrDefault ["state", "LOBBY"];
-if (_state in ["ACTIVE", "DEPLOYING", "RETURNING"]) exitWith {
-    [_ownerId, "Your current participation state is not eligible for voting."] call bn_koth_fnc_teams_notifyPlayer;
+private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
+if !(_state isEqualTo "TEAM_SELECTED") exitWith {
+    [_ownerId, "Select a team before voting."] call bn_koth_fnc_teams_notifyPlayer;
+    [format ["Rejected vote from non-selected UID=%1 state=%2", _uid, _state], "WARN"] call bn_koth_fnc_common_log;
+};
+
+if !([_assignedSide] call bn_koth_fnc_teams_validateSide) exitWith {
+    [_ownerId, "Your current team selection is not valid for voting."] call bn_koth_fnc_teams_notifyPlayer;
+    [format ["Rejected vote from UID=%1 with invalid assigned side %2", _uid, _assignedSide], "WARN"] call bn_koth_fnc_common_log;
 };
 
 private _now = serverTime;
@@ -89,9 +96,8 @@ missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 [] call bn_koth_fnc_round_updateVoteTotals;
 
 if (_previous isEqualTo "") then {
+    [] call bn_koth_fnc_round_maybeShortenVoteDeadline;
     [format ["Vote accepted UID=%1 AO=%2", _uid, _requestedLocationId]] call bn_koth_fnc_common_log;
 } else {
     [format ["Vote changed UID=%1 from=%2 to=%3", _uid, _previous, _requestedLocationId]] call bn_koth_fnc_common_log;
 };
-
-[_ownerId, format ["Vote submitted: %1", _requestedLocationId]] call bn_koth_fnc_teams_notifyPlayer;

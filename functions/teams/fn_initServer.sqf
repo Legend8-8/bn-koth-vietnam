@@ -17,9 +17,24 @@ if ((count _playableSides) < 2) then {
     _playableSides = [west, east];
 };
 
+private _lobbyCfg = missionConfigFile >> "CfgBnKothLobby";
+private _maxPlayers = if (isClass _lobbyCfg) then {getNumber (_lobbyCfg >> "maxPlayers")} else {100};
+private _maxTeamPlayers = if (isClass _lobbyCfg) then {getNumber (_lobbyCfg >> "maxTeamPlayers")} else {50};
+
+if (_maxPlayers < 1) then {
+    _maxPlayers = 1;
+};
+
+if (_maxTeamPlayers < 1) then {
+    _maxTeamPlayers = 1;
+};
+
 missionNamespace setVariable ["BN_KOTH_playerRecords", createHashMap];
+["BN_KOTH_maxPlayers", _maxPlayers] call bn_koth_fnc_common_publicState;
+["BN_KOTH_maxTeamPlayers", _maxTeamPlayers] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_playerStates", createHashMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_playerTeamAssignments", createHashMap] call bn_koth_fnc_common_publicState;
+["BN_KOTH_playerNames", createHashMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_teamCounts", createHashMapFromArray [[_playableSides select 0, 0], [_playableSides select 1, 0]]] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeParticipants", []] call bn_koth_fnc_common_publicState;
 
