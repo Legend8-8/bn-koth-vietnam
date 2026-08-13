@@ -47,6 +47,7 @@ if (isNull _player || {!isPlayer _player}) exitWith {
 
 private _requestedLoadoutId = "";
 private _requestedLoadoutIdRaw = objNull;
+private _requestedSideRaw = "";
 private _requestedSideToken = "";
 private _primaryRequest = createHashMap;
 private _weaponsRequest = createHashMap;
@@ -61,7 +62,7 @@ if (_request isEqualType createHashMap) then {
     if (_hasLoadoutIntent) then {
         _requestedLoadoutIdRaw = _request get "loadoutId";
     };
-    _requestedSideToken = toUpper (_request getOrDefault ["side", ""]);
+    _requestedSideRaw = _request getOrDefault ["side", ""];
     _hasPrimaryIntent = "primary" in _requestKeys;
     if (_hasPrimaryIntent) then {
         _primaryRequest = _request getOrDefault ["primary", objNull];
@@ -76,6 +77,12 @@ if (_request isEqualType createHashMap) then {
         _requestedLoadoutIdRaw = _request select 0;
     };
 };
+
+if !(_requestedSideRaw isEqualType "") exitWith {
+    ["ERR_MALFORMED_REQUEST", "Requested side must be a string."] call _fail
+};
+
+_requestedSideToken = toUpper _requestedSideRaw;
 
 private _intentCount =
     (if (_hasLoadoutIntent) then {1} else {0}) +
@@ -144,10 +151,20 @@ if (_authoritativeSideToken isEqualTo "") exitWith {
     ["ERR_SIDE_TOKEN_UNMAPPED", "Assigned side does not map to a supported side token.", _requestedLoadoutId] call _fail
 };
 
-if !(_requestedSideToken isEqualTo "") then {
-    if !(_requestedSideToken isEqualTo _authoritativeSideToken) exitWith {
-        ["ERR_REQUEST_SIDE_MISMATCH", format ["Requested side '%1' does not match authoritative assigned side '%2'.", _requestedSideToken, _authoritativeSideToken], _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
+if (
+    !(_requestedSideToken isEqualTo "") &&
+    {!(_requestedSideToken isEqualTo _authoritativeSideToken)}
+) exitWith {
+    [
+        "ERR_REQUEST_SIDE_MISMATCH",
+        format [
+            "Requested side '%1' does not match authoritative assigned side '%2'.",
+            _requestedSideToken,
+            _authoritativeSideToken
+        ],
+        _requestedLoadoutId,
+        _authoritativeSideToken
+    ] call _fail
 };
 
 private _definitions = missionNamespace getVariable ["BN_KOTH_loadoutDefinitions", createHashMap];
