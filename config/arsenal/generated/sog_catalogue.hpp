@@ -8384,3 +8384,2350 @@
             requirements[] = {"vn_o_9x_m16", "vn_xm177e1"};
         };
     };
+
+    class WeaponVariantByBaseAndAttachments
+    {
+        class vn_ak_01
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_ak_01";
+            };
+        };
+        class vn_dp28
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_dp28";
+            };
+        };
+        class vn_f1_smg
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_f1_smg";
+            };
+            class k_vn_b_l1a1
+            {
+                structuralAttachments[] = {"vn_b_l1a1"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_f1_smg_bayo";
+            };
+        };
+        class vn_fkb1_pm
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_fkb1_pm";
+            };
+            class k_vn_s_pm
+            {
+                structuralAttachments[] = {"vn_s_pm"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_fkb1_pm_sd";
+            };
+        };
+        class vn_gau5a
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_gau5a";
+            };
+            class k_vn_o_1x_sp_m16
+            {
+                structuralAttachments[] = {"vn_o_1x_sp_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_gau5a_mrk";
+            };
+        };
+        class vn_hd
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_hd";
+            };
+        };
+        class vn_hp
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_hp";
+            };
+            class k_vn_s_hp
+            {
+                structuralAttachments[] = {"vn_s_hp"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_hp_sd";
+            };
+        };
+        class vn_izh54
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_izh54";
+            };
+        };
+        class vn_izh54_p
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_izh54_p";
+            };
+        };
+        class vn_izh54_shorty
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_izh54_shorty";
+            };
+        };
+        class vn_k50m
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_k50m";
+            };
+        };
+        class vn_k98k
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_k98k";
+            };
+            class k_vn_b_camo_k98k__vn_o_1_5x_k98k
+            {
+                structuralAttachments[] = {"vn_b_camo_k98k", "vn_o_1_5x_k98k"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_k98k_mrk_camo";
+            };
+            class k_vn_b_k98k
+            {
+                structuralAttachments[] = {"vn_b_k98k"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_k98k_bayo";
+            };
+            class k_vn_o_1_5x_k98k
+            {
+                structuralAttachments[] = {"vn_o_1_5x_k98k"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_k98k_mrk";
+            };
+        };
+        class vn_kbkg
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_kbkg";
+            };
+        };
+        class vn_kbkg_gl
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_kbkg_gl";
+            };
+        };
+        class vn_l1a1_01
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l1a1_01";
+            };
+            class k_vn_b_l1a1
+            {
+                structuralAttachments[] = {"vn_b_l1a1"};
+                ambiguous = 1;
+                resolvedWeaponClass = "";
+                candidates[] = {"vn_l1a1_01_bayo", "vn_l1a1_02_bayo"};
+            };
+            class k_vn_o_3x_l1a1
+            {
+                structuralAttachments[] = {"vn_o_3x_l1a1"};
+                ambiguous = 1;
+                resolvedWeaponClass = "";
+                candidates[] = {"vn_l1a1_01_mrk", "vn_l1a1_02_mrk"};
+            };
+        };
+        class vn_l1a1_01_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l1a1_01_camo";
+            };
+        };
+        class vn_l1a1_01_gl
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l1a1_01_gl";
+            };
+        };
+        class vn_l1a1_02
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l1a1_02";
+            };
+        };
+        class vn_l1a1_02_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l1a1_02_camo";
+            };
+        };
+        class vn_l1a1_02_gl
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l1a1_02_gl";
+            };
+        };
+        class vn_l1a1_03
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l1a1_03";
+            };
+        };
+        class vn_l1a1_03_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l1a1_03_camo";
+            };
+        };
+        class vn_l1a1_xm148
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l1a1_xm148";
+            };
+        };
+        class vn_l1a1_xm148_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l1a1_xm148_camo";
+            };
+        };
+        class vn_l2a1_01
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l2a1_01";
+            };
+        };
+        class vn_l2a3
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l2a3";
+            };
+        };
+        class vn_l2a3_f
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l2a3_f";
+            };
+        };
+        class vn_l34a1
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l34a1";
+            };
+        };
+        class vn_l34a1_f
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l34a1_f";
+            };
+        };
+        class vn_l34a1_xm148
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l34a1_xm148";
+            };
+        };
+        class vn_l4
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_l4";
+            };
+        };
+        class vn_m10
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m10";
+            };
+            class k_vn_s_mk22
+            {
+                structuralAttachments[] = {"vn_s_mk22"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m10_sd";
+            };
+        };
+        class vn_m127
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m127";
+            };
+        };
+        class vn_m14
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m14";
+            };
+            class k_vn_b_camo_m14__vn_s_m14
+            {
+                structuralAttachments[] = {"vn_b_camo_m14", "vn_s_m14"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m14_sd";
+            };
+            class k_vn_b_m14
+            {
+                structuralAttachments[] = {"vn_b_m14"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m14_bayo";
+            };
+        };
+        class vn_m14_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m14_camo";
+            };
+        };
+        class vn_m14a1
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m14a1";
+            };
+            class k_vn_b_camo_m14a1__vn_o_anpvs2_m14__vn_s_m14
+            {
+                structuralAttachments[] = {"vn_b_camo_m14a1", "vn_o_anpvs2_m14", "vn_s_m14"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m14a1_nvg";
+            };
+            class k_vn_b_camo_m14a1__vn_s_m14
+            {
+                structuralAttachments[] = {"vn_b_camo_m14a1", "vn_s_m14"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m14a1_camo";
+            };
+            class k_vn_bipod_m14
+            {
+                structuralAttachments[] = {"vn_bipod_m14"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m14a1_bipod";
+            };
+            class k_vn_bipod_m14__vn_o_9x_m14
+            {
+                structuralAttachments[] = {"vn_bipod_m14", "vn_o_9x_m14"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m14a1_sniper";
+            };
+            class k_vn_o_m14_front
+            {
+                structuralAttachments[] = {"vn_o_m14_front"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m14a1_shorty_fs";
+            };
+        };
+        class vn_m14a1_shorty
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m14a1_shorty";
+            };
+        };
+        class vn_m16
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16";
+            };
+            class k_vn_b_m16
+            {
+                structuralAttachments[] = {"vn_b_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_bayo";
+            };
+            class k_vn_bipod_m16__vn_o_9x_m16
+            {
+                structuralAttachments[] = {"vn_bipod_m16", "vn_o_9x_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_sniper";
+            };
+            class k_vn_bipod_m16__vn_o_9x_m16__vn_s_m16
+            {
+                structuralAttachments[] = {"vn_bipod_m16", "vn_o_9x_m16", "vn_s_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_sniper_sd";
+            };
+            class k_vn_o_4x_m16
+            {
+                structuralAttachments[] = {"vn_o_4x_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_mrk";
+            };
+            class k_vn_o_4x_m16__vn_s_m16
+            {
+                structuralAttachments[] = {"vn_o_4x_m16", "vn_s_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_mrk_sd";
+            };
+            class k_vn_o_anpvs2_m16
+            {
+                structuralAttachments[] = {"vn_o_anpvs2_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_nvg";
+            };
+            class k_vn_o_anpvs2_m16__vn_s_m16
+            {
+                structuralAttachments[] = {"vn_o_anpvs2_m16", "vn_s_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_nvg_sd";
+            };
+            class k_vn_s_m16
+            {
+                structuralAttachments[] = {"vn_s_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_sd";
+            };
+        };
+        class vn_m16_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_camo";
+            };
+        };
+        class vn_m16_m203
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_m203";
+            };
+        };
+        class vn_m16_m203_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_m203_camo";
+            };
+        };
+        class vn_m16_muzzle
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_muzzle";
+            };
+        };
+        class vn_m16_usaf
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_usaf";
+            };
+            class k_vn_b_m16
+            {
+                structuralAttachments[] = {"vn_b_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_usaf_bayo";
+            };
+            class k_vn_o_4x_m16
+            {
+                structuralAttachments[] = {"vn_o_4x_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_usaf_mrk";
+            };
+            class k_vn_o_9x_m16
+            {
+                structuralAttachments[] = {"vn_o_9x_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_usaf_sniper";
+            };
+            class k_vn_o_anpvs2_m16
+            {
+                structuralAttachments[] = {"vn_o_anpvs2_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_usaf_nvg";
+            };
+        };
+        class vn_m16_xm148
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m16_xm148";
+            };
+        };
+        class vn_m1891
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1891";
+            };
+            class k_vn_b_m38
+            {
+                structuralAttachments[] = {"vn_b_m38"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1891_bayo";
+            };
+        };
+        class vn_m1895
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1895";
+            };
+            class k_vn_s_m1895
+            {
+                structuralAttachments[] = {"vn_s_m1895"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1895_sd";
+            };
+        };
+        class vn_m1897
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1897";
+            };
+            class k_vn_b_m1897
+            {
+                structuralAttachments[] = {"vn_b_m1897"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1897_bayo";
+            };
+        };
+        class vn_m1903
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1903";
+            };
+            class k_vn_b_m1903
+            {
+                structuralAttachments[] = {"vn_b_m1903"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1903_bayo";
+            };
+            class k_vn_b_m1903__vn_o_8x_m1903
+            {
+                structuralAttachments[] = {"vn_b_m1903", "vn_o_8x_m1903"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1903_sniper";
+            };
+        };
+        class vn_m1903_gl
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1903_gl";
+            };
+        };
+        class vn_m1911
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1911";
+            };
+            class k_vn_s_m1911
+            {
+                structuralAttachments[] = {"vn_s_m1911"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1911_sd";
+            };
+        };
+        class vn_m1918
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1918";
+            };
+            class k_vn_bipod_m1918
+            {
+                structuralAttachments[] = {"vn_bipod_m1918"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1918_bipod";
+            };
+        };
+        class vn_m1928_tommy
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1928_tommy";
+            };
+        };
+        class vn_m1928a1_tommy
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1928a1_tommy";
+            };
+        };
+        class vn_m1_garand
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1_garand";
+            };
+            class k_vn_b_camo_m1_garand__vn_o_3x_m84
+            {
+                structuralAttachments[] = {"vn_b_camo_m1_garand", "vn_o_3x_m84"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1_garand_sniper";
+            };
+            class k_vn_b_m1_garand
+            {
+                structuralAttachments[] = {"vn_b_m1_garand"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1_garand_bayo";
+            };
+        };
+        class vn_m1_garand_gl
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1_garand_gl";
+            };
+        };
+        class vn_m1a1_tommy
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1a1_tommy";
+            };
+        };
+        class vn_m1a1_tommy_so
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1a1_tommy_so";
+            };
+        };
+        class vn_m1carbine
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1carbine";
+            };
+            class k_vn_b_carbine
+            {
+                structuralAttachments[] = {"vn_b_carbine"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1carbine_bayo";
+            };
+            class k_vn_o_3x_m84
+            {
+                structuralAttachments[] = {"vn_o_3x_m84"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1carbine_sniper";
+            };
+        };
+        class vn_m1carbine_gl
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1carbine_gl";
+            };
+        };
+        class vn_m1carbine_shorty
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m1carbine_shorty";
+            };
+        };
+        class vn_m20a1b1_01
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m20a1b1_01";
+            };
+        };
+        class vn_m21
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m21";
+            };
+            class k_vn_b_camo_m14__vn_s_m14
+            {
+                structuralAttachments[] = {"vn_b_camo_m14", "vn_s_m14"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m21_sd";
+            };
+        };
+        class vn_m21_nvg
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m21_nvg";
+            };
+            class k_vn_s_m14
+            {
+                structuralAttachments[] = {"vn_s_m14"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m21_nvg_sd";
+            };
+        };
+        class vn_m2carbine
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m2carbine";
+            };
+            class k_vn_b_carbine
+            {
+                structuralAttachments[] = {"vn_b_carbine"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m2carbine_bayo";
+            };
+            class k_vn_o_3x_m84
+            {
+                structuralAttachments[] = {"vn_o_3x_m84"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m2carbine_sniper";
+            };
+        };
+        class vn_m2carbine_gl
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m2carbine_gl";
+            };
+        };
+        class vn_m36
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m36";
+            };
+            class k_vn_b_m36
+            {
+                structuralAttachments[] = {"vn_b_m36"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m36_bayo";
+            };
+        };
+        class vn_m36_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m36_camo";
+            };
+        };
+        class vn_m38
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m38";
+            };
+            class k_vn_b_m38
+            {
+                structuralAttachments[] = {"vn_b_m38"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m38_bayo";
+            };
+        };
+        class vn_m3a1
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m3a1";
+            };
+            class k_vn_s_m3a1
+            {
+                structuralAttachments[] = {"vn_s_m3a1"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m3sd";
+            };
+        };
+        class vn_m3carbine
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m3carbine";
+            };
+        };
+        class vn_m40a1
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m40a1";
+            };
+            class k_vn_b_camo_m40a1__vn_o_9x_m40a1__vn_s_m14
+            {
+                structuralAttachments[] = {"vn_b_camo_m40a1", "vn_o_9x_m40a1", "vn_s_m14"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m40a1_sniper_sd";
+            };
+            class k_vn_o_9x_m40a1
+            {
+                structuralAttachments[] = {"vn_o_9x_m40a1"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m40a1_sniper";
+            };
+            class k_vn_o_anpvs2_m40a1
+            {
+                structuralAttachments[] = {"vn_o_anpvs2_m40a1"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m40a1_nvg";
+            };
+            class k_vn_o_anpvs2_m40a1__vn_s_m14
+            {
+                structuralAttachments[] = {"vn_o_anpvs2_m40a1", "vn_s_m14"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m40a1_nvg_sd";
+            };
+        };
+        class vn_m40a1_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m40a1_camo";
+            };
+        };
+        class vn_m45
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m45";
+            };
+            class k_vn_s_m45_camo
+            {
+                structuralAttachments[] = {"vn_s_m45_camo"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m45_sd";
+            };
+        };
+        class vn_m45_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m45_camo";
+            };
+        };
+        class vn_m45_fold
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m45_fold";
+            };
+        };
+        class vn_m4956
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m4956";
+            };
+            class k_vn_b_m4956
+            {
+                structuralAttachments[] = {"vn_b_m4956"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m4956_bayo";
+            };
+            class k_vn_o_4x_m4956
+            {
+                structuralAttachments[] = {"vn_o_4x_m4956"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m4956_sniper";
+            };
+        };
+        class vn_m4956_gl
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m4956_gl";
+            };
+        };
+        class vn_m60
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m60";
+            };
+        };
+        class vn_m60_shorty
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m60_shorty";
+            };
+        };
+        class vn_m60_shorty_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m60_shorty_camo";
+            };
+        };
+        class vn_m63a
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m63a";
+            };
+        };
+        class vn_m63a_cdo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m63a_cdo";
+            };
+            class k_vn_bipod_m63a
+            {
+                structuralAttachments[] = {"vn_bipod_m63a"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m63a_cdo_bipod";
+            };
+        };
+        class vn_m63a_lmg
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m63a_lmg";
+            };
+            class k_vn_bipod_m63a
+            {
+                structuralAttachments[] = {"vn_bipod_m63a"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m63a_lmg_bipod";
+            };
+        };
+        class vn_m712
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m712";
+            };
+        };
+        class vn_m72
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m72";
+            };
+        };
+        class vn_m79
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m79";
+            };
+        };
+        class vn_m79_p
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m79_p";
+            };
+        };
+        class vn_m9130
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m9130";
+            };
+            class k_vn_b_m38
+            {
+                structuralAttachments[] = {"vn_b_m38"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m9130_bayo";
+            };
+            class k_vn_o_3x_m9130
+            {
+                structuralAttachments[] = {"vn_o_3x_m9130"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m9130_sniper";
+            };
+        };
+        class vn_mat49
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mat49";
+            };
+            class k_vn_s_mat49
+            {
+                structuralAttachments[] = {"vn_s_mat49"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mat49_sd";
+            };
+        };
+        class vn_mat49_f
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mat49_f";
+            };
+        };
+        class vn_mat49_vc
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mat49_vc";
+            };
+        };
+        class vn_mc10
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mc10";
+            };
+            class k_vn_s_mc10
+            {
+                structuralAttachments[] = {"vn_s_mc10"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mc10_sd";
+            };
+        };
+        class vn_mg42
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mg42";
+            };
+        };
+        class vn_mk1_udg
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mk1_udg";
+            };
+        };
+        class vn_mk22
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mk22";
+            };
+            class k_vn_s_mk22
+            {
+                structuralAttachments[] = {"vn_s_mk22"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mk22_sd";
+            };
+        };
+        class vn_mp40
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mp40";
+            };
+        };
+        class vn_mpu
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mpu";
+            };
+            class k_vn_s_mpu
+            {
+                structuralAttachments[] = {"vn_s_mpu"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mpu_sd";
+            };
+        };
+        class vn_mx991_m1911
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mx991_m1911";
+            };
+            class k_vn_s_m1911
+            {
+                structuralAttachments[] = {"vn_s_m1911"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_mx991_m1911_sd";
+            };
+        };
+        class vn_p38
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_p38";
+            };
+            class k_vn_s_ppk
+            {
+                structuralAttachments[] = {"vn_s_ppk"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_p38_sd";
+            };
+        };
+        class vn_p38s
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_p38s";
+            };
+        };
+        class vn_pk
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_pk";
+            };
+        };
+        class vn_pm
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_pm";
+            };
+            class k_vn_s_pm
+            {
+                structuralAttachments[] = {"vn_s_pm"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_pm_sd";
+            };
+        };
+        class vn_ppk
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_ppk";
+            };
+            class k_vn_s_ppk
+            {
+                structuralAttachments[] = {"vn_s_ppk"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_ppk_sd";
+            };
+        };
+        class vn_pps43
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_pps43";
+            };
+        };
+        class vn_pps52
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_pps52";
+            };
+        };
+        class vn_ppsh41
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_ppsh41";
+            };
+        };
+        class vn_rpd
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_rpd";
+            };
+        };
+        class vn_rpd_shorty
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_rpd_shorty";
+            };
+        };
+        class vn_rpd_shorty_01
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_rpd_shorty_01";
+            };
+        };
+        class vn_rpg2
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_rpg2";
+            };
+        };
+        class vn_rpg7
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_rpg7";
+            };
+        };
+        class vn_sa7
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_sa7";
+            };
+        };
+        class vn_sa7b
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_sa7b";
+            };
+        };
+        class vn_sks
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_sks";
+            };
+            class k_vn_b_sks
+            {
+                structuralAttachments[] = {"vn_b_sks"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_sks_bayo";
+            };
+            class k_vn_o_3x_sks
+            {
+                structuralAttachments[] = {"vn_o_3x_sks"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_sks_sniper";
+            };
+        };
+        class vn_sks_gl
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_sks_gl";
+            };
+        };
+        class vn_sten
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_sten";
+            };
+            class k_vn_s_sten
+            {
+                structuralAttachments[] = {"vn_s_sten"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_sten_sd";
+            };
+        };
+        class vn_svd
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_svd";
+            };
+            class k_vn_b_camo_svd__vn_o_4x_svd
+            {
+                structuralAttachments[] = {"vn_b_camo_svd", "vn_o_4x_svd"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_svd_sniper_camo";
+            };
+            class k_vn_o_4x_svd
+            {
+                structuralAttachments[] = {"vn_o_4x_svd"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_svd_sniper";
+            };
+        };
+        class vn_tt33
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_tt33";
+            };
+        };
+        class vn_type56
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_type56";
+            };
+            class k_vn_b_type56
+            {
+                structuralAttachments[] = {"vn_b_type56"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_type56_bayo";
+            };
+        };
+        class vn_type64
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_type64";
+            };
+        };
+        class vn_type64_f_smg
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_type64_f_smg";
+            };
+        };
+        class vn_type64_smg
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_type64_smg";
+            };
+        };
+        class vn_vz54
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_vz54";
+            };
+            class k_vn_b_camo_vz54__vn_o_3x_vz54
+            {
+                structuralAttachments[] = {"vn_b_camo_vz54", "vn_o_3x_vz54"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_vz54_sniper_camo";
+            };
+            class k_vn_o_3x_vz54
+            {
+                structuralAttachments[] = {"vn_o_3x_vz54"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_vz54_sniper";
+            };
+        };
+        class vn_vz61
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_vz61";
+            };
+        };
+        class vn_vz61_p
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_vz61_p";
+            };
+        };
+        class vn_welrod
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_welrod";
+            };
+        };
+        class vn_xm16e1
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm16e1";
+            };
+            class k_vn_b_m16
+            {
+                structuralAttachments[] = {"vn_b_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm16e1_bayo";
+            };
+            class k_vn_bipod_m16__vn_o_9x_m16
+            {
+                structuralAttachments[] = {"vn_bipod_m16", "vn_o_9x_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm16e1_sniper";
+            };
+            class k_vn_o_4x_m16
+            {
+                structuralAttachments[] = {"vn_o_4x_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm16e1_mrk";
+            };
+            class k_vn_o_anpvs2_m16
+            {
+                structuralAttachments[] = {"vn_o_anpvs2_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm16e1_nvg";
+            };
+        };
+        class vn_xm16e1_xm148
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm16e1_xm148";
+            };
+        };
+        class vn_xm177
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177";
+            };
+            class k_vn_o_4x_m16
+            {
+                structuralAttachments[] = {"vn_o_4x_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_mrk";
+            };
+            class k_vn_o_9x_m16
+            {
+                structuralAttachments[] = {"vn_o_9x_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_sniper";
+            };
+            class k_vn_o_anpvs2_m16
+            {
+                structuralAttachments[] = {"vn_o_anpvs2_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_nvg";
+            };
+        };
+        class vn_xm177_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_camo";
+            };
+        };
+        class vn_xm177_fg
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_fg";
+            };
+        };
+        class vn_xm177_m203
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_m203";
+            };
+        };
+        class vn_xm177_m203_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_m203_camo";
+            };
+        };
+        class vn_xm177_muzzle
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_muzzle";
+            };
+        };
+        class vn_xm177_short
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_short";
+            };
+        };
+        class vn_xm177_stock
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_stock";
+            };
+        };
+        class vn_xm177_stock_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_stock_camo";
+            };
+        };
+        class vn_xm177_xm148
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_xm148";
+            };
+        };
+        class vn_xm177_xm148_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177_xm148_camo";
+            };
+        };
+        class vn_xm177e1
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177e1";
+            };
+            class k_vn_o_4x_m16
+            {
+                structuralAttachments[] = {"vn_o_4x_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177e1_mrk";
+            };
+            class k_vn_o_9x_m16
+            {
+                structuralAttachments[] = {"vn_o_9x_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177e1_sniper";
+            };
+            class k_vn_o_anpvs2_m16
+            {
+                structuralAttachments[] = {"vn_o_anpvs2_m16"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177e1_nvg";
+            };
+        };
+        class vn_xm177e1_camo
+        {
+            class k_none
+            {
+                structuralAttachments[] = {};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_xm177e1_camo";
+            };
+        };
+    };
+
+    class WeaponVariantTransformingAttachments
+    {
+        class vn_ak_01
+        {
+            values[] = {};
+        };
+        class vn_dp28
+        {
+            values[] = {};
+        };
+        class vn_f1_smg
+        {
+            values[] = {"vn_b_l1a1"};
+        };
+        class vn_fkb1_pm
+        {
+            values[] = {"vn_s_pm"};
+        };
+        class vn_gau5a
+        {
+            values[] = {"vn_o_1x_sp_m16"};
+        };
+        class vn_hd
+        {
+            values[] = {};
+        };
+        class vn_hp
+        {
+            values[] = {"vn_s_hp"};
+        };
+        class vn_izh54
+        {
+            values[] = {};
+        };
+        class vn_izh54_p
+        {
+            values[] = {};
+        };
+        class vn_izh54_shorty
+        {
+            values[] = {};
+        };
+        class vn_k50m
+        {
+            values[] = {};
+        };
+        class vn_k98k
+        {
+            values[] = {"vn_b_camo_k98k", "vn_b_k98k", "vn_o_1_5x_k98k"};
+        };
+        class vn_kbkg
+        {
+            values[] = {};
+        };
+        class vn_kbkg_gl
+        {
+            values[] = {};
+        };
+        class vn_l1a1_01
+        {
+            values[] = {"vn_b_l1a1", "vn_o_3x_l1a1"};
+        };
+        class vn_l1a1_01_camo
+        {
+            values[] = {};
+        };
+        class vn_l1a1_01_gl
+        {
+            values[] = {};
+        };
+        class vn_l1a1_02
+        {
+            values[] = {};
+        };
+        class vn_l1a1_02_camo
+        {
+            values[] = {};
+        };
+        class vn_l1a1_02_gl
+        {
+            values[] = {};
+        };
+        class vn_l1a1_03
+        {
+            values[] = {};
+        };
+        class vn_l1a1_03_camo
+        {
+            values[] = {};
+        };
+        class vn_l1a1_xm148
+        {
+            values[] = {};
+        };
+        class vn_l1a1_xm148_camo
+        {
+            values[] = {};
+        };
+        class vn_l2a1_01
+        {
+            values[] = {};
+        };
+        class vn_l2a3
+        {
+            values[] = {};
+        };
+        class vn_l2a3_f
+        {
+            values[] = {};
+        };
+        class vn_l34a1
+        {
+            values[] = {};
+        };
+        class vn_l34a1_f
+        {
+            values[] = {};
+        };
+        class vn_l34a1_xm148
+        {
+            values[] = {};
+        };
+        class vn_l4
+        {
+            values[] = {};
+        };
+        class vn_m10
+        {
+            values[] = {"vn_s_mk22"};
+        };
+        class vn_m127
+        {
+            values[] = {};
+        };
+        class vn_m14
+        {
+            values[] = {"vn_b_camo_m14", "vn_b_m14", "vn_s_m14"};
+        };
+        class vn_m14_camo
+        {
+            values[] = {};
+        };
+        class vn_m14a1
+        {
+            values[] = {"vn_b_camo_m14a1", "vn_bipod_m14", "vn_o_9x_m14", "vn_o_anpvs2_m14", "vn_o_m14_front", "vn_s_m14"};
+        };
+        class vn_m14a1_shorty
+        {
+            values[] = {};
+        };
+        class vn_m16
+        {
+            values[] = {"vn_b_m16", "vn_bipod_m16", "vn_o_4x_m16", "vn_o_9x_m16", "vn_o_anpvs2_m16", "vn_s_m16"};
+        };
+        class vn_m16_camo
+        {
+            values[] = {};
+        };
+        class vn_m16_m203
+        {
+            values[] = {};
+        };
+        class vn_m16_m203_camo
+        {
+            values[] = {};
+        };
+        class vn_m16_muzzle
+        {
+            values[] = {};
+        };
+        class vn_m16_usaf
+        {
+            values[] = {"vn_b_m16", "vn_o_4x_m16", "vn_o_9x_m16", "vn_o_anpvs2_m16"};
+        };
+        class vn_m16_xm148
+        {
+            values[] = {};
+        };
+        class vn_m1891
+        {
+            values[] = {"vn_b_m38"};
+        };
+        class vn_m1895
+        {
+            values[] = {"vn_s_m1895"};
+        };
+        class vn_m1897
+        {
+            values[] = {"vn_b_m1897"};
+        };
+        class vn_m1903
+        {
+            values[] = {"vn_b_m1903", "vn_o_8x_m1903"};
+        };
+        class vn_m1903_gl
+        {
+            values[] = {};
+        };
+        class vn_m1911
+        {
+            values[] = {"vn_s_m1911"};
+        };
+        class vn_m1918
+        {
+            values[] = {"vn_bipod_m1918"};
+        };
+        class vn_m1928_tommy
+        {
+            values[] = {};
+        };
+        class vn_m1928a1_tommy
+        {
+            values[] = {};
+        };
+        class vn_m1_garand
+        {
+            values[] = {"vn_b_camo_m1_garand", "vn_b_m1_garand", "vn_o_3x_m84"};
+        };
+        class vn_m1_garand_gl
+        {
+            values[] = {};
+        };
+        class vn_m1a1_tommy
+        {
+            values[] = {};
+        };
+        class vn_m1a1_tommy_so
+        {
+            values[] = {};
+        };
+        class vn_m1carbine
+        {
+            values[] = {"vn_b_carbine", "vn_o_3x_m84"};
+        };
+        class vn_m1carbine_gl
+        {
+            values[] = {};
+        };
+        class vn_m1carbine_shorty
+        {
+            values[] = {};
+        };
+        class vn_m20a1b1_01
+        {
+            values[] = {};
+        };
+        class vn_m21
+        {
+            values[] = {"vn_b_camo_m14", "vn_s_m14"};
+        };
+        class vn_m21_nvg
+        {
+            values[] = {"vn_s_m14"};
+        };
+        class vn_m2carbine
+        {
+            values[] = {"vn_b_carbine", "vn_o_3x_m84"};
+        };
+        class vn_m2carbine_gl
+        {
+            values[] = {};
+        };
+        class vn_m36
+        {
+            values[] = {"vn_b_m36"};
+        };
+        class vn_m36_camo
+        {
+            values[] = {};
+        };
+        class vn_m38
+        {
+            values[] = {"vn_b_m38"};
+        };
+        class vn_m3a1
+        {
+            values[] = {"vn_s_m3a1"};
+        };
+        class vn_m3carbine
+        {
+            values[] = {};
+        };
+        class vn_m40a1
+        {
+            values[] = {"vn_b_camo_m40a1", "vn_o_9x_m40a1", "vn_o_anpvs2_m40a1", "vn_s_m14"};
+        };
+        class vn_m40a1_camo
+        {
+            values[] = {};
+        };
+        class vn_m45
+        {
+            values[] = {"vn_s_m45_camo"};
+        };
+        class vn_m45_camo
+        {
+            values[] = {};
+        };
+        class vn_m45_fold
+        {
+            values[] = {};
+        };
+        class vn_m4956
+        {
+            values[] = {"vn_b_m4956", "vn_o_4x_m4956"};
+        };
+        class vn_m4956_gl
+        {
+            values[] = {};
+        };
+        class vn_m60
+        {
+            values[] = {};
+        };
+        class vn_m60_shorty
+        {
+            values[] = {};
+        };
+        class vn_m60_shorty_camo
+        {
+            values[] = {};
+        };
+        class vn_m63a
+        {
+            values[] = {};
+        };
+        class vn_m63a_cdo
+        {
+            values[] = {"vn_bipod_m63a"};
+        };
+        class vn_m63a_lmg
+        {
+            values[] = {"vn_bipod_m63a"};
+        };
+        class vn_m712
+        {
+            values[] = {};
+        };
+        class vn_m72
+        {
+            values[] = {};
+        };
+        class vn_m79
+        {
+            values[] = {};
+        };
+        class vn_m79_p
+        {
+            values[] = {};
+        };
+        class vn_m9130
+        {
+            values[] = {"vn_b_m38", "vn_o_3x_m9130"};
+        };
+        class vn_mat49
+        {
+            values[] = {"vn_s_mat49"};
+        };
+        class vn_mat49_f
+        {
+            values[] = {};
+        };
+        class vn_mat49_vc
+        {
+            values[] = {};
+        };
+        class vn_mc10
+        {
+            values[] = {"vn_s_mc10"};
+        };
+        class vn_mg42
+        {
+            values[] = {};
+        };
+        class vn_mk1_udg
+        {
+            values[] = {};
+        };
+        class vn_mk22
+        {
+            values[] = {"vn_s_mk22"};
+        };
+        class vn_mp40
+        {
+            values[] = {};
+        };
+        class vn_mpu
+        {
+            values[] = {"vn_s_mpu"};
+        };
+        class vn_mx991_m1911
+        {
+            values[] = {"vn_s_m1911"};
+        };
+        class vn_p38
+        {
+            values[] = {"vn_s_ppk"};
+        };
+        class vn_p38s
+        {
+            values[] = {};
+        };
+        class vn_pk
+        {
+            values[] = {};
+        };
+        class vn_pm
+        {
+            values[] = {"vn_s_pm"};
+        };
+        class vn_ppk
+        {
+            values[] = {"vn_s_ppk"};
+        };
+        class vn_pps43
+        {
+            values[] = {};
+        };
+        class vn_pps52
+        {
+            values[] = {};
+        };
+        class vn_ppsh41
+        {
+            values[] = {};
+        };
+        class vn_rpd
+        {
+            values[] = {};
+        };
+        class vn_rpd_shorty
+        {
+            values[] = {};
+        };
+        class vn_rpd_shorty_01
+        {
+            values[] = {};
+        };
+        class vn_rpg2
+        {
+            values[] = {};
+        };
+        class vn_rpg7
+        {
+            values[] = {};
+        };
+        class vn_sa7
+        {
+            values[] = {};
+        };
+        class vn_sa7b
+        {
+            values[] = {};
+        };
+        class vn_sks
+        {
+            values[] = {"vn_b_sks", "vn_o_3x_sks"};
+        };
+        class vn_sks_gl
+        {
+            values[] = {};
+        };
+        class vn_sten
+        {
+            values[] = {"vn_s_sten"};
+        };
+        class vn_svd
+        {
+            values[] = {"vn_b_camo_svd", "vn_o_4x_svd"};
+        };
+        class vn_tt33
+        {
+            values[] = {};
+        };
+        class vn_type56
+        {
+            values[] = {"vn_b_type56"};
+        };
+        class vn_type64
+        {
+            values[] = {};
+        };
+        class vn_type64_f_smg
+        {
+            values[] = {};
+        };
+        class vn_type64_smg
+        {
+            values[] = {};
+        };
+        class vn_vz54
+        {
+            values[] = {"vn_b_camo_vz54", "vn_o_3x_vz54"};
+        };
+        class vn_vz61
+        {
+            values[] = {};
+        };
+        class vn_vz61_p
+        {
+            values[] = {};
+        };
+        class vn_welrod
+        {
+            values[] = {};
+        };
+        class vn_xm16e1
+        {
+            values[] = {"vn_b_m16", "vn_bipod_m16", "vn_o_4x_m16", "vn_o_9x_m16", "vn_o_anpvs2_m16"};
+        };
+        class vn_xm16e1_xm148
+        {
+            values[] = {};
+        };
+        class vn_xm177
+        {
+            values[] = {"vn_o_4x_m16", "vn_o_9x_m16", "vn_o_anpvs2_m16"};
+        };
+        class vn_xm177_camo
+        {
+            values[] = {};
+        };
+        class vn_xm177_fg
+        {
+            values[] = {};
+        };
+        class vn_xm177_m203
+        {
+            values[] = {};
+        };
+        class vn_xm177_m203_camo
+        {
+            values[] = {};
+        };
+        class vn_xm177_muzzle
+        {
+            values[] = {};
+        };
+        class vn_xm177_short
+        {
+            values[] = {};
+        };
+        class vn_xm177_stock
+        {
+            values[] = {};
+        };
+        class vn_xm177_stock_camo
+        {
+            values[] = {};
+        };
+        class vn_xm177_xm148
+        {
+            values[] = {};
+        };
+        class vn_xm177_xm148_camo
+        {
+            values[] = {};
+        };
+        class vn_xm177e1
+        {
+            values[] = {"vn_o_4x_m16", "vn_o_9x_m16", "vn_o_anpvs2_m16"};
+        };
+        class vn_xm177e1_camo
+        {
+            values[] = {};
+        };
+    };

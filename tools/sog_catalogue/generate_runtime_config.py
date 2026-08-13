@@ -142,6 +142,124 @@ def build_relationship_classes(weapons: list[dict[str, Any]]) -> list[str]:
     return lines
 
 
+def build_variant_index_classes(weapons: list[dict[str, Any]], items: list[dict[str, Any]]) -> list[str]:
+    lines: list[str] = ["    class WeaponVariantByBaseAndAttachments", "    {"]
+
+    weapon_map = {weapon["class"]: weapon for weapon in weapons}
+    item_classes = {item["class"] for item in items}
+    processing: set[str] = set()
+    signature_cache: dict[str, tuple[str, tuple[str, ...]] | None] = {}
+
+    def resolve_signature(weapon_class: str) -> tuple[str, tuple[str, ...]] | None:
+        if weapon_class in signature_cache:
+            return signature_cache[weapon_class]
+        if weapon_class in processing:
+            signature_cache[weapon_class] = None
+            return None
+
+        weapon = weapon_map.get(weapon_class)
+        if weapon is None:
+            signature_cache[weapon_class] = None
+            return None
+
+        if not is_confirmed_variant(weapon):
+            signature_cache[weapon_class] = (weapon_class, tuple())
+            return signature_cache[weapon_class]
+
+        base_class = weapon.get("variantOf") or ""
+        if not base_class:
+            signature_cache[weapon_class] = None
+            return None
+
+        processing.add(weapon_class)
+        base_signature = resolve_signature(base_class)
+        processing.remove(weapon_class)
+        if base_signature is None:
+            signature_cache[weapon_class] = None
+            return None
+
+        requirements = weapon.get("derivedRequirements", [])
+        if base_class not in requirements:
+            signature_cache[weapon_class] = None
+            return None
+
+        step_attachments = sorted(
+            {
+                requirement
+                for requirement in requirements
+                if requirement != base_class and requirement in item_classes
+            }
+        )
+
+        root_class, base_attachments = base_signature
+        combined_attachments = tuple(sorted(set(base_attachments) | set(step_attachments)))
+        signature_cache[weapon_class] = (root_class, combined_attachments)
+        return signature_cache[weapon_class]
+
+    root_keys_to_targets: dict[str, dict[tuple[str, ...], list[str]]] = {}
+    root_transforming_attachments: dict[str, set[str]] = {}
+
+    for weapon in sorted(weapons, key=lambda record: record["class"]):
+        if weapon.get("variantOf"):
+            continue
+        root_class = weapon["class"]
+        root_keys_to_targets[root_class] = {tuple(): [root_class]}
+        root_transforming_attachments[root_class] = set()
+
+    for weapon in sorted(weapons, key=lambda record: record["class"]):
+        if not is_confirmed_variant(weapon):
+            continue
+
+        signature = resolve_signature(weapon["class"])
+        if signature is None:
+            continue
+
+        root_class, attachment_key = signature
+        if root_class not in root_keys_to_targets:
+            continue
+
+        root_keys_to_targets[root_class].setdefault(attachment_key, []).append(weapon["class"])
+        root_transforming_attachments[root_class].update(attachment_key)
+
+    def attachment_key_to_class_name(attachments: tuple[str, ...]) -> str:
+        if not attachments:
+            return "k_none"
+        return "k_" + "__".join(attachments)
+
+    for root_class in sorted(root_keys_to_targets):
+        lines.append(f"        class {root_class}")
+        lines.append("        {")
+        attachment_map = root_keys_to_targets[root_class]
+        for attachment_key in sorted(attachment_map.keys()):
+            candidate_targets = sorted(set(attachment_map[attachment_key]))
+            key_class_name = attachment_key_to_class_name(attachment_key)
+            lines.append(f"            class {key_class_name}")
+            lines.append("            {")
+            lines.append(f"                structuralAttachments[] = {arma_array(list(attachment_key))};")
+            if len(candidate_targets) == 1:
+                lines.append('                ambiguous = 0;')
+                lines.append(f"                resolvedWeaponClass = {arma_escape(candidate_targets[0])};")
+            else:
+                lines.append('                ambiguous = 1;')
+                lines.append('                resolvedWeaponClass = "";')
+                lines.append(f"                candidates[] = {arma_array(candidate_targets)};")
+            lines.append("            };")
+        lines.append("        };")
+    lines.append("    };")
+    lines.append("")
+
+    lines.append("    class WeaponVariantTransformingAttachments")
+    lines.append("    {")
+    for root_class in sorted(root_transforming_attachments):
+        attachments = sorted(root_transforming_attachments[root_class])
+        lines.append(f"        class {root_class}")
+        lines.append("        {")
+        lines.append(f"            values[] = {arma_array(attachments)};")
+        lines.append("        };")
+    lines.append("    };")
+    return lines
+
+
 def build_runtime_hpp_text(catalogue: dict[str, Any]) -> str:
     weapons = catalogue.get("weapons", [])
     magazines = catalogue.get("magazines", [])
@@ -161,6 +279,8 @@ def build_runtime_hpp_text(catalogue: dict[str, Any]) -> str:
     lines.extend(build_item_classes(items))
     lines.append("")
     lines.extend(build_relationship_classes(weapons))
+    lines.append("")
+    lines.extend(build_variant_index_classes(weapons, items))
     lines.append("")
     return "\n".join(lines)
 

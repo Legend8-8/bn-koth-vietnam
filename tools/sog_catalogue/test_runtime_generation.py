@@ -106,6 +106,8 @@ class RuntimeGenerationTests(unittest.TestCase):
         self.assertIn("compatibleAttachments[]", text)
         self.assertIn("sourceAffiliations[]", text)
         self.assertIn("class WeaponVariants", text)
+        self.assertIn("class WeaponVariantByBaseAndAttachments", text)
+        self.assertIn("class WeaponVariantTransformingAttachments", text)
         self.assertIn("base = \"vn_m16\";", text)
         self.assertNotIn("class vn_m16_amb\n        {\n            base =", text)
         self.assertIn('displayName = "M16 ""SD"" \\\\ Variant";', text)
@@ -114,6 +116,85 @@ class RuntimeGenerationTests(unittest.TestCase):
         self.assertNotIn("price", text)
         self.assertNotIn("rental", text)
         self.assertNotIn("level", text)
+
+    def test_variant_index_emits_chained_direct_lookup_keys(self) -> None:
+        catalogue = {
+            "weapons": [
+                {
+                    "class": "vn_m16",
+                    "displayName": "M16A1",
+                    "weaponType": "rifle",
+                    "family": "m16",
+                    "variantOf": None,
+                    "variantTraits": [],
+                    "derivedRequirements": [],
+                    "baseMagazine": None,
+                    "baseMagazineConfidence": "ambiguous",
+                    "compatibleMagazines": [],
+                    "compatibleAttachments": [],
+                    "sourceAffiliations": [],
+                },
+                {
+                    "class": "vn_m16_sd",
+                    "displayName": "M16A1 (S)",
+                    "weaponType": "rifle",
+                    "family": "m16",
+                    "variantOf": "vn_m16",
+                    "variantTraits": ["suppressed"],
+                    "derivedRequirements": ["vn_m16", "vn_s_m16"],
+                    "baseMagazine": None,
+                    "baseMagazineConfidence": "ambiguous",
+                    "compatibleMagazines": [],
+                    "compatibleAttachments": ["vn_s_m16"],
+                    "sourceAffiliations": [],
+                },
+                {
+                    "class": "vn_m16_mrk_sd",
+                    "displayName": "M16A1 (4x Optic/S)",
+                    "weaponType": "rifle",
+                    "family": "m16",
+                    "variantOf": "vn_m16_sd",
+                    "variantTraits": ["optic", "suppressed"],
+                    "derivedRequirements": ["vn_m16_sd", "vn_o_4x_m16"],
+                    "baseMagazine": None,
+                    "baseMagazineConfidence": "ambiguous",
+                    "compatibleMagazines": [],
+                    "compatibleAttachments": ["vn_o_4x_m16", "vn_s_m16"],
+                    "sourceAffiliations": [],
+                },
+            ],
+            "magazines": [],
+            "items": [
+                {
+                    "class": "vn_s_m16",
+                    "displayName": "Suppressor [M16]",
+                    "itemType": "suppressor",
+                    "traits": ["suppressor"],
+                    "magazines": [],
+                    "compatibleWeapons": ["vn_m16", "vn_m16_sd", "vn_m16_mrk_sd"],
+                    "sourceAffiliations": [],
+                },
+                {
+                    "class": "vn_o_4x_m16",
+                    "displayName": "4x Optic [M16]",
+                    "itemType": "optic",
+                    "traits": ["optic"],
+                    "magazines": [],
+                    "compatibleWeapons": ["vn_m16", "vn_m16_mrk_sd"],
+                    "sourceAffiliations": [],
+                },
+            ],
+        }
+
+        text = build_runtime_hpp_text(catalogue)
+        self.assertIn("class WeaponVariantByBaseAndAttachments", text)
+        self.assertIn("class vn_m16", text)
+        self.assertIn("class k_none", text)
+        self.assertIn('resolvedWeaponClass = "vn_m16";', text)
+        self.assertIn("class k_vn_o_4x_m16__vn_s_m16", text)
+        self.assertIn('resolvedWeaponClass = "vn_m16_mrk_sd";', text)
+        self.assertIn("class WeaponVariantTransformingAttachments", text)
+        self.assertIn('values[] = {"vn_o_4x_m16", "vn_s_m16"};', text)
 
     def test_arma_escape_quote_and_backslash_exact_text(self) -> None:
         catalogue = {
