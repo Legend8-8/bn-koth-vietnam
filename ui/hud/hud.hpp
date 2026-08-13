@@ -1,7 +1,7 @@
 #include "idcs.hpp"
 
 #define BN_KOTH_HUD_W (safeZoneW * 0.19)
-#define BN_KOTH_HUD_H (safeZoneH * 0.050)
+#define BN_KOTH_HUD_H (safeZoneH * 0.062)
 
 #define BN_KOTH_HUD_X (safeZoneX + safeZoneW - BN_KOTH_HUD_W - safeZoneW * 0.012)
 #define BN_KOTH_HUD_Y (safeZoneY + safeZoneH - BN_KOTH_HUD_H - safeZoneH * 0.025)
@@ -109,5 +109,23 @@ class BN_KOTH_RscHud
 
             colorBackground[] = {0.45, 0.77, 1, 0.95};
         };
+
+        class HudPriority: BN_KOTH_RscText
+{
+    idc = BN_KOTH_IDC_HUD_PRIORITY;
+    text = "";
+    style = 2;
+    font = "PuristaSemiBold";
+
+    x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
+    y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.76;
+    w = BN_KOTH_HUD_W * 0.90;
+    h = BN_KOTH_HUD_H * 0.18;
+
+    sizeEx = "0.011 * safeZoneH";
+
+    colorText[] = {0.96, 0.78, 0.26, 1};
+    colorBackground[] = {0, 0, 0, 0};
+};
     };
 };

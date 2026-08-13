@@ -1,7 +1,7 @@
 /*
     File: fn_refreshHud.sqf
     Author: Legend
-    Description: Renders the local HUD shell from replicated score, zone, and progress state.
+    Description: Renders the local HUD shell from replicated score, zone, progress, and priority-zone state.
     Execution: Client
     Parameters:
         None
@@ -17,15 +17,50 @@ if (!hasInterface) exitWith {};
 private _display = uiNamespace getVariable ["BN_KOTH_hudDisplay", displayNull];
 if (isNull _display) exitWith {};
 
+private _priorityMarker = "BN_KOTH_priorityZoneMarker";
+
+private _priorityAvailable =
+    !((markerShape _priorityMarker) isEqualTo "")
+    && {(markerAlpha _priorityMarker) > 0};
+
+private _playerInPriority =
+    _priorityAvailable
+    && {!isNull player}
+    && {player inArea _priorityMarker};
+
+private _priorityCfg = missionConfigFile >> "CfgBnKothZone";
+private _priorityWeight = if (isClass _priorityCfg) then {
+    getNumber (_priorityCfg >> "priorityControlWeight")
+} else {
+    2
+};
+
+if (_priorityWeight < 1) then {
+    _priorityWeight = 1;
+};
+
 private _scoringCfg = missionConfigFile >> "CfgBnKothScoring";
-private _scoreLimit = missionNamespace getVariable ["BN_KOTH_scoreLimit", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreLimit")} else {100}];
+private _scoreLimit = missionNamespace getVariable [
+    "BN_KOTH_scoreLimit",
+    if (isClass _scoringCfg) then {
+        getNumber (_scoringCfg >> "scoreLimit")
+    } else {
+        100
+    }
+];
+
 if (_scoreLimit < 1) then {
     _scoreLimit = 1;
 };
 
-private _teamScores = missionNamespace getVariable ["BN_KOTH_teamScores", createHashMapFromArray [[west, 0], [east, 0]]];
+private _teamScores = missionNamespace getVariable [
+    "BN_KOTH_teamScores",
+    createHashMapFromArray [[west, 0], [east, 0]]
+];
+
 private _westScore = 0;
 private _eastScore = 0;
+
 if (_teamScores isEqualType createHashMap) then {
     _westScore = _teamScores getOrDefault [west, 0];
     _eastScore = _teamScores getOrDefault [east, 0];
@@ -33,12 +68,20 @@ if (_teamScores isEqualType createHashMap) then {
 
 private _zoneState = missionNamespace getVariable ["BN_KOTH_zoneState", "NEUTRAL"];
 private _zoneController = missionNamespace getVariable ["BN_KOTH_zoneController", sideUnknown];
+
 private _progress = missionNamespace getVariable ["BN_KOTH_scoreProgress", createHashMap];
 private _progressSide = sideUnknown;
 private _progressBase = 0;
 private _progressStartedAt = -1;
 private _progressActive = false;
-private _progressDuration = missionNamespace getVariable ["BN_KOTH_scoreTickInterval", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {5}];
+private _progressDuration = missionNamespace getVariable [
+    "BN_KOTH_scoreTickInterval",
+    if (isClass _scoringCfg) then {
+        getNumber (_scoringCfg >> "scoreTickInterval")
+    } else {
+        5
+    }
+];
 
 if (_progress isEqualType createHashMap) then {
     _progressSide = _progress getOrDefault ["side", sideUnknown];
@@ -53,9 +96,11 @@ if (_progressDuration < 1) then {
 };
 
 private _progressRatio = _progressBase;
+
 if (_progressActive && {_progressStartedAt >= 0}) then {
     _progressRatio = _progressBase + ((serverTime - _progressStartedAt) / _progressDuration);
 };
+
 _progressRatio = (_progressRatio max 0) min 1;
 
 private _statusText = "NEUTRAL";
@@ -119,4 +164,13 @@ if (_progressRatio <= 0) then {
     _barFillCtrl ctrlCommit 0;
 };
 
-(_display displayCtrl BN_KOTH_IDC_HUD_PROGRESS_BG) ctrlSetBackgroundColor [0.08, 0.08, 0.08, 0.92];
+_barBgCtrl ctrlSetBackgroundColor [0.08, 0.08, 0.08, 0.92];
+
+private _priorityCtrl = _display displayCtrl BN_KOTH_IDC_HUD_PRIORITY;
+
+if (_playerInPriority) then {
+    _priorityCtrl ctrlSetText format ["PRIORITY ZONE  x%1", _priorityWeight];
+    _priorityCtrl ctrlShow true;
+} else {
+    _priorityCtrl ctrlShow false;
+};
