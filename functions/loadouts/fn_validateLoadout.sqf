@@ -1,13 +1,14 @@
 /*
     File: fn_validateLoadout.sqf
     Author: Legend
-    Description: Server-authoritative validation for requested loadout IDs using canonical arsenal configuration.
+    Description: Server-authoritative validation for configured loadouts and weapon composition requests.
     Execution: Server
     Parameters:
         0: Requesting player object <OBJECT>
         1: Loadout request <HASHMAP|ARRAY>
-           HASHMAP schema:
-             loadoutId <STRING> (required)
+           HASHMAP schema (exactly one intent):
+             loadoutId <STRING>
+             primary <HASHMAP>
              side <STRING> (optional, cross-check only)
     Returns:
         Validation result <HASHMAP>
@@ -78,11 +79,12 @@ if (!(_hasLoadoutIntent) && !(_hasPrimaryIntent)) exitWith {
 
 if (_hasPrimaryIntent) then {
     _requestMode = "primary";
-    if !(_primaryRequest isEqualType createHashMap) exitWith {
-        ["ERR_MALFORMED_REQUEST", "Primary validation request must provide primary as a map."] call _fail
-    };
 } else {
     _requestMode = "configured";
+};
+
+if ((_requestMode isEqualTo "primary") && {!(_primaryRequest isEqualType createHashMap)}) exitWith {
+    ["ERR_MALFORMED_REQUEST", "Primary validation request must provide primary as a map."] call _fail
 };
 
 if ((_requestMode isEqualTo "configured") && {!(_requestedLoadoutIdRaw isEqualType "")}) exitWith {
@@ -159,184 +161,30 @@ if !(_requestMode isEqualTo "configured") then {
 };
 
 if (_requestMode isEqualTo "primary") exitWith {
-    private _requestedWeaponClass = _primaryRequest getOrDefault ["weaponClass", ""];
-    if !(_requestedWeaponClass isEqualType "") exitWith {
-        ["ERR_MALFORMED_REQUEST", "Primary weaponClass must be a string.", _requestedLoadoutId, _authoritativeSideToken] call _fail
+    private _compositionResult = [
+        _primaryRequest,
+        _compatibilityCfg,
+        "PRIMARY",
+        "Primary"
+    ] call bn_koth_fnc_loadouts_validateWeaponComposition;
+
+    if !(_compositionResult getOrDefault ["success", false]) exitWith {
+        [
+            _compositionResult getOrDefault ["code", "ERR_WEAPON_COMPOSITION"],
+            _compositionResult getOrDefault ["message", "Primary weapon composition validation failed."],
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
     };
-
-    _requestedWeaponClass = toLower _requestedWeaponClass;
-    if (_requestedWeaponClass isEqualTo "") exitWith {
-        ["ERR_MALFORMED_REQUEST", "Primary request missing weaponClass.", _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _requestedMagazines = _primaryRequest getOrDefault ["magazines", []];
-    if !(_requestedMagazines isEqualType []) exitWith {
-        ["ERR_MALFORMED_REQUEST", "Primary magazines must be an array of classnames.", _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _requestedAttachments = _primaryRequest getOrDefault ["attachments", []];
-    if !(_requestedAttachments isEqualType []) exitWith {
-        ["ERR_MALFORMED_REQUEST", "Primary attachments must be an array of classnames.", _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _invalidMagazineType = _requestedMagazines findIf {!(_x isEqualType "")};
-    if (_invalidMagazineType >= 0) exitWith {
-        ["ERR_MALFORMED_REQUEST", "Primary magazines contains non-string entry.", _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _requestedMagazinesCanonical = _requestedMagazines apply {toLower _x};
-    private _emptyMagazineClass = _requestedMagazinesCanonical findIf {_x isEqualTo ""};
-    if (_emptyMagazineClass >= 0) exitWith {
-        ["ERR_MALFORMED_REQUEST", "Primary magazines contains empty classname.", _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _canonicalMagazines = [];
-    {
-        _canonicalMagazines pushBackUnique _x;
-    } forEach _requestedMagazinesCanonical;
-    _canonicalMagazines sort true;
-
-    private _invalidAttachmentType = _requestedAttachments findIf {!(_x isEqualType "")};
-    if (_invalidAttachmentType >= 0) exitWith {
-        ["ERR_MALFORMED_REQUEST", "Primary attachments contains non-string entry.", _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _requestedAttachmentsCanonical = _requestedAttachments apply {toLower _x};
-    private _emptyAttachmentClass = _requestedAttachmentsCanonical findIf {_x isEqualTo ""};
-    if (_emptyAttachmentClass >= 0) exitWith {
-        ["ERR_MALFORMED_REQUEST", "Primary attachments contains empty classname.", _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _canonicalAttachments = [];
-    {
-        _canonicalAttachments pushBackUnique _x;
-    } forEach _requestedAttachmentsCanonical;
-    _canonicalAttachments sort true;
-
-    private _sourceWeaponsCfg = _compatibilityCfg >> "SourceWeapons";
-    private _sourceMagazinesCfg = _compatibilityCfg >> "SourceMagazines";
-    private _sourceItemsCfg = _compatibilityCfg >> "SourceItems";
-    private _variantIndexCfg = _compatibilityCfg >> "WeaponVariantByBaseAndAttachments";
-    private _transformingCfg = _compatibilityCfg >> "WeaponVariantTransformingAttachments";
-    private _weaponMagazinesCfg = _compatibilityCfg >> "WeaponMagazines";
-    private _weaponAttachmentsCfg = _compatibilityCfg >> "WeaponAttachments";
-
-    private _requestedWeaponCfg = _sourceWeaponsCfg >> _requestedWeaponClass;
-    if !(isClass _requestedWeaponCfg) exitWith {
-        ["ERR_UNKNOWN_PRIMARY_WEAPON", format ["Primary weapon '%1' does not exist in canonical source catalogue.", _requestedWeaponClass], _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _variantOf = getText (_requestedWeaponCfg >> "variantOf");
-    if !(_variantOf isEqualTo "") exitWith {
-        ["ERR_PRIMARY_WEAPON_NOT_BASE", format ["Primary weapon '%1' is structural variant-derived and cannot be requested as base intent.", _requestedWeaponClass], _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _unknownAttachmentIndex = _canonicalAttachments findIf {!(isClass (_sourceItemsCfg >> _x))};
-    if (_unknownAttachmentIndex >= 0) exitWith {
-        private _unknownAttachment = _canonicalAttachments select _unknownAttachmentIndex;
-        ["ERR_UNKNOWN_ATTACHMENT", format ["Requested attachment '%1' does not exist in canonical source catalogue.", _unknownAttachment], _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _transformingAttachments = [];
-    if (isClass (_transformingCfg >> _requestedWeaponClass)) then {
-        _transformingAttachments = getArray ((_transformingCfg >> _requestedWeaponClass) >> "values");
-    };
-
-    private _structuralRequested = [];
-    private _ordinaryRequested = [];
-    {
-        if (_x in _transformingAttachments) then {
-            _structuralRequested pushBackUnique _x;
-        } else {
-            _ordinaryRequested pushBackUnique _x;
-        };
-    } forEach _canonicalAttachments;
-    _structuralRequested sort true;
-    _ordinaryRequested sort true;
-
-    private _variantKey = if ((count _structuralRequested) isEqualTo 0) then {
-        "k_none"
-    } else {
-        "k_" + (_structuralRequested joinString "__")
-    };
-
-    private _resolvedWeaponClass = _requestedWeaponClass;
-    private _indexBaseCfg = _variantIndexCfg >> _requestedWeaponClass;
-    if !((count _structuralRequested) isEqualTo 0) then {
-        if !(isClass _indexBaseCfg) exitWith {
-            ["ERR_VARIANT_UNRESOLVED", format ["No structural variant index available for base weapon '%1'.", _requestedWeaponClass], _requestedLoadoutId, _authoritativeSideToken] call _fail
-        };
-    };
-
-    if (isClass (_indexBaseCfg >> _variantKey)) then {
-        private _variantEntry = _indexBaseCfg >> _variantKey;
-        private _isAmbiguous = getNumber (_variantEntry >> "ambiguous");
-        if (_isAmbiguous > 0) exitWith {
-            ["ERR_VARIANT_AMBIGUOUS", format ["Structural variant mapping for '%1' is ambiguous for requested attachments.", _requestedWeaponClass], _requestedLoadoutId, _authoritativeSideToken] call _fail
-        };
-
-        private _entryStructural = getArray (_variantEntry >> "structuralAttachments");
-        _entryStructural sort true;
-        if !(_entryStructural isEqualTo _structuralRequested) exitWith {
-            ["ERR_VARIANT_INDEX_INCONSISTENT", "Structural variant index data is inconsistent for requested attachment set.", _requestedLoadoutId, _authoritativeSideToken] call _fail
-        };
-
-        _resolvedWeaponClass = getText (_variantEntry >> "resolvedWeaponClass");
-        if (_resolvedWeaponClass isEqualTo "") exitWith {
-            ["ERR_VARIANT_UNRESOLVED", format ["Structural variant could not be resolved for base weapon '%1'.", _requestedWeaponClass], _requestedLoadoutId, _authoritativeSideToken] call _fail
-        };
-    } else {
-        if !((count _structuralRequested) isEqualTo 0) exitWith {
-            ["ERR_VARIANT_UNRESOLVED", format ["No confirmed structural variant exists for requested attachment set on base weapon '%1'.", _requestedWeaponClass], _requestedLoadoutId, _authoritativeSideToken] call _fail
-        };
-    };
-
-    if !(isClass (_sourceWeaponsCfg >> _resolvedWeaponClass)) exitWith {
-        ["ERR_VARIANT_RESOLVED_CLASS_MISSING", format ["Resolved canonical weapon '%1' is missing from source catalogue.", _resolvedWeaponClass], _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _resolvedAttachmentCompat = [];
-    if (isClass (_weaponAttachmentsCfg >> _resolvedWeaponClass)) then {
-        _resolvedAttachmentCompat = getArray ((_weaponAttachmentsCfg >> _resolvedWeaponClass) >> "values");
-    };
-
-    private _incompatibleAttachmentIndex = _ordinaryRequested findIf {!(_x in _resolvedAttachmentCompat)};
-    if (_incompatibleAttachmentIndex >= 0) exitWith {
-        private _badAttachment = _ordinaryRequested select _incompatibleAttachmentIndex;
-        ["ERR_INCOMPATIBLE_ATTACHMENT", format ["Attachment '%1' is not compatible with canonical weapon '%2'.", _badAttachment, _resolvedWeaponClass], _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _unknownMagazineIndex = _canonicalMagazines findIf {!(isClass (_sourceMagazinesCfg >> _x))};
-    if (_unknownMagazineIndex >= 0) exitWith {
-        private _unknownMagazine = _canonicalMagazines select _unknownMagazineIndex;
-        ["ERR_UNKNOWN_MAGAZINE", format ["Requested magazine '%1' does not exist in canonical source catalogue.", _unknownMagazine], _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _resolvedMagazineCompat = [];
-    if (isClass (_weaponMagazinesCfg >> _resolvedWeaponClass)) then {
-        _resolvedMagazineCompat = getArray ((_weaponMagazinesCfg >> _resolvedWeaponClass) >> "values");
-    };
-
-    private _incompatibleMagazineIndex = _canonicalMagazines findIf {!(_x in _resolvedMagazineCompat)};
-    if (_incompatibleMagazineIndex >= 0) exitWith {
-        private _badMagazine = _canonicalMagazines select _incompatibleMagazineIndex;
-        ["ERR_INCOMPATIBLE_MAGAZINE", format ["Magazine '%1' is not compatible with canonical weapon '%2'.", _badMagazine, _resolvedWeaponClass], _requestedLoadoutId, _authoritativeSideToken] call _fail
-    };
-
-    private _validatedPrimary = createHashMapFromArray [
-        ["weaponClass", _resolvedWeaponClass],
-        ["magazines", _canonicalMagazines],
-        ["attachments", _canonicalAttachments]
-    ];
 
     createHashMapFromArray [
         ["success", true],
         ["code", "OK"],
-        ["message", "Primary composition request validated."],
+        ["message", _compositionResult getOrDefault ["message", "Primary composition request validated."]],
         ["loadoutId", ""],
         ["sideToken", _authoritativeSideToken],
         ["validatedLoadout", []],
-        ["validatedPrimary", _validatedPrimary],
+        ["validatedPrimary", _compositionResult getOrDefault ["validatedWeapon", createHashMap]],
         ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
     ]
 };
