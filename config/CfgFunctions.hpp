@@ -73,6 +73,15 @@ class CfgFunctions
             class respawn_handlePlayerRespawn {file = "functions\respawn\fn_handlePlayerRespawn.sqf";};
         };
 
+        class loadouts
+        {
+            class loadouts_initServer {file = "functions\loadouts\fn_initServer.sqf";};
+            class loadouts_getStarterLoadout {file = "functions\loadouts\fn_getStarterLoadout.sqf";};
+            class loadouts_validateLoadout {file = "functions\loadouts\fn_validateLoadout.sqf";};
+            class loadouts_applyLoadout {file = "functions\loadouts\fn_applyLoadout.sqf";};
+            class loadouts_request {file = "functions\loadouts\fn_request.sqf";};
+        };
+
         class vehicles
         {
             class vehicles_addVehicleInventory {file = "functions\vehicles\fn_addVehicleInventory.sqf";};
