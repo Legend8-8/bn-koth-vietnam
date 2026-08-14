@@ -17,7 +17,11 @@ if (missionNamespace getVariable ["BN_KOTH_voteOpen", false]) exitWith {
     false
 };
 
-private _candidates = [] call bn_koth_fnc_round_selectVoteCandidates;
+private _candidates = missionNamespace getVariable ["BN_KOTH_voteCandidates", []];
+if ((count _candidates) <= 0) then {
+    _candidates = [] call bn_koth_fnc_round_prepareVoteCandidates;
+};
+
 if ((count _candidates) <= 0) exitWith {
     ["Cannot open vote: no valid AO candidates.", "ERROR"] call bn_koth_fnc_common_log;
     false

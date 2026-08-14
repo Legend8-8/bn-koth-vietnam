@@ -5,6 +5,9 @@
 #include "config\scoring.hpp"
 #include "config\vehicles.hpp"
 #include "config\teams.hpp"
+#include "ui\ui.hpp"
 #include "config\CfgFunctions.hpp"
 #include "config\CfgRemoteExec.hpp"
 #include "config\CfgServer.hpp"
+
+onPauseScript = "functions\ui\pauseOnLoad.sqf";

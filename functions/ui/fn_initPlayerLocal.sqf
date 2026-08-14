@@ -13,61 +13,84 @@
 
 if (!hasInterface) exitWith {};
 
+uiNamespace setVariable ["BN_KOTH_initialPreloadFinished", false];
+
+addMissionEventHandler [
+    "PreloadFinished",
+    {
+        if (uiNamespace getVariable ["BN_KOTH_initialPreloadFinished", false]) exitWith {
+            removeMissionEventHandler ["PreloadFinished", _thisEventHandler];
+        };
+
+        uiNamespace setVariable ["BN_KOTH_initialPreloadFinished", true];
+        removeMissionEventHandler ["PreloadFinished", _thisEventHandler];
+        [] call bn_koth_fnc_ui_updateLobbyLifecycle;
+    }
+];
+
 private _debugCfg = missionConfigFile >> "CfgBnKothDebug";
 private _debugEnabled = if (isClass _debugCfg) then {(getNumber (_debugCfg >> "enabled")) > 0} else {false};
 
 missionNamespace setVariable ["BN_KOTH_debugEnabled", _debugEnabled];
+missionNamespace setVariable ["BN_KOTH_stateReady", false];
+uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuSuppressed", false];
+uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuActive", false];
+uiNamespace setVariable ["BN_KOTH_lobbyNativeMenuRestorePending", false];
+uiNamespace setVariable ["BN_KOTH_lobbyBlackoutVisible", false];
+uiNamespace setVariable ["BN_KOTH_lobbyContainedUnit", objNull];
+uiNamespace setVariable ["BN_KOTH_lobbyContainmentApplied", false];
+uiNamespace setVariable ["BN_KOTH_hudVisible", false];
+uiNamespace setVariable ["BN_KOTH_hudDisplay", displayNull];
 
 [_debugEnabled] call bn_koth_fnc_ui_toggleDebugDisplay;
+[] call bn_koth_fnc_ui_updateLobbyBlackout;
+[] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;
 
-[] spawn {
-    while {hasInterface} do {
-        if (isNil {player getVariable "BN_KOTH_lobbyActionsAdded"}) then {
-            player setVariable ["BN_KOTH_lobbyActionsAdded", true];
+if (isNil {missionNamespace getVariable "BN_KOTH_lifecycleHooksInstalled"}) then {
+    missionNamespace setVariable ["BN_KOTH_lifecycleHooksInstalled", true];
 
-            player addAction [
-                "KOTH: Request WEST Team",
-                {
-                    ["WEST"] call bn_koth_fnc_teams_requestSelection;
-                }
-            ];
+    "BN_KOTH_playerStates" addPublicVariableEventHandler {
+        [] call bn_koth_fnc_ui_evaluateStateReadiness;
+        [] call bn_koth_fnc_ui_updateLobbyLifecycle;
+        [] call bn_koth_fnc_ui_refreshLobby;
+    };
 
-            player addAction [
-                "KOTH: Request EAST Team",
-                {
-                    ["EAST"] call bn_koth_fnc_teams_requestSelection;
-                }
-            ];
+    "BN_KOTH_activeParticipants" addPublicVariableEventHandler {
+        [] call bn_koth_fnc_ui_updateLobbyLifecycle;
+        [] call bn_koth_fnc_ui_refreshLobby;
+    };
+};
 
-            player addAction [
-                "KOTH: Vote Candidate 1",
-                {
-                    [0] call bn_koth_fnc_round_requestVote;
-                }
-            ];
+"BN_KOTH_scoreProgress" addPublicVariableEventHandler {
+    [] call bn_koth_fnc_ui_refreshHud;
+};
 
-            player addAction [
-                "KOTH: Vote Candidate 2",
-                {
-                    [1] call bn_koth_fnc_round_requestVote;
-                }
-            ];
+"BN_KOTH_teamScores" addPublicVariableEventHandler {
+    [] call bn_koth_fnc_ui_refreshHud;
+};
 
-            player addAction [
-                "KOTH: Vote Candidate 3",
-                {
-                    [2] call bn_koth_fnc_round_requestVote;
-                }
-            ];
+"BN_KOTH_zoneState" addPublicVariableEventHandler {
+    [] call bn_koth_fnc_ui_refreshHud;
+};
 
-            player addAction [
-                "KOTH: Request State Snapshot",
-                {
-                    [] call bn_koth_fnc_ui_requestState;
-                }
-            ];
+"BN_KOTH_zoneController" addPublicVariableEventHandler {
+    [] call bn_koth_fnc_ui_refreshHud;
+};
+
+"BN_KOTH_scoreLimit" addPublicVariableEventHandler {
+    [] call bn_koth_fnc_ui_refreshHud;
+};
+
+private _existingLifecycleLoop = missionNamespace getVariable ["BN_KOTH_lobbyLifecycleLoopHandle", scriptNull];
+if (_existingLifecycleLoop isEqualTo scriptNull || {scriptDone _existingLifecycleLoop}) then {
+    private _lifecycleHandle = [] spawn {
+        while {hasInterface} do {
+            [] call bn_koth_fnc_ui_updateLobbyLifecycle;
+            sleep 0.25;
         };
 
-        sleep 1;
+        missionNamespace setVariable ["BN_KOTH_lobbyLifecycleLoopHandle", scriptNull];
     };
+
+    missionNamespace setVariable ["BN_KOTH_lobbyLifecycleLoopHandle", _lifecycleHandle];
 };
