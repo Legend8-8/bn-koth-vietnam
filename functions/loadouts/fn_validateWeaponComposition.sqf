@@ -227,6 +227,40 @@ if !(isClass (_sourceWeaponsCfg >> _resolvedWeaponClass)) exitWith {
     ] call _fail
 };
 
+private _resolvedEngineCfg = configFile >> "CfgWeapons" >> _resolvedWeaponClass;
+if !(isClass _resolvedEngineCfg) exitWith {
+    [
+        "ERR_RESOLVED_WEAPON_CONFIG_MISSING",
+        format ["Resolved canonical weapon '%1' is missing from CfgWeapons.", _resolvedWeaponClass]
+    ] call _fail
+};
+
+private _expectedWeaponType = switch (_slotToken) do {
+    case "PRIMARY": {1};
+    case "HANDGUN": {2};
+    case "LAUNCHER": {4};
+    default {-1};
+};
+
+private _resolvedWeaponType = getNumber (_resolvedEngineCfg >> "type");
+
+if (
+    (_expectedWeaponType >= 0) &&
+    {!(_resolvedWeaponType isEqualTo _expectedWeaponType)}
+) exitWith {
+    [
+        format ["ERR_%1_WEAPON_SLOT_MISMATCH", _slotToken],
+        format [
+            "%1 weapon '%2' has engine weapon type %3 but slot '%4' requires type %5.",
+            _slotLabel,
+            _resolvedWeaponClass,
+            _resolvedWeaponType,
+            toLower _slotToken,
+            _expectedWeaponType
+        ]
+    ] call _fail
+};
+
 private _resolvedAttachmentCompat = [];
 private _resolvedAttachmentCfg = _weaponAttachmentsCfg >> _resolvedWeaponClass;
 if (isClass _resolvedAttachmentCfg) then {
