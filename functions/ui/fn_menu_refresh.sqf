@@ -26,7 +26,7 @@ if (isNull _display) then {
 };
 if (isNull _display) exitWith {};
 
-private _validPages = ["LOADOUT", "LOADOUT_PRIMARY", "STORE", "PERKS", "STATS", "PROGRESSION"];
+private _validPages = ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN", "STORE", "PERKS", "STATS", "PROGRESSION"];
 private _activePage = uiNamespace getVariable ["BN_KOTH_menuActivePage", "LOADOUT"];
 
 if !(_requestedPage isEqualTo "") then {
@@ -54,6 +54,7 @@ private _ctrlHeadgear = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_HEADGEAR;
 private _ctrlBackpack = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_BACKPACK;
 private _ctrlEquipment = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_EQUIPMENT;
 private _ctrlPrimaryButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_PRIMARY_BUTTON;
+private _ctrlHandgunButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_HANDGUN_BUTTON;
 
 private _ctrlNavLoadout = _display displayCtrl BN_KOTH_IDC_MENU_NAV_LOADOUT;
 private _ctrlNavStore = _display displayCtrl BN_KOTH_IDC_MENU_NAV_STORE;
@@ -166,7 +167,7 @@ private _setNavState = {
     };
 };
 
-[_ctrlNavLoadout, _activePage in ["LOADOUT", "LOADOUT_PRIMARY"]] call _setNavState;
+[_ctrlNavLoadout, _activePage in ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN"]] call _setNavState;
 [_ctrlNavStore, _activePage isEqualTo "STORE"] call _setNavState;
 [_ctrlNavPerks, _activePage isEqualTo "PERKS"] call _setNavState;
 [_ctrlNavStats, _activePage isEqualTo "STATS"] call _setNavState;
@@ -182,6 +183,7 @@ private _mainViewControls = [
     _ctrlBackpack,
     _ctrlEquipment,
     _ctrlPrimaryButton,
+    _ctrlHandgunButton,
     _ctrlSectionTitle,
     _ctrlNotice,
     _ctrlFooter
@@ -244,9 +246,11 @@ private _showComingSoon = {
 
     _ctrlPrimaryButton ctrlSetText "";
     _ctrlPrimaryButton ctrlEnable false;
+    _ctrlHandgunButton ctrlSetText "";
+    _ctrlHandgunButton ctrlEnable false;
 };
 
-if !(_activePage in ["LOADOUT", "LOADOUT_PRIMARY"]) exitWith {
+if !(_activePage in ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN"]) exitWith {
     [_activePage] call _showComingSoon;
 };
 
@@ -286,6 +290,8 @@ if (_activePage isEqualTo "LOADOUT") exitWith {
 
     _ctrlPrimaryButton ctrlSetText format ["PRIMARY: %1", _primaryName];
     _ctrlPrimaryButton ctrlEnable !isNull player;
+    _ctrlHandgunButton ctrlSetText format ["HANDGUN: %1", _handgunName];
+    _ctrlHandgunButton ctrlEnable !isNull player;
 
     private _weaponsCount = if (isNull player) then {0} else {count (weapons player)};
     _ctrlFooter ctrlSetText format ["LIVE KIT READOUT - %1 WEAPONS EQUIPPED", _weaponsCount];
@@ -293,14 +299,34 @@ if (_activePage isEqualTo "LOADOUT") exitWith {
 
 call _showPrimaryView;
 
-_ctrlPrimaryTitle ctrlSetText "PRIMARY WEAPON";
-_ctrlPrimaryCurrent ctrlSetText format ["CURRENT: %1", _primaryName];
+private _isHandgunMode = _activePage isEqualTo "LOADOUT_HANDGUN";
+private _entriesNamespaceKey = if (_isHandgunMode) then {"BN_KOTH_menuHandgunEntries"} else {"BN_KOTH_menuPrimaryEntries"};
+private _pendingNamespaceKey = if (_isHandgunMode) then {"BN_KOTH_menuPendingHandgun"} else {"BN_KOTH_menuPendingPrimary"};
+private _requestedSelectorPage = if (_isHandgunMode) then {"LOADOUT_HANDGUN"} else {"LOADOUT_PRIMARY"};
+private _selectorTitle = if (_isHandgunMode) then {"HANDGUN"} else {"PRIMARY WEAPON"};
+private _selectorApplyText = if (_isHandgunMode) then {"APPLY HANDGUN"} else {"APPLY PRIMARY"};
+private _selectorNoEntriesText = if (_isHandgunMode) then {"NO CANONICAL HANDGUNS AVAILABLE."} else {"NO CANONICAL PRIMARY WEAPONS AVAILABLE."};
+private _selectorWeaponTypes = if (_isHandgunMode) then {["handgun"]} else {["rifle", "lmg", "smg", "shotgun", "marksman"]};
+private _selectorEngineType = if (_isHandgunMode) then {2} else {1};
+private _currentWeaponClass = toLower (if (_isHandgunMode) then {handgunWeapon player} else {primaryWeapon player});
+
+_ctrlPrimaryTitle ctrlSetText _selectorTitle;
+_ctrlPrimaryCurrent ctrlSetText format ["CURRENT: %1", if (_isHandgunMode) then {_handgunName} else {_primaryName}];
+_ctrlPrimaryApply ctrlSetText _selectorApplyText;
+_ctrlPrimaryApply ctrlSetEventHandler [
+    "ButtonClick",
+    if (_isHandgunMode) then {
+        "[] call bn_koth_fnc_menu_applyHandgun;"
+    } else {
+        "[] call bn_koth_fnc_menu_applyPrimary;"
+    }
+];
 
 if (isNull player) exitWith {
     lbClear _ctrlPrimaryList;
     _ctrlPrimaryDetail ctrlSetText "NO PLAYER CONTEXT";
     _ctrlPrimaryApply ctrlEnable false;
-    uiNamespace setVariable ["BN_KOTH_menuPendingPrimary", createHashMapFromArray [["available", false]]];
+    uiNamespace setVariable [_pendingNamespaceKey, createHashMapFromArray [["available", false]]];
 };
 
 private _buildPrimaryEntries = {
@@ -322,7 +348,6 @@ private _buildPrimaryEntries = {
     if !(isClass _sourceWeaponsCfg) exitWith {[]};
     if !(isClass _weaponMagazinesCfg) exitWith {[]};
 
-    private _currentPrimary = toLower (primaryWeapon player);
     private _sortableEntries = [];
 
     {
@@ -335,7 +360,7 @@ private _buildPrimaryEntries = {
             continue;
         };
 
-        if !(_weaponType in ["rifle", "lmg", "smg", "shotgun", "marksman"]) then {
+        if !(_weaponType in _selectorWeaponTypes) then {
             continue;
         };
 
@@ -344,7 +369,7 @@ private _buildPrimaryEntries = {
             continue;
         };
 
-        if !((getNumber (_engineCfg >> "type")) isEqualTo 1) then {
+        if !((getNumber (_engineCfg >> "type")) isEqualTo _selectorEngineType) then {
             continue;
         };
 
@@ -385,7 +410,7 @@ private _buildPrimaryEntries = {
             ["defaultMagazine", _defaultMagazine],
             ["defaultMagazineName", _defaultMagazineName],
             ["available", _available],
-            ["equipped", _weaponClass isEqualTo _currentPrimary]
+            ["equipped", _weaponClass isEqualTo _currentWeaponClass]
         ];
 
         _sortableEntries pushBack [toLower _displayName, _entry];
@@ -401,11 +426,11 @@ private _buildPrimaryEntries = {
     _entries
 };
 
-private _entries = uiNamespace getVariable ["BN_KOTH_menuPrimaryEntries", []];
-private _openRequestedPrimaryView = (toUpper _requestedPage) isEqualTo "LOADOUT_PRIMARY";
-if (_openRequestedPrimaryView || {!(_entries isEqualType [])} || {(count _entries) isEqualTo 0}) then {
+private _entries = uiNamespace getVariable [_entriesNamespaceKey, []];
+private _openRequestedSelectorView = (toUpper _requestedPage) isEqualTo _requestedSelectorPage;
+if (_openRequestedSelectorView || {!(_entries isEqualType [])} || {(count _entries) isEqualTo 0}) then {
     _entries = call _buildPrimaryEntries;
-    uiNamespace setVariable ["BN_KOTH_menuPrimaryEntries", _entries];
+    uiNamespace setVariable [_entriesNamespaceKey, _entries];
 
     lbClear _ctrlPrimaryList;
     {
@@ -435,7 +460,7 @@ if (_openRequestedPrimaryView || {!(_entries isEqualType [])} || {(count _entrie
         };
     } forEach _entries;
 
-    private _pending = uiNamespace getVariable ["BN_KOTH_menuPendingPrimary", createHashMap];
+    private _pending = uiNamespace getVariable [_pendingNamespaceKey, createHashMap];
     private _pendingClass = if (_pending isEqualType createHashMap) then {
         _pending getOrDefault ["weaponClass", ""]
     } else {
@@ -443,7 +468,7 @@ if (_openRequestedPrimaryView || {!(_entries isEqualType [])} || {(count _entrie
     };
     _pendingClass = toLower _pendingClass;
 
-    private _currentClass = toLower (primaryWeapon player);
+    private _currentClass = _currentWeaponClass;
     private _targetClass = if !(_pendingClass isEqualTo "") then {_pendingClass} else {_currentClass};
     private _targetIndex = -1;
 
@@ -466,9 +491,9 @@ if (_openRequestedPrimaryView || {!(_entries isEqualType [])} || {(count _entrie
 };
 
 if ((count _entries) <= 0) exitWith {
-    _ctrlPrimaryDetail ctrlSetText "NO CANONICAL PRIMARY WEAPONS AVAILABLE.";
+    _ctrlPrimaryDetail ctrlSetText _selectorNoEntriesText;
     _ctrlPrimaryApply ctrlEnable false;
-    uiNamespace setVariable ["BN_KOTH_menuPendingPrimary", createHashMapFromArray [["available", false]]];
+    uiNamespace setVariable [_pendingNamespaceKey, createHashMapFromArray [["available", false]]];
 };
 
 private _selectedIndex = lbCurSel _ctrlPrimaryList;
@@ -496,7 +521,7 @@ if (_selectedAvailable) then {
     ];
 
     uiNamespace setVariable [
-        "BN_KOTH_menuPendingPrimary",
+        _pendingNamespaceKey,
         createHashMapFromArray [
             ["weaponClass", _selectedWeaponClass],
             ["weaponDisplayName", _selectedName],
@@ -514,7 +539,7 @@ if (_selectedAvailable) then {
     ];
 
     uiNamespace setVariable [
-        "BN_KOTH_menuPendingPrimary",
+        _pendingNamespaceKey,
         createHashMapFromArray [
             ["weaponClass", _selectedWeaponClass],
             ["weaponDisplayName", _selectedName],

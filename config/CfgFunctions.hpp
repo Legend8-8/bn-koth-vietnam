@@ -152,6 +152,7 @@ class CfgFunctions
             class menu_close {file = "functions\ui\fn_menu_close.sqf";};
             class menu_refresh {file = "functions\ui\fn_menu_refresh.sqf";};
             class menu_applyPrimary {file = "functions\ui\fn_menu_applyPrimary.sqf";};
+            class menu_applyHandgun {file = "functions\ui\fn_menu_applyHandgun.sqf";};
         };
     };
 };
