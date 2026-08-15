@@ -2,6 +2,7 @@
     File: fn_initServer.sqf
     Author: tylervip
     Edited: Legend
+    Edited: Mongo
     Description: Initializes authoritative round state and starts the lifecycle manager.
     Execution: Server
     Parameters:
@@ -38,6 +39,11 @@ missionNamespace setVariable [
 ["BN_KOTH_roundState", "WAITING"] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_zoneState", "NEUTRAL"] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_zoneController", sideUnknown] call bn_koth_fnc_common_publicState;
+["BN_KOTH_zonePopulation", createHashMapFromArray [
+    ["raw", [0, 0]],
+    ["weighted", [0, 0]],
+    ["priority", [0, 0]]
+]] call bn_koth_fnc_common_publicState;
 [] call bn_koth_fnc_zone_clearActiveLocation;
 
 [] spawn {

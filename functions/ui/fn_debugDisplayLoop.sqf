@@ -2,6 +2,7 @@
     File: fn_debugDisplayLoop.sqf
     Author: tylervip
     Edited: Legend
+    Edited: Mongo
     Description: Renders a lightweight local debug display from replicated client state.
     Execution: Client
     Parameters:
@@ -47,9 +48,15 @@ while {missionNamespace getVariable ["BN_KOTH_debugEnabled", false]} do {
     private _controller = missionNamespace getVariable ["BN_KOTH_zoneController", sideUnknown];
     private _controllerText = if (_controller isEqualTo sideUnknown) then {"NONE"} else {str _controller};
 
-    private _zonePopulation = missionNamespace getVariable ["BN_KOTH_zonePopulation", [0, 0]];
-    private _sideACount = if ((count _zonePopulation) > 0) then {_zonePopulation select 0} else {0};
-    private _sideBCount = if ((count _zonePopulation) > 1) then {_zonePopulation select 1} else {0};
+    private _zonePopulation = missionNamespace getVariable ["BN_KOTH_zonePopulation", createHashMap];
+    private _weightedPopulation = if (_zonePopulation isEqualType createHashMap) then {
+        _zonePopulation getOrDefault ["weighted", [0, 0]]
+    } else {
+        // Compatibility with snapshots produced before the structured population state.
+        _zonePopulation
+    };
+    private _sideACount = if ((count _weightedPopulation) > 0) then {_weightedPopulation select 0} else {0};
+    private _sideBCount = if ((count _weightedPopulation) > 1) then {_weightedPopulation select 1} else {0};
 
     private _playableSides = missionNamespace getVariable ["BN_KOTH_playableSides", [west, east]];
     if ((count _playableSides) < 2) then {

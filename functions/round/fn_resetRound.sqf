@@ -2,6 +2,7 @@
 	File: fn_resetRound.sqf
 	Author: tylervip
 	Edited: Legend
+	Edited: Mongo
 	Description: Performs authoritative round reset and returns to WAITING.
 	Execution: Server
 	Parameters:
@@ -45,7 +46,11 @@ missionNamespace setVariable [
 ["BN_KOTH_winningSide", sideUnknown] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_zoneController", sideUnknown] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_zoneState", "NEUTRAL"] call bn_koth_fnc_common_publicState;
-["BN_KOTH_zonePopulation", [0, 0]] call bn_koth_fnc_common_publicState;
+["BN_KOTH_zonePopulation", createHashMapFromArray [
+    ["raw", [0, 0]],
+    ["weighted", [0, 0]],
+    ["priority", [0, 0]]
+]] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_selectedLocationId", ""] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_voteCandidates", []] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_votesByUid", createHashMap] call bn_koth_fnc_common_publicState;

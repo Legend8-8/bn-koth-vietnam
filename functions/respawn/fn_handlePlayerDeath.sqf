@@ -1,6 +1,7 @@
 /*
     File: fn_handlePlayerDeath.sqf
     Author: Legend
+    Edited: Mongo
     Description: Server-authoritative death handling for active-round eligibility.
     Execution: Server
     Parameters:
@@ -71,8 +72,13 @@ private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
 private _stateBefore = _record getOrDefault ["state", "LOBBY"];
 private _roundState = [] call bn_koth_fnc_round_getState;
 
+_deadUnit setVariable ["BN_KOTH_safeZoneProtected", false, true];
+_deadUnit setVariable ["BN_KOTH_enemySafeZoneIntruder", false, true];
+
 _record set ["currentUnit", _deadUnit];
 _record set ["deployed", false];
+_record set ["safeZoneProtected", false];
+_record set ["enemySafeZoneIntruder", false];
 
 if (_stateBefore in ["ACTIVE", "DEPLOYING", "RESPAWNING"]) then {
     _record set ["state", "RESPAWNING"];
