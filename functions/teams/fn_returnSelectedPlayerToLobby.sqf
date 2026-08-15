@@ -58,6 +58,8 @@ if (!_lobbyOk) exitWith {
     false
 };
 
+[_uid] call bn_koth_fnc_loadouts_clearPlayerState;
+
 _record = _records getOrDefault [_uid, createHashMap];
 if !(_record isEqualType createHashMap) exitWith {false};
 

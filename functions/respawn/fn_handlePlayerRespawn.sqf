@@ -145,6 +145,10 @@ if !((_starterLoadout isEqualType []) && {(count _starterLoadout) >= 10}) exitWi
 
 _newUnit setUnitLoadout _starterLoadout;
 
+// Fresh starter boundary: after starter application succeeds, discard any
+// previously intended deployed-loadout state for this player.
+[_uid] call bn_koth_fnc_loadouts_clearPlayerState;
+
 _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 _record = _records getOrDefault [_uid, createHashMap];
 if !(_record isEqualType createHashMap) exitWith {
