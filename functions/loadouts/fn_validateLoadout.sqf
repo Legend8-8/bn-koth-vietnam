@@ -326,11 +326,53 @@ if (_requestMode isEqualTo "weapons") exitWith {
     };
 
     if (((count _slotFailure) isEqualTo 0) && {"launcher" in _slotKeys}) then {
-        private _launcherResult = ["launcher", "LAUNCHER", "Launcher"] call _validateSlot;
-        if (_launcherResult getOrDefault ["success", false]) then {
-            _validatedWeapons set ["launcher", _launcherResult getOrDefault ["validatedWeapon", createHashMap]];
+        private _launcherRequest = _weaponsRequest getOrDefault ["launcher", objNull];
+        if !(_launcherRequest isEqualType createHashMap) then {
+            _slotFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", "Weapons.launcher must be a map."]
+            ];
         } else {
-            _slotFailure = _launcherResult;
+            private _launcherClassRaw = _launcherRequest getOrDefault ["weaponClass", ""];
+            if !(_launcherClassRaw isEqualType "") then {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", "Launcher weaponClass must be a string."]
+                ];
+            } else {
+                private _launcherClass = toLower _launcherClassRaw;
+                if (_launcherClass isEqualTo "") then {
+                    private _launcherMags = _launcherRequest getOrDefault ["magazines", []];
+                    private _launcherAttachments = _launcherRequest getOrDefault ["attachments", []];
+
+                    if !((_launcherMags isEqualType []) && {_launcherAttachments isEqualType []}) then {
+                        _slotFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_MALFORMED_REQUEST"],
+                            ["message", "Launcher clear intent requires magazines/attachments arrays."]
+                        ];
+                    } else {
+                        if ((count _launcherMags) > 0 || {(count _launcherAttachments) > 0}) then {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", "ERR_MALFORMED_REQUEST"],
+                                ["message", "Launcher clear intent must not provide magazines or attachments."]
+                            ];
+                        } else {
+                            _validatedWeapons set ["launcher", createHashMapFromArray [["clear", true]]];
+                        };
+                    };
+                } else {
+                    private _launcherResult = ["launcher", "LAUNCHER", "Launcher"] call _validateSlot;
+                    if (_launcherResult getOrDefault ["success", false]) then {
+                        _validatedWeapons set ["launcher", _launcherResult getOrDefault ["validatedWeapon", createHashMap]];
+                    } else {
+                        _slotFailure = _launcherResult;
+                    };
+                };
+            };
         };
     };
 

@@ -27,7 +27,7 @@ class BN_KOTH_RscMenu
     movingEnable = 0;
     enableSimulation = 1;
     onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_menuDisplay', _display]; _display displayAddEventHandler ['KeyDown', 'if ((_this select 1) isEqualTo 1) exitWith {[] call bn_koth_fnc_menu_close; true}; false']; ['LOADOUT'] call bn_koth_fnc_menu_refresh;";
-    onUnload = "uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap];";
+    onUnload = "uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuLauncherEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingLauncher', createHashMap];";
 
     class controlsBackground
     {
@@ -256,6 +256,13 @@ class BN_KOTH_RscMenu
             idc = BN_KOTH_IDC_MENU_SLOT_LAUNCHER;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.164;
             text = "LAUNCHER";
+        };
+
+        class SlotLauncherButton: SlotPrimaryButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_LAUNCHER_BUTTON;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.162;
+            action = "['LOADOUT_LAUNCHER'] call bn_koth_fnc_menu_refresh;";
         };
 
         class SlotUniform: SlotPrimary

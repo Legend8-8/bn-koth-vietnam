@@ -26,7 +26,7 @@ if (isNull _display) then {
 };
 if (isNull _display) exitWith {};
 
-private _validPages = ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN", "STORE", "PERKS", "STATS", "PROGRESSION"];
+private _validPages = ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN", "LOADOUT_LAUNCHER", "STORE", "PERKS", "STATS", "PROGRESSION"];
 private _activePage = uiNamespace getVariable ["BN_KOTH_menuActivePage", "LOADOUT"];
 
 if !(_requestedPage isEqualTo "") then {
@@ -55,6 +55,7 @@ private _ctrlBackpack = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_BACKPACK;
 private _ctrlEquipment = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_EQUIPMENT;
 private _ctrlPrimaryButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_PRIMARY_BUTTON;
 private _ctrlHandgunButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_HANDGUN_BUTTON;
+private _ctrlLauncherButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_LAUNCHER_BUTTON;
 
 private _ctrlNavLoadout = _display displayCtrl BN_KOTH_IDC_MENU_NAV_LOADOUT;
 private _ctrlNavStore = _display displayCtrl BN_KOTH_IDC_MENU_NAV_STORE;
@@ -167,7 +168,7 @@ private _setNavState = {
     };
 };
 
-[_ctrlNavLoadout, _activePage in ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN"]] call _setNavState;
+[_ctrlNavLoadout, _activePage in ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN", "LOADOUT_LAUNCHER"]] call _setNavState;
 [_ctrlNavStore, _activePage isEqualTo "STORE"] call _setNavState;
 [_ctrlNavPerks, _activePage isEqualTo "PERKS"] call _setNavState;
 [_ctrlNavStats, _activePage isEqualTo "STATS"] call _setNavState;
@@ -184,6 +185,7 @@ private _mainViewControls = [
     _ctrlEquipment,
     _ctrlPrimaryButton,
     _ctrlHandgunButton,
+    _ctrlLauncherButton,
     _ctrlSectionTitle,
     _ctrlNotice,
     _ctrlFooter
@@ -248,9 +250,11 @@ private _showComingSoon = {
     _ctrlPrimaryButton ctrlEnable false;
     _ctrlHandgunButton ctrlSetText "";
     _ctrlHandgunButton ctrlEnable false;
+    _ctrlLauncherButton ctrlSetText "";
+    _ctrlLauncherButton ctrlEnable false;
 };
 
-if !(_activePage in ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN"]) exitWith {
+if !(_activePage in ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN", "LOADOUT_LAUNCHER"]) exitWith {
     [_activePage] call _showComingSoon;
 };
 
@@ -292,6 +296,8 @@ if (_activePage isEqualTo "LOADOUT") exitWith {
     _ctrlPrimaryButton ctrlEnable !isNull player;
     _ctrlHandgunButton ctrlSetText format ["HANDGUN: %1", _handgunName];
     _ctrlHandgunButton ctrlEnable !isNull player;
+    _ctrlLauncherButton ctrlSetText format ["LAUNCHER: %1", _launcherName];
+    _ctrlLauncherButton ctrlEnable !isNull player;
 
     private _weaponsCount = if (isNull player) then {0} else {count (weapons player)};
     _ctrlFooter ctrlSetText format ["LIVE KIT READOUT - %1 WEAPONS EQUIPPED", _weaponsCount];
@@ -299,26 +305,79 @@ if (_activePage isEqualTo "LOADOUT") exitWith {
 
 call _showPrimaryView;
 
-private _isHandgunMode = _activePage isEqualTo "LOADOUT_HANDGUN";
-private _entriesNamespaceKey = if (_isHandgunMode) then {"BN_KOTH_menuHandgunEntries"} else {"BN_KOTH_menuPrimaryEntries"};
-private _pendingNamespaceKey = if (_isHandgunMode) then {"BN_KOTH_menuPendingHandgun"} else {"BN_KOTH_menuPendingPrimary"};
-private _requestedSelectorPage = if (_isHandgunMode) then {"LOADOUT_HANDGUN"} else {"LOADOUT_PRIMARY"};
-private _selectorTitle = if (_isHandgunMode) then {"HANDGUN"} else {"PRIMARY WEAPON"};
-private _selectorApplyText = if (_isHandgunMode) then {"APPLY HANDGUN"} else {"APPLY PRIMARY"};
-private _selectorNoEntriesText = if (_isHandgunMode) then {"NO CANONICAL HANDGUNS AVAILABLE."} else {"NO CANONICAL PRIMARY WEAPONS AVAILABLE."};
-private _selectorWeaponTypes = if (_isHandgunMode) then {["handgun"]} else {["rifle", "lmg", "smg", "shotgun", "marksman"]};
-private _selectorEngineType = if (_isHandgunMode) then {2} else {1};
-private _currentWeaponClass = toLower (if (_isHandgunMode) then {handgunWeapon player} else {primaryWeapon player});
+private _selectorMode = switch (_activePage) do {
+    case "LOADOUT_HANDGUN": {"HANDGUN"};
+    case "LOADOUT_LAUNCHER": {"LAUNCHER"};
+    default {"PRIMARY"};
+};
+
+private _entriesNamespaceKey = switch (_selectorMode) do {
+    case "HANDGUN": {"BN_KOTH_menuHandgunEntries"};
+    case "LAUNCHER": {"BN_KOTH_menuLauncherEntries"};
+    default {"BN_KOTH_menuPrimaryEntries"};
+};
+
+private _pendingNamespaceKey = switch (_selectorMode) do {
+    case "HANDGUN": {"BN_KOTH_menuPendingHandgun"};
+    case "LAUNCHER": {"BN_KOTH_menuPendingLauncher"};
+    default {"BN_KOTH_menuPendingPrimary"};
+};
+
+private _requestedSelectorPage = switch (_selectorMode) do {
+    case "HANDGUN": {"LOADOUT_HANDGUN"};
+    case "LAUNCHER": {"LOADOUT_LAUNCHER"};
+    default {"LOADOUT_PRIMARY"};
+};
+
+private _selectorTitle = switch (_selectorMode) do {
+    case "HANDGUN": {"HANDGUN"};
+    case "LAUNCHER": {"LAUNCHER"};
+    default {"PRIMARY WEAPON"};
+};
+
+private _selectorApplyText = switch (_selectorMode) do {
+    case "HANDGUN": {"APPLY HANDGUN"};
+    case "LAUNCHER": {"APPLY LAUNCHER"};
+    default {"APPLY PRIMARY"};
+};
+
+private _selectorNoEntriesText = switch (_selectorMode) do {
+    case "HANDGUN": {"NO CANONICAL HANDGUNS AVAILABLE."};
+    case "LAUNCHER": {"NO CANONICAL LAUNCHERS AVAILABLE."};
+    default {"NO CANONICAL PRIMARY WEAPONS AVAILABLE."};
+};
+
+private _selectorWeaponTypes = switch (_selectorMode) do {
+    case "HANDGUN": {["handgun"]};
+    case "LAUNCHER": {["launcher"]};
+    default {["rifle", "lmg", "smg", "shotgun", "marksman"]};
+};
+
+private _selectorEngineType = switch (_selectorMode) do {
+    case "HANDGUN": {2};
+    case "LAUNCHER": {4};
+    default {1};
+};
+
+private _currentWeaponClass = toLower (switch (_selectorMode) do {
+    case "HANDGUN": {handgunWeapon player};
+    case "LAUNCHER": {secondaryWeapon player};
+    default {primaryWeapon player};
+});
 
 _ctrlPrimaryTitle ctrlSetText _selectorTitle;
-_ctrlPrimaryCurrent ctrlSetText format ["CURRENT: %1", if (_isHandgunMode) then {_handgunName} else {_primaryName}];
+_ctrlPrimaryCurrent ctrlSetText format ["CURRENT: %1", switch (_selectorMode) do {
+    case "HANDGUN": {_handgunName};
+    case "LAUNCHER": {_launcherName};
+    default {_primaryName};
+}];
 _ctrlPrimaryApply ctrlSetText _selectorApplyText;
 _ctrlPrimaryApply ctrlSetEventHandler [
     "ButtonClick",
-    if (_isHandgunMode) then {
-        "[] call bn_koth_fnc_menu_applyHandgun;"
-    } else {
-        "[] call bn_koth_fnc_menu_applyPrimary;"
+    switch (_selectorMode) do {
+        case "HANDGUN": {"[] call bn_koth_fnc_menu_applyHandgun;"};
+        case "LAUNCHER": {"[] call bn_koth_fnc_menu_applyLauncher;"};
+        default {"[] call bn_koth_fnc_menu_applyPrimary;"};
     }
 ];
 
@@ -419,6 +478,20 @@ private _buildPrimaryEntries = {
     _sortableEntries sort true;
 
     private _entries = [];
+    if (_selectorMode isEqualTo "LAUNCHER") then {
+        private _noneEntry = createHashMapFromArray [
+            ["weaponClass", ""],
+            ["displayName", "NONE"],
+            ["weaponType", "launcher"],
+            ["defaultMagazine", ""],
+            ["defaultMagazineName", "NO LAUNCHER"],
+            ["available", true],
+            ["equipped", _currentWeaponClass isEqualTo ""]
+        ];
+
+        _entries pushBack _noneEntry;
+    };
+
     {
         _entries pushBack (_x select 1);
     } forEach _sortableEntries;
@@ -514,11 +587,15 @@ private _selectedMagazineName = _selected getOrDefault ["defaultMagazineName", "
 private _selectedAvailable = _selected getOrDefault ["available", false];
 
 if (_selectedAvailable) then {
-    _ctrlPrimaryDetail ctrlSetText format [
-        "SELECTED: %1\nDEFAULT MAGAZINE: %2\nAPPLY TO SUBMIT AUTHORITATIVE REQUEST",
-        _selectedName,
-        _selectedMagazineName
-    ];
+    if ((_selectorMode isEqualTo "LAUNCHER") && {_selectedWeaponClass isEqualTo ""}) then {
+        _ctrlPrimaryDetail ctrlSetText "SELECTED: NONE\nEFFECT: CLEAR LAUNCHER SLOT\nAPPLY TO SUBMIT AUTHORITATIVE REQUEST";
+    } else {
+        _ctrlPrimaryDetail ctrlSetText format [
+            "SELECTED: %1\nDEFAULT MAGAZINE: %2\nAPPLY TO SUBMIT AUTHORITATIVE REQUEST",
+            _selectedName,
+            _selectedMagazineName
+        ];
+    };
 
     uiNamespace setVariable [
         _pendingNamespaceKey,

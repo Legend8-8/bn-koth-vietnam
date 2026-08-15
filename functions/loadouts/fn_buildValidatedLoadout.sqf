@@ -281,15 +281,32 @@ private _validatedWeaponKeys = keys _validatedWeapons;
         _x params ["_slotName", "_loadoutIndex"];
 
         if (_slotName in _validatedWeaponKeys) then {
-            private _slotResult = [
-                _slotName,
-                _validatedWeapons get _slotName
-            ] call _buildWeaponSlot;
+            private _slotPayload = _validatedWeapons get _slotName;
 
-            if (_slotResult getOrDefault ["success", false]) then {
-                _builtLoadout set [_loadoutIndex, _slotResult getOrDefault ["slot", []]];
+            if (
+                (_slotName isEqualTo "launcher") &&
+                (_slotPayload isEqualType createHashMap) &&
+                {_slotPayload getOrDefault ["clear", false]}
+            ) then {
+                private _baselineLauncher = _builtLoadout select _loadoutIndex;
+                private _clearedLauncher = if ((_baselineLauncher isEqualType []) && {(count _baselineLauncher) >= 7}) then {
+                    ["", "", "", "", [], [], ""]
+                } else {
+                    []
+                };
+
+                _builtLoadout set [_loadoutIndex, _clearedLauncher];
             } else {
-                _buildFailure = _slotResult;
+                private _slotResult = [
+                    _slotName,
+                    _slotPayload
+                ] call _buildWeaponSlot;
+
+                if (_slotResult getOrDefault ["success", false]) then {
+                    _builtLoadout set [_loadoutIndex, _slotResult getOrDefault ["slot", []]];
+                } else {
+                    _buildFailure = _slotResult;
+                };
             };
         };
     };
