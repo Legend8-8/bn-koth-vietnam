@@ -134,6 +134,23 @@ if !(_record isEqualType createHashMap) exitWith {
     ["ERR_PLAYER_NOT_REGISTERED", "Player is not registered in authoritative team records.", _requestedLoadoutId] call _fail
 };
 
+private _authoritativeBaselineLoadout = [];
+private _authoritativeBaselineSideToken = "";
+
+private _loadoutStateByUid = missionNamespace getVariable ["BN_KOTH_playerLoadoutState", createHashMap];
+if (_loadoutStateByUid isEqualType createHashMap) then {
+    private _loadoutState = _loadoutStateByUid getOrDefault [_uid, createHashMap];
+
+    if (_loadoutState isEqualType createHashMap) then {
+        _authoritativeBaselineLoadout = _loadoutState getOrDefault ["intendedLoadout", []];
+        if !(_authoritativeBaselineLoadout isEqualType []) then {
+            _authoritativeBaselineLoadout = [];
+        };
+
+        _authoritativeBaselineSideToken = toUpper (_loadoutState getOrDefault ["sideToken", ""]);
+    };
+};
+
 private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
 if !([_assignedSide] call bn_koth_fnc_teams_validateSide) exitWith {
     ["ERR_ASSIGNED_SIDE_INVALID", "Player does not have a valid assigned playable side.", _requestedLoadoutId] call _fail
@@ -149,6 +166,10 @@ private _authoritativeSideToken = switch (_assignedSide) do {
 
 if (_authoritativeSideToken isEqualTo "") exitWith {
     ["ERR_SIDE_TOKEN_UNMAPPED", "Assigned side does not map to a supported side token.", _requestedLoadoutId] call _fail
+};
+
+if !(_authoritativeBaselineSideToken isEqualTo _authoritativeSideToken) then {
+    _authoritativeBaselineLoadout = [];
 };
 
 if (
@@ -222,7 +243,8 @@ if (_requestMode isEqualTo "primary") exitWith {
 
     private _buildResult = [
         _assignedSide,
-        _validatedWeapons
+        _validatedWeapons,
+        _authoritativeBaselineLoadout
     ] call bn_koth_fnc_loadouts_buildValidatedLoadout;
 
     if !(_buildResult getOrDefault ["success", false]) exitWith {
@@ -332,7 +354,8 @@ if (_requestMode isEqualTo "weapons") exitWith {
 
     private _buildResult = [
         _assignedSide,
-        _validatedWeapons
+        _validatedWeapons,
+        _authoritativeBaselineLoadout
     ] call bn_koth_fnc_loadouts_buildValidatedLoadout;
 
     if !(_buildResult getOrDefault ["success", false]) exitWith {

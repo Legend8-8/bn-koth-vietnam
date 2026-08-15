@@ -93,6 +93,7 @@ class CfgFunctions
             class loadouts_initPlayerLocal {file = "functions\loadouts\fn_initPlayerLocal.sqf";};
             class loadouts_isInventoryLocked {file = "functions\loadouts\fn_isInventoryLocked.sqf";};
             class loadouts_forceCloseInventory {file = "functions\loadouts\fn_forceCloseInventory.sqf";};
+            class loadouts_clearPlayerState {file = "functions\loadouts\fn_clearPlayerState.sqf";};
             class loadouts_getStarterLoadout {file = "functions\loadouts\fn_getStarterLoadout.sqf";};
             class loadouts_validateLoadout {file = "functions\loadouts\fn_validateLoadout.sqf";};
             class loadouts_validateWeaponComposition {file = "functions\loadouts\fn_validateWeaponComposition.sqf";};
@@ -147,6 +148,10 @@ class CfgFunctions
             class ui_debugDisplayLoop {file = "functions\ui\fn_debugDisplayLoop.sqf";};
             class ui_selectControlledUnit {file = "functions\ui\fn_selectControlledUnit.sqf";};
             class ui_notify {file = "functions\ui\fn_notify.sqf";};
+            class menu_open {file = "functions\ui\fn_menu_open.sqf";};
+            class menu_close {file = "functions\ui\fn_menu_close.sqf";};
+            class menu_refresh {file = "functions\ui\fn_menu_refresh.sqf";};
+            class menu_applyPrimary {file = "functions\ui\fn_menu_applyPrimary.sqf";};
         };
     };
 };

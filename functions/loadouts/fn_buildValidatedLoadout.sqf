@@ -6,6 +6,7 @@
     Parameters:
         0: Authoritative player side <SIDE>
         1: validatedWeapons map produced by bn_koth_fnc_loadouts_validateLoadout <HASHMAP>
+        2: Optional authoritative baseline loadout array <ARRAY>
     Returns:
         Build result <HASHMAP>
     Public: No
@@ -13,7 +14,8 @@
 
 params [
     ["_side", sideUnknown, [sideUnknown]],
-    ["_validatedWeapons", createHashMap, [createHashMap]]
+    ["_validatedWeapons", createHashMap, [createHashMap]],
+    ["_baselineLoadout", [], [[]]]
 ];
 
 private _fail = {
@@ -72,9 +74,14 @@ if ((count _starterLoadout) < 10) exitWith {
     ] call _fail
 };
 
+private _baseLoadout = +_starterLoadout;
+if ((_baselineLoadout isEqualType []) && {(count _baselineLoadout) >= 10}) then {
+    _baseLoadout = +_baselineLoadout;
+};
+
 // Only top-level weapon entries 0/1/2 are replaced.
 // Uniform, vest, backpack, headgear, facewear, binoculars and assigned items remain untouched.
-private _builtLoadout = +_starterLoadout;
+private _builtLoadout = +_baseLoadout;
 
 private _buildWeaponSlot = {
     params ["_slotName", "_weaponData"];
@@ -300,7 +307,7 @@ if ((count _buildFailure) > 0) exitWith {
 createHashMapFromArray [
     ["success", true],
     ["code", "OK"],
-    ["message", "Validated weapon selections built into complete starter-based loadout."],
+    ["message", "Validated weapon selections built into complete loadout from authoritative baseline or starter fallback."],
     ["sideToken", _sideToken],
     ["loadoutId", _loadoutId],
     ["loadout", _builtLoadout]

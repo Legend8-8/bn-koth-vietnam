@@ -75,6 +75,31 @@ private _activeParticipants = [];
     private _gameplayUnit = _group createUnit [_unitClass, _spawnPos, [], 0, "NONE"];
     _gameplayUnit setDir _spawnDir;
 
+    private _starterResult = [_assignedSide] call bn_koth_fnc_loadouts_getStarterLoadout;
+    if !(_starterResult getOrDefault ["success", false]) then {
+        deleteVehicle _gameplayUnit;
+        deleteGroup _group;
+        [
+            format [
+                "Deployment rejected for UID %1: starter loadout lookup failed (%2)",
+                _uid,
+                _starterResult getOrDefault ["code", "ERR_STARTER_LOOKUP"]
+            ],
+            "ERROR"
+        ] call bn_koth_fnc_common_log;
+        continue;
+    };
+
+    private _starterLoadout = _starterResult getOrDefault ["loadout", []];
+    if !((_starterLoadout isEqualType []) && {(count _starterLoadout) >= 10}) then {
+        deleteVehicle _gameplayUnit;
+        deleteGroup _group;
+        [format ["Deployment rejected for UID %1: starter loadout shape invalid", _uid], "ERROR"] call bn_koth_fnc_common_log;
+        continue;
+    };
+
+    _gameplayUnit setUnitLoadout _starterLoadout;
+
     private _transferOk = [_uid, _gameplayUnit, "DEPLOYING", true] call bn_koth_fnc_teams_transferRepresentation;
     if (!_transferOk) then {
         deleteVehicle _gameplayUnit;

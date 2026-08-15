@@ -94,6 +94,18 @@ if !(_validatedLoadout isEqualType [] && {(count _validatedLoadout) > 0}) exitWi
     [format ["Rejected validated loadout for UID %1: validator returned no complete loadout.", _uid], "WARN"] call bn_koth_fnc_common_log;
 };
 
+private _loadoutStateByUid = missionNamespace getVariable ["BN_KOTH_playerLoadoutState", createHashMap];
+if !(_loadoutStateByUid isEqualType createHashMap) then {
+    _loadoutStateByUid = createHashMap;
+};
+
+_loadoutStateByUid set [_uid, createHashMapFromArray [
+    ["intendedLoadout", +_validatedLoadout],
+    ["sideToken", toUpper (_validation getOrDefault ["sideToken", ""])]
+]];
+
+missionNamespace setVariable ["BN_KOTH_playerLoadoutState", _loadoutStateByUid];
+
 [
     format [
         "Accepted loadout request UID=%1 loadoutId=%2",

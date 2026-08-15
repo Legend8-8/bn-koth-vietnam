@@ -116,6 +116,43 @@ if !(_roundState isEqualTo "ACTIVE") exitWith {
     false
 };
 
+private _starterResult = [_assignedSide] call bn_koth_fnc_loadouts_getStarterLoadout;
+if !(_starterResult getOrDefault ["success", false]) exitWith {
+    [
+        format [
+            "Respawn redeploy failed UID=%1 side=%2: starter lookup failed (%3)",
+            _uid,
+            _assignedSide,
+            _starterResult getOrDefault ["code", "ERR_STARTER_LOOKUP"]
+        ],
+        "WARN"
+    ] call bn_koth_fnc_common_log;
+    false
+};
+
+private _starterLoadout = _starterResult getOrDefault ["loadout", []];
+if !((_starterLoadout isEqualType []) && {(count _starterLoadout) >= 10}) exitWith {
+    [
+        format [
+            "Respawn redeploy failed UID=%1 side=%2: starter loadout shape invalid",
+            _uid,
+            _assignedSide
+        ],
+        "WARN"
+    ] call bn_koth_fnc_common_log;
+    false
+};
+
+_newUnit setUnitLoadout _starterLoadout;
+
+_records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
+_record = _records getOrDefault [_uid, createHashMap];
+if !(_record isEqualType createHashMap) exitWith {
+    [format ["Respawn redeploy failed UID=%1: missing player record after starter apply", _uid], "WARN"] call bn_koth_fnc_common_log;
+    false
+};
+
+_record set ["currentUnit", _newUnit];
 _record set ["deployed", true];
 _record set ["state", "ACTIVE"];
 _records set [_uid, _record];
@@ -129,5 +166,6 @@ if !(_uid in _activeParticipants) then {
 
 [] call bn_koth_fnc_teams_publishState;
 [_newUnit] call bn_koth_fnc_curator_init;
+
 [format ["Respawn redeploy success UID=%1 side=%2", _uid, _assignedSide], "INFO"] call bn_koth_fnc_common_log;
 true

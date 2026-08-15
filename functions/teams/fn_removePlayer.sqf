@@ -34,6 +34,8 @@ if (_record isEqualType createHashMap) then {
 _records deleteAt _uid;
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
+[_uid] call bn_koth_fnc_loadouts_clearPlayerState;
+
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 _activeParticipants = _activeParticipants - [_uid];
 ["BN_KOTH_activeParticipants", _activeParticipants] call bn_koth_fnc_common_publicState;
