@@ -1,0 +1,121 @@
+SOURCE COVERAGE
+- weapon rows found: 267
+- item rows found: 89
+- magazine rows found: 818
+
+FILTERING
+- accepted weapons: 227
+- accepted items: 80
+- accepted magazines: 340
+- rejected weapons: {'non_sog_class': 3, 'non_magazine_weapon_record': 35, 'helper_or_fake_weapon': 2}
+- rejected items: {'range_placeholder': 2, 'non_player_item': 7}
+- rejected magazines: {'helper_or_vehicle_magazine': 363, 'helper_or_base_magazine': 4, 'vehicle_magazine': 110, 'helper_or_fake_magazine': 1}
+
+SOURCE AFFILIATIONS (FACTUAL)
+- WEST evidence only: 77
+- EAST evidence only: 33
+- INDEPENDENT evidence only: 3
+- WEST+EAST shared evidence: 1
+- WEST+INDEPENDENT shared evidence: 22
+- EAST+INDEPENDENT shared evidence: 13
+- WEST+EAST+INDEPENDENT shared evidence: 10
+- no affiliation evidence: 68
+- ambiguous/shared (including INDEPENDENT-only): 49
+
+RELATIONSHIPS
+- weapon-magazine links: 999
+- weapon-attachment links: 111
+- confirmed reverse relationships: 999
+- one-sided weapon->magazine: 0
+- one-sided magazine->weapon: 6
+- unexplained relationship mismatches: 6
+- excluded-target reverse relationships: 6
+
+MUZZLES
+- multi-muzzle weapons found: 20
+- primary/secondary grouping confidence: 20
+- ambiguous grouping: 0
+
+BASE MAGAZINES
+- high-confidence assignments: 108
+- ambiguous weapon records: 119
+- unique ambiguous primary-magazine candidate sets: 23
+- unique ambiguous weapon families: 42
+- missing candidates: 0
+- overrides applied: 0
+
+VARIANTS
+- families detected: 92
+- variant candidates: 87
+- confidently derived relationships: 86
+- ambiguous relationships: 1
+- overrides applied: 0
+
+ORPHANS / ERRORS
+- referenced magazine missing from catalogue: 0
+- referenced attachment missing from catalogue: 0
+
+PROGRESSION WORK
+- weapon count: 227
+- unique progression-weapon count: 141
+- unique included base-mag count: 40
+- unique extra-mag count: 113
+- unique attachment count: 57
+- unique confirmed derived-class count: 86
+- total unique future progression assets: 311
+- weapon-magazine relationship links: 999
+- weapon-attachment relationship links: 111
+
+EXCLUSIONS
+- vnx_* records excluded: 0
+
+VALIDATION WARNINGS
+- baseMagazines: 119
+  - vn_ak_01: ambiguous (vn_kbkg_mag, vn_type56_mag)
+  - vn_gau5a: ambiguous (vn_m16_20_mag, vn_m16_30_mag, vn_m16_40_mag, vn_m16_40_t_mag)
+  - vn_gau5a_mrk: ambiguous (vn_m16_20_mag, vn_m16_30_mag, vn_m16_40_mag, vn_m16_40_t_mag)
+  - vn_k50m: ambiguous (vn_ppsh41_35_mag, vn_ppsh41_71_mag)
+  - vn_kbkg: ambiguous (vn_kbkg_mag, vn_type56_mag)
+  - vn_kbkg_gl: ambiguous (vn_kbkg_mag, vn_type56_mag)
+  - vn_l1a1_01: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_01_bayo: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_01_camo: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_01_gl: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_01_mrk: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_02: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_02_bayo: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_02_camo: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_02_gl: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_02_mrk: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_03: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_03_camo: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_xm148: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l1a1_xm148_camo: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l2a1_01: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_l4: ambiguous (vn_l1a1_10_mag, vn_l1a1_20_mag, vn_l1a1_30_02_mag, vn_l1a1_30_mag, vn_l1a1_30_t_mag)
+  - vn_m127: ambiguous (vn_m127_mag, vn_m128_mag, vn_m129_mag)
+  - vn_m14: ambiguous (vn_m14_10_mag, vn_m14_mag)
+  - vn_m14_bayo: ambiguous (vn_m14_10_mag, vn_m14_mag)
+- relationships: 6
+  - reverse only: vn_gun_m61a1_640_mag -> vn_m61a1
+  - reverse only: vn_m128_mag -> vn_rocket_m128_launcher
+  - reverse only: vn_sa2_camo_mag_x1 -> vn_sa2_launcher
+  - reverse only: vn_sa2_camo_mag_x4 -> vn_sa2_launcher
+  - reverse only: vn_sa2_mag_x1 -> vn_sa2_launcher
+  - reverse only: vn_sa2_mag_x4 -> vn_sa2_launcher
+- variants: 1
+  - vn_m36_camo: family=m36 candidate=vn_m36 remains ambiguous
+
+RELATIONSHIP DETAILS
+- reverse only: vn_gun_m61a1_640_mag -> vn_m61a1
+- reverse only: vn_m128_mag -> vn_rocket_m128_launcher
+- reverse only: vn_sa2_camo_mag_x1 -> vn_sa2_launcher
+- reverse only: vn_sa2_camo_mag_x4 -> vn_sa2_launcher
+- reverse only: vn_sa2_mag_x1 -> vn_sa2_launcher
+- reverse only: vn_sa2_mag_x4 -> vn_sa2_launcher
+- excluded reverse only: vn_m16_20_mag -> vn_revive_weapon (helper_or_fake_weapon)
+- excluded reverse only: vn_m16_20_t_mag -> vn_revive_weapon (helper_or_fake_weapon)
+- excluded reverse only: vn_m16_30_mag -> vn_revive_weapon (helper_or_fake_weapon)
+- excluded reverse only: vn_m16_30_t_mag -> vn_revive_weapon (helper_or_fake_weapon)
+- excluded reverse only: vn_m16_40_mag -> vn_revive_weapon (helper_or_fake_weapon)
+- excluded reverse only: vn_m16_40_t_mag -> vn_revive_weapon (helper_or_fake_weapon)
