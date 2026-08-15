@@ -1,6 +1,7 @@
 /*
     File: fn_clearActiveLocation.sqf
     Author: Legend
+    Edited: Mongo
     Description: Clears active AO marker state and hides all cached AO static objects.
     Execution: Server
     Parameters:
@@ -19,6 +20,8 @@ if (isClass _locationsCfg) then {
         private _zoneMarker = getText (_cfg >> "zoneMarker");
         private _westRespawn = getText (_cfg >> "respawnWestMarker");
         private _eastRespawn = getText (_cfg >> "respawnEastMarker");
+        private _westBaseZone = getText (_cfg >> "westBaseZoneMarker");
+        private _eastBaseZone = getText (_cfg >> "eastBaseZoneMarker");
 
         if !(_zoneMarker isEqualTo "") then {
             _zoneMarker setMarkerAlpha 0;
@@ -28,6 +31,12 @@ if (isClass _locationsCfg) then {
         };
         if !(_eastRespawn isEqualTo "") then {
             _eastRespawn setMarkerAlpha 0;
+        };
+        if !(_westBaseZone isEqualTo "") then {
+            _westBaseZone setMarkerAlpha 0;
+        };
+        if !(_eastBaseZone isEqualTo "") then {
+            _eastBaseZone setMarkerAlpha 0;
         };
     } forEach ("true" configClasses _locationsCfg);
 };

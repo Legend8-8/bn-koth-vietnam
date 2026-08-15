@@ -2,6 +2,7 @@
     File: fn_initPlayerServer.sqf
     Author: tylervip
     Edited: Legend
+    Edited: Mongo
     Description: Prepares server-side player state for respawn system.
     Execution: Server
     Parameters:
@@ -25,5 +26,6 @@ private _assignedSide = if (_record isEqualType createHashMap) then {
 };
 
 _player setVariable ["BN_KOTH_teamSide", _assignedSide, true];
-
-// Placeholder: add spawn protection and validated spawn selection logic.
+_player setVariable ["BN_KOTH_safeZoneProtected", false, true];
+_player setVariable ["BN_KOTH_enemySafeZoneIntruder", false, true];
+_player setVariable ["BN_KOTH_safeZoneCorpsePendingCleanup", false, true];

@@ -124,7 +124,7 @@ Contains:
 Contains:
 
 - detecting eligible players;
-- counting players by side;
+- counting raw, weighted and Priority occupants by side in one eligibility pass;
 - calculating zone ownership;
 - publishing zone state;
 - detecting control changes.
@@ -144,8 +144,11 @@ Contains:
 Contains:
 
 - player respawn handling;
-- safe-zone handling;
-- spawn protection;
+- server-authoritative safe-zone membership;
+- client-local firing and damage enforcement for player-owned units;
+- locality-aware vehicle invulnerability and firing enforcement;
+- opposing-safe-zone vehicle-entry prevention and ejection;
+- server-owned safe-zone ground-loot and corpse cleanup;
 - valid spawn selection.
 
 "functions/loadouts/"
@@ -154,6 +157,7 @@ Contains:
 
 - applying configured loadouts;
 - validating equipment;
+- client-local physical inventory blocking inside active safe zones;
 - future equipment purchase handling.
 
 "functions/vehicles/"
@@ -268,7 +272,9 @@ Authoritative server state includes:
 - current round state;
 - active combat location;
 - zone ownership;
-- zone population;
+- zone population (`raw`, `weighted` and `priority` pairs in playable-side order);
+- active team safe-zone markers;
+- player and vehicle safe-zone status;
 - team scores;
 - winning side;
 - player progression;
@@ -276,6 +282,8 @@ Authoritative server state includes:
 - spawned gameplay vehicles.
 
 Clients may receive copies of this information for display.
+
+The server decides safe-zone membership from authoritative player records and active location markers. Commands whose effects depend on object locality, including player ejection and vehicle `allowDamage`, execute on the current owner through narrowly allowlisted server-to-client endpoints. Local event handlers enforce firing, damage and physical-inventory presentation rules. The server independently deletes safe-zone ground loot and corpses from a strict candidate allowlist, so client inventory presentation is never the cleanup authority.
 
 A client copy is never treated as proof by the server.
 

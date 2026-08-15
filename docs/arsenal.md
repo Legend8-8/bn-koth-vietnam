@@ -415,6 +415,8 @@ That does not grant arsenal access.
 
 It may, however, contribute to weapon kill/license progress.
 
+Active base safe zones are a deliberate physical-inventory exception, not a progression exception. Players cannot exchange equipment through player, corpse, ground, static-container or vehicle inventories while either the player or container is inside a safe zone. Dropped equipment and corpses there are cleaned up by the server. Once outside the safe zones, the battlefield pickup rule above remains unchanged.
+
 ---
 
 ## 9. Levels Grant Eligibility, Not Free Weapons
@@ -1048,13 +1050,9 @@ This includes future:
 
 ## 25. `fn_request.sqf` Boundary
 
-`fn_request.sqf` intentionally remains a placeholder during the current foundation work.
+`fn_request.sqf` is the sole public loadout request ingress. It accepts intent only, resolves the requesting player from `remoteExecutedOwner`, applies a narrow request-rate guard, invokes the server validator and returns only the canonical validated result to that player's owning client.
 
-Do not implement a partial RemoteExec boundary merely to make the foundation appear complete.
-
-When the real player-facing Arsenal interaction is implemented, `fn_request.sqf` should become the sole public loadout request ingress.
-
-The eventual flow should conceptually be:
+The implemented flow is:
 
 ```text
 CLIENT
@@ -1066,23 +1064,31 @@ resolve player from network owner
         ↓
 validate request
         ↓
-resolve progression entitlement
+resolve current side and factual catalogue eligibility
         ↓
 construct canonical accepted loadout
         ↓
 apply through owned application path
 ```
 
-The future request implementation must deliberately consider:
+The request implementation deliberately handles:
 
 - `remoteExecutedOwner`;
 - rate limiting;
-- duplicate request protection;
+- rapid duplicate request throttling;
 - `CfgRemoteExec`;
 - object locality;
 - authoritative player identity.
 
-Do not design those piecemeal.
+Future progression entitlement must integrate inside the existing server validator through a progression-owned API. It must not create a second request, validation or application path.
+
+Safe-zone anti-duplication boundaries are:
+
+- never treat a client inventory snapshot or client-supplied `getUnitLoadout` result as entitlement or persistence authority;
+- do not persist battlefield pickups or equipment the progression service has not authorized for restoration;
+- future purchase and rental mutations must use server-owned transaction identifiers and idempotent grant/charge handling;
+- do not expose unrestricted BIS Arsenal objects as an alternate application path;
+- keep accepted, throttled and rejected loadout requests auditable in server logs without logging on a recurring inventory scan.
 
 ---
 
@@ -1385,7 +1391,6 @@ The foundation currently does not implement:
 - persistence/database integration;
 - saved player loadouts;
 - final custom Arsenal UI;
-- public client → server loadout request boundary;
 - complete non-weapon equipment-slot validation;
 - progression entitlement checks during loadout validation.
 

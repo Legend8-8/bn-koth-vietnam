@@ -53,6 +53,18 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_respawn_forceExitVehicle
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_respawn_applyVehicleProtection
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_vehicles_mobileRespawn_requestTeleport
         {
             allowedTargets = 2;

@@ -2,6 +2,7 @@
     File: fn_setActiveLocation.sqf
     Author: tylervip
     Edited: Legend
+    Edited: Mongo
     Description: Activates one configured location ID and publishes marker/base-zone state.
     Execution: Server
     Parameters:
@@ -97,6 +98,8 @@ if (_westApplied && _eastApplied) then {
     private _zoneMarker = getText (_cfg >> "zoneMarker");
     private _westRespawn = getText (_cfg >> "respawnWestMarker");
     private _eastRespawn = getText (_cfg >> "respawnEastMarker");
+    private _westBaseZone = getText (_cfg >> "westBaseZoneMarker");
+    private _eastBaseZone = getText (_cfg >> "eastBaseZoneMarker");
     private _isActive = (_cfgName isEqualTo _locationId);
 
     if !(_zoneMarker isEqualTo "") then {
@@ -110,6 +113,14 @@ if (_westApplied && _eastApplied) then {
 
     if !(_eastRespawn isEqualTo "") then {
         _eastRespawn setMarkerAlpha (if (_isActive) then {1} else {0});
+    };
+
+    if !(_westBaseZone isEqualTo "") then {
+        _westBaseZone setMarkerAlpha (if (_isActive) then {1} else {0});
+    };
+
+    if !(_eastBaseZone isEqualTo "") then {
+        _eastBaseZone setMarkerAlpha (if (_isActive) then {1} else {0});
     };
 
 } forEach ("true" configClasses _locationsCfg);
@@ -133,6 +144,8 @@ private _roundState = [] call bn_koth_fnc_round_getState;
 if (_roundState in ["PREPARING", "ACTIVE"]) then {
     [] call bn_koth_fnc_vehicles_buildActiveLocationSlots;
 };
+
+[] call bn_koth_fnc_respawn_sweepSafeZoneGroundItems;
 
 [format ["Active location set: %1 (%2)", _locationId, _activeZoneMarker]] call bn_koth_fnc_common_log;
 

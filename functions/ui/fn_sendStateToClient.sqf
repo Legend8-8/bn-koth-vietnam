@@ -2,6 +2,7 @@
     File: fn_sendStateToClient.sqf
     Author: tylervip
     Edited: Legend
+    Edited: Mongo
     Description: Sends a mission snapshot from server to one client.
     Execution: Server
     Parameters:
@@ -36,6 +37,8 @@ private _payload = createHashMapFromArray [
     ["activeZoneMarker", missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""]],
     ["activeRespawnWestMarker", missionNamespace getVariable ["BN_KOTH_activeRespawnWestMarker", ""]],
     ["activeRespawnEastMarker", missionNamespace getVariable ["BN_KOTH_activeRespawnEastMarker", ""]],
+    ["activeWestBaseZoneMarker", missionNamespace getVariable ["BN_KOTH_activeWestBaseZoneMarker", ""]],
+    ["activeEastBaseZoneMarker", missionNamespace getVariable ["BN_KOTH_activeEastBaseZoneMarker", ""]],
     ["voteOpen", missionNamespace getVariable ["BN_KOTH_voteOpen", false]],
     ["voteCandidates", missionNamespace getVariable ["BN_KOTH_voteCandidates", []]],
     ["voteTotals", missionNamespace getVariable ["BN_KOTH_voteTotals", createHashMap]],
@@ -43,7 +46,11 @@ private _payload = createHashMapFromArray [
     ["voteEndAt", missionNamespace getVariable ["BN_KOTH_voteEndAt", -1]],
     ["zoneState", missionNamespace getVariable ["BN_KOTH_zoneState", "NEUTRAL"]],
     ["zoneController", missionNamespace getVariable ["BN_KOTH_zoneController", sideUnknown]],
-    ["zonePopulation", missionNamespace getVariable ["BN_KOTH_zonePopulation", [0, 0]]],
+    ["zonePopulation", missionNamespace getVariable ["BN_KOTH_zonePopulation", createHashMapFromArray [
+        ["raw", [0, 0]],
+        ["weighted", [0, 0]],
+        ["priority", [0, 0]]
+    ]]],
     ["scoreProgress", missionNamespace getVariable ["BN_KOTH_scoreProgress", createHashMap]],
     ["winningSide", missionNamespace getVariable ["BN_KOTH_winningSide", sideUnknown]],
     ["maxPlayers", missionNamespace getVariable ["BN_KOTH_maxPlayers", 100]],

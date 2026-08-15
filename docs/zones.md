@@ -22,7 +22,11 @@ Each location should include:
 - zoneMarker
 - respawnWestMarker
 - respawnEastMarker
+- westBaseZoneMarker
+- eastBaseZoneMarker
 - objects[] (optional explicit list; prefix-based detection is preferred)
+
+Both base-zone markers must have valid marker geometry. They define the spatial safe zones for player and vehicle protection, physical inventory blocking, ground-loot removal and corpse cleanup, and are required for the location to be selected. These rules apply only to the active bases; battlefield scavenging remains available in the active AO outside them.
 
 4. mission.sqm Notes (for your current file)
 
@@ -31,6 +35,8 @@ In mission.sqm, marker names are what gameplay code uses, for example:
 - saigon_zone
 - saigon_respawn_west
 - saigon_respawn_east
+- saigon_west_base_zone
+- saigon_east_base_zone
 
 Numeric marker id values in mission.sqm (for example id=0, id=2, id=3) are editor-internal and should not be used for runtime game logic.
 
@@ -61,7 +67,7 @@ Server startup uses CfgBnKothSettings.defaultLocationId and calls:
 That function:
 
 - publishes BN_KOTH_activeLocationId;
-- publishes BN_KOTH_activeZoneMarker and active respawn markers;
+- publishes BN_KOTH_activeZoneMarker, active respawn markers and active safe-zone markers;
 - hides inactive location markers;
 - deactivates non-active static location objects using <locationId>_ prefix matching (and objects[] entries if provided), while keeping them reactivatable.
 
@@ -69,8 +75,8 @@ Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
 
 7. Adding a New Zone
 
-1. Add zone + respawn markers in mission.sqm (via Eden).
-2. Name markers clearly (example: hue_zone, hue_respawn_west, hue_respawn_east).
+1. Add zone, respawn and side-specific base-zone markers in mission.sqm (via Eden).
+2. Name markers clearly (example: hue_zone, hue_respawn_west, hue_respawn_east, hue_west_base_zone and hue_east_base_zone).
 3. Add class hue in maps/<map_name>/map_config/locations.hpp.
 4. Give zone-specific objects Eden variable names with prefix <locationId>_ (for example hue_...).
 5. Set defaultLocationId to hue for testing.
@@ -88,6 +94,8 @@ The zone system also supports a moving priority area inside the active AO.
 - The complete priority-zone footprint remains inside the active AO, including rotated and elliptical AOs.
 - Players inside the priority zone count as two players for objective control weighting.
 - Main AO players continue to count normally.
+- The existing control pass publishes one structured population value with raw eligible players, weighted control and raw Priority occupancy for both playable sides.
+- The gameplay HUD shows all three population views, the round lead, current AO state and whether the local player is inside or outside Priority.
 - Its appearance uses raw eligible-player counts inside the priority zone, independently of control weighting:
   - no WEST or EAST players: green with a solid fill;
   - more WEST than EAST players: blue with a solid fill;

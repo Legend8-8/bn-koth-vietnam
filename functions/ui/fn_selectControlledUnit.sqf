@@ -1,6 +1,7 @@
 /*
     File: fn_selectControlledUnit.sqf
     Author: Legend
+    Edited: Mongo
     Description: Performs local player-unit handoff to a server-selected representation.
     Execution: Client
     Parameters:
@@ -19,7 +20,11 @@ if (isNull _targetUnit) exitWith {
     false
 };
 
-if (player isEqualTo _targetUnit) exitWith {true};
+if (player isEqualTo _targetUnit) exitWith {
+    [] call bn_koth_fnc_respawn_initPlayerLocal;
+    [] call bn_koth_fnc_loadouts_initPlayerLocal;
+    true
+};
 
 diag_log format [
     "[BN_KOTH][INFO] ui_selectControlledUnit switching from %1 to %2",
@@ -36,6 +41,8 @@ diag_log format [
 ];
 
 if (player isEqualTo _targetUnit) then {
+    [] call bn_koth_fnc_respawn_initPlayerLocal;
+    [] call bn_koth_fnc_loadouts_initPlayerLocal;
     [] call bn_koth_fnc_ui_updateLobbyBlackout;
     [] call bn_koth_fnc_ui_evaluateStateReadiness;
     [] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;

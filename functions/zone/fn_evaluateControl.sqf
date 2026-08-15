@@ -2,7 +2,8 @@
     File: fn_evaluateControl.sqf
     Author: tylervip
     Edited: Legend
-    Description: Computes zone population and controlling side.
+    Edited: Mongo
+    Description: Computes raw, weighted, and Priority population plus controlling side in one pass.
     Execution: Server
     Parameters:
         0: Skip scoring update after publishing zone state <BOOL> (optional)
@@ -19,7 +20,11 @@ private _roundState = [] call bn_koth_fnc_round_getState;
 if !(_roundState isEqualTo "ACTIVE") exitWith {
     ["BN_KOTH_zoneController", sideUnknown] call bn_koth_fnc_common_publicState;
     ["BN_KOTH_zoneState", "NEUTRAL"] call bn_koth_fnc_common_publicState;
-    ["BN_KOTH_zonePopulation", [0, 0]] call bn_koth_fnc_common_publicState;
+    ["BN_KOTH_zonePopulation", createHashMapFromArray [
+        ["raw", [0, 0]],
+        ["weighted", [0, 0]],
+        ["priority", [0, 0]]
+    ]] call bn_koth_fnc_common_publicState;
     if (!_skipScoringUpdate) then {
         [] call bn_koth_fnc_scoring_awardControlTick;
     };
@@ -100,8 +105,12 @@ private _players = allPlayers select {
     && {_x inArea _marker}
 };
 
-private _sideACount = 0;
-private _sideBCount = 0;
+private _sideARawCount = 0;
+private _sideBRawCount = 0;
+private _sideAWeightedCount = 0;
+private _sideBWeightedCount = 0;
+private _sideAPriorityCount = 0;
+private _sideBPriorityCount = 0;
 private _priorityWestCount = 0;
 private _priorityEastCount = 0;
 
@@ -116,10 +125,18 @@ private _priorityEastCount = 0;
     private _controlWeight = if (_inPriority) then {_priorityZoneControlWeight} else {1};
 
     if (_side isEqualTo _sideA) then {
-        _sideACount = _sideACount + _controlWeight;
+        _sideARawCount = _sideARawCount + 1;
+        _sideAWeightedCount = _sideAWeightedCount + _controlWeight;
+        if (_inPriority) then {
+            _sideAPriorityCount = _sideAPriorityCount + 1;
+        };
     } else {
         if (_side isEqualTo _sideB) then {
-            _sideBCount = _sideBCount + _controlWeight;
+            _sideBRawCount = _sideBRawCount + 1;
+            _sideBWeightedCount = _sideBWeightedCount + _controlWeight;
+            if (_inPriority) then {
+                _sideBPriorityCount = _sideBPriorityCount + 1;
+            };
         };
     };
 
@@ -171,11 +188,11 @@ if (_priorityZoneAvailable) then {
 private _controller = sideUnknown;
 private _zoneState = "NEUTRAL";
 
-if ((_sideACount > 0) || (_sideBCount > 0)) then {
-    if (_sideACount == _sideBCount) then {
+if ((_sideAWeightedCount > 0) || (_sideBWeightedCount > 0)) then {
+    if (_sideAWeightedCount == _sideBWeightedCount) then {
         _zoneState = "CONTESTED";
     } else {
-        if (_sideACount > _sideBCount) then {
+        if (_sideAWeightedCount > _sideBWeightedCount) then {
             _controller = _sideA;
         } else {
             _controller = _sideB;
@@ -197,7 +214,11 @@ if !(_previousState isEqualTo _zoneState) then {
 
 ["BN_KOTH_zoneController", _controller] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_zoneState", _zoneState] call bn_koth_fnc_common_publicState;
-["BN_KOTH_zonePopulation", [_sideACount, _sideBCount]] call bn_koth_fnc_common_publicState;
+["BN_KOTH_zonePopulation", createHashMapFromArray [
+    ["raw", [_sideARawCount, _sideBRawCount]],
+    ["weighted", [_sideAWeightedCount, _sideBWeightedCount]],
+    ["priority", [_sideAPriorityCount, _sideBPriorityCount]]
+]] call bn_koth_fnc_common_publicState;
 
 if (!_skipScoringUpdate) then {
     [] call bn_koth_fnc_scoring_awardControlTick;

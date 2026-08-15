@@ -1,7 +1,8 @@
 /*
     File: fn_initServer.sqf
     Author: Legend
-    Description: Registers server-global respawn mission event handlers exactly once.
+    Edited: Mongo
+    Description: Registers respawn handlers and starts the authoritative safe-zone manager.
     Execution: Server
     Parameters:
         None
@@ -12,11 +13,11 @@
 
 if (!isServer) exitWith {};
 
-if (missionNamespace getVariable ["BN_KOTH_respawnHandlersInitialized", false]) exitWith {
+if (missionNamespace getVariable ["BN_KOTH_respawnHandlersInitialized", false]) then {
     private _existingKilledId = missionNamespace getVariable ["BN_KOTH_respawnEntityKilledEhId", -1];
     private _existingRespawnedId = missionNamespace getVariable ["BN_KOTH_respawnEntityRespawnedEhId", -1];
     [format ["Respawn mission EHs already registered: EntityKilled=%1 EntityRespawned=%2", _existingKilledId, _existingRespawnedId], "INFO"] call bn_koth_fnc_common_log;
-};
+} else {
 
 private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
     params ["_killed", "_killer", "_instigator", "_useEffects"];
@@ -58,9 +59,11 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
 
     if (!_isPlayerEntity && {_matchedUid isEqualTo ""}) exitWith {
         [format ["EntityKilled EH ignored non-player unmatched entity type=%1 owner=%2", typeOf _killed, _ownerId], "INFO"] call bn_koth_fnc_common_log;
+        [_killed] call bn_koth_fnc_respawn_cleanupSafeZoneEntity;
     };
 
     [_killed] call bn_koth_fnc_respawn_handlePlayerDeath;
+    [_killed] call bn_koth_fnc_respawn_cleanupSafeZoneEntity;
 }];
 
 private _entityRespawnedEhId = addMissionEventHandler ["EntityRespawned", {
@@ -116,3 +119,53 @@ missionNamespace setVariable ["BN_KOTH_respawnEntityRespawnedEhId", _entityRespa
 missionNamespace setVariable ["BN_KOTH_respawnHandlersInitialized", true];
 
 [format ["Respawn mission EHs registered: EntityKilled=%1 EntityRespawned=%2", _entityKilledEhId, _entityRespawnedEhId], "INFO"] call bn_koth_fnc_common_log;
+};
+
+private _existingEntityCreatedId = missionNamespace getVariable ["BN_KOTH_safeZoneEntityCreatedEhId", -1];
+if (_existingEntityCreatedId < 0) then {
+    private _entityCreatedEhId = addMissionEventHandler ["EntityCreated", {
+        params ["_entity"];
+
+        if (!isServer || {isNull _entity}) exitWith {};
+        if !(
+            (_entity isKindOf "GroundWeaponHolder")
+            || {_entity isKindOf "WeaponHolderSimulated"}
+            || {_entity isKindOf "WeaponHolder"}
+            || {(typeOf _entity) isEqualTo "Weapon_Empty"}
+        ) exitWith {};
+
+        [_entity] spawn {
+            params ["_entity"];
+            sleep 0.01;
+
+            if (!isNull _entity) then {
+                [_entity] call bn_koth_fnc_respawn_cleanupSafeZoneEntity;
+            };
+        };
+    }];
+
+    missionNamespace setVariable ["BN_KOTH_safeZoneEntityCreatedEhId", _entityCreatedEhId];
+    [format ["Safe-zone EntityCreated cleanup EH registered: %1", _entityCreatedEhId], "INFO"] call bn_koth_fnc_common_log;
+};
+
+private _respawnCfg = missionConfigFile >> "CfgBnKothRespawn";
+private _safeZoneInterval = if (isNumber (_respawnCfg >> "safeZoneCheckIntervalSeconds")) then {
+    (getNumber (_respawnCfg >> "safeZoneCheckIntervalSeconds")) max 0.05
+} else {
+    0.25
+};
+private _messageCooldown = if (isNumber (_respawnCfg >> "blockedActionMessageCooldownSeconds")) then {
+    (getNumber (_respawnCfg >> "blockedActionMessageCooldownSeconds")) max 0
+} else {
+    1
+};
+
+missionNamespace setVariable ["BN_KOTH_safeZoneCheckIntervalSeconds", _safeZoneInterval];
+missionNamespace setVariable ["BN_KOTH_safeZoneMessageCooldownSeconds", _messageCooldown, true];
+
+if !(missionNamespace getVariable ["BN_KOTH_safeZoneManagerRunning", false]) then {
+    missionNamespace setVariable ["BN_KOTH_safeZoneManagerRunning", true];
+    missionNamespace setVariable ["BN_KOTH_safeZoneTrackedVehicles", []];
+    [] spawn bn_koth_fnc_respawn_monitorSafeZones;
+    [format ["Safe-zone manager started with %1s interval.", _safeZoneInterval], "INFO"] call bn_koth_fnc_common_log;
+};

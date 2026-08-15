@@ -106,7 +106,9 @@ Zone-related changes must verify:
 - spectators do not count;
 - players leaving the zone are removed from the calculation;
 - disconnected players are removed from the calculation;
-- zone state updates at the expected interval.
+- zone state updates at the expected interval;
+- actual-player, weighted-control and Priority-occupancy values come from the same eligible-player pass;
+- the HUD maps playable-side order to WEST/EAST correctly and reports personal Priority status.
 
 If vehicle occupants count toward control, test players entering and leaving vehicles inside the zone.
 
@@ -129,11 +131,27 @@ Respawn-related changes must verify:
 
 - players respawn on the correct side;
 - enemy spawn positions cannot be used;
-- spawn protection begins correctly;
-- spawn protection expires correctly;
-- leaving the protected area ends protection where configured;
-- firing ends protection where configured;
-- damaging another player ends protection where configured;
+- protection is active only while a deployed player is spatially inside the player's own active safe zone;
+- leaving removes protection and re-entering restores it without a timer;
+- protected players cannot fire, cause damage, or receive damage;
+- an enemy intruder cannot fire, cause damage, or enter a vehicle but remains damageable;
+- an enemy already in a vehicle is ejected when entering the opposing safe zone;
+- an enemy intruder can be run over by a protected friendly vehicle inside that safe zone;
+- friendly vehicles are protected only when their center is inside their own safe zone;
+- protected vehicles cannot fire or receive damage, including after vehicle locality changes;
+- enemy vehicles never gain opposing-safe-zone protection, remain damageable, and cannot cause damage while inside it;
+- protected collision damage remains blocked against every victim except an enemy intruder in that safe zone;
+- a player cannot open self, friendly, enemy, corpse, ground-holder, crate, static-weapon or vehicle inventory while either the player or container is inside either safe zone;
+- inventory access is also blocked when the player and container are on opposite sides of a safe-zone boundary;
+- an inventory opened outside closes when the player or container enters a safe zone and normal access returns after both leave;
+- vehicle cargo is preserved while inaccessible inside a safe zone and remains intact after leaving;
+- weapons, magazines, attachments and backpacks dropped inside a safe zone disappear for all clients and do not return for JIP players;
+- static-weapon assembly or disassembly cannot leave accessible weapon bags or physical inventory inside a safe zone;
+- safe-zone AI corpses are deleted immediately and player corpses are unlootable immediately, then deleted without breaking UID resolution or respawn;
+- corpses and dropped equipment created in the active AO outside safe zones remain available for normal scavenging;
+- the server-validated KOTH loadout path still works in a safe zone without opening physical inventory;
+- battlefield pickup and scavenging continue to work in the active AO outside safe zones;
+- safe-zone status survives respawn representation handoff and is cleared outside active safe-zone states;
 - reconnecting does not produce invalid spawn state.
 
 9. Join In Progress Testing
@@ -146,6 +164,8 @@ Where relevant, verify that a JIP player receives:
 - active combat location;
 - current zone information;
 - current zone owner;
+- current active safe-zone marker names;
+- current raw, weighted and Priority population;
 - current team scores;
 - configured winning score;
 - relevant timers;
@@ -163,6 +183,8 @@ For client-to-server requests, test:
 - insufficient requirements;
 - repeated request spam;
 - request after disconnect or death where relevant.
+
+For server-to-owner safe-zone endpoints, also verify that non-server remote callers are rejected and that listen-server players receive the same ejection and vehicle-protection behavior as dedicated clients. Verify safe-zone inventory and cleanup behavior with at least two clients so object deletion, container locality, respawn and JIP visibility are covered.
 
 The server must reject invalid requests without creating inconsistent state.
 

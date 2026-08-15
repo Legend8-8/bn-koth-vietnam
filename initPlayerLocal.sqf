@@ -2,6 +2,8 @@
 
 diag_log format ["[BN_KOTH][INFO] initPlayerLocal.sqf entered owner=%1 uid='%2'", clientOwner, getPlayerUID player];
 
+[] call bn_koth_fnc_respawn_initPlayerLocal;
+[] call bn_koth_fnc_loadouts_initPlayerLocal;
 [] call bn_koth_fnc_ui_initPlayerLocal;
 [] call bn_koth_fnc_vehicles_mobileRespawn_initTeleport;
 

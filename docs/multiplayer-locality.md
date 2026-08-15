@@ -52,8 +52,15 @@ Database access| Server
 Gameplay vehicle creation| Server
 Local player loadout interface| Owning client
 Loadout entitlement validation| Server
+Safe-zone physical inventory blocking| Owning client
+Safe-zone ground-loot and corpse cleanup| Server
 Respawn presentation| Owning client
 Respawn rules and validation| Server
+Player safe-zone membership| Server
+Player firing and damage enforcement| Owning client
+Vehicle safe-zone membership| Server
+Vehicle damage and firing enforcement| Current vehicle owner
+Opposing-safe-zone ejection| Owning client, on server instruction
 Headless-client AI processing| Headless client when introduced
 
 4. Initialisation Files
@@ -127,7 +134,9 @@ At minimum, a joining player needs:
 - current round state;
 - active location;
 - active zone details;
+- active WEST and EAST safe-zone markers;
 - current zone owner;
+- raw, weighted and Priority-zone population;
 - current team scores;
 - winning score;
 - remaining relevant timer information.
@@ -182,6 +191,8 @@ Commands that require local execution must be sent to the machine that owns the 
 
 Locality must not be guessed from where a function happened to be called.
 
+Safe-zone membership is calculated on the server. Player `HandleDamage`, `FiredMan`, `GetInMan` and physical-inventory handlers are installed on each current local player representation, including after respawn or `selectPlayer`. The inventory-open handler uses the published active markers and the shared safe-zone geometry helper to block local UI access when either the actor or container crosses the boundary. Vehicle `allowDamage`, `HandleDamage` and `Fired` enforcement is reapplied whenever the vehicle owner changes. The server independently validates and deletes safe-zone loot holders and corpses. The only safe-zone remote endpoints are server-to-owner ejection and vehicle-protection application; both reject non-server remote callers.
+
 10. Performance
 
 Do not use "eachFrame" for zone control, scoring or database activity.
@@ -189,6 +200,9 @@ Do not use "eachFrame" for zone control, scoring or database activity.
 Suggested initial intervals:
 
 - zone population calculation: once per second;
+- safe-zone membership and locality reconciliation: four times per second;
+- safe-zone inventory blocking: event-based, with a bounded check only while the physical inventory display is open;
+- safe-zone ground cleanup: entity events plus one activation-time sweep, never a recurring world scan;
 - score awarding: configurable, such as once every five seconds;
 - HUD refresh: only when values change, or at a controlled client-side interval;
 - database saving: event-based and periodic, not every score tick.

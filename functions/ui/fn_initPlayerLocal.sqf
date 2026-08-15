@@ -2,6 +2,7 @@
     File: fn_initPlayerLocal.sqf
     Author: tylervip
     Edited: Legend
+    Edited: Mongo
     Description: Initializes local UI hooks.
     Execution: Client
     Parameters:
@@ -74,6 +75,10 @@ if (isNil {missionNamespace getVariable "BN_KOTH_lifecycleHooksInstalled"}) then
 };
 
 "BN_KOTH_zoneController" addPublicVariableEventHandler {
+    [] call bn_koth_fnc_ui_refreshHud;
+};
+
+"BN_KOTH_zonePopulation" addPublicVariableEventHandler {
     [] call bn_koth_fnc_ui_refreshHud;
 };
 

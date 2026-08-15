@@ -1,6 +1,7 @@
 /*
     File: fn_removePlayer.sqf
     Author: Legend
+    Edited: Mongo
     Description: Removes disconnected player from authoritative team and vote state.
     Execution: Server
     Parameters:
@@ -20,8 +21,13 @@ private _record = _records getOrDefault [_uid, createHashMap];
 
 if (_record isEqualType createHashMap) then {
     private _unit = _record getOrDefault ["currentUnit", objNull];
-    if (!isNull _unit && {!isPlayer _unit}) then {
-        deleteVehicle _unit;
+    if (!isNull _unit) then {
+        _unit setVariable ["BN_KOTH_safeZoneProtected", false, true];
+        _unit setVariable ["BN_KOTH_enemySafeZoneIntruder", false, true];
+
+        if (!isPlayer _unit) then {
+            deleteVehicle _unit;
+        };
     };
 };
 

@@ -91,16 +91,37 @@ Possible future rewards include:
 
 Players respawn at their team base after a configurable delay.
 
-Team bases are protected areas.
+Phase 3 deliberately replaces the former action- and timeout-based spawn-protection design with spatial safe-zone protection.
 
-Spawn protection must end when the player:
+- A living, deployed player is protected while inside the active safe zone assigned to that player's team.
+- Leaving the team's safe zone removes protection immediately; re-entering restores it.
+- Protection does not expire on a timer and is not consumed by attempting to fire or cause damage. Those actions are blocked while protection is active.
+- Protected players cannot fire weapons or cause outgoing damage and cannot receive incoming damage.
+- Players must not be able to spawn at an enemy base.
 
-- leaves the protected area;
-- fires a weapon;
-- damages another player; or
-- reaches the configured protection timeout.
+An enemy inside the opposing team's safe zone is an intruder:
 
-Players must not be able to spawn at an enemy base.
+- the intruder immediately loses the ability to fire, cause damage, or enter a vehicle;
+- an intruder already in a vehicle is ejected when the vehicle enters the opposing safe zone;
+- no countdown, execution, or forced relocation is used;
+- the intruder remains vulnerable to damage and may be run over inside the opposing safe zone;
+- a persistent HUD warning identifies the restricted and vulnerable state.
+
+Vehicle protection is also spatial:
+
+- a friendly vehicle is protected while the vehicle's center is inside its own active safe zone;
+- a protected vehicle cannot be damaged or fire, and all friendly occupants receive player protection;
+- an enemy vehicle never receives protection from the opposing safe zone, remains damageable, and cannot cause weapon or collision damage while inside it;
+- protected outgoing damage is blocked except for vehicle collision damage whose victim is an enemy intruder inside that safe zone.
+
+Physical inventory access is disabled inside both active safe zones:
+
+- a player cannot open their own inventory or any player, corpse, ground-holder, static-container or vehicle inventory while the player or target container is inside either safe zone;
+- an inventory opened outside a safe zone closes if the player or target container crosses the boundary;
+- vehicle cargo is preserved while the vehicle passes through a safe zone and becomes accessible again after leaving;
+- dropped equipment and dead bodies inside a safe zone are removed by the server, with player corpses deleted at the earliest engine-safe respawn transition;
+- the server-validated KOTH loadout path remains available and does not expose physical container access;
+- equipment scavenging in the active AO remains allowed, including equipment above a player's current progression level. Safe-zone restrictions do not change battlefield pickup rules outside the bases.
 
 7. Equipment
 

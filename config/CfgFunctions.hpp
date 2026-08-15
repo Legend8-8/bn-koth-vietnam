@@ -73,6 +73,16 @@ class CfgFunctions
         {
             class respawn_initServer {file = "functions\respawn\fn_initServer.sqf";};
             class respawn_initPlayerServer {file = "functions\respawn\fn_initPlayerServer.sqf";};
+            class respawn_initPlayerLocal {file = "functions\respawn\fn_initPlayerLocal.sqf";};
+            class respawn_getSafeZoneMembership {file = "functions\respawn\fn_getSafeZoneMembership.sqf";};
+            class respawn_cleanupSafeZoneEntity {file = "functions\respawn\fn_cleanupSafeZoneEntity.sqf";};
+            class respawn_sweepSafeZoneGroundItems {file = "functions\respawn\fn_sweepSafeZoneGroundItems.sqf";};
+            class respawn_monitorSafeZones {file = "functions\respawn\fn_monitorSafeZones.sqf";};
+            class respawn_updatePlayerProtection {file = "functions\respawn\fn_updatePlayerProtection.sqf";};
+            class respawn_handleDamage {file = "functions\respawn\fn_handleDamage.sqf";};
+            class respawn_handleFired {file = "functions\respawn\fn_handleFired.sqf";};
+            class respawn_forceExitVehicle {file = "functions\respawn\fn_forceExitVehicle.sqf";};
+            class respawn_applyVehicleProtection {file = "functions\respawn\fn_applyVehicleProtection.sqf";};
             class respawn_handlePlayerDeath {file = "functions\respawn\fn_handlePlayerDeath.sqf";};
             class respawn_handlePlayerRespawn {file = "functions\respawn\fn_handlePlayerRespawn.sqf";};
         };
@@ -80,6 +90,9 @@ class CfgFunctions
         class loadouts
         {
             class loadouts_initServer {file = "functions\loadouts\fn_initServer.sqf";};
+            class loadouts_initPlayerLocal {file = "functions\loadouts\fn_initPlayerLocal.sqf";};
+            class loadouts_isInventoryLocked {file = "functions\loadouts\fn_isInventoryLocked.sqf";};
+            class loadouts_forceCloseInventory {file = "functions\loadouts\fn_forceCloseInventory.sqf";};
             class loadouts_getStarterLoadout {file = "functions\loadouts\fn_getStarterLoadout.sqf";};
             class loadouts_validateLoadout {file = "functions\loadouts\fn_validateLoadout.sqf";};
             class loadouts_validateWeaponComposition {file = "functions\loadouts\fn_validateWeaponComposition.sqf";};

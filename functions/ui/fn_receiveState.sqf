@@ -2,6 +2,7 @@
     File: fn_receiveState.sqf
     Author: tylervip
     Edited: Legend
+    Edited: Mongo
     Description: Receives and applies server state snapshot on client.
     Execution: Client
     Parameters:
@@ -32,6 +33,8 @@ private _keyMap = createHashMapFromArray [
     ["activeZoneMarker", "BN_KOTH_activeZoneMarker"],
     ["activeRespawnWestMarker", "BN_KOTH_activeRespawnWestMarker"],
     ["activeRespawnEastMarker", "BN_KOTH_activeRespawnEastMarker"],
+    ["activeWestBaseZoneMarker", "BN_KOTH_activeWestBaseZoneMarker"],
+    ["activeEastBaseZoneMarker", "BN_KOTH_activeEastBaseZoneMarker"],
     ["voteOpen", "BN_KOTH_voteOpen"],
     ["voteCandidates", "BN_KOTH_voteCandidates"],
     ["voteTotals", "BN_KOTH_voteTotals"],
