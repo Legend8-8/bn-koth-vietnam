@@ -303,7 +303,9 @@ if (_incompatibleMagazineIndex >= 0) exitWith {
 private _validatedWeapon = createHashMapFromArray [
     ["weaponClass", _resolvedWeaponClass],
     ["magazines", _canonicalMagazines],
-    ["attachments", _canonicalAttachments]
+    ["attachments", _canonicalAttachments],
+    ["structuralAttachments", _structuralRequested],
+    ["ordinaryAttachments", _ordinaryRequested]
 ];
 
 createHashMapFromArray [
