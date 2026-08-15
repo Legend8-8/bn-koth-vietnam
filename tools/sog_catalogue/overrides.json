@@ -1,0 +1,17 @@
+{
+  "exclude": {
+    "weapons": [],
+    "magazines": [],
+    "items": []
+  },
+  "baseMagazine": {},
+  "family": {},
+  "variantOf": {},
+  "derivedRequirements": {},
+  "weaponType": {},
+  "itemType": {},
+  "notes": [
+    "Use this file for explicit manual corrections when the source data is ambiguous.",
+    "Nickel Steel / VNX is out of scope and must not be added here."
+  ]
+}
