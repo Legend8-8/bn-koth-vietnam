@@ -1,7 +1,7 @@
 /*
     File: fn_buildValidatedLoadout.sqf
     Author: Legend
-    Description: Builds a complete canonical Unit Loadout Array by applying validated weapon slots to the authoritative side starter loadout.
+    Description: Builds a complete canonical Unit Loadout Array by applying validated weapon/uniform slots to the authoritative side starter loadout.
     Execution: Server
     Parameters:
         0: Authoritative player side <SIDE>
@@ -79,8 +79,9 @@ if ((_baselineLoadout isEqualType []) && {(count _baselineLoadout) >= 10}) then 
     _baseLoadout = +_baselineLoadout;
 };
 
-// Only top-level weapon entries 0/1/2 are replaced.
-// Uniform, vest, backpack, headgear, facewear, binoculars and assigned items remain untouched.
+// Top-level weapon entries 0/1/2 may be replaced.
+// Uniform class (slot 3 index 0) may be replaced while preserving authoritative uniform cargo.
+// Vest, backpack, headgear, facewear, binoculars and assigned items remain untouched.
 private _builtLoadout = +_baseLoadout;
 
 private _buildWeaponSlot = {
@@ -312,6 +313,57 @@ private _validatedWeaponKeys = keys _validatedWeapons;
     };
 } forEach _slotDefinitions;
 
+if (((count _buildFailure) isEqualTo 0) && {"uniform" in _validatedWeaponKeys}) then {
+    private _uniformPayload = _validatedWeapons get "uniform";
+
+    if !(_uniformPayload isEqualType createHashMap) then {
+        _buildFailure = createHashMapFromArray [
+            ["success", false],
+            ["code", "ERR_VALIDATED_UNIFORM_TYPE"],
+            ["message", "Validated uniform payload must be a hashmap."]
+        ];
+    } else {
+        private _uniformClass = _uniformPayload getOrDefault ["uniformClass", ""];
+
+        if !(_uniformClass isEqualType "") then {
+            _buildFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_VALIDATED_UNIFORM_CLASS_TYPE"],
+                ["message", "Validated uniformClass must be a string."]
+            ];
+        } else {
+            if (_uniformClass isEqualTo "") then {
+                _buildFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_VALIDATED_UNIFORM_CLASS_EMPTY"],
+                    ["message", "Validated uniformClass is empty."]
+                ];
+            } else {
+                private _uniformCfg = configFile >> "CfgWeapons" >> _uniformClass;
+                if !(isClass _uniformCfg) then {
+                    _buildFailure = createHashMapFromArray [
+                        ["success", false],
+                        ["code", "ERR_UNIFORM_CONFIG_MISSING"],
+                        ["message", format ["Validated uniform '%1' is missing from CfgWeapons.", _uniformClass]]
+                    ];
+                } else {
+                    private _existingUniformSlot = _builtLoadout select 3;
+                    private _uniformCargo = [];
+
+                    if ((_existingUniformSlot isEqualType []) && {(count _existingUniformSlot) > 1}) then {
+                        _uniformCargo = _existingUniformSlot select 1;
+                        if !(_uniformCargo isEqualType []) then {
+                            _uniformCargo = [];
+                        };
+                    };
+
+                    _builtLoadout set [3, [_uniformClass, _uniformCargo]];
+                };
+            };
+        };
+    };
+};
+
 if ((count _buildFailure) > 0) exitWith {
     [
         _buildFailure getOrDefault ["code", "ERR_WEAPON_SLOT_BUILD"],
@@ -324,7 +376,7 @@ if ((count _buildFailure) > 0) exitWith {
 createHashMapFromArray [
     ["success", true],
     ["code", "OK"],
-    ["message", "Validated weapon selections built into complete loadout from authoritative baseline or starter fallback."],
+    ["message", "Validated equipment selections built into complete loadout from authoritative baseline or starter fallback."],
     ["sideToken", _sideToken],
     ["loadoutId", _loadoutId],
     ["loadout", _builtLoadout]

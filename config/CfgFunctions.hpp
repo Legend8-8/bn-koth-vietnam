@@ -154,6 +154,7 @@ class CfgFunctions
             class menu_applyPrimary {file = "functions\ui\fn_menu_applyPrimary.sqf";};
             class menu_applyHandgun {file = "functions\ui\fn_menu_applyHandgun.sqf";};
             class menu_applyLauncher {file = "functions\ui\fn_menu_applyLauncher.sqf";};
+            class menu_applyUniform {file = "functions\ui\fn_menu_applyUniform.sqf";};
         };
     };
 };

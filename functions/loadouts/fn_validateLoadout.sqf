@@ -272,7 +272,7 @@ if (_requestMode isEqualTo "primary") exitWith {
 
 if (_requestMode isEqualTo "weapons") exitWith {
     private _slotKeys = keys _weaponsRequest;
-    private _supportedSlots = ["primary", "launcher", "handgun"];
+    private _supportedSlots = ["primary", "launcher", "handgun", "uniform"];
     private _unknownSlotIndex = _slotKeys findIf {!(_x in _supportedSlots)};
 
     if (_unknownSlotIndex >= 0) exitWith {
@@ -287,7 +287,7 @@ if (_requestMode isEqualTo "weapons") exitWith {
     if ((count _slotKeys) <= 0) exitWith {
         [
             "ERR_MALFORMED_REQUEST",
-            "Weapons request must contain at least one of: primary, launcher, handgun.",
+            "Weapons request must contain at least one of: primary, launcher, handgun, uniform.",
             _requestedLoadoutId,
             _authoritativeSideToken
         ] call _fail
@@ -382,6 +382,86 @@ if (_requestMode isEqualTo "weapons") exitWith {
             _validatedWeapons set ["handgun", _handgunResult getOrDefault ["validatedWeapon", createHashMap]];
         } else {
             _slotFailure = _handgunResult;
+        };
+    };
+
+    if (((count _slotFailure) isEqualTo 0) && {"uniform" in _slotKeys}) then {
+        private _uniformRequest = _weaponsRequest getOrDefault ["uniform", objNull];
+        if !(_uniformRequest isEqualType createHashMap) then {
+            _slotFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", "Weapons.uniform must be a map."]
+            ];
+        } else {
+            private _uniformClassRaw = _uniformRequest getOrDefault ["uniformClass", ""];
+
+            if !(_uniformClassRaw isEqualType "") then {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", "Uniform uniformClass must be a string."]
+                ];
+            } else {
+                private _uniformClass = toLower _uniformClassRaw;
+
+                if (_uniformClass isEqualTo "") then {
+                    _slotFailure = createHashMapFromArray [
+                        ["success", false],
+                        ["code", "ERR_MALFORMED_REQUEST"],
+                        ["message", "Uniform uniformClass must be non-empty."]
+                    ];
+                } else {
+                    if !((_uniformClass find "vn_") isEqualTo 0) then {
+                        _slotFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_UNIFORM_NOT_CANONICAL"],
+                            ["message", format ["Uniform '%1' is not a canonical S.O.G. uniform class.", _uniformClass]]
+                        ];
+                    } else {
+                        private _uniformCfg = configFile >> "CfgWeapons" >> _uniformClass;
+
+                        if !(isClass _uniformCfg) then {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", "ERR_UNIFORM_CONFIG_MISSING"],
+                                ["message", format ["Uniform '%1' is missing from CfgWeapons.", _uniformClass]]
+                            ];
+                        } else {
+                            if ((getNumber (_uniformCfg >> "scope")) < 2) then {
+                                _slotFailure = createHashMapFromArray [
+                                    ["success", false],
+                                    ["code", "ERR_UNIFORM_NOT_PUBLIC"],
+                                    ["message", format ["Uniform '%1' is not publicly available.", _uniformClass]]
+                                ];
+                            } else {
+                                private _uniformItemInfoCfg = _uniformCfg >> "ItemInfo";
+
+                                if !(isClass _uniformItemInfoCfg) then {
+                                    _slotFailure = createHashMapFromArray [
+                                        ["success", false],
+                                        ["code", "ERR_UNIFORM_ITEMINFO_MISSING"],
+                                        ["message", format ["Uniform '%1' is missing ItemInfo metadata.", _uniformClass]]
+                                    ];
+                                } else {
+                                    if !((getNumber (_uniformItemInfoCfg >> "type")) isEqualTo 801) then {
+                                        _slotFailure = createHashMapFromArray [
+                                            ["success", false],
+                                            ["code", "ERR_UNIFORM_ITEMINFO_INVALID"],
+                                            ["message", format ["Class '%1' is not a uniform item.", _uniformClass]]
+                                        ];
+                                    } else {
+                                        _validatedWeapons set [
+                                            "uniform",
+                                            createHashMapFromArray [["uniformClass", _uniformClass]]
+                                        ];
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            };
         };
     };
 

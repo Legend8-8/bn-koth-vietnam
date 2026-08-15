@@ -26,7 +26,7 @@ if (isNull _display) then {
 };
 if (isNull _display) exitWith {};
 
-private _validPages = ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN", "LOADOUT_LAUNCHER", "STORE", "PERKS", "STATS", "PROGRESSION"];
+private _validPages = ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN", "LOADOUT_LAUNCHER", "LOADOUT_UNIFORM", "STORE", "PERKS", "STATS", "PROGRESSION"];
 private _activePage = uiNamespace getVariable ["BN_KOTH_menuActivePage", "LOADOUT"];
 
 if !(_requestedPage isEqualTo "") then {
@@ -56,6 +56,7 @@ private _ctrlEquipment = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_EQUIPMENT;
 private _ctrlPrimaryButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_PRIMARY_BUTTON;
 private _ctrlHandgunButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_HANDGUN_BUTTON;
 private _ctrlLauncherButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_LAUNCHER_BUTTON;
+private _ctrlUniformButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_UNIFORM_BUTTON;
 
 private _ctrlNavLoadout = _display displayCtrl BN_KOTH_IDC_MENU_NAV_LOADOUT;
 private _ctrlNavStore = _display displayCtrl BN_KOTH_IDC_MENU_NAV_STORE;
@@ -168,7 +169,7 @@ private _setNavState = {
     };
 };
 
-[_ctrlNavLoadout, _activePage in ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN", "LOADOUT_LAUNCHER"]] call _setNavState;
+[_ctrlNavLoadout, _activePage in ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN", "LOADOUT_LAUNCHER", "LOADOUT_UNIFORM"]] call _setNavState;
 [_ctrlNavStore, _activePage isEqualTo "STORE"] call _setNavState;
 [_ctrlNavPerks, _activePage isEqualTo "PERKS"] call _setNavState;
 [_ctrlNavStats, _activePage isEqualTo "STATS"] call _setNavState;
@@ -186,6 +187,7 @@ private _mainViewControls = [
     _ctrlPrimaryButton,
     _ctrlHandgunButton,
     _ctrlLauncherButton,
+    _ctrlUniformButton,
     _ctrlSectionTitle,
     _ctrlNotice,
     _ctrlFooter
@@ -252,9 +254,11 @@ private _showComingSoon = {
     _ctrlHandgunButton ctrlEnable false;
     _ctrlLauncherButton ctrlSetText "";
     _ctrlLauncherButton ctrlEnable false;
+    _ctrlUniformButton ctrlSetText "";
+    _ctrlUniformButton ctrlEnable false;
 };
 
-if !(_activePage in ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN", "LOADOUT_LAUNCHER"]) exitWith {
+if !(_activePage in ["LOADOUT", "LOADOUT_PRIMARY", "LOADOUT_HANDGUN", "LOADOUT_LAUNCHER", "LOADOUT_UNIFORM"]) exitWith {
     [_activePage] call _showComingSoon;
 };
 
@@ -298,6 +302,8 @@ if (_activePage isEqualTo "LOADOUT") exitWith {
     _ctrlHandgunButton ctrlEnable !isNull player;
     _ctrlLauncherButton ctrlSetText format ["LAUNCHER: %1", _launcherName];
     _ctrlLauncherButton ctrlEnable !isNull player;
+    _ctrlUniformButton ctrlSetText format ["UNIFORM: %1", _uniformName];
+    _ctrlUniformButton ctrlEnable !isNull player;
 
     private _weaponsCount = if (isNull player) then {0} else {count (weapons player)};
     _ctrlFooter ctrlSetText format ["LIVE KIT READOUT - %1 WEAPONS EQUIPPED", _weaponsCount];
@@ -308,60 +314,70 @@ call _showPrimaryView;
 private _selectorMode = switch (_activePage) do {
     case "LOADOUT_HANDGUN": {"HANDGUN"};
     case "LOADOUT_LAUNCHER": {"LAUNCHER"};
+    case "LOADOUT_UNIFORM": {"UNIFORM"};
     default {"PRIMARY"};
 };
 
 private _entriesNamespaceKey = switch (_selectorMode) do {
     case "HANDGUN": {"BN_KOTH_menuHandgunEntries"};
     case "LAUNCHER": {"BN_KOTH_menuLauncherEntries"};
+    case "UNIFORM": {"BN_KOTH_menuUniformEntries"};
     default {"BN_KOTH_menuPrimaryEntries"};
 };
 
 private _pendingNamespaceKey = switch (_selectorMode) do {
     case "HANDGUN": {"BN_KOTH_menuPendingHandgun"};
     case "LAUNCHER": {"BN_KOTH_menuPendingLauncher"};
+    case "UNIFORM": {"BN_KOTH_menuPendingUniform"};
     default {"BN_KOTH_menuPendingPrimary"};
 };
 
 private _requestedSelectorPage = switch (_selectorMode) do {
     case "HANDGUN": {"LOADOUT_HANDGUN"};
     case "LAUNCHER": {"LOADOUT_LAUNCHER"};
+    case "UNIFORM": {"LOADOUT_UNIFORM"};
     default {"LOADOUT_PRIMARY"};
 };
 
 private _selectorTitle = switch (_selectorMode) do {
     case "HANDGUN": {"HANDGUN"};
     case "LAUNCHER": {"LAUNCHER"};
+    case "UNIFORM": {"UNIFORM"};
     default {"PRIMARY WEAPON"};
 };
 
 private _selectorApplyText = switch (_selectorMode) do {
     case "HANDGUN": {"APPLY HANDGUN"};
     case "LAUNCHER": {"APPLY LAUNCHER"};
+    case "UNIFORM": {"APPLY UNIFORM"};
     default {"APPLY PRIMARY"};
 };
 
 private _selectorNoEntriesText = switch (_selectorMode) do {
     case "HANDGUN": {"NO CANONICAL HANDGUNS AVAILABLE."};
     case "LAUNCHER": {"NO CANONICAL LAUNCHERS AVAILABLE."};
+    case "UNIFORM": {"NO CANONICAL S.O.G. UNIFORMS AVAILABLE."};
     default {"NO CANONICAL PRIMARY WEAPONS AVAILABLE."};
 };
 
 private _selectorWeaponTypes = switch (_selectorMode) do {
     case "HANDGUN": {["handgun"]};
     case "LAUNCHER": {["launcher"]};
+    case "UNIFORM": {[]};
     default {["rifle", "lmg", "smg", "shotgun", "marksman"]};
 };
 
 private _selectorEngineType = switch (_selectorMode) do {
     case "HANDGUN": {2};
     case "LAUNCHER": {4};
+    case "UNIFORM": {-1};
     default {1};
 };
 
 private _currentWeaponClass = toLower (switch (_selectorMode) do {
     case "HANDGUN": {handgunWeapon player};
     case "LAUNCHER": {secondaryWeapon player};
+    case "UNIFORM": {uniform player};
     default {primaryWeapon player};
 });
 
@@ -369,6 +385,7 @@ _ctrlPrimaryTitle ctrlSetText _selectorTitle;
 _ctrlPrimaryCurrent ctrlSetText format ["CURRENT: %1", switch (_selectorMode) do {
     case "HANDGUN": {_handgunName};
     case "LAUNCHER": {_launcherName};
+    case "UNIFORM": {_uniformName};
     default {_primaryName};
 }];
 _ctrlPrimaryApply ctrlSetText _selectorApplyText;
@@ -377,6 +394,7 @@ _ctrlPrimaryApply ctrlSetEventHandler [
     switch (_selectorMode) do {
         case "HANDGUN": {"[] call bn_koth_fnc_menu_applyHandgun;"};
         case "LAUNCHER": {"[] call bn_koth_fnc_menu_applyLauncher;"};
+        case "UNIFORM": {"[] call bn_koth_fnc_menu_applyUniform;"};
         default {"[] call bn_koth_fnc_menu_applyPrimary;"};
     }
 ];
@@ -389,6 +407,64 @@ if (isNull player) exitWith {
 };
 
 private _buildPrimaryEntries = {
+    if (_selectorMode isEqualTo "UNIFORM") exitWith {
+        private _sortableEntries = [];
+
+        {
+            private _uniformCfg = _x;
+            private _uniformClass = toLower (configName _uniformCfg);
+
+            if !((_uniformClass find "vn_") isEqualTo 0) then {
+                continue;
+            };
+
+            if ((getNumber (_uniformCfg >> "scope")) < 2) then {
+                continue;
+            };
+
+            private _itemInfoCfg = _uniformCfg >> "ItemInfo";
+            if !(isClass _itemInfoCfg) then {
+                continue;
+            };
+
+            if !((getNumber (_itemInfoCfg >> "type")) isEqualTo 801) then {
+                continue;
+            };
+
+            private _uniformUnitClass = toLower (getText (_itemInfoCfg >> "uniformClass"));
+            if (_uniformUnitClass isEqualTo "") then {
+                continue;
+            };
+
+            private _displayName = getText (_uniformCfg >> "displayName");
+            if (_displayName isEqualTo "") then {
+                _displayName = [_uniformClass, configFile >> "CfgWeapons"] call _resolveConfigDisplayName;
+            };
+
+            private _entry = createHashMapFromArray [
+                ["weaponClass", _uniformClass],
+                ["displayName", _displayName],
+                ["weaponType", "uniform"],
+                ["defaultMagazine", ""],
+                ["defaultMagazineName", ""],
+                ["available", true],
+                ["equipped", _uniformClass isEqualTo _currentWeaponClass],
+                ["uniformClass", _uniformUnitClass]
+            ];
+
+            _sortableEntries pushBack [toLower _displayName, _entry];
+        } forEach ("true" configClasses (configFile >> "CfgWeapons"));
+
+        _sortableEntries sort true;
+
+        private _entries = [];
+        {
+            _entries pushBack (_x select 1);
+        } forEach _sortableEntries;
+
+        _entries
+    };
+
     private _settingsCfg = missionConfigFile >> "CfgBnKothArsenalSettings";
     private _catalogueClass = if (isClass _settingsCfg) then {
         getText (_settingsCfg >> "catalogueClass")
@@ -535,7 +611,11 @@ if (_openRequestedSelectorView || {!(_entries isEqualType [])} || {(count _entri
 
     private _pending = uiNamespace getVariable [_pendingNamespaceKey, createHashMap];
     private _pendingClass = if (_pending isEqualType createHashMap) then {
-        _pending getOrDefault ["weaponClass", ""]
+        if (_selectorMode isEqualTo "UNIFORM") then {
+            _pending getOrDefault ["uniformClass", ""]
+        } else {
+            _pending getOrDefault ["weaponClass", ""]
+        }
     } else {
         ""
     };
@@ -587,44 +667,78 @@ private _selectedMagazineName = _selected getOrDefault ["defaultMagazineName", "
 private _selectedAvailable = _selected getOrDefault ["available", false];
 
 if (_selectedAvailable) then {
-    if ((_selectorMode isEqualTo "LAUNCHER") && {_selectedWeaponClass isEqualTo ""}) then {
-        _ctrlPrimaryDetail ctrlSetText "SELECTED: NONE\nEFFECT: CLEAR LAUNCHER SLOT\nAPPLY TO SUBMIT AUTHORITATIVE REQUEST";
-    } else {
+    if (_selectorMode isEqualTo "UNIFORM") then {
         _ctrlPrimaryDetail ctrlSetText format [
-            "SELECTED: %1\nDEFAULT MAGAZINE: %2\nAPPLY TO SUBMIT AUTHORITATIVE REQUEST",
-            _selectedName,
-            _selectedMagazineName
+            "SELECTED: %1\nAPPLY TO SUBMIT AUTHORITATIVE REQUEST",
+            _selectedName
+        ];
+    } else {
+        if ((_selectorMode isEqualTo "LAUNCHER") && {_selectedWeaponClass isEqualTo ""}) then {
+            _ctrlPrimaryDetail ctrlSetText "SELECTED: NONE\nEFFECT: CLEAR LAUNCHER SLOT\nAPPLY TO SUBMIT AUTHORITATIVE REQUEST";
+        } else {
+            _ctrlPrimaryDetail ctrlSetText format [
+                "SELECTED: %1\nDEFAULT MAGAZINE: %2\nAPPLY TO SUBMIT AUTHORITATIVE REQUEST",
+                _selectedName,
+                _selectedMagazineName
+            ];
+        };
+    };
+
+    if (_selectorMode isEqualTo "UNIFORM") then {
+        uiNamespace setVariable [
+            _pendingNamespaceKey,
+            createHashMapFromArray [
+                ["uniformClass", _selectedWeaponClass],
+                ["uniformDisplayName", _selectedName],
+                ["available", true]
+            ]
+        ];
+    } else {
+        uiNamespace setVariable [
+            _pendingNamespaceKey,
+            createHashMapFromArray [
+                ["weaponClass", _selectedWeaponClass],
+                ["weaponDisplayName", _selectedName],
+                ["magazineClass", _selectedMagazine],
+                ["magazineDisplayName", _selectedMagazineName],
+                ["available", true]
+            ]
         ];
     };
 
-    uiNamespace setVariable [
-        _pendingNamespaceKey,
-        createHashMapFromArray [
-            ["weaponClass", _selectedWeaponClass],
-            ["weaponDisplayName", _selectedName],
-            ["magazineClass", _selectedMagazine],
-            ["magazineDisplayName", _selectedMagazineName],
-            ["available", true]
-        ]
-    ];
-
     _ctrlPrimaryApply ctrlEnable true;
 } else {
-    _ctrlPrimaryDetail ctrlSetText format [
-        "SELECTED: %1\nSTATUS: UNAVAILABLE\nNO VALID DEFAULT MAGAZINE COULD BE RESOLVED",
-        _selectedName
-    ];
+    if (_selectorMode isEqualTo "UNIFORM") then {
+        _ctrlPrimaryDetail ctrlSetText format [
+            "SELECTED: %1\nSTATUS: UNAVAILABLE",
+            _selectedName
+        ];
 
-    uiNamespace setVariable [
-        _pendingNamespaceKey,
-        createHashMapFromArray [
-            ["weaponClass", _selectedWeaponClass],
-            ["weaponDisplayName", _selectedName],
-            ["magazineClass", ""],
-            ["magazineDisplayName", ""],
-            ["available", false]
-        ]
-    ];
+        uiNamespace setVariable [
+            _pendingNamespaceKey,
+            createHashMapFromArray [
+                ["uniformClass", _selectedWeaponClass],
+                ["uniformDisplayName", _selectedName],
+                ["available", false]
+            ]
+        ];
+    } else {
+        _ctrlPrimaryDetail ctrlSetText format [
+            "SELECTED: %1\nSTATUS: UNAVAILABLE\nNO VALID DEFAULT MAGAZINE COULD BE RESOLVED",
+            _selectedName
+        ];
+
+        uiNamespace setVariable [
+            _pendingNamespaceKey,
+            createHashMapFromArray [
+                ["weaponClass", _selectedWeaponClass],
+                ["weaponDisplayName", _selectedName],
+                ["magazineClass", ""],
+                ["magazineDisplayName", ""],
+                ["available", false]
+            ]
+        ];
+    };
 
     _ctrlPrimaryApply ctrlEnable false;
 };
