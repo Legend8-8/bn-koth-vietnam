@@ -211,17 +211,38 @@ if (_requestMode isEqualTo "primary") exitWith {
         ] call _fail
     };
 
+    private _validatedPrimary = _compositionResult getOrDefault [
+        "validatedWeapon",
+        createHashMap
+    ];
+
+    private _validatedWeapons = createHashMapFromArray [
+        ["primary", _validatedPrimary]
+    ];
+
+    private _buildResult = [
+        _assignedSide,
+        _validatedWeapons
+    ] call bn_koth_fnc_loadouts_buildValidatedLoadout;
+
+    if !(_buildResult getOrDefault ["success", false]) exitWith {
+        [
+            _buildResult getOrDefault ["code", "ERR_LOADOUT_BUILD"],
+            _buildResult getOrDefault ["message", "Validated primary weapon could not be built into a complete loadout."],
+            _buildResult getOrDefault ["loadoutId", ""],
+            _authoritativeSideToken
+        ] call _fail
+    };
+
     createHashMapFromArray [
         ["success", true],
         ["code", "OK"],
-        ["message", _compositionResult getOrDefault ["message", "Primary composition request validated."]],
-        ["loadoutId", ""],
+        ["message", "Primary composition request validated and built."],
+        ["loadoutId", _buildResult getOrDefault ["loadoutId", ""]],
         ["sideToken", _authoritativeSideToken],
-        ["validatedLoadout", []],
-        ["validatedPrimary", _compositionResult getOrDefault ["validatedWeapon", createHashMap]],
-        ["validatedWeapons", createHashMapFromArray [
-            ["primary", _compositionResult getOrDefault ["validatedWeapon", createHashMap]]
-        ]],
+        ["validatedLoadout", _buildResult getOrDefault ["loadout", []]],
+        ["validatedPrimary", _validatedPrimary],
+        ["validatedWeapons", _validatedWeapons],
         ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
     ]
 };
@@ -309,13 +330,27 @@ if (_requestMode isEqualTo "weapons") exitWith {
         ] call _fail
     };
 
+    private _buildResult = [
+        _assignedSide,
+        _validatedWeapons
+    ] call bn_koth_fnc_loadouts_buildValidatedLoadout;
+
+    if !(_buildResult getOrDefault ["success", false]) exitWith {
+        [
+            _buildResult getOrDefault ["code", "ERR_LOADOUT_BUILD"],
+            _buildResult getOrDefault ["message", "Validated weapon composition could not be built into a complete loadout."],
+            _buildResult getOrDefault ["loadoutId", ""],
+            _authoritativeSideToken
+        ] call _fail
+    };
+
     createHashMapFromArray [
         ["success", true],
         ["code", "OK"],
-        ["message", "Weapon composition request validated."],
-        ["loadoutId", ""],
+        ["message", "Weapon composition request validated and built."],
+        ["loadoutId", _buildResult getOrDefault ["loadoutId", ""]],
         ["sideToken", _authoritativeSideToken],
-        ["validatedLoadout", []],
+        ["validatedLoadout", _buildResult getOrDefault ["loadout", []]],
         ["validatedPrimary", _validatedWeapons getOrDefault ["primary", createHashMap]],
         ["validatedWeapons", _validatedWeapons],
         ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]

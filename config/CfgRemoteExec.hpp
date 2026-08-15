@@ -17,6 +17,18 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_loadouts_request
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_loadouts_receiveValidatedLoadout
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_round_requestVote
         {
             allowedTargets = 2;

@@ -86,6 +86,7 @@ class CfgFunctions
             class loadouts_buildValidatedLoadout {file = "functions\loadouts\fn_buildValidatedLoadout.sqf";};
             class loadouts_applyLoadout {file = "functions\loadouts\fn_applyLoadout.sqf";};
             class loadouts_request {file = "functions\loadouts\fn_request.sqf";};
+            class loadouts_receiveValidatedLoadout {file = "functions\loadouts\fn_receiveValidatedLoadout.sqf";};
         };
 
         class vehicles
