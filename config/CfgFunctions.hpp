@@ -96,6 +96,7 @@ class CfgFunctions
             class loadouts_clearPlayerState {file = "functions\loadouts\fn_clearPlayerState.sqf";};
             class loadouts_getStarterLoadout {file = "functions\loadouts\fn_getStarterLoadout.sqf";};
             class loadouts_validateLoadout {file = "functions\loadouts\fn_validateLoadout.sqf";};
+            class loadouts_validateMutation {file = "functions\loadouts\fn_validateMutation.sqf";};
             class loadouts_validateWeaponComposition {file = "functions\loadouts\fn_validateWeaponComposition.sqf";};
             class loadouts_buildValidatedLoadout {file = "functions\loadouts\fn_buildValidatedLoadout.sqf";};
             class loadouts_applyLoadout {file = "functions\loadouts\fn_applyLoadout.sqf";};
@@ -155,6 +156,17 @@ class CfgFunctions
             class menu_applyHandgun {file = "functions\ui\fn_menu_applyHandgun.sqf";};
             class menu_applyLauncher {file = "functions\ui\fn_menu_applyLauncher.sqf";};
             class menu_applyUniform {file = "functions\ui\fn_menu_applyUniform.sqf";};
+            class menu_applyVest {file = "functions\ui\fn_menu_applyVest.sqf";};
+            class menu_applyBackpack {file = "functions\ui\fn_menu_applyBackpack.sqf";};
+            class menu_applyHeadgear {file = "functions\ui\fn_menu_applyHeadgear.sqf";};
+            class menu_applyFacewear {file = "functions\ui\fn_menu_applyFacewear.sqf";};
+            class menu_applyBinocular {file = "functions\ui\fn_menu_applyBinocular.sqf";};
+            class menu_applyAssigned {file = "functions\ui\fn_menu_applyAssigned.sqf";};
+            class menu_applyAttachment {file = "functions\ui\fn_menu_applyAttachment.sqf";};
+            class menu_applyCargo {file = "functions\ui\fn_menu_applyCargo.sqf";};
+            class menu_saveSessionKit {file = "functions\ui\fn_menu_saveSessionKit.sqf";};
+            class menu_loadSessionKit {file = "functions\ui\fn_menu_loadSessionKit.sqf";};
+            class menu_deleteSessionKit {file = "functions\ui\fn_menu_deleteSessionKit.sqf";};
         };
     };
 };

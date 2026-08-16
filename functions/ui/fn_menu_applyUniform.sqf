@@ -1,6 +1,6 @@
 /*
     File: fn_menu_applyUniform.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Sends the currently pending uniform intent through the authoritative loadout request path.
     Execution: Client
     Parameters:

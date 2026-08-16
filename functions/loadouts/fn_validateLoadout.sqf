@@ -10,6 +10,7 @@
              loadoutId <STRING>
              primary <HASHMAP> (legacy single-slot composition)
              weapons <HASHMAP> (primary/launcher/handgun slot maps)
+                         mutation <HASHMAP> (authoritative intent op)
              side <STRING> (optional, cross-check only)
     Returns:
         Validation result <HASHMAP>
@@ -51,9 +52,11 @@ private _requestedSideRaw = "";
 private _requestedSideToken = "";
 private _primaryRequest = createHashMap;
 private _weaponsRequest = createHashMap;
+private _mutationRequest = createHashMap;
 private _hasLoadoutIntent = false;
 private _hasPrimaryIntent = false;
 private _hasWeaponsIntent = false;
+private _hasMutationIntent = false;
 private _requestMode = "";
 
 if (_request isEqualType createHashMap) then {
@@ -71,6 +74,11 @@ if (_request isEqualType createHashMap) then {
     if (_hasWeaponsIntent) then {
         _weaponsRequest = _request getOrDefault ["weapons", objNull];
     };
+
+    _hasMutationIntent = "mutation" in _requestKeys;
+    if (_hasMutationIntent) then {
+        _mutationRequest = _request getOrDefault ["mutation", objNull];
+    };
 } else {
     if ((_request isEqualType []) && {(count _request) > 0}) then {
         _hasLoadoutIntent = true;
@@ -87,10 +95,11 @@ _requestedSideToken = toUpper _requestedSideRaw;
 private _intentCount =
     (if (_hasLoadoutIntent) then {1} else {0}) +
     (if (_hasPrimaryIntent) then {1} else {0}) +
-    (if (_hasWeaponsIntent) then {1} else {0});
+    (if (_hasWeaponsIntent) then {1} else {0}) +
+    (if (_hasMutationIntent) then {1} else {0});
 
 if (_intentCount != 1) exitWith {
-    ["ERR_MALFORMED_REQUEST", "Loadout request must choose exactly one mode: loadoutId, primary, or weapons."] call _fail
+    ["ERR_MALFORMED_REQUEST", "Loadout request must choose exactly one mode: loadoutId, primary, weapons, or mutation."] call _fail
 };
 
 if (_hasPrimaryIntent) then {
@@ -99,7 +108,11 @@ if (_hasPrimaryIntent) then {
     if (_hasWeaponsIntent) then {
         _requestMode = "weapons";
     } else {
-        _requestMode = "configured";
+        if (_hasMutationIntent) then {
+            _requestMode = "mutation";
+        } else {
+            _requestMode = "configured";
+        };
     };
 };
 
@@ -109,6 +122,10 @@ if ((_requestMode isEqualTo "primary") && {!(_primaryRequest isEqualType createH
 
 if ((_requestMode isEqualTo "weapons") && {!(_weaponsRequest isEqualType createHashMap)}) exitWith {
     ["ERR_MALFORMED_REQUEST", "Weapons validation request must provide weapons as a map."] call _fail
+};
+
+if ((_requestMode isEqualTo "mutation") && {!(_mutationRequest isEqualType createHashMap)}) exitWith {
+    ["ERR_MALFORMED_REQUEST", "Mutation validation request must provide mutation as a map."] call _fail
 };
 
 if ((_requestMode isEqualTo "configured") && {!(_requestedLoadoutIdRaw isEqualType "")}) exitWith {
@@ -272,7 +289,7 @@ if (_requestMode isEqualTo "primary") exitWith {
 
 if (_requestMode isEqualTo "weapons") exitWith {
     private _slotKeys = keys _weaponsRequest;
-    private _supportedSlots = ["primary", "launcher", "handgun", "uniform"];
+    private _supportedSlots = ["primary", "launcher", "handgun", "uniform", "vest", "backpack", "headgear", "facewear"];
     private _unknownSlotIndex = _slotKeys findIf {!(_x in _supportedSlots)};
 
     if (_unknownSlotIndex >= 0) exitWith {
@@ -287,7 +304,7 @@ if (_requestMode isEqualTo "weapons") exitWith {
     if ((count _slotKeys) <= 0) exitWith {
         [
             "ERR_MALFORMED_REQUEST",
-            "Weapons request must contain at least one of: primary, launcher, handgun, uniform.",
+            "Weapons request must contain at least one of: primary, launcher, handgun, uniform, vest, backpack, headgear, facewear.",
             _requestedLoadoutId,
             _authoritativeSideToken
         ] call _fail
@@ -465,6 +482,293 @@ if (_requestMode isEqualTo "weapons") exitWith {
         };
     };
 
+    if (((count _slotFailure) isEqualTo 0) && {"vest" in _slotKeys}) then {
+        private _vestRequest = _weaponsRequest getOrDefault ["vest", objNull];
+        if !(_vestRequest isEqualType createHashMap) then {
+            _slotFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", "Weapons.vest must be a map."]
+            ];
+        } else {
+            private _vestClassRaw = _vestRequest getOrDefault ["vestClass", ""];
+
+            if !(_vestClassRaw isEqualType "") then {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", "Vest vestClass must be a string."]
+                ];
+            } else {
+                private _vestClass = toLower _vestClassRaw;
+
+                if (_vestClass isEqualTo "") then {
+                    _slotFailure = createHashMapFromArray [
+                        ["success", false],
+                        ["code", "ERR_MALFORMED_REQUEST"],
+                        ["message", "Vest vestClass must be non-empty."]
+                    ];
+                } else {
+                    if !((_vestClass find "vn_") isEqualTo 0) then {
+                        _slotFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_VEST_NOT_CANONICAL"],
+                            ["message", format ["Vest '%1' is not a canonical S.O.G. vest class.", _vestClass]]
+                        ];
+                    } else {
+                        private _vestCfg = configFile >> "CfgWeapons" >> _vestClass;
+
+                        if !(isClass _vestCfg) then {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", "ERR_VEST_CONFIG_MISSING"],
+                                ["message", format ["Vest '%1' is missing from CfgWeapons.", _vestClass]]
+                            ];
+                        } else {
+                            if ((getNumber (_vestCfg >> "scope")) < 2) then {
+                                _slotFailure = createHashMapFromArray [
+                                    ["success", false],
+                                    ["code", "ERR_VEST_NOT_PUBLIC"],
+                                    ["message", format ["Vest '%1' is not publicly available.", _vestClass]]
+                                ];
+                            } else {
+                                private _vestItemInfoCfg = _vestCfg >> "ItemInfo";
+
+                                if !(isClass _vestItemInfoCfg) then {
+                                    _slotFailure = createHashMapFromArray [
+                                        ["success", false],
+                                        ["code", "ERR_VEST_ITEMINFO_MISSING"],
+                                        ["message", format ["Vest '%1' is missing ItemInfo metadata.", _vestClass]]
+                                    ];
+                                } else {
+                                    // 701 is the factual Arma 3 ItemInfo type for vests.
+                                    if !((getNumber (_vestItemInfoCfg >> "type")) isEqualTo 701) then {
+                                        _slotFailure = createHashMapFromArray [
+                                            ["success", false],
+                                            ["code", "ERR_VEST_ITEMINFO_INVALID"],
+                                            ["message", format ["Class '%1' is not a vest item.", _vestClass]]
+                                        ];
+                                    } else {
+                                        _validatedWeapons set [
+                                            "vest",
+                                            createHashMapFromArray [["vestClass", _vestClass]]
+                                        ];
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+
+    if (((count _slotFailure) isEqualTo 0) && {"backpack" in _slotKeys}) then {
+        private _backpackRequest = _weaponsRequest getOrDefault ["backpack", objNull];
+        if !(_backpackRequest isEqualType createHashMap) then {
+            _slotFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", "Weapons.backpack must be a map."]
+            ];
+        } else {
+            private _backpackClassRaw = _backpackRequest getOrDefault ["backpackClass", "UNSET"];
+
+            if !(_backpackClassRaw isEqualType "") then {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", "Backpack backpackClass must be a string."]
+                ];
+            } else {
+                private _backpackClass = toLower _backpackClassRaw;
+
+                if (_backpackClass isEqualTo "") then {
+                    // Explicit NONE intent: clear the backpack slot.
+                    _validatedWeapons set ["backpack", createHashMapFromArray [["clear", true]]];
+                } else {
+                    if !((_backpackClass find "vn_") isEqualTo 0) then {
+                        _slotFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_BACKPACK_NOT_CANONICAL"],
+                            ["message", format ["Backpack '%1' is not a canonical S.O.G. backpack class.", _backpackClass]]
+                        ];
+                    } else {
+                        // Factual Arma 3 engine rule: backpacks inherit from Bag_Base in CfgVehicles.
+                        if !(_backpackClass isKindOf ["Bag_Base", configFile >> "CfgVehicles"]) then {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", "ERR_BACKPACK_NOT_A_BAG"],
+                                ["message", format ["Class '%1' is not a backpack (does not inherit Bag_Base).", _backpackClass]]
+                            ];
+                        } else {
+                            private _backpackCfg = configFile >> "CfgVehicles" >> _backpackClass;
+
+                            if !(isClass _backpackCfg) then {
+                                _slotFailure = createHashMapFromArray [
+                                    ["success", false],
+                                    ["code", "ERR_BACKPACK_CONFIG_MISSING"],
+                                    ["message", format ["Backpack '%1' is missing from CfgVehicles.", _backpackClass]]
+                                ];
+                            } else {
+                                if ((getNumber (_backpackCfg >> "scope")) < 2) then {
+                                    _slotFailure = createHashMapFromArray [
+                                        ["success", false],
+                                        ["code", "ERR_BACKPACK_NOT_PUBLIC"],
+                                        ["message", format ["Backpack '%1' is not publicly available.", _backpackClass]]
+                                    ];
+                                } else {
+                                    _validatedWeapons set [
+                                        "backpack",
+                                        createHashMapFromArray [["backpackClass", _backpackClass]]
+                                    ];
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+
+    if (((count _slotFailure) isEqualTo 0) && {"headgear" in _slotKeys}) then {
+        private _headgearRequest = _weaponsRequest getOrDefault ["headgear", objNull];
+        if !(_headgearRequest isEqualType createHashMap) then {
+            _slotFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", "Weapons.headgear must be a map."]
+            ];
+        } else {
+            private _headgearClassRaw = _headgearRequest getOrDefault ["headgearClass", "UNSET"];
+
+            if !(_headgearClassRaw isEqualType "") then {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", "Headgear headgearClass must be a string."]
+                ];
+            } else {
+                private _headgearClass = toLower _headgearClassRaw;
+
+                if (_headgearClass isEqualTo "") then {
+                    // Explicit NONE intent: clear the headgear slot.
+                    _validatedWeapons set ["headgear", createHashMapFromArray [["clear", true]]];
+                } else {
+                    if !((_headgearClass find "vn_") isEqualTo 0) then {
+                        _slotFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_HEADGEAR_NOT_CANONICAL"],
+                            ["message", format ["Headgear '%1' is not a canonical S.O.G. headgear class.", _headgearClass]]
+                        ];
+                    } else {
+                        private _headgearCfg = configFile >> "CfgWeapons" >> _headgearClass;
+
+                        if !(isClass _headgearCfg) then {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", "ERR_HEADGEAR_CONFIG_MISSING"],
+                                ["message", format ["Headgear '%1' is missing from CfgWeapons.", _headgearClass]]
+                            ];
+                        } else {
+                            if ((getNumber (_headgearCfg >> "scope")) < 2) then {
+                                _slotFailure = createHashMapFromArray [
+                                    ["success", false],
+                                    ["code", "ERR_HEADGEAR_NOT_PUBLIC"],
+                                    ["message", format ["Headgear '%1' is not publicly available.", _headgearClass]]
+                                ];
+                            } else {
+                                private _headgearItemInfoCfg = _headgearCfg >> "ItemInfo";
+
+                                if !(isClass _headgearItemInfoCfg) then {
+                                    _slotFailure = createHashMapFromArray [
+                                        ["success", false],
+                                        ["code", "ERR_HEADGEAR_ITEMINFO_MISSING"],
+                                        ["message", format ["Headgear '%1' is missing ItemInfo metadata.", _headgearClass]]
+                                    ];
+                                } else {
+                                    // 605 is the factual Arma 3 ItemInfo type for headgear (uniform=801, vest=701).
+                                    if !((getNumber (_headgearItemInfoCfg >> "type")) isEqualTo 605) then {
+                                        _slotFailure = createHashMapFromArray [
+                                            ["success", false],
+                                            ["code", "ERR_HEADGEAR_ITEMINFO_INVALID"],
+                                            ["message", format ["Class '%1' is not a headgear item.", _headgearClass]]
+                                        ];
+                                    } else {
+                                        _validatedWeapons set [
+                                            "headgear",
+                                            createHashMapFromArray [["headgearClass", _headgearClass]]
+                                        ];
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+
+    if (((count _slotFailure) isEqualTo 0) && {"facewear" in _slotKeys}) then {
+        private _facewearRequest = _weaponsRequest getOrDefault ["facewear", objNull];
+        if !(_facewearRequest isEqualType createHashMap) then {
+            _slotFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", "Weapons.facewear must be a map."]
+            ];
+        } else {
+            private _facewearClassRaw = _facewearRequest getOrDefault ["facewearClass", "UNSET"];
+
+            if !(_facewearClassRaw isEqualType "") then {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", "Facewear facewearClass must be a string."]
+                ];
+            } else {
+                private _facewearClass = toLower _facewearClassRaw;
+
+                if (_facewearClass isEqualTo "") then {
+                    // Explicit NONE intent: clear the facewear slot.
+                    _validatedWeapons set ["facewear", createHashMapFromArray [["clear", true]]];
+                } else {
+                    if !((_facewearClass find "vn_") isEqualTo 0) then {
+                        _slotFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_FACEWEAR_NOT_CANONICAL"],
+                            ["message", format ["Facewear '%1' is not a canonical S.O.G. facewear class.", _facewearClass]]
+                        ];
+                    } else {
+                        // Facewear/goggles in Arma 3 are defined in CfgGlasses.
+                        private _facewearCfg = configFile >> "CfgGlasses" >> _facewearClass;
+
+                        if !(isClass _facewearCfg) then {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", "ERR_FACEWEAR_CONFIG_MISSING"],
+                                ["message", format ["Facewear '%1' is missing from CfgGlasses.", _facewearClass]]
+                            ];
+                        } else {
+                            if ((getNumber (_facewearCfg >> "scope")) < 2) then {
+                                _slotFailure = createHashMapFromArray [
+                                    ["success", false],
+                                    ["code", "ERR_FACEWEAR_NOT_PUBLIC"],
+                                    ["message", format ["Facewear '%1' is not publicly available.", _facewearClass]]
+                                ];
+                            } else {
+                                _validatedWeapons set [
+                                    "facewear",
+                                    createHashMapFromArray [["facewearClass", _facewearClass]]
+                                ];
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+
     if ((count _slotFailure) > 0) exitWith {
         [
             _slotFailure getOrDefault ["code", "ERR_WEAPON_COMPOSITION"],
@@ -500,6 +804,18 @@ if (_requestMode isEqualTo "weapons") exitWith {
         ["validatedWeapons", _validatedWeapons],
         ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
     ]
+};
+
+if (_requestMode isEqualTo "mutation") exitWith {
+    [
+        _player,
+        _mutationRequest,
+        _compatibilityCfg,
+        _arsenalCfg,
+        _assignedSide,
+        _authoritativeSideToken,
+        _authoritativeBaselineLoadout
+    ] call bn_koth_fnc_loadouts_validateMutation
 };
 
 private _definition = _definitions getOrDefault [_requestedLoadoutId, objNull];

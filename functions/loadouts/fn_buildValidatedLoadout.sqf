@@ -364,6 +364,191 @@ if (((count _buildFailure) isEqualTo 0) && {"uniform" in _validatedWeaponKeys}) 
     };
 };
 
+if (((count _buildFailure) isEqualTo 0) && {"vest" in _validatedWeaponKeys}) then {
+    private _vestPayload = _validatedWeapons get "vest";
+
+    if !(_vestPayload isEqualType createHashMap) then {
+        _buildFailure = createHashMapFromArray [
+            ["success", false],
+            ["code", "ERR_VALIDATED_VEST_TYPE"],
+            ["message", "Validated vest payload must be a hashmap."]
+        ];
+    } else {
+        private _vestClass = _vestPayload getOrDefault ["vestClass", ""];
+
+        if !(_vestClass isEqualType "") then {
+            _buildFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_VALIDATED_VEST_CLASS_TYPE"],
+                ["message", "Validated vestClass must be a string."]
+            ];
+        } else {
+            if (_vestClass isEqualTo "") then {
+                _buildFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_VALIDATED_VEST_CLASS_EMPTY"],
+                    ["message", "Validated vestClass is empty."]
+                ];
+            } else {
+                private _vestCfg = configFile >> "CfgWeapons" >> _vestClass;
+                if !(isClass _vestCfg) then {
+                    _buildFailure = createHashMapFromArray [
+                        ["success", false],
+                        ["code", "ERR_VEST_CONFIG_MISSING"],
+                        ["message", format ["Validated vest '%1' is missing from CfgWeapons.", _vestClass]]
+                    ];
+                } else {
+                    // Read authoritative slot 4: preserve existing cargo, replace only classname.
+                    private _existingVestSlot = _builtLoadout select 4;
+                    private _vestCargo = [];
+
+                    if ((_existingVestSlot isEqualType []) && {(count _existingVestSlot) > 1}) then {
+                        _vestCargo = _existingVestSlot select 1;
+                        if !(_vestCargo isEqualType []) then {
+                            _vestCargo = [];
+                        };
+                    };
+
+                    _builtLoadout set [4, [_vestClass, _vestCargo]];
+                };
+            };
+        };
+    };
+};
+
+if (((count _buildFailure) isEqualTo 0) && {"backpack" in _validatedWeaponKeys}) then {
+    private _backpackPayload = _validatedWeapons get "backpack";
+
+    if !(_backpackPayload isEqualType createHashMap) then {
+        _buildFailure = createHashMapFromArray [
+            ["success", false],
+            ["code", "ERR_VALIDATED_BACKPACK_TYPE"],
+            ["message", "Validated backpack payload must be a hashmap."]
+        ];
+    } else {
+        if (_backpackPayload getOrDefault ["clear", false]) then {
+            // NONE intent: clear slot 5. Authoritative backpack cargo is deliberately discarded.
+            _builtLoadout set [5, []];
+        } else {
+            private _backpackClass = _backpackPayload getOrDefault ["backpackClass", ""];
+
+            if !(_backpackClass isEqualType "") then {
+                _buildFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_VALIDATED_BACKPACK_CLASS_TYPE"],
+                    ["message", "Validated backpackClass must be a string."]
+                ];
+            } else {
+                if (_backpackClass isEqualTo "") then {
+                    _buildFailure = createHashMapFromArray [
+                        ["success", false],
+                        ["code", "ERR_VALIDATED_BACKPACK_CLASS_EMPTY"],
+                        ["message", "Validated backpackClass is empty without a clear flag."]
+                    ];
+                } else {
+                    private _backpackCfg = configFile >> "CfgVehicles" >> _backpackClass;
+                    if !(isClass _backpackCfg) then {
+                        _buildFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_BACKPACK_CONFIG_MISSING"],
+                            ["message", format ["Validated backpack '%1' is missing from CfgVehicles.", _backpackClass]]
+                        ];
+                    } else {
+                        // Read authoritative slot 5: preserve existing cargo, replace only classname.
+                        private _existingBackpackSlot = _builtLoadout select 5;
+                        private _backpackCargo = [];
+
+                        if ((_existingBackpackSlot isEqualType []) && {(count _existingBackpackSlot) > 1}) then {
+                            _backpackCargo = _existingBackpackSlot select 1;
+                            if !(_backpackCargo isEqualType []) then {
+                                _backpackCargo = [];
+                            };
+                        };
+
+                        _builtLoadout set [5, [_backpackClass, _backpackCargo]];
+                    };
+                };
+            };
+        };
+    };
+};
+
+if (((count _buildFailure) isEqualTo 0) && {"headgear" in _validatedWeaponKeys}) then {
+    private _headgearPayload = _validatedWeapons get "headgear";
+
+    if !(_headgearPayload isEqualType createHashMap) then {
+        _buildFailure = createHashMapFromArray [
+            ["success", false],
+            ["code", "ERR_VALIDATED_HEADGEAR_TYPE"],
+            ["message", "Validated headgear payload must be a hashmap."]
+        ];
+    } else {
+        if (_headgearPayload getOrDefault ["clear", false]) then {
+            // NONE intent: slot 6 is a plain string; empty string = no headgear.
+            _builtLoadout set [6, ""];
+        } else {
+            private _headgearClass = _headgearPayload getOrDefault ["headgearClass", ""];
+
+            if !(_headgearClass isEqualType "") then {
+                _buildFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_VALIDATED_HEADGEAR_CLASS_TYPE"],
+                    ["message", "Validated headgearClass must be a string."]
+                ];
+            } else {
+                if (_headgearClass isEqualTo "") then {
+                    _buildFailure = createHashMapFromArray [
+                        ["success", false],
+                        ["code", "ERR_VALIDATED_HEADGEAR_CLASS_EMPTY"],
+                        ["message", "Validated headgearClass is empty without a clear flag."]
+                    ];
+                } else {
+                    // Slot 6 is a plain classname string — no cargo to preserve.
+                    _builtLoadout set [6, _headgearClass];
+                };
+            };
+        };
+    };
+};
+
+if (((count _buildFailure) isEqualTo 0) && {"facewear" in _validatedWeaponKeys}) then {
+    private _facewearPayload = _validatedWeapons get "facewear";
+
+    if !(_facewearPayload isEqualType createHashMap) then {
+        _buildFailure = createHashMapFromArray [
+            ["success", false],
+            ["code", "ERR_VALIDATED_FACEWEAR_TYPE"],
+            ["message", "Validated facewear payload must be a hashmap."]
+        ];
+    } else {
+        if (_facewearPayload getOrDefault ["clear", false]) then {
+            // NONE intent: slot 7 is a plain string; empty string = no facewear.
+            _builtLoadout set [7, ""];
+        } else {
+            private _facewearClass = _facewearPayload getOrDefault ["facewearClass", ""];
+
+            if !(_facewearClass isEqualType "") then {
+                _buildFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_VALIDATED_FACEWEAR_CLASS_TYPE"],
+                    ["message", "Validated facewearClass must be a string."]
+                ];
+            } else {
+                if (_facewearClass isEqualTo "") then {
+                    _buildFailure = createHashMapFromArray [
+                        ["success", false],
+                        ["code", "ERR_VALIDATED_FACEWEAR_CLASS_EMPTY"],
+                        ["message", "Validated facewearClass is empty without a clear flag."]
+                    ];
+                } else {
+                    // Slot 7 is a plain classname string — no cargo to preserve.
+                    _builtLoadout set [7, _facewearClass];
+                };
+            };
+        };
+    };
+};
+
 if ((count _buildFailure) > 0) exitWith {
     [
         _buildFailure getOrDefault ["code", "ERR_WEAPON_SLOT_BUILD"],

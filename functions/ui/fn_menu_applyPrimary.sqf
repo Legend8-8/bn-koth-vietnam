@@ -1,6 +1,6 @@
 /*
     File: fn_menu_applyPrimary.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Sends the currently pending primary weapon intent through the authoritative loadout request path.
     Execution: Client
     Parameters:

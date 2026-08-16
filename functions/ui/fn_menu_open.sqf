@@ -23,12 +23,14 @@ if (isNull _display) then {
 
 if (!isNull _display) exitWith {
     ['LOADOUT'] call bn_koth_fnc_menu_refresh;
+    [createHashMapFromArray [["mutation", createHashMapFromArray [["op", "snapshot"]]]]] call bn_koth_fnc_loadouts_request;
     true
 };
 
 private _opened = createDialog "BN_KOTH_RscMenu";
 if (_opened) then {
     ['LOADOUT'] call bn_koth_fnc_menu_refresh;
+    [createHashMapFromArray [["mutation", createHashMapFromArray [["op", "snapshot"]]]]] call bn_koth_fnc_loadouts_request;
 };
 
 _opened

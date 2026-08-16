@@ -43,6 +43,19 @@ if !(_validationResult getOrDefault ["success", false]) exitWith {
 
 if (isNull player) exitWith {};
 
+private _validatedLoadout = _validationResult getOrDefault ["validatedLoadout", []];
+if ((_validatedLoadout isEqualType []) && {(count _validatedLoadout) >= 10}) then {
+    uiNamespace setVariable ["BN_KOTH_menuIntendedLoadout", +_validatedLoadout];
+};
+
+private _shouldApply = _validationResult getOrDefault ["shouldApply", true];
+if (!_shouldApply) exitWith {
+    systemChat format [
+        "[KOTH] %1",
+        _validationResult getOrDefault ["message", "Loadout intent updated."]
+    ];
+};
+
 private _applyResult = [
     player,
     _validationResult

@@ -1,6 +1,6 @@
 /*
     File: fn_menu_close.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Closes the deployed menu on the local client.
     Execution: Client
     Parameters:
