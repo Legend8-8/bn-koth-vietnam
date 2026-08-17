@@ -1,6 +1,7 @@
 /*
     File: fn_handleDamage.sqf
     Author: Mongo
+    Edited: tylervip
     Description: Enforces safe-zone incoming and outgoing damage rules at entity locality.
     Execution: Local to damaged entity
     Parameters:
@@ -24,6 +25,11 @@ params [
 
 if (isNull _target) exitWith {_damage};
 
+private _targetMembership = [_target, true] call bn_koth_fnc_respawn_getSafeZoneMembership;
+private _targetSide = _target getVariable ["BN_KOTH_teamSide", sideUnknown];
+private _targetProtectedByZone = if (_targetSide isEqualTo west) then {_targetMembership select 0} else {_targetMembership select 1};
+private _targetIntruderByZone = if (_targetSide isEqualTo west) then {_targetMembership select 1} else {_targetMembership select 0};
+
 private _currentDamage = damage _target;
 if !(_hitPoint in ["", "?"]) then {
     private _hitPointDamage = _target getHitPointDamage _hitPoint;
@@ -37,7 +43,8 @@ if !(_hitPoint in ["", "?"]) then {
 };
 
 private _targetProtected = _target getVariable ["BN_KOTH_safeZoneProtected", false]
-    || {_target getVariable ["BN_KOTH_safeZoneVehicleProtected", false]};
+    || {_target getVariable ["BN_KOTH_safeZoneVehicleProtected", false]}
+    || {_targetProtectedByZone};
 if (_targetProtected) exitWith {_currentDamage};
 
 private _sourceVehicle = if (isNull _source) then {objNull} else {vehicle _source};
@@ -51,7 +58,7 @@ private _collisionSourceProtected = (!isNull _sourceVehicle && {_sourceVehicle !
 };
 
 // The sole protected outgoing-damage exception is running over an intruder in that safe zone.
-private _intruderCollision = (_target getVariable ["BN_KOTH_enemySafeZoneIntruder", false])
+private _intruderCollision = ((_target getVariable ["BN_KOTH_enemySafeZoneIntruder", false]) || {_targetIntruderByZone})
     && {_projectile isEqualTo ""}
     && {_collisionSourceProtected};
 if (_intruderCollision) exitWith {_damage};

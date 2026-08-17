@@ -2,6 +2,7 @@
     File: fn_initServer.sqf
     Author: Legend
     Edited: Mongo
+    Edited: tylervip
     Description: Registers respawn handlers and starts the authoritative safe-zone manager.
     Execution: Server
     Parameters:
@@ -60,6 +61,10 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
     if (!_isPlayerEntity && {_matchedUid isEqualTo ""}) exitWith {
         [format ["EntityKilled EH ignored non-player unmatched entity type=%1 owner=%2", typeOf _killed, _ownerId], "INFO"] call bn_koth_fnc_common_log;
         [_killed] call bn_koth_fnc_respawn_cleanupSafeZoneEntity;
+    };
+
+    if (_isPlayerEntity && {!alive _killed}) then {
+        [_killed] spawn bn_koth_fnc_respawn_cleanupDeadBody;
     };
 
     [_killed] call bn_koth_fnc_respawn_handlePlayerDeath;
@@ -152,7 +157,7 @@ private _respawnCfg = missionConfigFile >> "CfgBnKothRespawn";
 private _safeZoneInterval = if (isNumber (_respawnCfg >> "safeZoneCheckIntervalSeconds")) then {
     (getNumber (_respawnCfg >> "safeZoneCheckIntervalSeconds")) max 0.05
 } else {
-    0.25
+    5.0
 };
 private _messageCooldown = if (isNumber (_respawnCfg >> "blockedActionMessageCooldownSeconds")) then {
     (getNumber (_respawnCfg >> "blockedActionMessageCooldownSeconds")) max 0

@@ -58,6 +58,7 @@ class CfgFunctions
             class zone_setActiveLocation {file = "functions\zone\fn_setActiveLocation.sqf";};
             class zone_clearActiveLocation {file = "functions\zone\fn_clearActiveLocation.sqf";};
             class zone_cacheStaticObjects {file = "functions\zone\fn_cacheStaticObjects.sqf";};
+            class zone_cleanupRuntimeObjects {file = "functions\zone\fn_cleanupRuntimeObjects.sqf";};
             class zone_evaluateControl {file = "functions\zone\fn_evaluateControl.sqf";};
             class zone_updatePriorityZone {file = "functions\zone\fn_updatePriorityZone.sqf";};
         };
@@ -75,6 +76,7 @@ class CfgFunctions
             class respawn_initPlayerServer {file = "functions\respawn\fn_initPlayerServer.sqf";};
             class respawn_initPlayerLocal {file = "functions\respawn\fn_initPlayerLocal.sqf";};
             class respawn_getSafeZoneMembership {file = "functions\respawn\fn_getSafeZoneMembership.sqf";};
+            class respawn_cleanupDeadBody {file = "functions\respawn\fn_cleanupDeadBody.sqf";};
             class respawn_cleanupSafeZoneEntity {file = "functions\respawn\fn_cleanupSafeZoneEntity.sqf";};
             class respawn_sweepSafeZoneGroundItems {file = "functions\respawn\fn_sweepSafeZoneGroundItems.sqf";};
             class respawn_monitorSafeZones {file = "functions\respawn\fn_monitorSafeZones.sqf";};
