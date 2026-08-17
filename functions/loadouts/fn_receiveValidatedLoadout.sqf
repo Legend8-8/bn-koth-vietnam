@@ -49,12 +49,7 @@ if ((_validatedLoadout isEqualType []) && {(count _validatedLoadout) >= 10}) the
 };
 
 private _shouldApply = _validationResult getOrDefault ["shouldApply", true];
-if (!_shouldApply) exitWith {
-    systemChat format [
-        "[KOTH] %1",
-        _validationResult getOrDefault ["message", "Loadout intent updated."]
-    ];
-};
+if (!_shouldApply) exitWith {};
 
 private _applyResult = [
     player,
@@ -77,4 +72,3 @@ if !(_applyResult getOrDefault ["success", false]) exitWith {
     ];
 };
 
-systemChat "[KOTH] Loadout applied.";

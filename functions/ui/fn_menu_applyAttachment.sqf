@@ -1,6 +1,6 @@
 /*
     File: fn_menu_applyAttachment.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Sends pending weapon-attachment intent through the authoritative loadout mutation path.
     Execution: Client
     Parameters:
@@ -35,5 +35,4 @@ private _request = createHashMapFromArray [
 ];
 
 [_request] call bn_koth_fnc_loadouts_request;
-["ATTACHMENT REQUEST SENT."] call bn_koth_fnc_ui_notify;
 true

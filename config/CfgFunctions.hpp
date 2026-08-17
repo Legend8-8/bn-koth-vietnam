@@ -152,6 +152,13 @@ class CfgFunctions
             class menu_open {file = "functions\ui\fn_menu_open.sqf";};
             class menu_close {file = "functions\ui\fn_menu_close.sqf";};
             class menu_refresh {file = "functions\ui\fn_menu_refresh.sqf";};
+            class menu_refreshLoadout {file = "functions\ui\fn_menu_refreshLoadout.sqf";};
+            class menu_refreshSelector {file = "functions\ui\fn_menu_refreshSelector.sqf";};
+            class menu_buildWeaponEntries {file = "functions\ui\fn_menu_buildWeaponEntries.sqf";};
+            class menu_buildWearableEntries {file = "functions\ui\fn_menu_buildWearableEntries.sqf";};
+            class menu_buildAttachmentEntries {file = "functions\ui\fn_menu_buildAttachmentEntries.sqf";};
+            class menu_buildAssignedEntries {file = "functions\ui\fn_menu_buildAssignedEntries.sqf";};
+            class menu_buildCargoEntries {file = "functions\ui\fn_menu_buildCargoEntries.sqf";};
             class menu_applyPrimary {file = "functions\ui\fn_menu_applyPrimary.sqf";};
             class menu_applyHandgun {file = "functions\ui\fn_menu_applyHandgun.sqf";};
             class menu_applyLauncher {file = "functions\ui\fn_menu_applyLauncher.sqf";};

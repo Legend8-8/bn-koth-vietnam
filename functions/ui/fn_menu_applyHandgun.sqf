@@ -35,6 +35,5 @@ private _request = createHashMapFromArray [
 ];
 
 [_request] call bn_koth_fnc_loadouts_request;
-["HANDGUN REQUEST SENT."] call bn_koth_fnc_ui_notify;
 
 true

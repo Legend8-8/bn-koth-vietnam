@@ -27,7 +27,7 @@ class BN_KOTH_RscMenu
     movingEnable = 0;
     enableSimulation = 1;
     onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_menuDisplay', _display]; _display displayAddEventHandler ['KeyDown', 'if ((_this select 1) isEqualTo 1) exitWith {[] call bn_koth_fnc_menu_close; true}; false']; ['LOADOUT'] call bn_koth_fnc_menu_refresh;";
-    onUnload = "uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuLauncherEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingLauncher', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuUniformEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingUniform', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuVestEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingVest', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBackpackEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBackpack', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHeadgearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHeadgear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuFacewearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingFacewear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBinocularEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBinocular', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAssignedEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAttachmentEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAttachment', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuCargoEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', createHashMap];";
+    onUnload = "uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuLauncherEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingLauncher', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuUniformEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingUniform', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuVestEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingVest', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBackpackEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBackpack', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHeadgearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHeadgear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuFacewearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingFacewear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBinocularEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBinocular', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAssignedEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAttachmentEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAttachment', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuCargoEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', createHashMap];";
 
     class controlsBackground
     {
@@ -38,7 +38,7 @@ class BN_KOTH_RscMenu
             y = safeZoneY;
             w = safeZoneW;
             h = safeZoneH;
-            colorBackground[] = {0.01, 0.01, 0.01, 0.88};
+            colorBackground[] = {0.01, 0.01, 0.01, 0.95};
         };
 
         class BgHeader: BN_KOTH_Menu_Background
@@ -58,7 +58,7 @@ class BN_KOTH_RscMenu
             y = BN_KOTH_MENU_MAIN_Y;
             w = BN_KOTH_MENU_LEFT_W;
             h = BN_KOTH_MENU_MAIN_H;
-            colorBackground[] = {0.05, 0.05, 0.05, 0.86};
+            colorBackground[] = {0.04, 0.04, 0.04, 0.94};
         };
 
         class BgCenter: BN_KOTH_Menu_Background
@@ -68,7 +68,7 @@ class BN_KOTH_RscMenu
             y = BN_KOTH_MENU_MAIN_Y;
             w = BN_KOTH_MENU_CENTER_W;
             h = BN_KOTH_MENU_MAIN_H;
-            colorBackground[] = {0.06, 0.06, 0.05, 0.88};
+            colorBackground[] = {0.03, 0.03, 0.03, 0.98};
         };
 
         class BgRight: BN_KOTH_Menu_Background
@@ -78,7 +78,7 @@ class BN_KOTH_RscMenu
             y = BN_KOTH_MENU_MAIN_Y;
             w = BN_KOTH_MENU_RIGHT_W;
             h = BN_KOTH_MENU_MAIN_H;
-            colorBackground[] = {0.05, 0.05, 0.04, 0.88};
+            colorBackground[] = {0.04, 0.04, 0.03, 0.94};
         };
 
         class BgBottom: BN_KOTH_Menu_Background
@@ -209,10 +209,10 @@ class BN_KOTH_RscMenu
             text = "FEATURE COMING SOON";
             style = 2;
             x = BN_KOTH_MENU_CENTER_X + safeZoneW * 0.012;
-            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H * 0.43;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.058;
             w = BN_KOTH_MENU_CENTER_W - safeZoneW * 0.024;
-            h = safeZoneH * 0.06;
-            sizeEx = "0.034 * safeZoneH";
+            h = safeZoneH * 0.024;
+            sizeEx = "0.018 * safeZoneH";
             colorText[] = {0.88, 0.70, 0.24, 0.98};
         };
 

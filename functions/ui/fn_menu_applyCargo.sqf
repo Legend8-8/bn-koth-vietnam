@@ -1,6 +1,6 @@
 /*
     File: fn_menu_applyCargo.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Sends pending cargo delta intent through the authoritative loadout mutation path.
     Execution: Client
     Parameters:
@@ -35,5 +35,4 @@ private _request = createHashMapFromArray [
 ];
 
 [_request] call bn_koth_fnc_loadouts_request;
-["CARGO REQUEST SENT."] call bn_koth_fnc_ui_notify;
 true

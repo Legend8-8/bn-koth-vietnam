@@ -1,6 +1,6 @@
 /*
     File: fn_menu_applyAssigned.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Sends pending assigned-equipment intent through the authoritative loadout mutation path.
     Execution: Client
     Parameters:
@@ -37,5 +37,4 @@ private _request = createHashMapFromArray [
 ];
 
 [_request] call bn_koth_fnc_loadouts_request;
-["ASSIGNED EQUIPMENT REQUEST SENT."] call bn_koth_fnc_ui_notify;
 true

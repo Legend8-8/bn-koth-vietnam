@@ -104,7 +104,7 @@ private _buildWeaponSlot = {
 
     private _weaponClass = _weaponData getOrDefault ["weaponClass", ""];
     private _magazines = _weaponData getOrDefault ["magazines", []];
-    private _ordinaryAttachments = _weaponData getOrDefault ["ordinaryAttachments", objNull];
+    private _attachments = _weaponData getOrDefault ["attachments", objNull];
 
     if !(_weaponClass isEqualType "") exitWith {
         ["ERR_VALIDATED_WEAPON_CLASS_TYPE", format ["Validated %1 weaponClass must be a string.", _slotName]] call _slotFail
@@ -118,12 +118,13 @@ private _buildWeaponSlot = {
         ["ERR_VALIDATED_MAGAZINES_TYPE", format ["Validated %1 magazines must be an array.", _slotName]] call _slotFail
     };
 
-    // Structural attachments have already been represented by the resolved weapon classname.
-    // Only ordinary physical attachments may be inserted into Unit Loadout Array attachment fields.
-    if !(_ordinaryAttachments isEqualType []) exitWith {
+    // The validator has already resolved structural attachment intent to the correct concrete
+    // weapon classname. The complete validated attachment set must still be inserted into the
+    // physical Unit Loadout weapon tuple so optics, suppressors, bipods, etc. are actually fitted.
+    if !(_attachments isEqualType []) exitWith {
         [
-            "ERR_VALIDATED_ATTACHMENT_ROLES_MISSING",
-            format ["Validated %1 weapon is missing ordinaryAttachments provenance.", _slotName]
+            "ERR_VALIDATED_ATTACHMENTS_TYPE",
+            format ["Validated %1 weapon attachments must be an array.", _slotName]
         ] call _slotFail
     };
 
@@ -176,7 +177,7 @@ private _buildWeaponSlot = {
                 };
             };
         };
-    } forEach _ordinaryAttachments;
+    } forEach _attachments;
 
     if ((count _attachmentFailure) > 0) exitWith {
         _attachmentFailure
