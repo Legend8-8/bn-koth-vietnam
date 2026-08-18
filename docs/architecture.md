@@ -172,13 +172,18 @@ Contains:
 
 "functions/progression/"
 
-Contains future:
+Contains progression systems:
 
-- experience;
-- levels;
+- `xp/` owns server-authoritative round XP, level calculation, and Priority-zone,
+  control, and combat reward hooks;
+- `cash/` — reserved for the future cash system;
 - unlocks;
-- currency;
 - player statistics.
+
+XP state is stored in server-owned player records. Award results are written to
+the server log for now. The current implementation resets XP and levels at
+round reset and does not provide persistence, currency, HUD presentation, or
+unlock enforcement.
 
 "functions/persistence/"
 

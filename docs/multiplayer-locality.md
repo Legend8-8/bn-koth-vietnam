@@ -42,6 +42,7 @@ Zone ownership calculation| Server
 Team score| Server
 Win-condition calculation| Server
 Team assignment validation| Server
+Experience and level changes| Server
 Player input and menus| Owning client
 HUD drawing| Each client
 Local sounds and visual effects| Each client
