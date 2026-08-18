@@ -11,7 +11,7 @@
     Public: Yes
 */
 
-#include "..\..\ui\lobby\idcs.hpp"
+#include "..\..\..\ui\lobby\idcs.hpp"
 
 params ["_display", "_viewModel"];
 

@@ -38,6 +38,8 @@ private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", create
         continue;
     };
 
+    [_uid] call bn_koth_fnc_loadouts_clearPlayerState;
+
     _record = _records getOrDefault [_uid, createHashMap];
     if (_record isEqualType createHashMap) then {
         _record set ["assignedSide", sideUnknown];
