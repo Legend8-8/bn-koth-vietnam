@@ -40,6 +40,8 @@ if !([_mySide] call bn_koth_fnc_teams_validateSide) exitWith {
 
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 private _playerStates = missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap];
+private _lastDrawData = uiNamespace getVariable ["BN_KOTH_playerIconsLastDrawData", []];
+private _lastDrawAt = uiNamespace getVariable ["BN_KOTH_playerIconsLastDrawAt", -1];
 
 if !(_playerStates isEqualType createHashMap) then {
     _playerStates = createHashMap;
@@ -53,6 +55,10 @@ private _activeLookup = createHashMap;
 private _iconTexture = missionNamespace getVariable ["BN_KOTH_playerIconsTexture", "\A3\ui_f\data\map\markers\military\triangle_CA.paa"];
 private _iconColor = missionNamespace getVariable ["BN_KOTH_playerIconsColorArray", [1, 1, 1, 1]];
 private _groupIconColor = missionNamespace getVariable ["BN_KOTH_playerIconsGroupColorArray", [0, 1, 0, 1]];
+private _voiceStates = missionNamespace getVariable ["BN_KOTH_playerIconsVoiceStates", createHashMap];
+if !(_voiceStates isEqualType createHashMap) then {
+    _voiceStates = createHashMap;
+};
 private _showPassengerCount = missionNamespace getVariable ["BN_KOTH_playerIconsShowPassengerCount", true];
 private _showDriverName = missionNamespace getVariable ["BN_KOTH_playerIconsShowDriverName", true];
 
@@ -90,9 +96,11 @@ private _vehicleGroups = createHashMap;
     if (_unitVehicle isEqualTo _unit) then {
         private _uid = getPlayerUID _unit;
         private _label = if (_showDriverName) then {name _unit} else {""};
-        private _isSameGroupPlayer = !(_unit isEqualTo player) && {group _unit isEqualTo group player};
+        private _hasOtherGroupPlayer = ({isPlayer _x} count units group player) > 1;
+        private _isSameGroupPlayer = _hasOtherGroupPlayer && {group _unit isEqualTo group player};
         private _playerColor = if (_isSameGroupPlayer) then {_groupIconColor} else {_iconColor};
-        _drawData pushBack [getPosVisual _unit, getDir _unit, _label, _iconTexture, _playerColor, _unit isEqualTo player];
+        private _isTalking = _voiceStates getOrDefault [_uid, false];
+        _drawData pushBack [getPosVisual _unit, getDir _unit, _label, _iconTexture, _playerColor, _unit isEqualTo player, _isTalking];
     } else {
         private _vehicleKey = netId _unitVehicle;
         if (_vehicleKey isEqualTo "") then {
@@ -129,17 +137,32 @@ private _vehicleGroups = createHashMap;
         _label = format ["%1 +%2", _label, _extraCount];
     };
 
-    private _hasSameGroupPlayer = ({!(_x isEqualTo player) && {group _x isEqualTo group player}} count _occupants) > 0;
+    private _hasOtherGroupPlayer = ({isPlayer _x} count units group player) > 1;
+    private _hasSameGroupPlayer = _hasOtherGroupPlayer && {{group _x isEqualTo group player} count _occupants > 0};
     private _vehicleColor = if (_hasSameGroupPlayer) then {_groupIconColor} else {_iconColor};
     private _hasLocalPlayer = false;
+    private _isTalking = false;
     {
-        if (_x isEqualTo player) exitWith {
+        if (_x isEqualTo player) then {
             _hasLocalPlayer = true;
         };
+        if (_voiceStates getOrDefault [getPlayerUID _x, false]) then {
+            _isTalking = true;
+        };
     } forEach _occupants;
-    _drawData pushBack [getPosVisual _vehicle, getDir _vehicle, _label, _iconTexture, _vehicleColor, _hasLocalPlayer];
+    _drawData pushBack [getPosVisual _vehicle, getDir _vehicle, _label, _iconTexture, _vehicleColor, _hasLocalPlayer, _isTalking];
 } forEach (keys _vehicleGroups);
 
 uiNamespace setVariable ["BN_KOTH_playerIconsDrawData", _drawData];
 
-count _drawData
+if ((count _drawData) > 0) then {
+    uiNamespace setVariable ["BN_KOTH_playerIconsLastDrawData", _drawData];
+    uiNamespace setVariable ["BN_KOTH_playerIconsLastDrawAt", diag_tickTime];
+} else {
+    private _roundState = missionNamespace getVariable ["BN_KOTH_roundState", "WAITING"];
+    if (_roundState isEqualTo "ACTIVE" && {_lastDrawAt >= 0} && {(diag_tickTime - _lastDrawAt) < 1}) then {
+        uiNamespace setVariable ["BN_KOTH_playerIconsDrawData", _lastDrawData];
+    };
+};
+
+count (uiNamespace getVariable ["BN_KOTH_playerIconsDrawData", []])

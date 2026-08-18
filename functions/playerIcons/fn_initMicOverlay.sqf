@@ -42,7 +42,11 @@ private _handle = [_micTexture, _micColor, _micSize, _micNameSize, _micInputActi
 
     while {hasInterface} do {
         private _isTalking = (inputAction _micInputAction) > 0;
-        missionNamespace setVariable ["BN_KOTH_playerIconsMicTalking", _isTalking];
+        private _lastTalking = missionNamespace getVariable ["BN_KOTH_playerIconsMicTalking", !_isTalking];
+        if !(_isTalking isEqualTo _lastTalking) then {
+            missionNamespace setVariable ["BN_KOTH_playerIconsMicTalking", _isTalking];
+            [player, _isTalking] remoteExecCall ["bn_koth_fnc_playerIcons_setVoiceState", 0];
+        };
 
         private _mapDisplay = findDisplay _micDisplayId;
         if (!isNull _mapDisplay) then {
@@ -63,13 +67,13 @@ private _handle = [_micTexture, _micColor, _micSize, _micNameSize, _micInputActi
                     private _isTalking = missionNamespace getVariable ["BN_KOTH_playerIconsMicTalking", false];
                     private _drawData = uiNamespace getVariable ["BN_KOTH_playerIconsDrawData", []];
                     {
-                        _x params ["_position", "_direction", "_label", "_texture", "_color", "_isLocal"];
+                        _x params ["_position", "_direction", "_label", "_texture", "_color", "_isLocal", "_isTalking"];
                         private _drawTexture = _texture;
                         private _drawColor = _color;
                         private _drawLabel = _label;
                         private _drawSize = 1;
                         private _drawDirection = _direction;
-                        if (_isLocal && {_isTalking}) then {
+                        if (_isTalking) then {
                             private _micDrawSize = _mapControl getVariable ["BN_KOTH_playerIconsMicSize", 24];
                             if !(_micDrawSize isEqualType 0) then {
                                 _micDrawSize = 24;
