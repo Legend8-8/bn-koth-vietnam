@@ -58,6 +58,7 @@ if (!isNull _targetUnit && {(owner _targetUnit) isEqualTo _ownerId}) exitWith {
     missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
     [_targetUnit, _uid] call bn_koth_fnc_curator_init;
+    [_targetUnit] remoteExecCall ["bn_koth_fnc_playerIcons_initPlayerLocal", _ownerId];
 
     true
 };

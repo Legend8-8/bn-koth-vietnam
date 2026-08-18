@@ -53,6 +53,18 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_playerIcons_initPlayerLocal
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_playerIcons_setVoiceState
+        {
+            allowedTargets = 0;
+            jip = 0;
+        };
+
         class bn_koth_fnc_respawn_forceExitVehicle
         {
             allowedTargets = 1;

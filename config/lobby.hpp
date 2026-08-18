@@ -5,7 +5,7 @@ class CfgBnKothLobby
     candidateCount = 3;
     maxPlayers = 100;
     maxTeamPlayers = 50;
-    maxTeamDifference = 1;
+    maxTeamDifference = 2;
 
     // Temporary Phase 1 lobby unit until finalized by playtesting.
     lobbyUnitClass = "C_man_1";
