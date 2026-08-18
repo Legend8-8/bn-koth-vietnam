@@ -1,5 +1,6 @@
 /*
     File: fn_addKillFeedEntry.sqf
+    Auhtor: SpadeMe
     Description: Renders one kill feed entry, top-right. Presentation only -
         this function never decides whether a kill counts, how much detail
         to show, or who should see it; combat_publishKillFeed already
@@ -50,6 +51,22 @@ private _colorFor = {
         default                     {"#C8C8C8"};
     };
 };
+
+// Player names are inserted into structured text below, so escape markup
+// characters before building the <t> string.
+private _escapeStructuredText = {
+    params ["_value"];
+
+    private _escaped = _value;
+    _escaped = [_escaped, "&", "&amp;"] call BIS_fnc_replace;
+    _escaped = [_escaped, "<", "&lt;"] call BIS_fnc_replace;
+    _escaped = [_escaped, ">", "&gt;"] call BIS_fnc_replace;
+
+    _escaped
+};
+
+_killerName = [_killerName] call _escapeStructuredText;
+_victimName = [_victimName] call _escapeStructuredText;
 
 private _weaponTag = if (_weapon isEqualTo "") then {""} else {
     format [" <t align='right' color='#888888'>[%1]</t>", _weapon]

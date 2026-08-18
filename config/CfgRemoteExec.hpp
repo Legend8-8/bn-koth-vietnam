@@ -53,6 +53,12 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_ui_addKillFeedEntry
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_respawn_forceExitVehicle
         {
             allowedTargets = 1;

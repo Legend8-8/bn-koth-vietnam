@@ -17,13 +17,6 @@ class CfgFunctions
             class combat_publishKillFeed {file = "functions\combat\fn_publishKillFeed.sqf";};
         };
 
-        // DEBUG-ONLY - REMOVE BEFORE RELEASE (delete this whole class block
-        // and functions/debug/fn_forceTestKill.sqf)
-        class debug
-        {
-            class debug_forceTestKill {file = "functions\debug\fn_forceTestKill.sqf";};
-        };
-
         class curator
         {
             class curator_init {file = "functions\curator\fn_curator_init.sqf";};

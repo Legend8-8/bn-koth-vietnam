@@ -1,5 +1,6 @@
 /*
     File: fn_publishKillFeed.sqf
+    Author: SpadeMe
     Description: Consumes a canonical kill record from combat_handleKill and
         decides what the kill feed shows, and to whom, based on
         CfgBnKothCombat. Does not decide whether/what the kill was -
@@ -35,10 +36,30 @@ if (!_categoryEnabled) exitWith {
 };
 
 if (_mode isEqualTo "deathfeed") exitWith {
-    // Hardcore: only the victim's own team is told, and only that a
-    // teammate is down - no killer identity, weapon, or range is ever sent.
+    // Hardcore: only players authoritatively assigned to the victim's team
+    // are told. Do not derive KOTH team membership from the represented
+    // unit's engine side because lobby representations may be CIV.
     private _victimSide = _kill get "victimSide";
-    private _targets = (allPlayers select {side _x isEqualTo _victimSide}) apply {owner _x};
+    private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
+    private _targets = [];
+
+    if (_records isEqualType createHashMap) then {
+        {
+            private _record = _records get _x;
+
+            if (_record isEqualType createHashMap) then {
+                private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
+
+                if (_assignedSide isEqualTo _victimSide) then {
+                    private _ownerId = _record getOrDefault ["ownerId", -1];
+
+                    if (_ownerId > 0) then {
+                        _targets pushBackUnique _ownerId;
+                    };
+                };
+            };
+        } forEach (keys _records);
+    };
 
     if (count _targets > 0) then {
         [

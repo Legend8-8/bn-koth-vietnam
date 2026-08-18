@@ -1,11 +1,12 @@
 /*
     File: fn_handleKill.sqf
+    Author: SpadeMe
     Description: Server-authoritative interpretation of a kill. This is the
-        ONE place that decides what a kill actually was - victim/killer UID,
-        sides, suicide/teamkill/valid-PvP, method, weapon, approximate range,
-        round state. Specialised consumers (kill feed today; rewards/XP/
-        stats/weapon-progression later) read the result rather than each
-        deriving their own version of the same event from EntityKilled.
+        ONE place that decides the authoritative victim/killer identity,
+        sides, suicide/teamkill/valid-PvP, and round state. Method and weapon
+        fields are currently display-grade kill-feed attribution only and
+        must not be used for weapon progression or other authoritative
+        progression decisions until dedicated combat attribution exists.
     Execution: Server
     Parameters:
         0: Dead unit <OBJECT>
@@ -52,9 +53,9 @@ private _killerName = if (_hasIdentifiedKiller) then { _killerRecord getOrDefaul
 private _teamkill = _hasIdentifiedKiller && {!_suicide} && {_killerSide isEqualTo _victimSide};
 private _validPvp = _hasIdentifiedKiller && {!_suicide} && {!_teamkill};
 
-// Kill method - gates what the kill feed shows and is useful later for
-// weapon-progression consumers. Heuristic based on the killer's vehicle
-// class, not exact ammo - revisit if you run heavily modded vehicles.
+// Kill method and weapon are currently DISPLAY-GRADE attribution for the
+// kill feed only. They are heuristic and are not authoritative enough for
+// weapon progression, unlocks, rewards, or persisted statistics.
 private _method = "other";
 private _weaponDisplay = "";
 if (_hasIdentifiedKiller) then {
@@ -108,11 +109,10 @@ _kill set ["roundActive", _roundState isEqualTo "ACTIVE"];
     _victimUid, _victimSide, _killerUid, _killerSide, _suicide, _teamkill, _validPvp, _method, _weaponDisplay, _distText, _roundState
 ], "INFO"] call bn_koth_fnc_common_log;
 
-// Seam for future consumers - deliberately not implemented as part of the
-// kill feed change:
-// [_kill] call bn_koth_fnc_progression_awardKillXp;
-// [_kill] call bn_koth_fnc_scoring_awardKillCash;
-// [_kill] call bn_koth_fnc_progression_recordWeaponKill;
+// Future progression/reward/stat consumers may use the authoritative identity
+// fields in this record, but must not use the current method/weapon fields for
+// weapon-specific progression until a dedicated combat attribution layer
+// provides authoritative source/weapon/ammo attribution.
 
 [_kill] call bn_koth_fnc_combat_publishKillFeed;
 
