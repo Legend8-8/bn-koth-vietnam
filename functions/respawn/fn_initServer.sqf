@@ -53,6 +53,7 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
     };
 
     if (_isPlayerEntity && {!alive _killed}) then {
+        [_killed, _killer, _instigator] call bn_koth_fnc_progression_xp_awardKill;
         [_killed] spawn bn_koth_fnc_respawn_cleanupDeadBody;
     };
 

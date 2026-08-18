@@ -77,6 +77,16 @@ class CfgFunctions
             class scoring_awardControlTick {file = "functions\scoring\fn_awardControlTick.sqf";};
         };
 
+        class progression
+        {
+            class progression_xp_initServer {file = "functions\progression\xp\fn_initServer.sqf";};
+            class progression_xp_resetRound {file = "functions\progression\xp\fn_resetRound.sqf";};
+            class progression_xp_getLevel {file = "functions\progression\xp\fn_getLevel.sqf";};
+            class progression_xp_addXp {file = "functions\progression\xp\fn_addXp.sqf";};
+            class progression_xp_awardControlTick {file = "functions\progression\xp\fn_awardControlTick.sqf";};
+            class progression_xp_awardKill {file = "functions\progression\xp\fn_awardKill.sqf";};
+        };
+
         class respawn
         {
             class respawn_initServer {file = "functions\respawn\fn_initServer.sqf";};

@@ -154,6 +154,8 @@ private _newScore = _current + _scoreTick;
 _scores set [_controller, _newScore];
 missionNamespace setVariable ["BN_KOTH_teamScores", _scores, true];
 
+[_controller] call bn_koth_fnc_progression_xp_awardControlTick;
+
 [format ["Score tick: %1 -> %2", _controller, _newScore]] call bn_koth_fnc_common_log;
 
 if (_newScore >= _scoreLimit) then {
