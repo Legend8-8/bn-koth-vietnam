@@ -65,12 +65,21 @@ The server is responsible for calculating and awarding all team score.
 
 5. Player Progression
 
-Persistent progression is not part of the first playable version.
+The first progression implementation is round-scoped and log-only. XP and
+levels reset when the round resets; they are not persisted across reconnects or
+server restarts, and they are not shown in the HUD yet.
+
+The current implementation awards XP for:
+
+- validated control participation while a team controls the zone;
+- validated participation inside the active Priority zone during a scoring interval;
+- validated opposing player kills.
+
+The current level cap is configurable and defaults to 270. Levels do not yet
+gate loadouts, vehicles, currency, or equipment.
 
 Future progression may include:
 
-- experience;
-- levels or ranks;
 - currency;
 - equipment unlocks;
 - vehicle unlocks;
