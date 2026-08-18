@@ -74,6 +74,24 @@ private _resolveBoardTarget = {
             ];
 
             _board setVariable [_actionKey, _actionId, false];
+
+            private _menuActionKey = format ["BN_KOTH_commandBoardMenuAction_%1", _sideToken];
+            if (_board getVariable [_menuActionKey, -1] < 0) then {
+                private _menuActionId = _board addAction [
+                    "Open Menu",
+                    {
+                        [true] call bn_koth_fnc_menu_open;
+                    },
+                    nil,
+                    1.5,
+                    false,
+                    true,
+                    "",
+                    format ["alive _target && {_this distance _target < 5} && {(side _this) isEqualTo %1}", _side]
+                ];
+
+                _board setVariable [_menuActionKey, _menuActionId, false];
+            };
         } forEach _defs;
 
         sleep 2;

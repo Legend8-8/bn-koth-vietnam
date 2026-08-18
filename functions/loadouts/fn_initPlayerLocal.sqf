@@ -92,6 +92,18 @@ if !(missionNamespace getVariable ["BN_KOTH_loadoutsLocalMissionEhAdded", false]
         params ["_newEntity"];
 
         if (hasInterface && {!isNull _newEntity} && {_newEntity isEqualTo player}) then {
+            // The server deliberately resets intended loadout state to the
+            // faction starter on respawn. Do not retain the dead unit's
+            // client-only menu snapshot while that authoritative reset occurs.
+            uiNamespace setVariable ["BN_KOTH_menuIntendedLoadout", []];
+
+            private _menuDisplay = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
+            if (!isNull _menuDisplay) then {
+                [
+                    uiNamespace getVariable ["BN_KOTH_menuActivePage", "LOADOUT"]
+                ] call bn_koth_fnc_menu_refresh;
+            };
+
             [] call bn_koth_fnc_loadouts_initPlayerLocal;
         };
     }];

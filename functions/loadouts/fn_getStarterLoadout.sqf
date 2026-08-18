@@ -55,6 +55,7 @@ if (_sideToken isEqualTo "") exitWith {
 
 private _settingsCfg = missionConfigFile >> "CfgBnKothArsenalSettings";
 private _starterId = "";
+private _loadout = [];
 if (isClass _settingsCfg) then {
     _starterId = switch (_sideToken) do {
         case "WEST": {getText (_settingsCfg >> "starterLoadoutWest")};
@@ -103,7 +104,7 @@ if !(_definitionSide isEqualTo _sideToken) exitWith {
     ]
 };
 
-private _loadout = _definition getOrDefault ["loadout", []];
+_loadout = _definition getOrDefault ["loadout", []];
 if !(_loadout isEqualType []) then {
     _loadout = [];
 };
