@@ -92,7 +92,7 @@ private _vehicleGroups = createHashMap;
         private _label = if (_showDriverName) then {name _unit} else {""};
         private _isSameGroupPlayer = !(_unit isEqualTo player) && {group _unit isEqualTo group player};
         private _playerColor = if (_isSameGroupPlayer) then {_groupIconColor} else {_iconColor};
-        _drawData pushBack [getPosVisual _unit, getDir _unit, _label, _iconTexture, _playerColor, (owner _unit) isEqualTo clientOwner];
+        _drawData pushBack [getPosVisual _unit, getDir _unit, _label, _iconTexture, _playerColor, _unit isEqualTo player];
     } else {
         private _vehicleKey = netId _unitVehicle;
         if (_vehicleKey isEqualTo "") then {
@@ -133,7 +133,7 @@ private _vehicleGroups = createHashMap;
     private _vehicleColor = if (_hasSameGroupPlayer) then {_groupIconColor} else {_iconColor};
     private _hasLocalPlayer = false;
     {
-        if ((owner _x) isEqualTo clientOwner) exitWith {
+        if (_x isEqualTo player) exitWith {
             _hasLocalPlayer = true;
         };
     } forEach _occupants;

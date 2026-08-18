@@ -6,7 +6,6 @@ diag_log format ["[BN_KOTH][INFO] initPlayerLocal.sqf entered owner=%1 uid='%2'"
 [] call bn_koth_fnc_loadouts_initPlayerLocal;
 [] call bn_koth_fnc_ui_initPlayerLocal;
 [] call bn_koth_fnc_playerIcons_initPlayerLocal;
-[] call bn_koth_fnc_playerIcons_initMicOverlay;
 [] call bn_koth_fnc_vehicles_mobileRespawn_initTeleport;
 
 // Request current authoritative state for join-in-progress correctness.

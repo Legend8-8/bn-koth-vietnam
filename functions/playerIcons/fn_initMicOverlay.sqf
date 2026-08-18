@@ -28,7 +28,6 @@ private _micControlId = getNumber (_playerIconsCfg >> "micControlId");
 if (_micTexture isEqualTo "") then {_micTexture = "\a3\ui_f\data\igui\rscingameui\rscdisplayvoicechat\microphone_ca.paa"};
 if !(_micColor isEqualType [] && {count _micColor >= 4}) then {_micColor = [1, 0.5, 0, 1]};
 if (_micSize <= 0) then {_micSize = 24};
-if !(_micNameColor isEqualType [] && {count _micNameColor >= 4}) then {_micNameColor = [1, 1, 1, 1]};
 if (_micNameSize <= 0) then {_micNameSize = 0.04};
 if (_micInputAction isEqualTo "") then {_micInputAction = "PushToTalk"};
 if (_iconTexture isEqualTo "") then {_iconTexture = "\A3\ui_f\data\map\markers\military\triangle_CA.paa"};
@@ -38,10 +37,13 @@ if (_micControlId <= 0) then {_micControlId = 51};
 private _existingHandle = missionNamespace getVariable ["BN_KOTH_playerIconsMicOverlayHandle", scriptNull];
 if (_existingHandle isEqualType scriptNull && {!scriptDone _existingHandle}) exitWith {true};
 
-private _handle = [_micTexture, _micColor, _micSize, _micNameColor, _micNameSize, _micInputAction, _iconAlpha, _iconTexture, _micDisplayId, _micControlId] spawn {
-    params ["_micTexture", "_micColor", "_micSize", "_micNameColor", "_micNameSize", "_micInputAction", "_iconAlpha", "_iconTexture", "_micDisplayId", "_micControlId"];
+private _handle = [_micTexture, _micColor, _micSize, _micNameSize, _micInputAction, _iconAlpha, _iconTexture, _micDisplayId, _micControlId] spawn {
+    params ["_micTexture", "_micColor", "_micSize", "_micNameSize", "_micInputAction", "_iconAlpha", "_iconTexture", "_micDisplayId", "_micControlId"];
 
     while {hasInterface} do {
+        private _isTalking = (inputAction _micInputAction) > 0;
+        missionNamespace setVariable ["BN_KOTH_playerIconsMicTalking", _isTalking];
+
         private _mapDisplay = findDisplay _micDisplayId;
         if (!isNull _mapDisplay) then {
             private _mapControl = _mapDisplay displayCtrl _micControlId;
@@ -56,10 +58,9 @@ private _handle = [_micTexture, _micColor, _micSize, _micNameColor, _micNameSize
                 private _handlerId = _mapControl ctrlAddEventHandler ["Draw", {
                     params ["_mapControl"];
 
-                    private _inputAction = _mapControl getVariable ["BN_KOTH_playerIconsMicInputAction", "PushToTalk"];
                     if (isNull player || {!alive player}) exitWith {};
 
-                    private _isTalking = (inputAction _inputAction) > 0;
+                    private _isTalking = missionNamespace getVariable ["BN_KOTH_playerIconsMicTalking", false];
                     private _drawData = uiNamespace getVariable ["BN_KOTH_playerIconsDrawData", []];
                     {
                         _x params ["_position", "_direction", "_label", "_texture", "_color", "_isLocal"];
@@ -87,7 +88,7 @@ private _handle = [_micTexture, _micColor, _micSize, _micNameColor, _micNameSize
             };
         };
 
-        uiSleep 0.25;
+        uiSleep 0.05;
     };
 
     missionNamespace setVariable ["BN_KOTH_playerIconsMicOverlayHandle", scriptNull];

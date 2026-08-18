@@ -77,5 +77,6 @@ if (_refreshLoop isEqualTo scriptNull || {scriptDone _refreshLoop}) then {
 };
 
 [] call bn_koth_fnc_playerIcons_refresh;
+[] call bn_koth_fnc_playerIcons_initMicOverlay;
 
 true
