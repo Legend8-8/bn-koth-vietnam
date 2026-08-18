@@ -63,6 +63,129 @@ _record set ["lastLoadoutRequestAt", _now];
 _records set [_uid, _record];
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
+// Read-only snapshots may be requested anywhere. Every operation capable of
+// changing or storing loadout state requires authoritative access at the
+// player's active team mapboard. The client-side menu capability flag is
+// presentation only and is never trusted here.
+private _requiresArsenalAccess = true;
+
+if (_request isEqualType createHashMap) then {
+    private _requestKeys = keys _request;
+
+    if (((count _requestKeys) isEqualTo 1) && {"mutation" in _requestKeys}) then {
+        private _mutation = _request getOrDefault ["mutation", createHashMap];
+
+        if (_mutation isEqualType createHashMap) then {
+            private _mutationOp = toLower (_mutation getOrDefault ["op", ""]);
+            _requiresArsenalAccess = !(_mutationOp isEqualTo "snapshot");
+        };
+    };
+};
+
+private _arsenalAccessFailure = "";
+
+if (_requiresArsenalAccess) then {
+    if (!alive _playerObj) then {
+        _arsenalAccessFailure = "player_not_alive";
+    };
+
+    private _deployed = _record getOrDefault ["deployed", false];
+    private _playerState = _record getOrDefault ["state", ""];
+
+    if ((_arsenalAccessFailure isEqualTo "") && {!_deployed || {!(_playerState isEqualTo "ACTIVE")}}) then {
+        _arsenalAccessFailure = "player_not_deployed_active";
+    };
+
+    private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
+
+    if ((_arsenalAccessFailure isEqualTo "") && {!([_assignedSide] call bn_koth_fnc_teams_validateSide)}) then {
+        _arsenalAccessFailure = "invalid_assigned_side";
+    };
+
+    private _activeLocationId = "";
+    private _activeCfg = configNull;
+    private _boardRef = "";
+    private _boardTarget = objNull;
+
+    if (_arsenalAccessFailure isEqualTo "") then {
+        _activeLocationId = missionNamespace getVariable ["BN_KOTH_activeLocationId", ""];
+        _activeCfg = missionConfigFile >> "CfgBnKothLocations" >> _activeLocationId;
+
+        if !(isClass _activeCfg) then {
+            _arsenalAccessFailure = "active_location_unavailable";
+        };
+    };
+
+    if (_arsenalAccessFailure isEqualTo "") then {
+        _boardRef = switch (_assignedSide) do {
+            case west: {getText (_activeCfg >> "westCommand_mapboard")};
+            case east: {getText (_activeCfg >> "eastCommand_mapboard")};
+            default {""};
+        };
+
+        if (_boardRef isEqualTo "") then {
+            _arsenalAccessFailure = "team_mapboard_unconfigured";
+        };
+    };
+
+    if (_arsenalAccessFailure isEqualTo "") then {
+        _boardTarget = missionNamespace getVariable [_boardRef, objNull];
+
+        if (isNull _boardTarget && {!((markerShape _boardRef) isEqualTo "")}) then {
+            private _boardPos = markerPos _boardRef;
+            private _boardCandidates = nearestObjects [
+                _boardPos,
+                ["Static", "Thing", "House", "LandVehicle"],
+                8
+            ];
+
+            if !(_boardCandidates isEqualTo []) then {
+                _boardCandidates = [
+                    _boardCandidates,
+                    [],
+                    {_boardPos distance2D _x},
+                    "ASCEND"
+                ] call BIS_fnc_sortBy;
+
+                _boardTarget = _boardCandidates select 0;
+            };
+        };
+
+        if (isNull _boardTarget) then {
+            _arsenalAccessFailure = "team_mapboard_not_resolved";
+        };
+    };
+
+    // addAction uses <5 m client-side. The server keeps a small tolerance for
+    // movement/network timing while remaining authoritative.
+    if (
+        (_arsenalAccessFailure isEqualTo "") &&
+        {(_playerObj distance2D _boardTarget) > 8}
+    ) then {
+        _arsenalAccessFailure = "player_not_at_team_mapboard";
+    };
+};
+
+if !(_arsenalAccessFailure isEqualTo "") exitWith {
+    [
+        format [
+            "Rejected arsenal request UID=%1 reason=%2",
+            _uid,
+            _arsenalAccessFailure
+        ],
+        "WARN"
+    ] call bn_koth_fnc_common_log;
+
+    [
+        createHashMapFromArray [
+            ["success", false],
+            ["code", "ERR_ARSENAL_ACCESS"],
+            ["message", "Loadout changes require access through your active team mapboard."],
+            ["loadoutId", ""]
+        ]
+    ] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
+};
+
 private _validation = [
     _playerObj,
     _request

@@ -1,6 +1,6 @@
 /*
     File: fn_clearPlayerState.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Clears one player's loadouts-owned session state by UID.
     Execution: Server
     Parameters:

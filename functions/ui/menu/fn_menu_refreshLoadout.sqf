@@ -11,7 +11,7 @@
     Public: No
 */
 
-#include "..\..\ui\menu\idcs.hpp"
+#include "..\..\..\ui\menu\idcs.hpp"
 
 params [
     ["_display", displayNull, [displayNull]],
@@ -19,6 +19,11 @@ params [
 ];
 
 if (isNull _display) exitWith {};
+
+private _arsenalEnabled = uiNamespace getVariable [
+    "BN_KOTH_menuArsenalEnabled",
+    false
+];
 
 private _resolveItemName = {
     params ["_className"];
@@ -95,6 +100,9 @@ private _ctrlBinocularButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_BINOCU
 private _ctrlEquipmentButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_EQUIPMENT_BUTTON;
 private _ctrlCargoButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_CARGO_BUTTON;
 private _ctrlAttachmentsButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_ATTACHMENTS_BUTTON;
+private _ctrlSessionSave = _display displayCtrl BN_KOTH_IDC_MENU_SESSION_SAVE_BUTTON;
+private _ctrlSessionLoad = _display displayCtrl BN_KOTH_IDC_MENU_SESSION_LOAD_BUTTON;
+private _ctrlSessionDelete = _display displayCtrl BN_KOTH_IDC_MENU_SESSION_DELETE_BUTTON;
 
 private _primaryName = [_intendedLoadout, 0] call _readWeaponNameFromLoadoutSlot;
 private _handgunName = [_intendedLoadout, 2] call _readWeaponNameFromLoadoutSlot;
@@ -118,7 +126,13 @@ if ((count _intendedLoadout) > 8) then {
 };
 
 _ctrlSectionTitle ctrlSetText "LOADOUT";
-_ctrlNotice ctrlSetText "SERVER-AUTHORITATIVE INTENDED KIT";
+_ctrlNotice ctrlSetText (
+    if (_arsenalEnabled) then {
+        "SERVER-AUTHORITATIVE INTENDED KIT"
+    } else {
+        "ARSENAL LOCKED - USE YOUR TEAM MAPBOARD"
+    }
+);
 
 {
     _x ctrlShow false;
@@ -149,7 +163,10 @@ _ctrlNotice ctrlSetText "SERVER-AUTHORITATIVE INTENDED KIT";
     _ctrlBinocularButton,
     _ctrlEquipmentButton,
     _ctrlCargoButton,
-    _ctrlAttachmentsButton
+    _ctrlAttachmentsButton,
+    _ctrlSessionSave,
+    _ctrlSessionLoad,
+    _ctrlSessionDelete
 ];
 
 private _assignedCount = 0;
@@ -198,7 +215,7 @@ _ctrlCargoButton ctrlSetText "CARGO / ITEMS";
 _ctrlAttachmentsButton ctrlSetText "ATTACHMENTS";
 
 {
-    _x ctrlEnable !isNull player;
+    _x ctrlEnable (!isNull player && {_arsenalEnabled});
 } forEach [
     _ctrlPrimaryButton,
     _ctrlHandgunButton,

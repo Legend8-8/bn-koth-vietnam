@@ -11,7 +11,7 @@
     Public: Yes
 */
 
-#include "..\..\ui\hud\idcs.hpp"
+#include "..\..\..\ui\hud\idcs.hpp"
 
 if (!hasInterface) exitWith {};
 

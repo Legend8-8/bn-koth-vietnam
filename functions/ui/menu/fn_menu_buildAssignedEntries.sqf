@@ -1,6 +1,6 @@
 /*
     File: fn_menu_buildAssignedEntries.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Builds assigned-equipment entries from canonical SourceItems and slot subtype rules.
     Execution: Client
     Parameters:

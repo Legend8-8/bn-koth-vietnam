@@ -80,14 +80,14 @@ private _resolveBoardTarget = {
                 private _menuActionId = _board addAction [
                     "Open Menu",
                     {
-                        [] call bn_koth_fnc_menu_open;
+                        [true] call bn_koth_fnc_menu_open;
                     },
                     nil,
                     1.5,
                     false,
                     true,
                     "",
-                    "alive _target && {_this distance _target < 5}"
+                    format ["alive _target && {_this distance _target < 5} && {(side _this) isEqualTo %1}", _side]
                 ];
 
                 _board setVariable [_menuActionKey, _menuActionId, false];

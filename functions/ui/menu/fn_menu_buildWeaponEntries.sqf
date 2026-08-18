@@ -1,6 +1,6 @@
 /*
     File: fn_menu_buildWeaponEntries.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Builds canonical weapon selector entries for primary, handgun, and launcher pages.
     Execution: Client
     Parameters:

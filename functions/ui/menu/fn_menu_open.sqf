@@ -1,18 +1,24 @@
 /*
     File: fn_menu_open.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Opens the deployed menu on the local client.
     Execution: Client
     Parameters:
-        None
+        0: Arsenal capability requested by the local menu opener <BOOL> (optional, default false)
     Returns:
         True when open, otherwise false <BOOL>
     Public: Yes
 */
 
-#include "..\..\ui\menu\idcs.hpp"
+#include "..\..\..\ui\menu\idcs.hpp"
+
+params [
+    ["_arsenalEnabled", false, [true]]
+];
 
 if (!hasInterface) exitWith {false};
+
+uiNamespace setVariable ["BN_KOTH_menuArsenalEnabled", _arsenalEnabled];
 
 disableSerialization;
 

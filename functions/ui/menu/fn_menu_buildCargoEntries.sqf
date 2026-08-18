@@ -1,6 +1,6 @@
 /*
     File: fn_menu_buildCargoEntries.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Builds cargo mutation candidates from canonical compatibility and source data.
     Execution: Client
     Parameters:

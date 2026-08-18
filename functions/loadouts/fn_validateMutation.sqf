@@ -1,6 +1,6 @@
 /*
     File: fn_validateMutation.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Validates and applies one authoritative mutation intent against the player's intended loadout state.
     Execution: Server
     Parameters:
@@ -265,6 +265,13 @@ private _validateAssignedClassForIndex = {
         ]
     };
 
+    if !(isClass (_sourceItemsCfg >> _itemClass)) exitWith {
+        [
+            "ERR_ASSIGNED_ITEM_UNKNOWN",
+            format ["Assigned item '%1' is missing from canonical SourceItems.", _itemClass]
+        ] call _assignedFail
+    };
+
     if !(isClass (configFile >> "CfgWeapons" >> _itemClass)) exitWith {
         ["ERR_ASSIGNED_ITEM_CONFIG_MISSING", format ["Assigned item '%1' is missing from CfgWeapons.", _itemClass]] call _assignedFail
     };
@@ -301,7 +308,7 @@ private _validateAssignedClassForIndex = {
 };
 
 private _resolveAllowedCargoMagazines = {
-    params ["_loadout"]; 
+    params ["_loadout"];
 
     private _allowed = [];
 
@@ -324,7 +331,7 @@ private _resolveAllowedCargoMagazines = {
 };
 
 private _validateCargoClass = {
-    params ["_className", "_loadout"]; 
+    params ["_className", "_loadout"];
 
     private _classLower = toLower _className;
 
@@ -392,7 +399,7 @@ private _validateCargoClass = {
 };
 
 private _sanitizeContainerCargo = {
-    params ["_cargoEntries"]; 
+    params ["_cargoEntries"];
 
     private _result = [];
     {

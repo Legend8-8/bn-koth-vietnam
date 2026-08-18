@@ -1,6 +1,6 @@
 /*
     File: fn_menu_buildWearableEntries.sqf
-    Author: GitHub Copilot
+    Author: Legend
     Description: Builds selector entries for wearable and binocular pages.
     Execution: Client
     Parameters:

@@ -13,7 +13,7 @@
     Public: No
 */
 
-#include "..\..\ui\menu\idcs.hpp"
+#include "..\..\..\ui\menu\idcs.hpp"
 
 params [
     ["_display", displayNull, [displayNull]],
@@ -32,6 +32,10 @@ private _ctrlPrimaryList = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_LIST;
 private _ctrlPrimaryDetail = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_DETAIL;
 private _ctrlPrimaryApply = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_APPLY;
 private _ctrlPrimaryBack = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_BACK;
+
+// This function owns PrimaryList selection behaviour. Suppress selection
+// callbacks while rows are rebuilt or selected programmatically.
+_ctrlPrimaryList ctrlSetEventHandler ["LBSelChanged", ""];
 
 private _resolveItemName = {
     params ["_className"];
@@ -223,19 +227,6 @@ _ctrlPrimaryApply ctrlSetEventHandler [
     }
 ];
 
-private _backAction = switch (_selectorMode) do {
-    case "ASSIGNED": {
-        if (_assignedStage isEqualTo 2) then {
-            "uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; ['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;"
-        } else {
-            "['LOADOUT'] call bn_koth_fnc_menu_refresh;"
-        }
-    };
-    default {
-        "['LOADOUT'] call bn_koth_fnc_menu_refresh;"
-    };
-};
-
 private _backText = switch (_selectorMode) do {
     case "ASSIGNED": {
         if (_assignedStage isEqualTo 2) then {"BACK TO SLOTS"} else {"BACK"};
@@ -244,7 +235,7 @@ private _backText = switch (_selectorMode) do {
 };
 
 _ctrlPrimaryBack ctrlSetText _backText;
-_ctrlPrimaryBack ctrlSetEventHandler ["ButtonClick", _backAction];
+
 
 if (isNull player) exitWith {
     lbClear _ctrlPrimaryList;
@@ -294,6 +285,50 @@ if ((count _entries) <= 0) exitWith {
 };
 
 private _selectedIndex = lbCurSel _ctrlPrimaryList;
+
+// Assigned equipment stage 1 is a pure slot picker. Never infer intent from a
+// row that happens to remain selected while the list is rebuilt. Clear the
+// selection with callbacks suppressed, then arm one explicit user-selection
+// handler that advances to stage 2.
+if (
+    (_selectorMode isEqualTo "ASSIGNED") &&
+    {_assignedStage isEqualTo 1}
+) exitWith {
+    _ctrlPrimaryList lbSetCurSel -1;
+    _ctrlPrimaryDetail ctrlSetText "SELECT AN ASSIGNED-EQUIPMENT SLOT";
+    _ctrlPrimaryApply ctrlEnable false;
+    uiNamespace setVariable [_pendingNamespaceKey, createHashMapFromArray [["available", false]]];
+
+    _ctrlPrimaryList ctrlSetEventHandler [
+        "LBSelChanged",
+        "
+            params ['_control', '_selectedIndex'];
+
+            if (
+                ((uiNamespace getVariable ['BN_KOTH_menuActivePage', '']) isEqualTo 'LOADOUT_EQUIPMENT') &&
+                {(uiNamespace getVariable ['BN_KOTH_menuAssignedStage', 1]) isEqualTo 1}
+            ) then {
+                private _entries = uiNamespace getVariable ['BN_KOTH_menuAssignedEntries', []];
+
+                if (
+                    (_selectedIndex >= 0) &&
+                    {_selectedIndex < (count _entries)}
+                ) then {
+                    private _selected = _entries select _selectedIndex;
+                    private _nextSlot = _selected getOrDefault ['assignedIndex', -1];
+
+                    if (_nextSlot in [0, 1, 2, 3, 4, 5]) then {
+                        uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 2];
+                        uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', _nextSlot];
+                        uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMapFromArray [['available', false]]];
+                        ['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;
+                    };
+                };
+            };
+        "
+    ];
+};
+
 if ((_selectedIndex < 0) || {_selectedIndex >= (count _entries)}) then {
     _selectedIndex = 0;
     _ctrlPrimaryList lbSetCurSel _selectedIndex;
@@ -349,29 +384,13 @@ if (_selectedAvailable) then {
             ]];
         };
         case "ASSIGNED": {
-            if (_assignedStage isEqualTo 1) then {
-                _enableApply = false;
-
-                private _nextSlot = _selected getOrDefault ["assignedIndex", -1];
-                if (_nextSlot in [0, 1, 2, 3, 4, 5]) then {
-                    _ctrlPrimaryApply ctrlEnable false;
-                    uiNamespace setVariable ["BN_KOTH_menuAssignedStage", 2];
-                    uiNamespace setVariable ["BN_KOTH_menuAssignedSlot", _nextSlot];
-                    uiNamespace setVariable [_pendingNamespaceKey, createHashMapFromArray [["available", false]]];
-                    ["LOADOUT_EQUIPMENT"] call bn_koth_fnc_menu_refresh;
-                } else {
-                    _ctrlPrimaryDetail ctrlSetText "SELECT A SLOT TO VIEW MATCHING ITEMS";
-                    _ctrlPrimaryApply ctrlEnable false;
-                };
-            } else {
-                _ctrlPrimaryDetail ctrlSetText format ["SELECTED: %1\nAPPLY TO SET ASSIGNED SLOT", _selectedName];
-                uiNamespace setVariable [_pendingNamespaceKey, createHashMapFromArray [
-                    ["assignedIndex", _selected getOrDefault ["assignedIndex", -1]],
-                    ["itemClass", _selected getOrDefault ["itemClass", ""]],
-                    ["available", true]
-                ]];
-                _ctrlPrimaryApply ctrlEnable true;
-            };
+            _ctrlPrimaryDetail ctrlSetText format ["SELECTED: %1\nAPPLY TO SET ASSIGNED SLOT", _selectedName];
+            uiNamespace setVariable [_pendingNamespaceKey, createHashMapFromArray [
+                ["assignedIndex", _selected getOrDefault ["assignedIndex", -1]],
+                ["itemClass", _selected getOrDefault ["itemClass", ""]],
+                ["available", true]
+            ]];
+            _ctrlPrimaryApply ctrlEnable true;
         };
         case "ATTACHMENT": {
             _ctrlPrimaryDetail ctrlSetText format ["SELECTED: %1\nAPPLY TO CHANGE ATTACHMENT", _selectedName];
@@ -418,3 +437,8 @@ if (_selectedAvailable) then {
     uiNamespace setVariable [_pendingNamespaceKey, createHashMapFromArray [["available", false]]];
     _ctrlPrimaryApply ctrlEnable false;
 };
+
+_ctrlPrimaryList ctrlSetEventHandler [
+    "LBSelChanged",
+    "[] call bn_koth_fnc_menu_refresh;"
+];

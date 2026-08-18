@@ -10,6 +10,8 @@
     Public: No
 */
 
+#include "..\..\ui\menu\idcs.hpp"
+
 params [
     ["_validationResult", createHashMap, [createHashMap]]
 ];
@@ -46,6 +48,20 @@ if (isNull player) exitWith {};
 private _validatedLoadout = _validationResult getOrDefault ["validatedLoadout", []];
 if ((_validatedLoadout isEqualType []) && {(count _validatedLoadout) >= 10}) then {
     uiNamespace setVariable ["BN_KOTH_menuIntendedLoadout", +_validatedLoadout];
+
+    // Snapshot responses are read-only, but they still own the client menu's
+    // authoritative intended-loadout view. Refresh an open menu immediately
+    // instead of waiting for another player interaction.
+    private _menuDisplay = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
+    if (isNull _menuDisplay) then {
+        _menuDisplay = findDisplay BN_KOTH_IDD_MENU;
+    };
+
+    if (!isNull _menuDisplay) then {
+        [
+            uiNamespace getVariable ["BN_KOTH_menuActivePage", "LOADOUT"]
+        ] call bn_koth_fnc_menu_refresh;
+    };
 };
 
 private _shouldApply = _validationResult getOrDefault ["shouldApply", true];
