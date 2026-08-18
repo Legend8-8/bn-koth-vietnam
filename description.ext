@@ -7,11 +7,21 @@
 #include "config\scoring.hpp"
 #include "config\vehicles.hpp"
 #include "config\teams.hpp"
+#include "config\playerIcons.hpp"
 #include "config\arsenal\settings.hpp"
 #include "config\arsenal\equipment.hpp"
 #include "ui\ui.hpp"
 #include "config\CfgFunctions.hpp"
 #include "config\CfgRemoteExec.hpp"
 #include "config\CfgServer.hpp"
+
+class CfgCommands
+{
+    allowedHTMLLoadURIs[] +=
+    {
+        "https://discord.gg/*",
+        "https://discord.com/*"
+    };
+};
 
 onPauseScript = "functions\ui\lobby\pauseOnLoad.sqf";

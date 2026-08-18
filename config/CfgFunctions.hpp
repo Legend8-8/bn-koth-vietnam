@@ -113,6 +113,14 @@ class CfgFunctions
             class loadouts_receiveValidatedLoadout {file = "functions\loadouts\fn_receiveValidatedLoadout.sqf";};
         };
 
+        class playerIcons
+        {
+            class playerIcons_initPlayerLocal {file = "functions\playerIcons\fn_initPlayerLocal.sqf";};
+            class playerIcons_initMicOverlay {file = "functions\playerIcons\fn_initMicOverlay.sqf";};
+            class playerIcons_refresh {file = "functions\playerIcons\fn_refresh.sqf";};
+            class playerIcons_setVoiceState {file = "functions\playerIcons\fn_setVoiceState.sqf";};
+        };
+
         class vehicles
         {
             class vehicles_addVehicleInventory {file = "functions\vehicles\fn_addVehicleInventory.sqf";};
