@@ -2,6 +2,7 @@
     File: fn_clearActiveLocation.sqf
     Author: Legend
     Edited: Mongo
+    Edited: tylervip
     Description: Clears active AO marker state and hides all cached AO static objects.
     Execution: Server
     Parameters:
@@ -84,5 +85,5 @@ missionNamespace setVariable ["BN_KOTH_priorityZonePosition", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMarker", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneSize", nil];
 [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
-
-["Active AO cleared and static content hidden."] call bn_koth_fnc_common_log;
+private _runtimeCleanupCount = [] call bn_koth_fnc_zone_cleanupRuntimeObjects;
+[format ["Active AO cleared and runtime content cleaned up: %1 object(s).", _runtimeCleanupCount]] call bn_koth_fnc_common_log;

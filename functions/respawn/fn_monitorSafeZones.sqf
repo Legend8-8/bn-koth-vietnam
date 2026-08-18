@@ -1,6 +1,7 @@
 /*
     File: fn_monitorSafeZones.sqf
     Author: Mongo
+    Edited: tylervip
     Description: Maintains authoritative player and vehicle safe-zone state.
     Execution: Server (scheduled)
     Parameters:
@@ -155,7 +156,7 @@ while {missionNamespace getVariable ["BN_KOTH_safeZoneManagerRunning", false]} d
     } forEach _vehicleCandidates;
 
     missionNamespace setVariable ["BN_KOTH_safeZoneTrackedVehicles", _nextTracked];
-    sleep (missionNamespace getVariable ["BN_KOTH_safeZoneCheckIntervalSeconds", 0.25]);
+    sleep (missionNamespace getVariable ["BN_KOTH_safeZoneCheckIntervalSeconds", 5.0]);
 };
 
 missionNamespace setVariable ["BN_KOTH_safeZoneManagerRunning", false];

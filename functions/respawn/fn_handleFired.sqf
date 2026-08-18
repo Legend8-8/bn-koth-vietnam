@@ -1,6 +1,7 @@
 /*
     File: fn_handleFired.sqf
     Author: Mongo
+    Edited: tylervip
     Description: Removes projectiles fired by protected players or safe-zone-restricted enemies and vehicles.
     Execution: Local to firing entity
     Parameters:
@@ -25,8 +26,12 @@ if (isNull _shooter) exitWith {false};
 
 private _person = if (!isNull _gunner && {_gunner isKindOf "Man"}) then {_gunner} else {_shooter};
 private _platform = vehicle _person;
-private _protectedPerson = _person getVariable ["BN_KOTH_safeZoneProtected", false];
-private _intruder = _person getVariable ["BN_KOTH_enemySafeZoneIntruder", false];
+private _personMembership = [_person, true] call bn_koth_fnc_respawn_getSafeZoneMembership;
+private _personSide = _person getVariable ["BN_KOTH_teamSide", sideUnknown];
+private _personProtectedByZone = if (_personSide isEqualTo west) then {_personMembership select 0} else {_personMembership select 1};
+private _personIntruderByZone = if (_personSide isEqualTo west) then {_personMembership select 1} else {_personMembership select 0};
+private _protectedPerson = (_person getVariable ["BN_KOTH_safeZoneProtected", false]) || {_personProtectedByZone};
+private _intruder = (_person getVariable ["BN_KOTH_enemySafeZoneIntruder", false]) || {_personIntruderByZone};
 private _protectedVehicle = _shooter getVariable ["BN_KOTH_safeZoneVehicleProtected", false]
     || {_platform getVariable ["BN_KOTH_safeZoneVehicleProtected", false]};
 private _restrictedVehicle = _shooter getVariable ["BN_KOTH_enemySafeZoneVehicleRestricted", false]
