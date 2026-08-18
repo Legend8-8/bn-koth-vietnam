@@ -13,4 +13,13 @@
 #include "config\CfgRemoteExec.hpp"
 #include "config\CfgServer.hpp"
 
+class CfgCommands
+{
+    allowedHTMLLoadURIs[] +=
+    {
+        "https://discord.gg/*",
+        "https://discord.com/*"
+    };
+};
+
 onPauseScript = "functions\ui\lobby\pauseOnLoad.sqf";

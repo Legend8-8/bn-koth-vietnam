@@ -13,6 +13,14 @@
 #define BN_KOTH_MAIN_Y (BN_KOTH_UI_Y + BN_KOTH_TOPBAR_H + BN_KOTH_TOP_GAP + BN_KOTH_STRIP_H + safeZoneH * 0.012)
 #define BN_KOTH_BOTTOM_Y (BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H + safeZoneH * 0.015)
 #define BN_KOTH_BOTTOM_H (BN_KOTH_UI_Y + BN_KOTH_UI_H - BN_KOTH_BOTTOM_Y)
+// Native Arma chat draws slightly left of and above the bottom panel, so the reserved frame extends to match it.
+#define BN_KOTH_CHAT_X (BN_KOTH_UI_X - safeZoneW * 0.005)
+#define BN_KOTH_CHAT_Y (BN_KOTH_BOTTOM_Y - safeZoneH * 0.014)
+#define BN_KOTH_CHAT_W (BN_KOTH_UI_W * 0.285 + safeZoneW * 0.005)
+#define BN_KOTH_CHAT_H (safeZoneH * 0.115)
+#define BN_KOTH_BOTTOM_CONTENT_X (BN_KOTH_UI_X + BN_KOTH_UI_W * 0.295)
+#define BN_KOTH_BOTTOM_FRAME_Y BN_KOTH_CHAT_Y
+#define BN_KOTH_BOTTOM_FRAME_H (BN_KOTH_UI_Y + BN_KOTH_UI_H - BN_KOTH_BOTTOM_FRAME_Y)
 
 #define BN_KOTH_GAP (safeZoneW * 0.008)
 #define BN_KOTH_PANEL_BORDER (safeZoneW * 0.0013)
@@ -31,7 +39,7 @@ class BN_KOTH_RscLobby
     idd = BN_KOTH_IDD_LOBBY;
     movingEnable = 0;
     enableSimulation = 1;
-    onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_lobbyDisplay', _display]; _display displayAddEventHandler ['KeyDown', '_this call bn_koth_fnc_ui_handleLobbyKeyDown']; [] call bn_koth_fnc_ui_refreshLobby;";
+    onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_lobbyDisplay', _display]; _display displayAddEventHandler ['KeyDown', '_this call bn_koth_fnc_ui_handleLobbyKeyDown']; [] call bn_koth_fnc_ui_refreshLobby; private _discordButton = _display displayCtrl 8304; if !(isNull _discordButton) then {_discordButton ctrlSetURL 'https://discord.gg/haNcSAEhKS'; _discordButton ctrlSetURLOverlayMode 0;};";
     onUnload = "uiNamespace setVariable ['BN_KOTH_lobbyDisplay', displayNull];";
 
     class controlsBackground
@@ -49,9 +57,9 @@ class BN_KOTH_RscLobby
         class BgHeaderLeft: BN_KOTH_Lobby_Background
         {
             idc = BN_KOTH_IDC_BG_HEADER;
-            x = BN_KOTH_UI_X;
+            x = BN_KOTH_CHAT_X;
             y = BN_KOTH_UI_Y;
-            w = BN_KOTH_UI_W * 0.29;
+            w = (BN_KOTH_UI_X + BN_KOTH_UI_W * 0.29) - BN_KOTH_CHAT_X;
             h = BN_KOTH_TOPBAR_H;
             colorBackground[] = {0.09, 0.09, 0.08, 0.68};
         };
@@ -76,9 +84,9 @@ class BN_KOTH_RscLobby
 
         class BgInfoStrip: BN_KOTH_Lobby_Background
         {
-            x = BN_KOTH_UI_X;
+            x = BN_KOTH_CHAT_X;
             y = BN_KOTH_UI_Y + BN_KOTH_TOPBAR_H + BN_KOTH_TOP_GAP;
-            w = BN_KOTH_UI_W;
+            w = (BN_KOTH_UI_X + BN_KOTH_UI_W) - BN_KOTH_CHAT_X;
             h = BN_KOTH_STRIP_H;
             colorBackground[] = {0.08, 0.08, 0.07, 0.58};
         };
@@ -86,54 +94,54 @@ class BN_KOTH_RscLobby
         class BgWest: BN_KOTH_Lobby_Background
         {
             idc = BN_KOTH_IDC_BG_WEST;
-            x = BN_KOTH_WEST_X;
+            x = BN_KOTH_CHAT_X;
             y = BN_KOTH_MAIN_Y;
-            w = BN_KOTH_WEST_W;
+            w = (BN_KOTH_WEST_X + BN_KOTH_WEST_W) - BN_KOTH_CHAT_X;
             h = BN_KOTH_MAIN_H;
             colorBackground[] = {0.12, 0.27, 0.41, 0.72};
         };
 
         class BgWestInset: BN_KOTH_Lobby_Background
         {
-            x = BN_KOTH_WEST_X + BN_KOTH_PANEL_BORDER;
+            x = BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER;
             y = BN_KOTH_MAIN_Y + BN_KOTH_PANEL_BORDER;
-            w = BN_KOTH_WEST_W - BN_KOTH_PANEL_BORDER * 2;
+            w = (BN_KOTH_WEST_X + BN_KOTH_WEST_W - BN_KOTH_PANEL_BORDER) - (BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER);
             h = BN_KOTH_MAIN_H - BN_KOTH_PANEL_BORDER * 2;
             colorBackground[] = {0.03, 0.03, 0.03, 0.84};
         };
 
         class BgWestArt: BN_KOTH_Lobby_Picture
         {
-            x = BN_KOTH_WEST_X + BN_KOTH_PANEL_BORDER;
+            x = BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER;
             y = BN_KOTH_MAIN_Y + BN_KOTH_PANEL_BORDER;
-            w = BN_KOTH_WEST_W - BN_KOTH_PANEL_BORDER * 2;
+            w = (BN_KOTH_WEST_X + BN_KOTH_WEST_W - BN_KOTH_PANEL_BORDER) - (BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER);
             h = BN_KOTH_MAIN_H * 0.38;
             text = "images\ui\lobby\west_panel.jpg";
         };
 
         class BgWestArtTint: BN_KOTH_Lobby_Background
         {
-            x = BN_KOTH_WEST_X + BN_KOTH_PANEL_BORDER;
+            x = BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER;
             y = BN_KOTH_MAIN_Y + BN_KOTH_PANEL_BORDER;
-            w = BN_KOTH_WEST_W - BN_KOTH_PANEL_BORDER * 2;
+            w = (BN_KOTH_WEST_X + BN_KOTH_WEST_W - BN_KOTH_PANEL_BORDER) - (BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER);
             h = BN_KOTH_MAIN_H * 0.38;
             colorBackground[] = {0.02, 0.09, 0.14, 0.64};
         };
 
         class BgWestRoster: BN_KOTH_Lobby_Background
         {
-            x = BN_KOTH_WEST_X + BN_KOTH_PANEL_BORDER;
+            x = BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER;
             y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H * 0.38;
-            w = BN_KOTH_WEST_W - BN_KOTH_PANEL_BORDER * 2;
+            w = (BN_KOTH_WEST_X + BN_KOTH_WEST_W - BN_KOTH_PANEL_BORDER) - (BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER);
             h = BN_KOTH_MAIN_H * 0.46;
             colorBackground[] = {0.02, 0.04, 0.06, 0.76};
         };
 
         class BgWestFooter: BN_KOTH_Lobby_Background
         {
-            x = BN_KOTH_WEST_X + BN_KOTH_PANEL_BORDER;
+            x = BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER;
             y = BN_KOTH_MAIN_Y + BN_KOTH_MAIN_H * 0.84;
-            w = BN_KOTH_WEST_W - BN_KOTH_PANEL_BORDER * 2;
+            w = (BN_KOTH_WEST_X + BN_KOTH_WEST_W - BN_KOTH_PANEL_BORDER) - (BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER);
             h = BN_KOTH_MAIN_H * 0.16 - BN_KOTH_PANEL_BORDER;
             colorBackground[] = {0.03, 0.05, 0.08, 0.82};
         };
@@ -261,66 +269,74 @@ class BN_KOTH_RscLobby
         class BgBottom: BN_KOTH_Lobby_Background
         {
             idc = BN_KOTH_IDC_BG_BOTTOM;
-            x = BN_KOTH_UI_X;
-            y = BN_KOTH_BOTTOM_Y;
-            w = BN_KOTH_UI_W;
-            h = BN_KOTH_BOTTOM_H;
+            x = BN_KOTH_CHAT_X;
+            y = BN_KOTH_BOTTOM_FRAME_Y;
+            w = (BN_KOTH_UI_X + BN_KOTH_UI_W) - BN_KOTH_CHAT_X;
+            h = BN_KOTH_BOTTOM_FRAME_H;
             colorBackground[] = {0.10, 0.10, 0.09, 0.64};
         };
 
         class BgBottomInset: BN_KOTH_Lobby_Background
         {
-            x = BN_KOTH_UI_X + BN_KOTH_PANEL_BORDER;
-            y = BN_KOTH_BOTTOM_Y + BN_KOTH_PANEL_BORDER;
-            w = BN_KOTH_UI_W - BN_KOTH_PANEL_BORDER * 2;
-            h = BN_KOTH_BOTTOM_H - BN_KOTH_PANEL_BORDER * 2;
+            x = BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER;
+            y = BN_KOTH_BOTTOM_FRAME_Y + BN_KOTH_PANEL_BORDER;
+            w = (BN_KOTH_UI_X + BN_KOTH_UI_W - BN_KOTH_PANEL_BORDER) - (BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER);
+            h = BN_KOTH_BOTTOM_FRAME_H - BN_KOTH_PANEL_BORDER * 2;
             colorBackground[] = {0.04, 0.04, 0.04, 0.82};
+        };
+
+        class BgBottomChat: BN_KOTH_Lobby_Background
+        {
+            x = BN_KOTH_CHAT_X;
+            y = BN_KOTH_CHAT_Y;
+            w = BN_KOTH_CHAT_W;
+            h = BN_KOTH_CHAT_H;
+            colorBackground[] = {0.29, 0.22, 0.09, 0.52};
+        };
+
+        class BgBottomChatInset: BN_KOTH_Lobby_Background
+        {
+            x = BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER;
+            y = BN_KOTH_CHAT_Y + BN_KOTH_PANEL_BORDER;
+            w = BN_KOTH_CHAT_W - BN_KOTH_PANEL_BORDER * 2;
+            h = BN_KOTH_CHAT_H - BN_KOTH_PANEL_BORDER * 2;
+            colorBackground[] = {0.03, 0.03, 0.03, 0.90};
         };
 
         class BgBottomLeader1: BN_KOTH_Lobby_Background
         {
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.515;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.047;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.630;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.037;
             w = BN_KOTH_UI_W * 0.108;
-            h = BN_KOTH_BOTTOM_H - safeZoneH * 0.062;
+            h = BN_KOTH_BOTTOM_H - safeZoneH * 0.052;
             colorBackground[] = {0.38, 0.31, 0.15, 0.78};
         };
 
         class BgBottomLeader1Inset: BN_KOTH_Lobby_Background
         {
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.5165;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.049;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.6315;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.039;
             w = BN_KOTH_UI_W * 0.105;
-            h = BN_KOTH_BOTTOM_H - safeZoneH * 0.066;
+            h = BN_KOTH_BOTTOM_H - safeZoneH * 0.056;
             colorBackground[] = {0.055, 0.055, 0.05, 0.96};
         };
 
         class BgBottomLeader2: BgBottomLeader1
         {
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.630;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.745;
         };
 
         class BgBottomLeader2Inset: BgBottomLeader1Inset
         {
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.6315;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.7465;
         };
 
         class BgBottomLeader3: BgBottomLeader1
         {
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.745;
-        };
-
-        class BgBottomLeader3Inset: BgBottomLeader1Inset
-        {
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.7465;
-        };
-
-        class BgBottomLeader4: BgBottomLeader1
-        {
             x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.860;
         };
 
-        class BgBottomLeader4Inset: BgBottomLeader1Inset
+        class BgBottomLeader3Inset: BgBottomLeader1Inset
         {
             x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.8615;
         };
@@ -968,9 +984,9 @@ class VoteTotal1: BN_KOTH_Lobby_Value
             idc = BN_KOTH_IDC_VOTE_TOTAL_1;
             text = "0";
             style = 1;
-            x = BN_KOTH_VOTE_X + BN_KOTH_VOTE_W * 0.78;
+            x = BN_KOTH_VOTE_X + BN_KOTH_VOTE_W * 0.83;
             y = BN_KOTH_MAIN_Y + safeZoneH * 0.260;
-            w = BN_KOTH_VOTE_W * 0.15;
+            w = BN_KOTH_VOTE_W * 0.105;
             h = safeZoneH * 0.030;
             colorText[] = {0.95, 0.94, 0.90, 1};
         };
@@ -979,10 +995,12 @@ class VoteTotal1: BN_KOTH_Lobby_Value
         {
             idc = BN_KOTH_IDC_VOTE_DESC_1;
             text = "";
-            x = BN_KOTH_VOTE_X + safeZoneW * 0.014;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.292;
-            w = BN_KOTH_VOTE_W * 0.70;
-            h = safeZoneH * 0.023;
+            style = 16;
+            lineSpacing = 1;
+            x = BN_KOTH_VOTE_X + safeZoneW * 0.010;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.296;
+            w = BN_KOTH_VOTE_W * 0.73;
+            h = safeZoneH * 0.030;
             sizeEx = "0.0135 * safeZoneH";
             colorText[] = {0.82, 0.8, 0.76, 0.88};
         };
@@ -1002,7 +1020,7 @@ class VoteTotal2: VoteTotal1
         class VoteDesc2: VoteDesc1
         {
             idc = BN_KOTH_IDC_VOTE_DESC_2;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.376;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.380;
         };
 
         class VoteCandidate3: VoteCandidate1
@@ -1020,7 +1038,7 @@ class VoteTotal3: VoteTotal1
         class VoteDesc3: VoteDesc1
         {
             idc = BN_KOTH_IDC_VOTE_DESC_3;
-            y = BN_KOTH_MAIN_Y + safeZoneH * 0.460;
+            y = BN_KOTH_MAIN_Y + safeZoneH * 0.464;
         };
 
         class VoteHelp: BN_KOTH_Lobby_Body
@@ -1035,24 +1053,39 @@ class VoteTotal3: VoteTotal1
             colorText[] = {0.88, 0.86, 0.82, 0.86};
         };
 
+
+        class BottomChatLabel: BN_KOTH_Lobby_SectionLabel
+        {
+            idc = -1;
+            text = "-- CHAT --";
+            style = 2;
+            x = BN_KOTH_CHAT_X + BN_KOTH_PANEL_BORDER;
+            y = BN_KOTH_CHAT_Y + BN_KOTH_CHAT_H - safeZoneH * 0.020;
+            w = BN_KOTH_CHAT_W - BN_KOTH_PANEL_BORDER * 2;
+            h = safeZoneH * 0.016;
+            sizeEx = "0.013 * safeZoneH";
+            colorText[] = {0.68, 0.64, 0.52, 0.70};
+        };
+
         class BottomTitle: BN_KOTH_Lobby_Title
         {
             idc = BN_KOTH_IDC_BOTTOM_TITLE;
-            x = BN_KOTH_UI_X + safeZoneW * 0.01;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.012;
-            w = BN_KOTH_UI_W * 0.30;
-            h = safeZoneH * 0.034;
-            sizeEx = "0.022 * safeZoneH";
+            x = BN_KOTH_BOTTOM_CONTENT_X;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.006;
+            w = BN_KOTH_UI_W * 0.230;
+            h = safeZoneH * 0.038;
+            sizeEx = "0.026 * safeZoneH";
             text = "MODE INFO";
         };
 
         class BottomDescription: BN_KOTH_RscStructuredText
         {
             idc = BN_KOTH_IDC_BOTTOM_DESCRIPTION;
-            x = BN_KOTH_UI_X + safeZoneW * 0.01;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.044;
-            w = BN_KOTH_UI_W * 0.48;
-            h = BN_KOTH_BOTTOM_H - safeZoneH * 0.052;
+            x = BN_KOTH_BOTTOM_CONTENT_X;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.040;
+            w = BN_KOTH_UI_W * 0.230;
+            h = BN_KOTH_BOTTOM_H - safeZoneH * 0.048;
+            size = "0.021 * safeZoneH";
             text = "<t size='0.95'>Two teams fight to capture and hold the objective.</t>";
         };
 
@@ -1061,11 +1094,11 @@ class VoteTotal3: VoteTotal1
             idc = BN_KOTH_IDC_BOTTOM_LEADERS_TITLE;
             text = "LIVE LEADERS";
             style = 2;
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.515;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.010;
-            w = BN_KOTH_UI_W * 0.453;
-            h = safeZoneH * 0.030;
-            sizeEx = "0.022 * safeZoneH";
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.630;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.002;
+            w = BN_KOTH_UI_W * 0.338;
+            h = safeZoneH * 0.032;
+            sizeEx = "0.024 * safeZoneH";
             colorText[] = {0.88, 0.84, 0.72, 0.92};
         };
 
@@ -1074,11 +1107,11 @@ class VoteTotal3: VoteTotal1
             idc = BN_KOTH_IDC_BOTTOM_LEADER_1_LABEL;
             text = "MOST DEADLY";
             style = 2;
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.520;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.060;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.635;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.050;
             w = BN_KOTH_UI_W * 0.098;
-            h = safeZoneH * 0.018;
-            sizeEx = "0.014 * safeZoneH";
+            h = safeZoneH * 0.020;
+            sizeEx = "0.015 * safeZoneH";
             colorText[] = {0.86, 0.70, 0.42, 0.92};
         };
 
@@ -1087,11 +1120,11 @@ class VoteTotal3: VoteTotal1
             idc = BN_KOTH_IDC_BOTTOM_LEADER_1_NAME;
             text = "Mongo";
             style = 2;
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.520;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.085;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.635;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.075;
             w = BN_KOTH_UI_W * 0.098;
-            h = safeZoneH * 0.030;
-            sizeEx = "0.024 * safeZoneH";
+            h = safeZoneH * 0.032;
+            sizeEx = "0.026 * safeZoneH";
             colorText[] = {0.96, 0.95, 0.92, 1};
         };
 
@@ -1100,11 +1133,11 @@ class VoteTotal3: VoteTotal1
             idc = BN_KOTH_IDC_BOTTOM_LEADER_1_VALUE;
             text = "18 KILLS";
             style = 2;
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.520;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.122;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.635;
+            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.112;
             w = BN_KOTH_UI_W * 0.098;
-            h = safeZoneH * 0.024;
-            sizeEx = "0.019 * safeZoneH";
+            h = safeZoneH * 0.026;
+            sizeEx = "0.020 * safeZoneH";
             colorText[] = {0.88, 0.82, 0.70, 0.94};
         };
 
@@ -1112,56 +1145,37 @@ class VoteTotal3: VoteTotal1
         {
             idc = BN_KOTH_IDC_BOTTOM_LEADER_2_LABEL;
             text = "OBJECTIVE LEADER";
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.635;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.750;
         };
         class BottomLeader2Name: BottomLeader1Name
         {
             idc = BN_KOTH_IDC_BOTTOM_LEADER_2_NAME;
             text = "Tyler";
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.635;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.750;
         };
         class BottomLeader2Value: BottomLeader1Value
         {
             idc = BN_KOTH_IDC_BOTTOM_LEADER_2_VALUE;
             text = "624 PTS";
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.635;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.750;
         };
 
         class BottomLeader3Label: BottomLeader1Label
         {
             idc = BN_KOTH_IDC_BOTTOM_LEADER_3_LABEL;
             text = "BEST STREAK";
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.750;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.865;
         };
         class BottomLeader3Name: BottomLeader1Name
         {
             idc = BN_KOTH_IDC_BOTTOM_LEADER_3_NAME;
             text = "Legend";
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.750;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.865;
         };
         class BottomLeader3Value: BottomLeader1Value
         {
             idc = BN_KOTH_IDC_BOTTOM_LEADER_3_VALUE;
             text = "7 KILLS";
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.750;
-        };
-
-        class BottomLeader4Label: BottomLeader1Label
-        {
-            idc = BN_KOTH_IDC_BOTTOM_LEADER_4_LABEL;
-            text = "TOP MEDIC";
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.865;
-        };
-        class BottomLeader4Name: BottomLeader1Name
-        {
-            idc = BN_KOTH_IDC_BOTTOM_LEADER_4_NAME;
-            text = "Doc";
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.865;
-        };
-        class BottomLeader4Value: BottomLeader1Value
-        {
-            idc = BN_KOTH_IDC_BOTTOM_LEADER_4_VALUE;
-            text = "12 REVIVES";
             x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.865;
         };
 
@@ -1170,9 +1184,9 @@ class VoteTotal3: VoteTotal1
             idc = BN_KOTH_IDC_BOTTOM_DISCORD_LABEL;
             text = "BRO-NATION COMMUNITY";
             style = 2;
-            x = BN_KOTH_CENTER_X + (BN_KOTH_CENTER_W - BN_KOTH_UI_W * 0.115) / 2;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.070;
-            w = BN_KOTH_UI_W * 0.115;
+            x = BN_KOTH_CHAT_X + BN_KOTH_CHAT_W * 0.18;
+            y = BN_KOTH_CHAT_Y + BN_KOTH_CHAT_H + safeZoneH * 0.007;
+            w = BN_KOTH_CHAT_W * 0.64;
             h = safeZoneH * 0.018;
             sizeEx = "0.014 * safeZoneH";
             colorText[] = {0.78, 0.76, 0.70, 0.72};
@@ -1182,18 +1196,19 @@ class VoteTotal3: VoteTotal1
         {
             idc = BN_KOTH_IDC_BOTTOM_DISCORD_BUTTON;
             text = "JOIN DISCORD";
-            x = BN_KOTH_CENTER_X + (BN_KOTH_CENTER_W - BN_KOTH_UI_W * 0.095) / 2;
-            y = BN_KOTH_BOTTOM_Y + safeZoneH * 0.100;
-            w = BN_KOTH_UI_W * 0.095;
-            h = safeZoneH * 0.038;
+            x = BN_KOTH_CHAT_X + BN_KOTH_CHAT_W * 0.25;
+            y = BN_KOTH_CHAT_Y + BN_KOTH_CHAT_H + safeZoneH * 0.028;
+            w = BN_KOTH_CHAT_W * 0.50;
+            h = safeZoneH * 0.036;
             sizeEx = "0.018 * safeZoneH";
             colorBackground[] = {0.38, 0.31, 0.15, 0.88};
             colorBackgroundActive[] = {0.52, 0.40, 0.16, 1};
             colorBackgroundDisabled[] = {0.12, 0.12, 0.11, 0.65};
             colorText[] = {0.96, 0.94, 0.86, 1};
             colorFocused[] = {0.52, 0.40, 0.16, 1};
+            url = "https://discord.gg/haNcSAEhKS";
             tooltip = "Join the Bro-Nation Discord community";
-            action = "openURL 'https://discord.gg/haNcSAEhKS'";
+            overlayMode = 0;
         };
     };
 };
