@@ -2,6 +2,7 @@
 #include "map_config\locations.hpp"
 #include "config\zones.hpp"
 #include "config\respawn.hpp"
+#include "config\combat.hpp"
 #include "config\lobby.hpp"
 #include "config\scoring.hpp"
 #include "config\vehicles.hpp"

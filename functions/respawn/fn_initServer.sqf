@@ -33,18 +33,7 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
 
     private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
     if (_records isEqualType createHashMap) then {
-        {
-            private _candidateUid = _x;
-            private _candidateRecord = _records get _candidateUid;
-            if !(_candidateRecord isEqualType createHashMap) then {
-                continue;
-            };
-
-            private _candidateUnit = _candidateRecord getOrDefault ["currentUnit", objNull];
-            if (!isNull _candidateUnit && {_candidateUnit isEqualTo _killed}) exitWith {
-                _matchedUid = _candidateUid;
-            };
-        } forEach (keys _records);
+        _matchedUid = [_killed, _records] call bn_koth_fnc_common_resolvePlayerUid;
     };
 
     [format [
@@ -69,6 +58,7 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
     };
 
     [_killed] call bn_koth_fnc_respawn_handlePlayerDeath;
+    [_killed, _killer, _instigator] call bn_koth_fnc_combat_handleKill;
     [_killed] call bn_koth_fnc_respawn_cleanupSafeZoneEntity;
 }];
 
