@@ -68,6 +68,7 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
     };
 
     [_killed] call bn_koth_fnc_respawn_handlePlayerDeath;
+    [_killed, _killer, _instigator] call bn_koth_fnc_combat_handleKill;
     [_killed] call bn_koth_fnc_respawn_cleanupSafeZoneEntity;
 }];
 

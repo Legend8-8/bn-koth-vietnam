@@ -8,6 +8,20 @@ class CfgFunctions
         {
             class common_log {file = "functions\common\fn_log.sqf";};
             class common_publicState {file = "functions\common\fn_publicState.sqf";};
+            class common_resolvePlayerUid {file = "functions\common\fn_resolvePlayerUid.sqf";};
+        };
+
+        class combat
+        {
+            class combat_handleKill {file = "functions\combat\fn_handleKill.sqf";};
+            class combat_publishKillFeed {file = "functions\combat\fn_publishKillFeed.sqf";};
+        };
+
+        // DEBUG-ONLY - REMOVE BEFORE RELEASE (delete this whole class block
+        // and functions/debug/fn_forceTestKill.sqf)
+        class debug
+        {
+            class debug_forceTestKill {file = "functions\debug\fn_forceTestKill.sqf";};
         };
 
         class curator
@@ -151,6 +165,7 @@ class CfgFunctions
             class ui_debugDisplayLoop {file = "functions\ui\debug\fn_debugDisplayLoop.sqf";};
             class ui_selectControlledUnit {file = "functions\ui\state\fn_selectControlledUnit.sqf";};
             class ui_notify {file = "functions\ui\fn_notify.sqf";};
+            class ui_addKillFeedEntry {file = "functions\ui\fn_addKillFeedEntry.sqf";};
             class menu_open {file = "functions\ui\menu\fn_menu_open.sqf";};
             class menu_close {file = "functions\ui\menu\fn_menu_close.sqf";};
             class menu_refresh {file = "functions\ui\menu\fn_menu_refresh.sqf";};

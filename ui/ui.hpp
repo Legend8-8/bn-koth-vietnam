@@ -5,4 +5,5 @@
 class RscTitles
 {
     #include "hud\hud.hpp"
+    #include "hud\killfeed.hpp"
 };
