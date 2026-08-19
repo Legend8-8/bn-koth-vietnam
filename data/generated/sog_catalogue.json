@@ -16813,7 +16813,7 @@
       "source": "sog_pf",
       "sourcePage": "weapons",
       "version": "1.0",
-      "weaponType": "handgun",
+      "weaponType": "smg",
       "rawCompatibleMagazines": [
         "vn_mc10_mag",
         "vn_mc10_t_mag"
@@ -16875,7 +16875,7 @@
       "source": "sog_pf",
       "sourcePage": "weapons",
       "version": "1.0",
-      "weaponType": "handgun",
+      "weaponType": "smg",
       "rawCompatibleMagazines": [
         "vn_mc10_mag",
         "vn_mc10_t_mag"
@@ -40187,7 +40187,10 @@
       "vnx": []
     },
     "warnings": [],
-    "overridesApplied": [],
+    "overridesApplied": [
+      "weaponType:vn_mc10->smg",
+      "weaponType:vn_mc10_sd->smg"
+    ],
     "weaponExclusionReasons": {
       "vn_melee_base": "non_magazine_weapon_record",
       "vn_rifle": "non_magazine_weapon_record",
