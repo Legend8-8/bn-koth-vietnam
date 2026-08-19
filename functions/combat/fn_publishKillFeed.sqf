@@ -23,6 +23,16 @@ private _combatCfg = missionConfigFile >> "CfgBnKothCombat";
 private _mode = if (isText (_combatCfg >> "mode")) then {getText (_combatCfg >> "mode")} else {"killfeed"};
 private _method = _kill get "method";
 
+private _sideToken = {
+    switch (_this) do {
+        case west:       {"WEST"};
+        case east:       {"EAST"};
+        case resistance: {"GUER"};
+        case civilian:   {"CIV"};
+        default          {"UNKNOWN"};
+    };
+};
+
 private _categoryEnabled = switch (_method) do {
     case "direct":    {!isNumber (_combatCfg >> "showDirectKills")    || {getNumber (_combatCfg >> "showDirectKills") == 1}};
     case "vehicle":   {!isNumber (_combatCfg >> "showVehicleKills")   || {getNumber (_combatCfg >> "showVehicleKills") == 1}};
@@ -65,10 +75,10 @@ if (_mode isEqualTo "deathfeed") exitWith {
         [
             "down",
             "",
-            sideUnknown,
+            "UNKNOWN",
             "",
             (_kill get "victimName"),
-            _victimSide,
+            (_victimSide call _sideToken),
             ""
         ] remoteExecCall ["bn_koth_fnc_ui_addKillFeedEntry", _targets];
     };
@@ -84,9 +94,9 @@ private _type = if (_kill get "suicide") then {
 [
     _type,
     (_kill get "killerName"),
-    (_kill get "killerSide"),
+    ((_kill get "killerSide") call _sideToken),
     (_kill get "weapon"),
     (_kill get "victimName"),
-    (_kill get "victimSide"),
+    ((_kill get "victimSide") call _sideToken),
     (_kill get "distanceText")
 ] remoteExecCall ["bn_koth_fnc_ui_addKillFeedEntry", 0];
