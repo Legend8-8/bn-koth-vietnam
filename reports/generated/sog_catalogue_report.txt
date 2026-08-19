@@ -69,6 +69,10 @@ PROGRESSION WORK
 EXCLUSIONS
 - vnx_* records excluded: 0
 
+OVERRIDES
+- weaponType:vn_mc10->smg
+- weaponType:vn_mc10_sd->smg
+
 VALIDATION WARNINGS
 - baseMagazines: 119
   - vn_ak_01: ambiguous (vn_kbkg_mag, vn_type56_mag)

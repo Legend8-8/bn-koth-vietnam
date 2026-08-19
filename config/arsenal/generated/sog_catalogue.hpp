@@ -1799,7 +1799,7 @@
         {
             className = "vn_mc10";
             displayName = "MC-10";
-            weaponType = "handgun";
+            weaponType = "smg";
             family = "mc10";
             baseMagazine = "vn_mc10_mag";
             baseMagazineConfidence = "high";
@@ -1809,7 +1809,7 @@
         {
             className = "vn_mc10_sd";
             displayName = "MC-10 (S)";
-            weaponType = "handgun";
+            weaponType = "smg";
             family = "mc10";
             variantOf = "vn_mc10";
             variantTraits[] = {"suppressed"};
