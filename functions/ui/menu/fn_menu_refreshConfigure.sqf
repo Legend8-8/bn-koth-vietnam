@@ -28,10 +28,14 @@ private _weaponSlot = toLower (_context getOrDefault ["weaponSlot", "primary"]);
 if (_weaponClass isEqualTo "") exitWith {
     ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh
 };
-if !(_weaponSlot in ["primary", "handgun"]) exitWith {
+if !(_weaponSlot in ["primary", "handgun", "launcher"]) exitWith {
     ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh
 };
-private _loadoutSlotIndex = if (_weaponSlot isEqualTo "handgun") then {2} else {0};
+private _loadoutSlotIndex = switch (_weaponSlot) do {
+    case "handgun": {2};
+    case "launcher": {1};
+    default {0};
+};
 
 private _metadata = [_weaponClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
 private _canonicalClass = _metadata getOrDefault ["canonicalClass", ""];

@@ -247,7 +247,7 @@ private _rowDefs = [
 
 _ctrlPrimaryButton buttonSetAction "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'primary']; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
 _ctrlHandgunButton buttonSetAction "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'handgun']; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
-_ctrlLauncherButton buttonSetAction "['LOADOUT_LAUNCHER'] call bn_koth_fnc_menu_refresh;";
+_ctrlLauncherButton buttonSetAction "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'launcher']; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
 _ctrlUniformButton buttonSetAction "['LOADOUT_UNIFORM'] call bn_koth_fnc_menu_refresh;";
 _ctrlVestButton buttonSetAction "['LOADOUT_VEST'] call bn_koth_fnc_menu_refresh;";
 _ctrlHeadgearButton buttonSetAction "['LOADOUT_HEADGEAR'] call bn_koth_fnc_menu_refresh;";

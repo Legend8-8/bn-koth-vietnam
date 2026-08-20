@@ -22,12 +22,16 @@ if (isNull _display) exitWith {};
 
 private _cardIdcs = call bn_koth_fnc_menu_getItemCardControls;
 private _weaponSlot = toLower (uiNamespace getVariable ["BN_KOTH_menuBrowserSlot", "primary"]);
-if !(_weaponSlot in ["primary", "handgun"]) then {
+if !(_weaponSlot in ["primary", "handgun", "launcher"]) then {
     _weaponSlot = "primary";
 };
 uiNamespace setVariable ["BN_KOTH_menuBrowserSlot", _weaponSlot];
 private _weaponSlotUpper = toUpper _weaponSlot;
-private _loadoutSlotIndex = if (_weaponSlot isEqualTo "handgun") then {2} else {0};
+private _loadoutSlotIndex = switch (_weaponSlot) do {
+    case "handgun": {2};
+    case "launcher": {1};
+    default {0};
+};
 
 private _settingsCfg = missionConfigFile >> "CfgBnKothArsenalSettings";
 private _catalogueClass = if (isClass _settingsCfg) then {
@@ -140,7 +144,17 @@ private _entries = [];
 {
     private _metadata = _x getOrDefault ["metadata", createHashMap];
     private _weaponClass = _x getOrDefault ["weaponClass", ""];
-    private _entitlement = if !(_sideToken isEqualTo "") then {
+    private _clearSlot = _x getOrDefault ["clearSlot", false];
+    private _entitlement = if (_clearSlot) then {
+        createHashMapFromArray [
+            ["success", true],
+            ["entitled", true],
+            ["code", "ENTITLED_CLEAR"],
+            ["message", "Empty launcher slot requires no entitlement."],
+            ["accessType", "UNCONTROLLED"]
+        ]
+    } else {
+        if !(_sideToken isEqualTo "") then {
         [
             _uid,
             _sideToken,
@@ -148,14 +162,15 @@ private _entries = [];
             _metadata,
             _weaponClass
         ] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules
-    } else {
-        createHashMapFromArray [
-            ["success", false],
-            ["entitled", false],
-            ["code", "LOCKED_STATE"],
-            ["message", "Player presentation state is not ready."],
-            ["accessType", "NONE"]
-        ]
+        } else {
+            createHashMapFromArray [
+                ["success", false],
+                ["entitled", false],
+                ["code", "LOCKED_STATE"],
+                ["message", "Player presentation state is not ready."],
+                ["accessType", "NONE"]
+            ]
+        }
     };
 
     _entries pushBack (createHashMapFromArray [
@@ -163,7 +178,8 @@ private _entries = [];
         ["displayName", _x getOrDefault ["displayName", toUpper _weaponClass]],
         ["picture", _x getOrDefault ["picture", ""]],
         ["metadata", _metadata],
-        ["entitlement", _entitlement]
+        ["entitlement", _entitlement],
+        ["clearSlot", _clearSlot]
     ]);
 } forEach _catalogue;
 
@@ -176,7 +192,12 @@ if !(_page isEqualType 0) then {_page = 0};
 _page = (_page max 0) min (_pageCount - 1);
 uiNamespace setVariable ["BN_KOTH_menuBrowserPage", _page];
 
-(_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_TITLE) ctrlSetText (if (_weaponSlot isEqualTo "handgun") then {"SIDEARMS"} else {"PRIMARY WEAPONS"});
+private _browserTitle = switch (_weaponSlot) do {
+    case "handgun": {"SIDEARMS"};
+    case "launcher": {"LAUNCHERS"};
+    default {"PRIMARY WEAPONS"};
+};
+(_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_TITLE) ctrlSetText _browserTitle;
 (_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_SUBTITLE) ctrlSetText "CANONICAL S.O.G. WEAPONS";
 (_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL) ctrlSetText format ["PAGE %1 / %2", _page + 1, _pageCount];
 
@@ -241,10 +262,11 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
     private _lockedByLevel = _entitlementCode isEqualTo "LOCKED_LEVEL";
     private _hasAccess = _accessType in ["OWNED", "RENTED", "UNCONTROLLED"];
     private _entryWeaponClass = _entry getOrDefault ["weaponClass", ""];
+    private _clearSlot = _entry getOrDefault ["clearSlot", false];
     private _drafts = uiNamespace getVariable ["BN_KOTH_menuConfigureDrafts", createHashMap];
     if !(_drafts isEqualType createHashMap) then {_drafts = createHashMap};
 
-    private _draft = _drafts getOrDefault [_entryWeaponClass, createHashMap];
+    private _draft = if (_clearSlot) then {createHashMap} else {_drafts getOrDefault [_entryWeaponClass, createHashMap]};
     private _draftWeaponClass = "";
     private _draftMagazineClass = "";
     private _draftAttachments = [];
@@ -282,14 +304,21 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
         {_draftMagazineClass isEqualTo _intendedMagazine} &&
         {_draftAttachments isEqualTo _intendedAttachments};
     private _hasPendingAttachmentDraft = _hasAttachmentDraft && {!_draftMatchesIntended};
-    private _canApply = _hasAccess && {_draftIsValid} && {!_draftMatchesIntended};
-    private _isApplied =
+    private _canApply = if (_clearSlot) then {
+        !(_intendedWeaponClass isEqualTo "")
+    } else {
+        _hasAccess && {_draftIsValid} && {!_draftMatchesIntended}
+    };
+    private _isApplied = if (_clearSlot) then {
+        _intendedWeaponClass isEqualTo ""
+    } else {
         _hasAccess &&
         {(_entryWeaponClass isEqualTo _intendedWeaponClass)} &&
         {
             !_draftIsValid ||
             {_draftMatchesIntended}
-        };
+        }
+    };
     private _primaryActionText = if (_isApplied) then {"APPLIED"} else {"APPLY"};
     private _lockText = if (_lockedByLevel) then {
         format ["LOCKED UNTIL LEVEL %1", _metadata getOrDefault ["minLevel", 1]]
@@ -297,26 +326,30 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
         ""
     };
 
-    private _status = switch (_accessType) do {
-        case "OWNED": {"OWNED"};
-        case "RENTED": {"RENTED"};
-        case "UNCONTROLLED": {"AVAILABLE - NO KOTH RESTRICTION"};
-        default {
-            if (_lockedByLevel) then {
-                format ["LOCKED UNTIL LEVEL %1", _metadata getOrDefault ["minLevel", 1]]
-            } else {
-                if (_hasPendingAttachmentDraft) then {
-                    "ATTACHMENT APPLY PENDING"
+    private _status = if (_clearSlot) then {
+        if (_isApplied) then {"NO LAUNCHER SELECTED"} else {"REMOVE CURRENT LAUNCHER"}
+    } else {
+        switch (_accessType) do {
+            case "OWNED": {"OWNED"};
+            case "RENTED": {"RENTED"};
+            case "UNCONTROLLED": {"AVAILABLE - NO KOTH RESTRICTION"};
+            default {
+                if (_lockedByLevel) then {
+                    format ["LOCKED UNTIL LEVEL %1", _metadata getOrDefault ["minLevel", 1]]
                 } else {
-                    switch (_entitlementCode) do {
-                        case "REQUIRES_ACQUISITION": {"ACQUISITION REQUIRED"};
-                        case "LOCKED_SIDE_LICENSE": {"CROSS-FACTION LICENSE REQUIRED"};
-                        case "LOCKED_PERK": {"REQUIRED PERK MISSING"};
-                        default {"PRESENTATION STATE UNAVAILABLE"};
+                    if (_hasPendingAttachmentDraft) then {
+                        "ATTACHMENT APPLY PENDING"
+                    } else {
+                        switch (_entitlementCode) do {
+                            case "REQUIRES_ACQUISITION": {"ACQUISITION REQUIRED"};
+                            case "LOCKED_SIDE_LICENSE": {"CROSS-FACTION LICENSE REQUIRED"};
+                            case "LOCKED_PERK": {"REQUIRED PERK MISSING"};
+                            default {"PRESENTATION STATE UNAVAILABLE"};
+                        }
                     }
                 }
-            }
-        };
+            };
+        }
     };
 
     if (_hasAccess && {_hasPendingAttachmentDraft}) then {
@@ -350,21 +383,26 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
     _primaryAction buttonSetAction "";
     _secondaryAction buttonSetAction "";
     _primaryAction ctrlShow _hasAccess;
-    _secondaryAction ctrlShow _hasAccess;
+    _secondaryAction ctrlShow (_hasAccess && {!_clearSlot});
     _primaryAction ctrlEnable (_canApply && {!_isApplied});
-    _secondaryAction ctrlEnable _hasAccess;
+    _secondaryAction ctrlEnable (_hasAccess && {!_clearSlot});
 
+    private _applyArguments = if (_clearSlot) then {
+        [_weaponSlot, "", "", []]
+    } else {
+        [_weaponSlot, _draftWeaponClass, _draftMagazineClass, _draftAttachments]
+    };
     private _applyAction = if (_canApply && {!_isApplied}) then {
         format [
             "%1 call bn_koth_fnc_menu_applyWeaponComposition;",
-            str [_weaponSlot, _draftWeaponClass, _draftMagazineClass, _draftAttachments]
+            str _applyArguments
         ]
     } else {
         ""
     };
     _primaryAction buttonSetAction _applyAction;
 
-    if (_hasAccess) then {
+    if (_hasAccess && {!_clearSlot}) then {
         _secondaryAction buttonSetAction format [
             "uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMapFromArray [['weaponClass', '%1'], ['weaponSlot', '%2'], ['browserPage', uiNamespace getVariable ['BN_KOTH_menuBrowserPage', 0]]]]; uiNamespace setVariable ['BN_KOTH_menuConfigureView', 'MAGAZINES']; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0]; uiNamespace setVariable ['BN_KOTH_menuConfigureAttachmentPage', 0]; ['LOADOUT_CONFIGURE'] call bn_koth_fnc_menu_refresh;",
             _entryWeaponClass,

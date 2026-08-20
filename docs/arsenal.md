@@ -1084,9 +1084,9 @@ Future progression entitlement must integrate inside the existing server validat
 
 ### Arsenal V1 weapon composition drafts
 
-The primary-weapon and sidearm browsers share one card, Configure, draft and
-request architecture. Either browser may submit one complete client-selected
-composition for its explicit weapon slot:
+The primary-weapon, sidearm and launcher browsers share one card, Configure,
+draft and request architecture. Each browser may submit one complete
+client-selected composition for its explicit weapon slot:
 
 ```text
 canonical base weapon
@@ -1107,10 +1107,12 @@ Only the server-returned validated loadout is applied through the existing
 owned application path. Viable but incomplete structural attachment drafts are
 not submittable.
 
-The browser slot context is presentation only. The request contains either a
-`weapons.primary` or `weapons.handgun` intent, and the server validates that
-slot through the shared weapon-composition validator before building the
-authoritative intended loadout.
+The browser slot context is presentation only. The request contains a
+`weapons.primary`, `weapons.handgun`, or `weapons.launcher` intent, and the
+server validates that slot through the shared weapon-composition validator
+before building the authoritative intended loadout. Launcher presentation also
+provides an explicit `NONE` choice. That choice submits an empty launcher-slot
+intent; only the server validates and applies the resulting removal.
 
 Safe-zone anti-duplication boundaries are:
 

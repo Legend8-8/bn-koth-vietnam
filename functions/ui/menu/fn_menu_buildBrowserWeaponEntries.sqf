@@ -7,7 +7,7 @@
     Execution: Client
     Parameters:
         0: Canonical compatibility config root <CONFIG>
-        1: Weapon slot: PRIMARY or HANDGUN <STRING>
+        1: Weapon slot: PRIMARY, HANDGUN, or LAUNCHER <STRING>
     Returns:
         Canonical browser weapon entries <ARRAY<HashMap>>
     Public: No
@@ -22,19 +22,23 @@ private _entries = [];
 if !(isClass _compatibilityCfg) exitWith {_entries};
 
 _weaponSlot = toUpper _weaponSlot;
-if !(_weaponSlot in ["PRIMARY", "HANDGUN"]) exitWith {_entries};
+if !(_weaponSlot in ["PRIMARY", "HANDGUN", "LAUNCHER"]) exitWith {_entries};
 
 private _sourceWeaponsCfg = _compatibilityCfg >> "SourceWeapons";
 if !(isClass _sourceWeaponsCfg) exitWith {_entries};
 
 private _seenCanonicalClasses = [];
 private _sortable = [];
-private _allowedWeaponTypes = if (_weaponSlot isEqualTo "HANDGUN") then {
-    ["handgun"]
-} else {
-    ["rifle", "lmg", "smg", "shotgun", "marksman"]
+private _allowedWeaponTypes = switch (_weaponSlot) do {
+    case "HANDGUN": {["handgun"]};
+    case "LAUNCHER": {["launcher"]};
+    default {["rifle", "lmg", "smg", "shotgun", "marksman"]};
 };
-private _cfgWeaponType = if (_weaponSlot isEqualTo "HANDGUN") then {2} else {1};
+private _cfgWeaponType = switch (_weaponSlot) do {
+    case "HANDGUN": {2};
+    case "LAUNCHER": {4};
+    default {1};
+};
 
 {
     private _weaponClass = toLower (configName _x);
@@ -76,4 +80,14 @@ private _cfgWeaponType = if (_weaponSlot isEqualTo "HANDGUN") then {2} else {1};
 
 _sortable sort true;
 {_entries pushBack (_x select 1);} forEach _sortable;
+
+if (_weaponSlot isEqualTo "LAUNCHER") then {
+    _entries = [createHashMapFromArray [
+        ["weaponClass", ""],
+        ["displayName", "NONE"],
+        ["picture", ""],
+        ["metadata", createHashMap],
+        ["clearSlot", true]
+    ]] + _entries;
+};
 _entries
