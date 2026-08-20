@@ -44,12 +44,6 @@ if (_catalogueClass isEqualTo "") then {
 
 private _compatibilityCfg = missionConfigFile >> _catalogueClass >> "Equipment" >> "Compatibility";
 private _sourceMagazinesCfg = _compatibilityCfg >> "SourceMagazines";
-private _weaponMagazinesCfg = _compatibilityCfg >> "WeaponMagazines";
-private _compatibleCfg = _weaponMagazinesCfg >> _weaponClass;
-if !(isClass _compatibleCfg) exitWith {false};
-
-private _compatibleMagazines = (getArray (_compatibleCfg >> "values")) apply {toLower _x};
-if !(_magazineClass in _compatibleMagazines) exitWith {false};
 if !(isClass (_sourceMagazinesCfg >> _magazineClass)) exitWith {false};
 if !(isClass (configFile >> "CfgMagazines" >> _magazineClass)) exitWith {false};
 
@@ -58,9 +52,32 @@ if !(_drafts isEqualType createHashMap) then {
     _drafts = createHashMap;
 };
 
+private _draft = _drafts getOrDefault [_weaponClass, createHashMap];
+private _selectedAttachments = [];
+if (_draft isEqualType createHashMap) then {
+    if ((toLower (_draft getOrDefault ["weaponClass", ""])) isEqualTo _weaponClass) then {
+        private _draftAttachments = _draft getOrDefault ["attachments", []];
+        if (_draftAttachments isEqualType []) then {
+            {
+                if (_x isEqualType "") then {
+                    private _attachment = toLower _x;
+                    if !(_attachment isEqualTo "") then {
+                        _selectedAttachments pushBackUnique _attachment;
+                    };
+                };
+            } forEach _draftAttachments;
+            _selectedAttachments sort true;
+        };
+    };
+};
+
+private _evaluation = [_weaponClass, _selectedAttachments, [_magazineClass], _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
+if !(_evaluation getOrDefault ["available", false]) exitWith {false};
+
 _drafts set [_weaponClass, createHashMapFromArray [
     ["weaponClass", _weaponClass],
-    ["magazineClass", _magazineClass]
+    ["magazineClass", _magazineClass],
+    ["attachments", _evaluation getOrDefault ["attachments", []]]
 ]];
 uiNamespace setVariable ["BN_KOTH_menuConfigureDrafts", _drafts];
 

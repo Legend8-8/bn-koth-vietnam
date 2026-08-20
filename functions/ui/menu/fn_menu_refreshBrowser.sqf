@@ -225,33 +225,37 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
     private _draft = _drafts getOrDefault [_entryWeaponClass, createHashMap];
     private _draftWeaponClass = "";
     private _draftMagazineClass = "";
+    private _draftAttachments = [];
     if (_draft isEqualType createHashMap) then {
         _draftWeaponClass = toLower (_draft getOrDefault ["weaponClass", ""]);
         _draftMagazineClass = toLower (_draft getOrDefault ["magazineClass", ""]);
+        private _rawDraftAttachments = _draft getOrDefault ["attachments", []];
+        if (_rawDraftAttachments isEqualType []) then {
+            {
+                if (_x isEqualType "") then {
+                    private _attachment = toLower _x;
+                    if !(_attachment isEqualTo "") then {
+                        _draftAttachments pushBackUnique _attachment;
+                    };
+                };
+            } forEach _rawDraftAttachments;
+            _draftAttachments sort true;
+        };
     };
 
     private _draftIsValid = false;
+    private _hasAttachmentDraft = (_draftWeaponClass isEqualTo _entryWeaponClass) && {(count _draftAttachments) > 0};
     if (
         (_draftWeaponClass isEqualTo _entryWeaponClass) &&
         {!(_draftMagazineClass isEqualTo "")}
     ) then {
-        private _sourceMagazinesCfg = _compatibilityCfg >> "SourceMagazines";
-        private _weaponMagazinesCfg = _compatibilityCfg >> "WeaponMagazines";
-        private _compatibleCfg = _weaponMagazinesCfg >> _draftWeaponClass;
-        private _compatibleMagazines = if (isClass _compatibleCfg) then {
-            (getArray (_compatibleCfg >> "values")) apply {toLower _x}
-        } else {
-            []
-        };
-
-        _draftIsValid =
-            (_draftMagazineClass in _compatibleMagazines) &&
-            {isClass (_sourceMagazinesCfg >> _draftMagazineClass)} &&
-            {isClass (configFile >> "CfgMagazines" >> _draftMagazineClass)};
+        private _draftEvaluation = [_draftWeaponClass, _draftAttachments, [_draftMagazineClass], _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
+        _draftIsValid = _draftEvaluation getOrDefault ["available", false];
     };
-    private _canApply = _hasAccess && _draftIsValid;
+    private _canApply = _hasAccess && {_draftIsValid} && {!_hasAttachmentDraft};
     private _isApplied =
         _hasAccess &&
+        {!_hasAttachmentDraft} &&
         {(_entryWeaponClass isEqualTo _intendedPrimaryClass)} &&
         {
             !_draftIsValid ||
@@ -272,14 +276,22 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
             if (_lockedByLevel) then {
                 format ["LOCKED UNTIL LEVEL %1", _metadata getOrDefault ["minLevel", 1]]
             } else {
-                switch (_entitlementCode) do {
-                    case "REQUIRES_ACQUISITION": {"ACQUISITION REQUIRED"};
-                    case "LOCKED_SIDE_LICENSE": {"CROSS-FACTION LICENSE REQUIRED"};
-                    case "LOCKED_PERK": {"REQUIRED PERK MISSING"};
-                    default {"PRESENTATION STATE UNAVAILABLE"};
+                if (_hasAttachmentDraft) then {
+                    "ATTACHMENT APPLY PENDING"
+                } else {
+                    switch (_entitlementCode) do {
+                        case "REQUIRES_ACQUISITION": {"ACQUISITION REQUIRED"};
+                        case "LOCKED_SIDE_LICENSE": {"CROSS-FACTION LICENSE REQUIRED"};
+                        case "LOCKED_PERK": {"REQUIRED PERK MISSING"};
+                        default {"PRESENTATION STATE UNAVAILABLE"};
+                    }
                 }
             }
         };
+    };
+
+    if (_hasAccess && {_hasAttachmentDraft}) then {
+        _status = "ATTACHMENT APPLY PENDING";
     };
 
     private _background = _display displayCtrl (_controls select 0);

@@ -2,8 +2,10 @@
     File: fn_menu_refreshConfigureAttachments.sqf
     Author: Legend
     Description: Renders factual attachment candidates for one canonical
-        Configure weapon. Structural candidates are presentation-only; this
-        function does not resolve, select, draft, or apply a composition.
+        Configure weapon, evaluates client-local complete and viable-incomplete
+        composition presentation states, and supports local attachment draft
+        SELECT/REMOVE presentation. It submits no gameplay request, applies no
+        equipment, and remains non-authoritative.
     Execution: Client
     Parameters:
         0: Menu display <DISPLAY>
@@ -176,6 +178,71 @@ if !(_presentationProgression isEqualType createHashMap) then {
 };
 private _playerLevel = (_presentationProgression getOrDefault ["level", 1]) max 1;
 
+private _drafts = uiNamespace getVariable ["BN_KOTH_menuConfigureDrafts", createHashMap];
+if !(_drafts isEqualType createHashMap) then {
+    _drafts = createHashMap;
+};
+
+private _draft = _drafts getOrDefault [_canonicalWeaponClass, createHashMap];
+private _selectedMagazine = "";
+private _selectedAttachmentsRaw = [];
+if (_draft isEqualType createHashMap) then {
+    if ((toLower (_draft getOrDefault ["weaponClass", ""])) isEqualTo _canonicalWeaponClass) then {
+        _selectedMagazine = toLower (_draft getOrDefault ["magazineClass", ""]);
+        private _draftAttachments = _draft getOrDefault ["attachments", []];
+        if (_draftAttachments isEqualType []) then {
+            {
+                if (_x isEqualType "") then {
+                    private _attachment = toLower _x;
+                    if !(_attachment isEqualTo "") then {
+                        _selectedAttachmentsRaw pushBackUnique _attachment;
+                    };
+                };
+            } forEach _draftAttachments;
+            _selectedAttachmentsRaw sort true;
+        };
+    };
+};
+
+private _entryByClass = createHashMap;
+{
+    _entryByClass set [_x getOrDefault ["className", ""], _x];
+} forEach _entries;
+
+private _selectedAttachments = [];
+{
+    private _attachmentClass = _x;
+    private _entry = _entryByClass getOrDefault [_attachmentClass, createHashMap];
+    if !(_entry isEqualType createHashMap) then {continue;};
+    if ((count _entry) <= 0) then {continue;};
+
+    private _minLevel = _entry getOrDefault ["minLevel", 1];
+    private _hasMinLevel = _entry getOrDefault ["hasMinLevel", false];
+    if (_hasMinLevel && {_playerLevel < _minLevel}) then {continue;};
+
+    _selectedAttachments pushBackUnique _attachmentClass;
+} forEach _selectedAttachmentsRaw;
+_selectedAttachments sort true;
+
+private _magazines = if (_selectedMagazine isEqualTo "") then {[]} else {[_selectedMagazine]};
+private _storedDraftEvaluation = [_canonicalWeaponClass, _selectedAttachments, _magazines, _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
+if (_storedDraftEvaluation getOrDefault ["available", false]) then {
+    _selectedAttachments = _storedDraftEvaluation getOrDefault ["attachments", []];
+} else {
+    _selectedAttachments = [];
+};
+
+if (_selectedMagazine isEqualTo "" && {(count _selectedAttachments) <= 0}) then {
+    _drafts deleteAt _canonicalWeaponClass;
+} else {
+    _drafts set [_canonicalWeaponClass, createHashMapFromArray [
+        ["weaponClass", _canonicalWeaponClass],
+        ["magazineClass", _selectedMagazine],
+        ["attachments", _selectedAttachments]
+    ]];
+};
+uiNamespace setVariable ["BN_KOTH_menuConfigureDrafts", _drafts];
+
 {
     private _cardIndex = _forEachIndex + (_page * _pageSize);
     if (_cardIndex >= (count _entries)) then {continue;};
@@ -185,12 +252,41 @@ private _playerLevel = (_presentationProgression getOrDefault ["level", 1]) max 
     private _minLevel = _entry getOrDefault ["minLevel", 1];
     private _hasMinLevel = _entry getOrDefault ["hasMinLevel", false];
     private _locked = _hasMinLevel && {_playerLevel < _minLevel};
+    private _attachmentClass = _entry getOrDefault ["className", ""];
+    private _isSelected = _attachmentClass in _selectedAttachments;
+    private _proposedAttachments = if (_isSelected) then {
+        _selectedAttachments - [_attachmentClass]
+    } else {
+        private _candidateAttachments = +_selectedAttachments;
+        _candidateAttachments pushBackUnique _attachmentClass;
+        _candidateAttachments
+    };
+    _proposedAttachments sort true;
+
+    private _magazines = if (_selectedMagazine isEqualTo "") then {[]} else {[_selectedMagazine]};
+    private _compositionEvaluation = [_canonicalWeaponClass, _proposedAttachments, _magazines, _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
+    private _compositionAvailable = _compositionEvaluation getOrDefault ["available", false];
+    private _compositionState = _compositionEvaluation getOrDefault ["state", "INVALID"];
     private _status = if (_locked) then {
         format ["LOCKED UNTIL LEVEL %1", _minLevel]
     } else {
-        format ["COMPATIBLE %1", _entry getOrDefault ["category", "ATTACHMENT"]]
+        if (_isSelected) then {
+            "SELECTED"
+        } else {
+            if (_compositionAvailable) then {
+                if (_compositionState isEqualTo "INCOMPLETE") then {
+                    "REQUIRES ADDITIONAL ATTACHMENT"
+                } else {
+                    format ["COMPATIBLE %1", _entry getOrDefault ["category", "ATTACHMENT"]]
+                }
+            } else {
+                "INCOMPATIBLE WITH SELECTION"
+            }
+        }
     };
     private _lockText = if (_locked) then {format ["LOCKED UNTIL LEVEL %1", _minLevel]} else {""};
+    private _actionText = if (_isSelected) then {"REMOVE"} else {"SELECT"};
+    private _hasAction = !_locked && {_compositionAvailable};
 
     private _background = _display displayCtrl (_controls select 0);
     private _imageArea = _display displayCtrl (_controls select 1);
@@ -210,14 +306,24 @@ private _playerLevel = (_presentationProgression getOrDefault ["level", 1]) max 
     _image ctrlSetText (_entry getOrDefault ["picture", ""]);
     _nameCtrl ctrlSetText (_entry getOrDefault ["displayName", "UNKNOWN"]);
     _statusCtrl ctrlSetText _status;
-    _overlay ctrlShow _locked;
+    _overlay ctrlShow (_locked || {!_compositionAvailable && {!_isSelected}});
     _lockCtrl ctrlSetText _lockText;
     _lockCtrl ctrlShow _locked;
-    _primaryAction ctrlShow false;
+    _primaryAction ctrlSetText _actionText;
+    _primaryAction ctrlShow _hasAction;
     _secondaryAction ctrlShow false;
-    _primaryAction ctrlEnable false;
+    _primaryAction ctrlEnable _hasAction;
     _secondaryAction ctrlEnable false;
-    _primaryAction buttonSetAction "";
+    private _actionMode = if (_isSelected) then {"REMOVE"} else {"SELECT"};
+    private _action = if (_hasAction) then {
+        format [
+            "%1 call bn_koth_fnc_menu_selectConfigureAttachment;",
+            str [_canonicalWeaponClass, _attachmentClass, _actionMode]
+        ]
+    } else {
+        ""
+    };
+    _primaryAction buttonSetAction _action;
     _secondaryAction buttonSetAction "";
 } forEach _cardIdcs;
 

@@ -152,21 +152,71 @@ if !(_drafts isEqualType createHashMap) then {
 
 private _draft = _drafts getOrDefault [_canonicalClass, createHashMap];
 private _selectedMagazine = "";
-private _draftIsValid = false;
+private _selectedAttachments = [];
 if (_draft isEqualType createHashMap) then {
     private _draftWeapon = toLower (_draft getOrDefault ["weaponClass", ""]);
     private _draftMagazine = toLower (_draft getOrDefault ["magazineClass", ""]);
-    if (
-        (_draftWeapon isEqualTo _canonicalClass) &&
-        {_draftMagazine in _seenMagazines}
-    ) then {
-        _selectedMagazine = _draftMagazine;
-        _draftIsValid = true;
+    if (_draftWeapon isEqualTo _canonicalClass) then {
+        private _draftAttachments = _draft getOrDefault ["attachments", []];
+        if (_draftAttachments isEqualType []) then {
+            {
+                if (_x isEqualType "") then {
+                    private _attachment = toLower _x;
+                    if !(_attachment isEqualTo "") then {
+                        _selectedAttachments pushBackUnique _attachment;
+                    };
+                };
+            } forEach _draftAttachments;
+            _selectedAttachments sort true;
+        };
+
+        private _sourceItemsCfg = _compatibilityCfg >> "SourceItems";
+        private _attachmentMetadataRoot = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment" >> "Metadata" >> "Attachments";
+        private _unlockedAttachments = [];
+        {
+            private _attachmentClass = _x;
+            if !(isClass (_sourceItemsCfg >> _attachmentClass)) then {continue;};
+
+            private _attachmentMetadataCfg = _attachmentMetadataRoot >> _attachmentClass;
+            private _isLocked = false;
+            if (isClass _attachmentMetadataCfg && {isNumber (_attachmentMetadataCfg >> "minLevel")}) then {
+                private _minLevel = (getNumber (_attachmentMetadataCfg >> "minLevel")) max 1;
+                _isLocked = _level < _minLevel;
+            };
+            if (_isLocked) then {continue;};
+
+            _unlockedAttachments pushBackUnique _attachmentClass;
+        } forEach _selectedAttachments;
+        _unlockedAttachments sort true;
+        _selectedAttachments = _unlockedAttachments;
+
+        private _attachmentEvaluation = [_canonicalClass, _selectedAttachments, [], _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
+        if (_attachmentEvaluation getOrDefault ["available", false]) then {
+            _selectedAttachments = _attachmentEvaluation getOrDefault ["attachments", []];
+        } else {
+            _selectedAttachments = [];
+        };
+
+        if !(_draftMagazine isEqualTo "") then {
+            private _magazineEvaluation = [_canonicalClass, _selectedAttachments, [_draftMagazine], _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
+            if (_magazineEvaluation getOrDefault ["available", false]) then {
+                _selectedMagazine = _draftMagazine;
+                _selectedAttachments = _magazineEvaluation getOrDefault ["attachments", []];
+            };
+        };
     };
 };
 
-if (!_draftIsValid && {!(_draft isEqualType createHashMap) || {(count _draft) > 0}}) then {
+if (_selectedMagazine isEqualTo "" && {(count _selectedAttachments) <= 0}) then {
     _drafts deleteAt _canonicalClass;
+} else {
+    _drafts set [_canonicalClass, createHashMapFromArray [
+        ["weaponClass", _canonicalClass],
+        ["magazineClass", _selectedMagazine],
+        ["attachments", _selectedAttachments]
+    ]];
+};
+if (_draft isEqualType createHashMap) then {
     uiNamespace setVariable ["BN_KOTH_menuConfigureDrafts", _drafts];
 };
 
@@ -266,7 +316,13 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuCon
     private _secondaryAction = _display displayCtrl (_controls select 8);
     private _magazineClass = _magazine getOrDefault ["className", ""];
     private _isSelected = _magazineClass isEqualTo _selectedMagazine;
-    private _magazineStatus = if (_isSelected) then {"SELECTED"} else {"COMPATIBLE MAGAZINE"};
+    private _magazineEvaluation = [_canonicalClass, _selectedAttachments, [_magazineClass], _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
+    private _canSelectMagazine = _magazineEvaluation getOrDefault ["available", false];
+    private _magazineStatus = if (_isSelected) then {
+        "SELECTED"
+    } else {
+        if (_canSelectMagazine) then {"COMPATIBLE MAGAZINE"} else {"INCOMPATIBLE WITH ATTACHMENTS"}
+    };
 
     {
         _x ctrlShow true;
@@ -276,11 +332,11 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuCon
     _image ctrlSetText (_magazine getOrDefault ["picture", ""]);
     _nameCtrl ctrlSetText (_magazine getOrDefault ["displayName", "UNKNOWN"]);
     _statusCtrl ctrlSetText _magazineStatus;
-    _overlay ctrlShow false;
+    _overlay ctrlShow (!_canSelectMagazine && {!_isSelected});
     _lockCtrl ctrlSetText "";
     _lockCtrl ctrlShow false;
     _primaryAction ctrlSetText "SELECT";
-    private _selectAction = if (_isSelected) then {
+    private _selectAction = if (_isSelected || {!_canSelectMagazine}) then {
         ""
     } else {
         format [
@@ -290,9 +346,9 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuCon
     };
     _primaryAction buttonSetAction _selectAction;
     _secondaryAction buttonSetAction "";
-    _primaryAction ctrlShow (!_isSelected);
+    _primaryAction ctrlShow (!_isSelected && {_canSelectMagazine});
     _secondaryAction ctrlShow false;
-    _primaryAction ctrlEnable (!_isSelected);
+    _primaryAction ctrlEnable (!_isSelected && {_canSelectMagazine});
     _secondaryAction ctrlEnable false;
 } forEach _cardIdcs;
 

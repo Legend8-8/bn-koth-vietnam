@@ -189,7 +189,9 @@ class CfgFunctions
             class menu_refreshBrowser {file = "functions\ui\menu\fn_menu_refreshBrowser.sqf";};
             class menu_refreshConfigure {file = "functions\ui\menu\fn_menu_refreshConfigure.sqf";};
             class menu_refreshConfigureAttachments {file = "functions\ui\menu\fn_menu_refreshConfigureAttachments.sqf";};
+            class menu_evaluateWeaponComposition {file = "functions\ui\menu\fn_menu_evaluateWeaponComposition.sqf";};
             class menu_selectConfigureMagazine {file = "functions\ui\menu\fn_menu_selectConfigureMagazine.sqf";};
+            class menu_selectConfigureAttachment {file = "functions\ui\menu\fn_menu_selectConfigureAttachment.sqf";};
             class menu_getItemCardControls {file = "functions\ui\menu\fn_menu_getItemCardControls.sqf";};
             class menu_buildBrowserWeaponEntries {file = "functions\ui\menu\fn_menu_buildBrowserWeaponEntries.sqf";};
             class menu_refreshSelector {file = "functions\ui\menu\fn_menu_refreshSelector.sqf";};
