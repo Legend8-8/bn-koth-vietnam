@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
 import unittest
 
 from tools.sog_catalogue.catalogue import CatalogueError, parse_all_pages, parse_main_table
 from tools.sog_catalogue.classify import build_base_candidate_groups, build_catalogue, derive_source_affiliations, find_variant_base_candidate
-from tools.sog_catalogue.validate import build_progression_rows, validate_catalogue
+from tools.sog_catalogue.validate import build_root_audit_warnings, build_progression_rows, validate_catalogue
 
 
 WEAPONS_SAMPLE = """{{Template:AssetsMenu}}<br />
@@ -77,6 +79,73 @@ MAGAZINES_SAMPLE = """{{Template:AssetsMenu}}<br />
 """
 
 
+def root_weapon(
+    class_name: str,
+    display_name: str,
+    weapon_type: str,
+    family: str,
+    compatible_magazines: list[str],
+) -> dict[str, object]:
+    return {
+        "class": class_name,
+        "displayName": display_name,
+        "weaponType": weapon_type,
+        "family": family,
+        "variantOf": None,
+        "variantCandidateOf": None,
+        "derivedRequirements": [],
+        "compatibleMagazines": compatible_magazines,
+        "compatibleAttachments": [],
+        "muzzles": {"primary": {"kind": "rifle_mag", "magazines": compatible_magazines}},
+        "baseMagazine": compatible_magazines[0] if compatible_magazines else None,
+        "baseMagazineConfidence": "high",
+        "baseMagazineCandidates": [],
+    }
+
+
+def variant_weapon(
+    class_name: str,
+    display_name: str,
+    weapon_type: str,
+    family: str,
+    variant_of: str,
+    derived_requirements: list[str],
+) -> dict[str, object]:
+    return {
+        "class": class_name,
+        "displayName": display_name,
+        "weaponType": weapon_type,
+        "family": family,
+        "variantOf": variant_of,
+        "variantCandidateOf": None,
+        "derivedRequirements": derived_requirements,
+        "compatibleMagazines": [],
+        "compatibleAttachments": [],
+        "muzzles": {},
+        "baseMagazine": None,
+        "baseMagazineConfidence": "high",
+        "baseMagazineCandidates": [],
+    }
+
+
+def magazine(class_name: str, category: str) -> dict[str, str]:
+    return {"class": class_name, "category": category}
+
+
+def load_generated_catalogue() -> dict[str, object]:
+    path = Path(__file__).resolve().parents[2] / "data" / "generated" / "sog_catalogue.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def resolve_variant_root(class_name: str, weapons: dict[str, dict[str, object]]) -> str:
+    cursor = class_name
+    safety = 0
+    while safety < 16 and weapons[cursor].get("variantOf"):
+        cursor = str(weapons[cursor]["variantOf"])
+        safety += 1
+    return cursor
+
+
 class ParseTests(unittest.TestCase):
     def test_parse_main_table_handles_nested_subtables(self) -> None:
         headers, rows = parse_main_table(WEAPONS_SAMPLE)
@@ -119,6 +188,112 @@ class ValidationTests(unittest.TestCase):
         }
         with self.assertRaises(CatalogueError):
             validate_catalogue(catalogue)
+
+    def test_root_audit_reports_unresolved_related_roots_deterministically(self) -> None:
+        weapons = [
+            root_weapon("vn_alpha_camo", "Alpha Camo", "rifle", "alpha", ["vn_alpha_mag"]),
+            root_weapon("vn_alpha", "Alpha", "rifle", "alpha", ["vn_alpha_mag"]),
+            root_weapon("vn_bravo", "Bravo", "rifle", "bravo", ["vn_bravo_mag"]),
+        ]
+        magazines = [magazine("vn_alpha_mag", "rifle_mag"), magazine("vn_bravo_mag", "rifle_mag")]
+
+        warnings = build_root_audit_warnings(weapons, magazines)
+
+        self.assertEqual(2, len(warnings["unresolvedRelatedRoots"]))
+        self.assertIn("vn_alpha", warnings["unresolvedRelatedRoots"][0])
+        self.assertIn("vn_alpha_camo", warnings["unresolvedRelatedRoots"][1])
+        self.assertEqual([], [entry for entry in warnings["unresolvedRelatedRoots"] if "vn_bravo" in entry])
+
+    def test_confirmed_structural_variants_are_not_reported_as_roots(self) -> None:
+        weapons = [
+            root_weapon("vn_m16", "M16A1", "rifle", "m16", ["vn_m16_mag"]),
+            variant_weapon("vn_m16_sd", "M16A1 (S)", "rifle", "m16", "vn_m16", ["vn_m16", "vn_s_m16"]),
+        ]
+        magazines = [magazine("vn_m16_mag", "rifle_mag")]
+
+        warnings = build_root_audit_warnings(weapons, magazines)
+
+        self.assertEqual([], warnings["unresolvedRelatedRoots"])
+        self.assertEqual([], warnings["duplicateRootDisplayNames"])
+
+    def test_duplicate_root_display_names_require_two_roots(self) -> None:
+        weapons = [
+            root_weapon("vn_m16_xm148", "M16A1 (XM148)", "rifle", "m16", ["vn_m16_mag"]),
+            root_weapon("vn_m16_muzzle", "M16A1 (XM148)", "launcher", "m16_muzzle", ["vn_m16_mag"]),
+            variant_weapon("vn_m16_shadow", "M16A1 (XM148)", "rifle", "m16", "vn_m16_xm148", ["vn_m16_xm148", "vn_o_m16"]),
+        ]
+        magazines = [magazine("vn_m16_mag", "rifle_mag")]
+
+        warnings = build_root_audit_warnings(weapons, magazines)
+
+        self.assertEqual(1, len(warnings["duplicateRootDisplayNames"]))
+        self.assertIn("vn_m16_muzzle", warnings["duplicateRootDisplayNames"][0])
+        self.assertIn("vn_m16_xm148", warnings["duplicateRootDisplayNames"][0])
+        self.assertNotIn("vn_m16_shadow", warnings["duplicateRootDisplayNames"][0])
+
+    def test_launcher_and_integrated_launcher_audit_warnings(self) -> None:
+        weapons = [
+            root_weapon("vn_m16_muzzle", "M16A1 (XM148)", "launcher", "m16_muzzle", ["vn_m16_mag"]),
+            root_weapon("vn_m16_xm148", "M16A1 (XM148)", "rifle", "m16", ["vn_m16_mag", "vn_40mm_he_mag"]),
+            root_weapon("vn_rpg", "RPG", "launcher", "rpg", ["vn_rpg_mag"]),
+        ]
+        weapons[1]["muzzles"] = {
+            "primary": {"kind": "primary_firearm", "magazines": ["vn_m16_mag"]},
+            "secondary_1": {"kind": "launcher", "magazines": ["vn_40mm_he_mag"]},
+        }
+        weapons[2]["muzzles"] = {"primary": {"kind": "launcher", "magazines": ["vn_rpg_mag"]}}
+        magazines = [
+            magazine("vn_m16_mag", "rifle_mag"),
+            magazine("vn_40mm_he_mag", "grenade_40mm"),
+            magazine("vn_rpg_mag", "launcher_round"),
+        ]
+
+        warnings = build_root_audit_warnings(weapons, magazines)
+
+        self.assertEqual(1, len(warnings["suspiciousLauncherRoots"]))
+        self.assertIn("vn_m16_muzzle", warnings["suspiciousLauncherRoots"][0])
+        self.assertEqual(1, len(warnings["integratedLauncherRoots"]))
+        self.assertIn("vn_m16_xm148", warnings["integratedLauncherRoots"][0])
+        self.assertNotIn("vn_rpg", "\n".join(warnings["suspiciousLauncherRoots"]))
+
+    def test_root_audit_does_not_mutate_classification(self) -> None:
+        weapons = [root_weapon("vn_m16_xm148", "M16A1 (XM148)", "rifle", "m16", ["vn_m16_mag"])]
+        before = [dict(weapon) for weapon in weapons]
+
+        build_root_audit_warnings(weapons, [magazine("vn_m16_mag", "rifle_mag")])
+
+        self.assertEqual(before, weapons)
+
+    def test_live_m16_root_audit_expectations(self) -> None:
+        catalogue = load_generated_catalogue()
+        warnings = validate_catalogue(catalogue)
+        text_by_category = {category: "\n".join(entries) for category, entries in warnings.items()}
+        weapons = {weapon["class"]: weapon for weapon in catalogue["weapons"]}
+
+        for class_name in ["vn_m16_bayo", "vn_m16_mrk", "vn_m16_sd", "vn_m16_nvg", "vn_m16_sniper"]:
+            self.assertEqual("vn_m16", resolve_variant_root(class_name, weapons))
+            self.assertTrue(weapons[class_name].get("derivedRequirements"))
+            self.assertNotIn(class_name, text_by_category["unresolvedRelatedRoots"])
+
+        for class_name in ["vn_m16_camo", "vn_m16_xm148", "vn_m16_m203", "vn_m16_m203_camo"]:
+            self.assertIn(class_name, text_by_category["unresolvedRelatedRoots"])
+
+        self.assertEqual("smg", weapons["vn_mc10"]["weaponType"])
+        self.assertEqual("smg", weapons["vn_mc10_sd"]["weaponType"])
+        self.assertEqual("vn_mc10", weapons["vn_mc10_sd"].get("variantOf"))
+        self.assertEqual(["vn_mc10", "vn_s_mc10"], weapons["vn_mc10_sd"].get("derivedRequirements"))
+
+    def test_live_m16_duplicate_and_launcher_audit_expectations(self) -> None:
+        warnings = validate_catalogue(load_generated_catalogue())
+        duplicate_text = "\n".join(warnings["duplicateRootDisplayNames"])
+        suspicious_text = "\n".join(warnings["suspiciousLauncherRoots"])
+        integrated_text = "\n".join(warnings["integratedLauncherRoots"])
+
+        self.assertIn("vn_m16_muzzle", duplicate_text)
+        self.assertIn("vn_m16_xm148", duplicate_text)
+        self.assertIn("vn_m16_muzzle", suspicious_text)
+        for class_name in ["vn_m16_xm148", "vn_m16_m203", "vn_m16_m203_camo"]:
+            self.assertIn(class_name, integrated_text)
 
 
 class ClassificationTests(unittest.TestCase):
