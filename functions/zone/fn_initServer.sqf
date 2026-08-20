@@ -31,6 +31,8 @@ private _readText = {
     if (isText _entry) then {getText _entry} else {_fallback}
 };
 
+private _maximumControlHeight = ["maximumControlHeight", 50] call _readNumber;
+missionNamespace setVariable ["BN_KOTH_maximumControlHeight", _maximumControlHeight max 0];
 private _prioritySizeRatio = (["prioritySizeRatio", 0.14142136] call _readNumber) max 0;
 private _priorityMinimumHalfSize = (["priorityMinimumHalfSize", 8.4852814] call _readNumber) max 0;
 private _priorityMoveTickInterval = (["priorityMoveTickInterval", 0.5] call _readNumber) max 0.01;
