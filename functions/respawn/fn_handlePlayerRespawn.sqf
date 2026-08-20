@@ -106,13 +106,33 @@ if (!isNull _oldUnit) then {
     [_oldUnit] call bn_koth_fnc_respawn_cleanupSafeZoneEntity;
 };
 
-if !([_assignedSide] call bn_koth_fnc_teams_validateSide) exitWith {
-    [format ["Respawn redeploy aborted: invalid assigned side UID=%1 side=%2", _uid, _assignedSide], "WARN"] call bn_koth_fnc_common_log;
-    false
+if !(_roundState isEqualTo "ACTIVE") exitWith {
+    private _lobbySuccess = [_uid] call bn_koth_fnc_teams_assignLobbyRepresentation;
+    if (!_lobbySuccess) exitWith {
+        [format ["Respawn lobby handoff failed: UID=%1 round=%2", _uid, _roundState], "ERROR"] call bn_koth_fnc_common_log;
+        false
+    };
+
+    [_uid] call bn_koth_fnc_loadouts_clearPlayerState;
+
+    _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
+    _record = _records getOrDefault [_uid, createHashMap];
+    if (_record isEqualType createHashMap) then {
+        _record set ["assignedSide", sideUnknown];
+        _record set ["voteLocationId", ""];
+        _record set ["state", "LOBBY"];
+        _record set ["deployed", false];
+        _records set [_uid, _record];
+        missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+    };
+
+    [] call bn_koth_fnc_teams_publishState;
+    [format ["Respawn completed into lobby: UID=%1 round=%2", _uid, _roundState], "INFO"] call bn_koth_fnc_common_log;
+    true
 };
 
-if !(_roundState isEqualTo "ACTIVE") exitWith {
-    [format ["Respawn redeploy aborted: round not ACTIVE UID=%1 state=%2", _uid, _roundState], "INFO"] call bn_koth_fnc_common_log;
+if !([_assignedSide] call bn_koth_fnc_teams_validateSide) exitWith {
+    [format ["Respawn redeploy aborted: invalid assigned side UID=%1 side=%2", _uid, _assignedSide], "WARN"] call bn_koth_fnc_common_log;
     false
 };
 
