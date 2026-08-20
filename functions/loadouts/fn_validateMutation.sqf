@@ -677,7 +677,28 @@ switch (_op) do {
                                     format ["Saved %1 weapon is no longer entitled for this player.", toLower _slotLabel]
                                 ];
                             } else {
-                                _validatedWeapons set [_slotName, _validatedWeapon];
+                                private _attachmentFailure = createHashMap;
+                                {
+                                    if ((count _attachmentFailure) isEqualTo 0) then {
+                                        private _attachmentEntitlement = [
+                                            _uid,
+                                            _x
+                                        ] call bn_koth_fnc_progression_evaluateAttachmentEntitlement;
+                                        if !(_attachmentEntitlement getOrDefault ["entitled", false]) then {
+                                            _attachmentFailure = _attachmentEntitlement;
+                                        };
+                                    };
+                                } forEach (_validatedWeapon getOrDefault ["attachments", []]);
+
+                                if ((count _attachmentFailure) > 0) then {
+                                    _resultCode = _attachmentFailure getOrDefault ["code", "ERR_ATTACHMENT_ENTITLEMENT"];
+                                    _resultMessage = _attachmentFailure getOrDefault [
+                                        "message",
+                                        format ["Saved %1 attachment is no longer entitled for this player.", toLower _slotLabel]
+                                    ];
+                                } else {
+                                    _validatedWeapons set [_slotName, _validatedWeapon];
+                                };
                             };
                         };
                     };
@@ -905,6 +926,21 @@ switch (_op) do {
 
         if !(isClass (_sourceItemsCfg >> _attachmentClass)) exitWith {
             ["ERR_UNKNOWN_ATTACHMENT", format ["Attachment '%1' is not present in canonical source items.", _attachmentClass], _baseLoadoutId] call _resultFail
+        };
+
+        private _attachmentEntitlement = createHashMapFromArray [["entitled", true]];
+        if (_attachmentMode isEqualTo "add") then {
+            _attachmentEntitlement = [
+                _uid,
+                _attachmentClass
+            ] call bn_koth_fnc_progression_evaluateAttachmentEntitlement;
+        };
+        if !(_attachmentEntitlement getOrDefault ["entitled", false]) exitWith {
+            [
+                _attachmentEntitlement getOrDefault ["code", "ERR_ATTACHMENT_ENTITLEMENT"],
+                _attachmentEntitlement getOrDefault ["message", "Attachment is not entitled for this player."],
+                _baseLoadoutId
+            ] call _resultFail
         };
 
         private _slotIndex = switch (_weaponSlot) do {

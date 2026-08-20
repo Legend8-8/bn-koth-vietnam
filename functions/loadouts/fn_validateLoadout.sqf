@@ -256,6 +256,45 @@ private _validateWeaponEntitlement = {
     [_uid, _weaponClass] call bn_koth_fnc_progression_evaluateWeaponEntitlement
 };
 
+private _validateAttachmentEntitlements = {
+    params ["_validatedWeapon"];
+
+    private _failure = createHashMap;
+    private _attachments = _validatedWeapon getOrDefault ["attachments", []];
+    if !(_attachments isEqualType []) exitWith {
+        createHashMapFromArray [
+            ["success", false],
+            ["entitled", false],
+            ["code", "ERR_VALIDATED_ATTACHMENTS_TYPE"],
+            ["message", "Validated attachment payload is invalid."]
+        ]
+    };
+
+    {
+        if ((count _failure) isEqualTo 0) then {
+            private _entitlement = [
+                _uid,
+                _x
+            ] call bn_koth_fnc_progression_evaluateAttachmentEntitlement;
+
+            if !(_entitlement getOrDefault ["entitled", false]) then {
+                _failure = _entitlement;
+            };
+        };
+    } forEach _attachments;
+
+    if ((count _failure) > 0) then {
+        _failure
+    } else {
+        createHashMapFromArray [
+            ["success", true],
+            ["entitled", true],
+            ["code", "ENTITLED_ATTACHMENTS"],
+            ["message", "Attachment minimum-level entitlement satisfied."]
+        ]
+    }
+};
+
 if !(_requestMode isEqualTo "configured") then {
     if !(isClass _compatibilityCfg) exitWith {
         ["ERR_COMPATIBILITY_MISSING", "Weapon composition validation requires canonical compatibility config.", _requestedLoadoutId, _authoritativeSideToken] call _fail
@@ -289,6 +328,16 @@ if (_requestMode isEqualTo "primary") exitWith {
         [
             _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"],
             _entitlement getOrDefault ["message", "Primary weapon is not entitled for this player."],
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    private _attachmentEntitlement = [_validatedPrimary] call _validateAttachmentEntitlements;
+    if !(_attachmentEntitlement getOrDefault ["entitled", false]) exitWith {
+        [
+            _attachmentEntitlement getOrDefault ["code", "ERR_ATTACHMENT_ENTITLEMENT"],
+            _attachmentEntitlement getOrDefault ["message", "Primary attachment is not entitled for this player."],
             _requestedLoadoutId,
             _authoritativeSideToken
         ] call _fail
@@ -380,7 +429,12 @@ if (_requestMode isEqualTo "weapons") exitWith {
             private _entitlement = [_validatedPrimary] call _validateWeaponEntitlement;
 
             if (_entitlement getOrDefault ["entitled", false]) then {
-                _validatedWeapons set ["primary", _validatedPrimary];
+                private _attachmentEntitlement = [_validatedPrimary] call _validateAttachmentEntitlements;
+                if (_attachmentEntitlement getOrDefault ["entitled", false]) then {
+                    _validatedWeapons set ["primary", _validatedPrimary];
+                } else {
+                    _slotFailure = _attachmentEntitlement;
+                };
             } else {
                 _slotFailure = createHashMapFromArray [
                     ["success", false],
@@ -439,7 +493,12 @@ if (_requestMode isEqualTo "weapons") exitWith {
                         private _entitlement = [_validatedLauncher] call _validateWeaponEntitlement;
 
                         if (_entitlement getOrDefault ["entitled", false]) then {
-                            _validatedWeapons set ["launcher", _validatedLauncher];
+                            private _attachmentEntitlement = [_validatedLauncher] call _validateAttachmentEntitlements;
+                            if (_attachmentEntitlement getOrDefault ["entitled", false]) then {
+                                _validatedWeapons set ["launcher", _validatedLauncher];
+                            } else {
+                                _slotFailure = _attachmentEntitlement;
+                            };
                         } else {
                             _slotFailure = createHashMapFromArray [
                                 ["success", false],
@@ -462,7 +521,12 @@ if (_requestMode isEqualTo "weapons") exitWith {
             private _entitlement = [_validatedHandgun] call _validateWeaponEntitlement;
 
             if (_entitlement getOrDefault ["entitled", false]) then {
-                _validatedWeapons set ["handgun", _validatedHandgun];
+                private _attachmentEntitlement = [_validatedHandgun] call _validateAttachmentEntitlements;
+                if (_attachmentEntitlement getOrDefault ["entitled", false]) then {
+                    _validatedWeapons set ["handgun", _validatedHandgun];
+                } else {
+                    _slotFailure = _attachmentEntitlement;
+                };
             } else {
                 _slotFailure = createHashMapFromArray [
                     ["success", false],

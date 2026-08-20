@@ -42,6 +42,7 @@ private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionL
 if !(_progression isEqualType createHashMap) then {
     _progression = createHashMap;
 };
+private _level = (_progression getOrDefault ["level", 1]) max 1;
 
 private _assignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
 if !(_assignments isEqualType createHashMap) then {
@@ -100,6 +101,74 @@ if (_catalogueClass isEqualTo "") then {
 };
 
 private _compatibilityCfg = missionConfigFile >> _catalogueClass >> "Equipment" >> "Compatibility";
+
+// Configure drafts are client-local intent, but their initial state must come
+// from the server-returned intended loadout so an accepted composition remains
+// editable after the menu has been fully closed and reopened.
+private _existingDrafts = uiNamespace getVariable ["BN_KOTH_menuConfigureDrafts", createHashMap];
+if !(_existingDrafts isEqualType createHashMap) then {
+    _existingDrafts = createHashMap;
+};
+
+private _existingDraft = _existingDrafts getOrDefault [_canonicalClass, createHashMap];
+private _hasExistingDraft =
+    (_existingDraft isEqualType createHashMap) &&
+    {(count _existingDraft) > 0} &&
+    {(toLower (_existingDraft getOrDefault ["weaponClass", ""])) isEqualTo _canonicalClass};
+
+if (!_hasExistingDraft) then {
+    private _intendedLoadout = uiNamespace getVariable ["BN_KOTH_menuIntendedLoadout", []];
+    if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) >= 1}) then {
+        private _primarySlot = _intendedLoadout select 0;
+        if ((_primarySlot isEqualType []) && {(count _primarySlot) >= 5}) then {
+            private _appliedWeaponClass = _primarySlot select 0;
+            private _magazineSlot = _primarySlot select 4;
+            if ((_appliedWeaponClass isEqualType "") && {_magazineSlot isEqualType []} && {(count _magazineSlot) >= 1}) then {
+                private _appliedMetadata = [toLower _appliedWeaponClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
+                private _appliedMagazine = _magazineSlot select 0;
+                if (
+                    (_appliedMetadata getOrDefault ["success", false]) &&
+                    {(_appliedMetadata getOrDefault ["canonicalClass", ""]) isEqualTo _canonicalClass} &&
+                    {_appliedMagazine isEqualType ""} &&
+                    {!(_appliedMagazine isEqualTo "")}
+                ) then {
+                    private _appliedAttachments = [];
+                    {
+                        if (_x < (count _primarySlot)) then {
+                            private _attachmentClass = _primarySlot select _x;
+                            if (_attachmentClass isEqualType "") then {
+                                _attachmentClass = toLower _attachmentClass;
+                                if !(_attachmentClass isEqualTo "") then {
+                                    _appliedAttachments pushBackUnique _attachmentClass;
+                                };
+                            };
+                        };
+                    } forEach [1, 2, 3, 6];
+                    _appliedAttachments sort true;
+
+                    private _appliedEvaluation = [
+                        _canonicalClass,
+                        _appliedAttachments,
+                        [toLower _appliedMagazine],
+                        _compatibilityCfg
+                    ] call bn_koth_fnc_menu_evaluateWeaponComposition;
+
+                    if (
+                        (_appliedEvaluation getOrDefault ["available", false]) &&
+                        {_appliedEvaluation getOrDefault ["complete", false]}
+                    ) then {
+                        _existingDrafts set [_canonicalClass, createHashMapFromArray [
+                            ["weaponClass", _canonicalClass],
+                            ["magazineClass", toLower _appliedMagazine],
+                            ["attachments", _appliedEvaluation getOrDefault ["attachments", []]]
+                        ]];
+                    };
+                };
+            };
+        };
+    };
+};
+uiNamespace setVariable ["BN_KOTH_menuConfigureDrafts", _existingDrafts];
 
 if (_configureView isEqualTo "ATTACHMENTS") exitWith {
     [_display, _canonicalClass, _compatibilityCfg] call bn_koth_fnc_menu_refreshConfigureAttachments

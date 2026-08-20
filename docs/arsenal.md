@@ -1082,6 +1082,29 @@ The request implementation deliberately handles:
 
 Future progression entitlement must integrate inside the existing server validator through a progression-owned API. It must not create a second request, validation or application path.
 
+### Arsenal V1 primary composition drafts
+
+The primary-weapon browser may submit one complete client-selected composition:
+
+```text
+canonical base weapon
++ one compatible magazine
++ zero or more compatible attachments
+```
+
+The client draft is presentation and intent only. The server independently:
+
+- resolves structural variants from generated compatibility data;
+- validates the magazine against the resolved weapon;
+- validates every attachment against the resolved weapon;
+- validates weapon entitlement;
+- validates any human-authored attachment minimum level;
+- builds the accepted composition into the authoritative intended loadout.
+
+Only the server-returned validated loadout is applied through the existing
+owned application path. Viable but incomplete structural attachment drafts are
+not submittable.
+
 Safe-zone anti-duplication boundaries are:
 
 - never treat a client inventory snapshot or client-supplied `getUnitLoadout` result as entitlement or persistence authority;

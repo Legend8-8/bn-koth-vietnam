@@ -126,7 +126,6 @@ if !(_page isEqualType 0) then {_page = 0};
 _page = (_page max 0) min (_pageCount - 1);
 uiNamespace setVariable ["BN_KOTH_menuConfigureAttachmentPage", _page];
 
-(_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_SUBTITLE) ctrlSetText "FACTUAL COMPATIBLE ATTACHMENTS";
 (_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL) ctrlSetText format ["PAGE %1 / %2", _page + 1, _pageCount];
 
 private _previous = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_PREVIOUS;
@@ -243,6 +242,41 @@ if (_selectedMagazine isEqualTo "" && {(count _selectedAttachments) <= 0}) then 
 };
 uiNamespace setVariable ["BN_KOTH_menuConfigureDrafts", _drafts];
 
+private _resolveAttachmentName = {
+    params ["_attachmentClass"];
+
+    private _attachmentCfg = configFile >> "CfgWeapons" >> _attachmentClass;
+    private _displayName = if (isClass _attachmentCfg) then {getText (_attachmentCfg >> "displayName")} else {""};
+    if (_displayName isEqualTo "") then {toUpper _attachmentClass} else {_displayName}
+};
+
+private _requiredCompletionClasses = [];
+private _completionDescriptions = [];
+if ((_storedDraftEvaluation getOrDefault ["state", "INVALID"]) isEqualTo "INCOMPLETE") then {
+    {
+        private _completionAttachments = _x getOrDefault ["structuralAttachments", []];
+        private _missingAttachments = _completionAttachments - _selectedAttachments;
+        _missingAttachments sort true;
+        if ((count _missingAttachments) > 0) then {
+            private _missingNames = [];
+            {
+                _requiredCompletionClasses pushBackUnique _x;
+                _missingNames pushBack ([_x] call _resolveAttachmentName);
+            } forEach _missingAttachments;
+            _completionDescriptions pushBackUnique (_missingNames joinString " + ");
+        };
+    } forEach (_storedDraftEvaluation getOrDefault ["possibleCompletions", []]);
+};
+_requiredCompletionClasses sort true;
+_completionDescriptions sort true;
+
+private _subtitle = if ((count _completionDescriptions) > 0) then {
+    format ["REQUIRES: %1", _completionDescriptions joinString " OR "]
+} else {
+    "FACTUAL COMPATIBLE ATTACHMENTS"
+};
+(_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_SUBTITLE) ctrlSetText _subtitle;
+
 {
     private _cardIndex = _forEachIndex + (_page * _pageSize);
     if (_cardIndex >= (count _entries)) then {continue;};
@@ -267,6 +301,7 @@ uiNamespace setVariable ["BN_KOTH_menuConfigureDrafts", _drafts];
     private _compositionEvaluation = [_canonicalWeaponClass, _proposedAttachments, _magazines, _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
     private _compositionAvailable = _compositionEvaluation getOrDefault ["available", false];
     private _compositionState = _compositionEvaluation getOrDefault ["state", "INVALID"];
+    private _isRequiredCompletion = !_isSelected && {_attachmentClass in _requiredCompletionClasses};
     private _status = if (_locked) then {
         format ["LOCKED UNTIL LEVEL %1", _minLevel]
     } else {
@@ -274,10 +309,14 @@ uiNamespace setVariable ["BN_KOTH_menuConfigureDrafts", _drafts];
             "SELECTED"
         } else {
             if (_compositionAvailable) then {
-                if (_compositionState isEqualTo "INCOMPLETE") then {
-                    "REQUIRES ADDITIONAL ATTACHMENT"
+                if (_isRequiredCompletion) then {
+                    "VALID REQUIRED ATTACHMENT"
                 } else {
-                    format ["COMPATIBLE %1", _entry getOrDefault ["category", "ATTACHMENT"]]
+                    if (_compositionState isEqualTo "INCOMPLETE") then {
+                    "REQUIRES ADDITIONAL ATTACHMENT"
+                    } else {
+                        format ["COMPATIBLE %1", _entry getOrDefault ["category", "ATTACHMENT"]]
+                    }
                 }
             } else {
                 "INCOMPATIBLE WITH SELECTION"
@@ -302,7 +341,11 @@ uiNamespace setVariable ["BN_KOTH_menuConfigureDrafts", _drafts];
         _x ctrlShow true;
     } forEach [_background, _imageArea, _image, _nameCtrl, _statusCtrl];
 
-    _imageArea ctrlSetBackgroundColor [0.025, 0.025, 0.022, 0.92];
+    _imageArea ctrlSetBackgroundColor (if (_isRequiredCompletion && {!_locked}) then {
+        [0.12, 0.09, 0.035, 0.94]
+    } else {
+        [0.025, 0.025, 0.022, 0.92]
+    });
     _image ctrlSetText (_entry getOrDefault ["picture", ""]);
     _nameCtrl ctrlSetText (_entry getOrDefault ["displayName", "UNKNOWN"]);
     _statusCtrl ctrlSetText _status;

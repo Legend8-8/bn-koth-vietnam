@@ -1,13 +1,14 @@
 /*
     File: fn_menu_applyPrimary.sqf
     Author: Legend
-    Description: Sends a primary weapon-and-magazine intent through the
+    Description: Sends a complete primary weapon composition intent through the
         authoritative loadout request path. With no parameters, it uses the
         legacy selector pending-primary state.
     Execution: Client
     Parameters:
         0: Explicit canonical primary weapon classname (optional) <STRING>
         1: Explicit compatible magazine classname (optional) <STRING>
+        2: Explicit compatible attachment classnames (optional) <ARRAY>
     Returns:
         True when request sent, otherwise false <BOOL>
     Public: Yes
@@ -15,19 +16,30 @@
 
 params [
     ["_explicitWeaponClass", "", [""]],
-    ["_explicitMagazineClass", "", [""]]
+    ["_explicitMagazineClass", "", [""]],
+    ["_explicitAttachments", [], [[]]]
 ];
 
 if (!hasInterface) exitWith {false};
 
 private _weaponClass = "";
 private _magazineClass = "";
+private _attachments = [];
 private _available = false;
 private _hasExplicitIntent = !(_explicitWeaponClass isEqualTo "") || {!(_explicitMagazineClass isEqualTo "")};
 
 if (_hasExplicitIntent) then {
     _weaponClass = toLower _explicitWeaponClass;
     _magazineClass = toLower _explicitMagazineClass;
+    {
+        if (_x isEqualType "") then {
+            private _attachmentClass = toLower _x;
+            if !(_attachmentClass isEqualTo "") then {
+                _attachments pushBackUnique _attachmentClass;
+            };
+        };
+    } forEach _explicitAttachments;
+    _attachments sort true;
     _available = !(_weaponClass isEqualTo "") && {!(_magazineClass isEqualTo "")};
 } else {
     private _pending = uiNamespace getVariable ["BN_KOTH_menuPendingPrimary", createHashMap];
@@ -48,9 +60,7 @@ private _request = createHashMapFromArray [
         ["primary", createHashMapFromArray [
             ["weaponClass", _weaponClass],
             ["magazines", [_magazineClass]],
-            // Existing selector behavior defines a primary replacement as an
-            // explicit bare-weapon composition until attachment selection is implemented.
-            ["attachments", []]
+            ["attachments", _attachments]
         ]]
     ]]
 ];

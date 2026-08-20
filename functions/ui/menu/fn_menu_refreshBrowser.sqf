@@ -50,6 +50,7 @@ if !(_catalogue isEqualType []) then {
 // back to the player's local inventory when deciding whether a card is applied.
 private _intendedPrimaryClass = "";
 private _intendedPrimaryMagazine = "";
+private _intendedPrimaryAttachments = [];
 private _intendedLoadout = uiNamespace getVariable ["BN_KOTH_menuIntendedLoadout", []];
 if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) >= 1}) then {
     private _primarySlot = _intendedLoadout select 0;
@@ -91,6 +92,18 @@ if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) >= 1}) then {
                 ) then {
                     _intendedPrimaryClass = _canonicalPrimaryClass;
                     _intendedPrimaryMagazine = _canonicalPrimaryMagazine;
+                    {
+                        if (_x < (count _primarySlot)) then {
+                            private _attachmentClass = _primarySlot select _x;
+                            if (_attachmentClass isEqualType "") then {
+                                _attachmentClass = toLower _attachmentClass;
+                                if !(_attachmentClass isEqualTo "") then {
+                                    _intendedPrimaryAttachments pushBackUnique _attachmentClass;
+                                };
+                            };
+                        };
+                    } forEach [1, 2, 3, 6];
+                    _intendedPrimaryAttachments sort true;
                 };
             };
         };
@@ -250,16 +263,23 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
         {!(_draftMagazineClass isEqualTo "")}
     ) then {
         private _draftEvaluation = [_draftWeaponClass, _draftAttachments, [_draftMagazineClass], _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
-        _draftIsValid = _draftEvaluation getOrDefault ["available", false];
+        _draftIsValid =
+            (_draftEvaluation getOrDefault ["available", false]) &&
+            {_draftEvaluation getOrDefault ["complete", false]};
     };
-    private _canApply = _hasAccess && {_draftIsValid} && {!_hasAttachmentDraft};
+    private _draftMatchesIntended =
+        _draftIsValid &&
+        {_draftWeaponClass isEqualTo _intendedPrimaryClass} &&
+        {_draftMagazineClass isEqualTo _intendedPrimaryMagazine} &&
+        {_draftAttachments isEqualTo _intendedPrimaryAttachments};
+    private _hasPendingAttachmentDraft = _hasAttachmentDraft && {!_draftMatchesIntended};
+    private _canApply = _hasAccess && {_draftIsValid} && {!_draftMatchesIntended};
     private _isApplied =
         _hasAccess &&
-        {!_hasAttachmentDraft} &&
         {(_entryWeaponClass isEqualTo _intendedPrimaryClass)} &&
         {
             !_draftIsValid ||
-            {(_draftMagazineClass isEqualTo _intendedPrimaryMagazine)}
+            {_draftMatchesIntended}
         };
     private _primaryActionText = if (_isApplied) then {"APPLIED"} else {"APPLY"};
     private _lockText = if (_lockedByLevel) then {
@@ -276,7 +296,7 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
             if (_lockedByLevel) then {
                 format ["LOCKED UNTIL LEVEL %1", _metadata getOrDefault ["minLevel", 1]]
             } else {
-                if (_hasAttachmentDraft) then {
+                if (_hasPendingAttachmentDraft) then {
                     "ATTACHMENT APPLY PENDING"
                 } else {
                     switch (_entitlementCode) do {
@@ -290,7 +310,7 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
         };
     };
 
-    if (_hasAccess && {_hasAttachmentDraft}) then {
+    if (_hasAccess && {_hasPendingAttachmentDraft}) then {
         _status = "ATTACHMENT APPLY PENDING";
     };
 
@@ -328,7 +348,7 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
     private _applyAction = if (_canApply && {!_isApplied}) then {
         format [
             "%1 call bn_koth_fnc_menu_applyPrimary;",
-            str [_draftWeaponClass, _draftMagazineClass]
+            str [_draftWeaponClass, _draftMagazineClass, _draftAttachments]
         ]
     } else {
         ""
