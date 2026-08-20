@@ -1,4 +1,46 @@
 {
+  "_example": {
+    "_note": "REFERENCE ONLY. This block documents the expected shape of each override section. The catalogue tooling ignores unknown top-level keys such as _example.",
+    "exclude": {
+      "_description": "Completely exclude known bad/non-player classes from the generated catalogue.",
+      "weapons": [
+        "vn_example_weapon"
+      ],
+      "magazines": [
+        "vn_example_magazine"
+      ],
+      "items": [
+        "vn_example_item"
+      ]
+    },
+    "baseMagazine": {
+      "_description": "Force the canonical/default magazine for a weapon when automatic selection is ambiguous.",
+      "vn_example_weapon": "vn_example_magazine"
+    },
+    "family": {
+      "_description": "Force a weapon into a specific logical weapon family.",
+      "vn_example_weapon": "example_family"
+    },
+    "variantOf": {
+      "_description": "Declare that a structural weapon class is a variant of another base weapon class.",
+      "vn_example_weapon_sd": "vn_example_weapon"
+    },
+    "derivedRequirements": {
+      "_description": "Declare the base weapon plus attachment/item classes required to materialise a structural variant.",
+      "vn_example_weapon_sd": [
+        "vn_example_weapon",
+        "vn_example_suppressor"
+      ]
+    },
+    "weaponType": {
+      "_description": "Override the catalogue weapon category. Typical values currently include handgun, smg, rifle, shotgun, lmg, marksman, launcher.",
+      "vn_example_weapon": "smg"
+    },
+    "itemType": {
+      "_description": "Override an item's catalogue category when automatic classification is wrong or ambiguous.",
+      "vn_example_item": "optic"
+    }
+  },
   "exclude": {
     "weapons": [],
     "magazines": [],
@@ -19,10 +61,14 @@
     "vn_l1a1_xm148_camo": "vn_l1a1_01"
   },
   "derivedRequirements": {},
-  "weaponType": {},
+  "weaponType": {
+    "vn_mc10": "smg",
+    "vn_mc10_sd": "smg"
+  },
   "itemType": {},
   "notes": [
-    "Use this file for explicit manual corrections when the source data is ambiguous.",
+    "Use this file for explicit manual corrections when the source data is ambiguous or automatic classification is unsuitable.",
+    "Generated catalogue files must not be edited by hand; make factual/manual corrections here and regenerate.",
     "Nickel Steel / VNX is out of scope and must not be added here."
   ]
 }
