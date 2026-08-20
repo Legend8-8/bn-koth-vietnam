@@ -28,7 +28,7 @@ class CfgBnKothArsenal
         // Generated S.O.G. sourceAffiliations are factual evidence only and
         // must never be used as KOTH faction entitlement.
         //
-        // Schema for progression-controlled weapons:
+        // Schema for KOTH progression/balance metadata entries:
         //   nativeSide = "WEST" | "EAST";
         //   minLevel = <number>;
         //   licenseKills = <number>;
@@ -51,6 +51,12 @@ class CfgBnKothArsenal
                     requiredPerks[] = {};
                 };
             };
+
+            // Human-authored future KOTH balance namespaces only. They remain
+            // deliberately empty until individual balance decisions are made.
+            class Attachments {};
+            class Wearables {};
+            class Consumables {};
         };
 
         // Intentionally tiny, reviewable seed catalogue.

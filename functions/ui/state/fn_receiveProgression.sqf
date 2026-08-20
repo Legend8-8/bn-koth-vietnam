@@ -30,14 +30,19 @@ if (_uid isEqualTo "" || {_xp < 0} || {_level < 1}) exitWith {};
 private _localUid = if (!isNull player) then {getPlayerUID player} else {""};
 if !(_localUid isEqualTo _uid) exitWith {};
 
-missionNamespace setVariable [
+private _localProgression = missionNamespace getVariable [
     "BN_KOTH_playerProgressionLocal",
-    createHashMapFromArray [
-        ["uid", _uid],
-        ["xp", _xp],
-        ["level", _level]
-    ]
+    createHashMap
 ];
+if !(_localProgression isEqualType createHashMap) then {
+    _localProgression = createHashMap;
+};
+
+{
+    _localProgression set [_x, _progression get _x];
+} forEach (keys _progression);
+
+missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", _localProgression];
 
 disableSerialization;
 private _menuDisplay = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];

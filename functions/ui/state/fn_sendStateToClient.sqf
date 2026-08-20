@@ -35,11 +35,10 @@ if !(_targetProgression isEqualType createHashMap) then {
     _targetProgression = createHashMap;
 };
 
-private _playerProgressionPayload = createHashMapFromArray [
-    ["uid", _targetUid],
-    ["xp", (_targetProgression getOrDefault ["xp", 0]) max 0],
-    ["level", (_targetProgression getOrDefault ["level", 1]) max 1]
-];
+private _playerProgressionPayload = [
+    _targetUid,
+    _targetProgression
+] call bn_koth_fnc_progression_buildPresentationState;
 
 private _payload = createHashMapFromArray [
     ["roundState", missionNamespace getVariable ["BN_KOTH_roundState", "WAITING"]],
