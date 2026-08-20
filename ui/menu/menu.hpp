@@ -116,6 +116,18 @@ class BN_KOTH_RscMenu
             colorBackground[] = {0.04, 0.04, 0.03, 0.94};
         };
 
+        // Browser/Configure-only continuous surface. Runtime routing hides it
+        // on the retained Loadout and legacy selector views.
+        class BgBrowserWorkspace: BN_KOTH_Menu_Background
+        {
+            idc = BN_KOTH_IDC_MENU_BG_BROWSER_WORKSPACE;
+            x = BN_KOTH_MENU_BROWSER_X;
+            y = BN_KOTH_MENU_MAIN_Y;
+            w = BN_KOTH_MENU_BROWSER_W;
+            h = BN_KOTH_MENU_MAIN_H;
+            colorBackground[] = {0.03, 0.03, 0.03, 0.98};
+        };
+
         class BgBottom: BN_KOTH_Menu_Background
         {
             idc = BN_KOTH_IDC_MENU_BG_BOTTOM;
@@ -341,7 +353,7 @@ class BN_KOTH_RscMenu
             colorFocused[] = {0, 0, 0, 0};
             colorBackgroundDisabled[] = {0, 0, 0, 0};
             colorBorder[] = {0, 0, 0, 0};
-            action = "['LOADOUT_PRIMARY'] call bn_koth_fnc_menu_refresh;";
+            action = "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'primary']; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
         };
 
         class SlotHandgun: SlotPrimary
@@ -355,7 +367,7 @@ class BN_KOTH_RscMenu
         {
             idc = BN_KOTH_IDC_MENU_SLOT_HANDGUN_BUTTON;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.138;
-            action = "['LOADOUT_HANDGUN'] call bn_koth_fnc_menu_refresh;";
+            action = "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'handgun']; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
         };
 
         class SlotLauncher: SlotPrimary

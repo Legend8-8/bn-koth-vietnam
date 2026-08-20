@@ -245,8 +245,8 @@ private _rowDefs = [
     _buttonCtrl ctrlSetBackgroundColor [0, 0, 0, 0];
 } forEach _rowDefs;
 
-_ctrlPrimaryButton buttonSetAction "['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
-_ctrlHandgunButton buttonSetAction "['LOADOUT_HANDGUN'] call bn_koth_fnc_menu_refresh;";
+_ctrlPrimaryButton buttonSetAction "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'primary']; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
+_ctrlHandgunButton buttonSetAction "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'handgun']; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
 _ctrlLauncherButton buttonSetAction "['LOADOUT_LAUNCHER'] call bn_koth_fnc_menu_refresh;";
 _ctrlUniformButton buttonSetAction "['LOADOUT_UNIFORM'] call bn_koth_fnc_menu_refresh;";
 _ctrlVestButton buttonSetAction "['LOADOUT_VEST'] call bn_koth_fnc_menu_refresh;";

@@ -24,22 +24,12 @@ if (!hasInterface) exitWith {false};
 
 private _weaponClass = "";
 private _magazineClass = "";
-private _attachments = [];
 private _available = false;
 private _hasExplicitIntent = !(_explicitWeaponClass isEqualTo "") || {!(_explicitMagazineClass isEqualTo "")};
 
 if (_hasExplicitIntent) then {
     _weaponClass = toLower _explicitWeaponClass;
     _magazineClass = toLower _explicitMagazineClass;
-    {
-        if (_x isEqualType "") then {
-            private _attachmentClass = toLower _x;
-            if !(_attachmentClass isEqualTo "") then {
-                _attachments pushBackUnique _attachmentClass;
-            };
-        };
-    } forEach _explicitAttachments;
-    _attachments sort true;
     _available = !(_weaponClass isEqualTo "") && {!(_magazineClass isEqualTo "")};
 } else {
     private _pending = uiNamespace getVariable ["BN_KOTH_menuPendingPrimary", createHashMap];
@@ -55,16 +45,4 @@ if (!_available || {_weaponClass isEqualTo ""} || {_magazineClass isEqualTo ""})
     false
 };
 
-private _request = createHashMapFromArray [
-    ["weapons", createHashMapFromArray [
-        ["primary", createHashMapFromArray [
-            ["weaponClass", _weaponClass],
-            ["magazines", [_magazineClass]],
-            ["attachments", _attachments]
-        ]]
-    ]]
-];
-
-[_request] call bn_koth_fnc_loadouts_request;
-
-true
+["primary", _weaponClass, _magazineClass, _explicitAttachments] call bn_koth_fnc_menu_applyWeaponComposition

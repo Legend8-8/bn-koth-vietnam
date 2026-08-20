@@ -1,33 +1,45 @@
 /*
     File: fn_menu_buildBrowserWeaponEntries.sqf
     Author: Legend
-    Description: Builds the static factual primary-weapon catalogue used by
+    Description: Builds one static factual weapon-slot catalogue used by
         the item browser. Structural variants resolve to one canonical logical
         weapon; this function does not evaluate player entitlement.
     Execution: Client
     Parameters:
         0: Canonical compatibility config root <CONFIG>
+        1: Weapon slot: PRIMARY or HANDGUN <STRING>
     Returns:
         Canonical browser weapon entries <ARRAY<HashMap>>
     Public: No
 */
 
-params [["_compatibilityCfg", configNull, [configNull]]];
+params [
+    ["_compatibilityCfg", configNull, [configNull]],
+    ["_weaponSlot", "PRIMARY", [""]]
+];
 
 private _entries = [];
 if !(isClass _compatibilityCfg) exitWith {_entries};
+
+_weaponSlot = toUpper _weaponSlot;
+if !(_weaponSlot in ["PRIMARY", "HANDGUN"]) exitWith {_entries};
 
 private _sourceWeaponsCfg = _compatibilityCfg >> "SourceWeapons";
 if !(isClass _sourceWeaponsCfg) exitWith {_entries};
 
 private _seenCanonicalClasses = [];
 private _sortable = [];
-private _primaryWeaponTypes = ["rifle", "lmg", "smg", "shotgun", "marksman"];
+private _allowedWeaponTypes = if (_weaponSlot isEqualTo "HANDGUN") then {
+    ["handgun"]
+} else {
+    ["rifle", "lmg", "smg", "shotgun", "marksman"]
+};
+private _cfgWeaponType = if (_weaponSlot isEqualTo "HANDGUN") then {2} else {1};
 
 {
     private _weaponClass = toLower (configName _x);
     private _weaponType = toLower (getText (_x >> "weaponType"));
-    if !(_weaponType in _primaryWeaponTypes) then {continue;};
+    if !(_weaponType in _allowedWeaponTypes) then {continue;};
 
     private _metadata = [_weaponClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
     if !(_metadata getOrDefault ["success", false]) then {continue;};
@@ -37,7 +49,7 @@ private _primaryWeaponTypes = ["rifle", "lmg", "smg", "shotgun", "marksman"];
 
     private _weaponCfg = configFile >> "CfgWeapons" >> _canonicalClass;
     if !(isClass _weaponCfg) then {continue;};
-    if !((getNumber (_weaponCfg >> "type")) isEqualTo 1) then {continue;};
+    if !((getNumber (_weaponCfg >> "type")) isEqualTo _cfgWeaponType) then {continue;};
 
     private _displayName = getText (_weaponCfg >> "displayName");
     if (_displayName isEqualTo "") then {

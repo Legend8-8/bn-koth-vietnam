@@ -201,6 +201,7 @@ class CfgFunctions
             class menu_buildAttachmentEntries {file = "functions\ui\menu\fn_menu_buildAttachmentEntries.sqf";};
             class menu_buildAssignedEntries {file = "functions\ui\menu\fn_menu_buildAssignedEntries.sqf";};
             class menu_buildCargoEntries {file = "functions\ui\menu\fn_menu_buildCargoEntries.sqf";};
+            class menu_applyWeaponComposition {file = "functions\ui\menu\fn_menu_applyWeaponComposition.sqf";};
             class menu_applyPrimary {file = "functions\ui\menu\fn_menu_applyPrimary.sqf";};
             class menu_applyHandgun {file = "functions\ui\menu\fn_menu_applyHandgun.sqf";};
             class menu_applyLauncher {file = "functions\ui\menu\fn_menu_applyLauncher.sqf";};

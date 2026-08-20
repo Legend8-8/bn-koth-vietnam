@@ -63,6 +63,7 @@ private _ctrlHeaderLevel = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_LEVEL;
 private _ctrlHeaderXp = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_XP;
 private _ctrlHeaderXpTrack = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_TRACK;
 private _ctrlHeaderXpFill = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_FILL;
+private _ctrlBrowserWorkspace = _display displayCtrl BN_KOTH_IDC_MENU_BG_BROWSER_WORKSPACE;
 private _ctrlOperatorName = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_NAME;
 private _ctrlOperatorTeam = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_TEAM;
 private _ctrlOperatorRole = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_ROLE_VALUE;
@@ -369,6 +370,7 @@ private _navControls = [
 ];
 
 private _showMainView = {
+    _ctrlBrowserWorkspace ctrlShow false;
     { _x ctrlShow true; } forEach _mainViewControls;
     { _x ctrlShow false; } forEach _selectorViewControls;
     { _x ctrlShow false; } forEach _browserViewControls;
@@ -377,6 +379,7 @@ private _showMainView = {
 };
 
 private _showSelectorView = {
+    _ctrlBrowserWorkspace ctrlShow false;
     { _x ctrlShow false; } forEach _mainViewControls;
     { _x ctrlShow true; } forEach _selectorViewControls;
     { _x ctrlShow false; } forEach _browserViewControls;
@@ -385,6 +388,7 @@ private _showSelectorView = {
 };
 
 private _showBrowserView = {
+    _ctrlBrowserWorkspace ctrlShow true;
     { _x ctrlShow false; } forEach _mainViewControls;
     { _x ctrlShow false; } forEach _selectorViewControls;
     { _x ctrlShow true; } forEach _browserViewControls;

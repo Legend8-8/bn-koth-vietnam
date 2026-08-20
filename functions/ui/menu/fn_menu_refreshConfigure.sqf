@@ -24,9 +24,14 @@ if !(_context isEqualType createHashMap) exitWith {
 };
 
 private _weaponClass = toLower (_context getOrDefault ["weaponClass", ""]);
+private _weaponSlot = toLower (_context getOrDefault ["weaponSlot", "primary"]);
 if (_weaponClass isEqualTo "") exitWith {
     ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh
 };
+if !(_weaponSlot in ["primary", "handgun"]) exitWith {
+    ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh
+};
+private _loadoutSlotIndex = if (_weaponSlot isEqualTo "handgun") then {2} else {0};
 
 private _metadata = [_weaponClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
 private _canonicalClass = _metadata getOrDefault ["canonicalClass", ""];
@@ -118,11 +123,11 @@ private _hasExistingDraft =
 
 if (!_hasExistingDraft) then {
     private _intendedLoadout = uiNamespace getVariable ["BN_KOTH_menuIntendedLoadout", []];
-    if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) >= 1}) then {
-        private _primarySlot = _intendedLoadout select 0;
-        if ((_primarySlot isEqualType []) && {(count _primarySlot) >= 5}) then {
-            private _appliedWeaponClass = _primarySlot select 0;
-            private _magazineSlot = _primarySlot select 4;
+    if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) > _loadoutSlotIndex}) then {
+        private _intendedSlot = _intendedLoadout select _loadoutSlotIndex;
+        if ((_intendedSlot isEqualType []) && {(count _intendedSlot) >= 5}) then {
+            private _appliedWeaponClass = _intendedSlot select 0;
+            private _magazineSlot = _intendedSlot select 4;
             if ((_appliedWeaponClass isEqualType "") && {_magazineSlot isEqualType []} && {(count _magazineSlot) >= 1}) then {
                 private _appliedMetadata = [toLower _appliedWeaponClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
                 private _appliedMagazine = _magazineSlot select 0;
@@ -134,8 +139,8 @@ if (!_hasExistingDraft) then {
                 ) then {
                     private _appliedAttachments = [];
                     {
-                        if (_x < (count _primarySlot)) then {
-                            private _attachmentClass = _primarySlot select _x;
+                        if (_x < (count _intendedSlot)) then {
+                            private _attachmentClass = _intendedSlot select _x;
                             if (_attachmentClass isEqualType "") then {
                                 _attachmentClass = toLower _attachmentClass;
                                 if !(_attachmentClass isEqualTo "") then {

@@ -1082,9 +1082,11 @@ The request implementation deliberately handles:
 
 Future progression entitlement must integrate inside the existing server validator through a progression-owned API. It must not create a second request, validation or application path.
 
-### Arsenal V1 primary composition drafts
+### Arsenal V1 weapon composition drafts
 
-The primary-weapon browser may submit one complete client-selected composition:
+The primary-weapon and sidearm browsers share one card, Configure, draft and
+request architecture. Either browser may submit one complete client-selected
+composition for its explicit weapon slot:
 
 ```text
 canonical base weapon
@@ -1104,6 +1106,11 @@ The client draft is presentation and intent only. The server independently:
 Only the server-returned validated loadout is applied through the existing
 owned application path. Viable but incomplete structural attachment drafts are
 not submittable.
+
+The browser slot context is presentation only. The request contains either a
+`weapons.primary` or `weapons.handgun` intent, and the server validates that
+slot through the shared weapon-composition validator before building the
+authoritative intended loadout.
 
 Safe-zone anti-duplication boundaries are:
 

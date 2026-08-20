@@ -379,8 +379,10 @@ if ((count _entries) <= 0) then {
 
     {
         _x ctrlShow true;
-    } forEach [_background, _imageArea, _nameCtrl, _statusCtrl];
+    } forEach [_background, _nameCtrl, _statusCtrl];
+    _imageArea ctrlShow false;
 
-    _nameCtrl ctrlSetText "NO COMPATIBLE ATTACHMENTS";
-    _statusCtrl ctrlSetText "FACTUAL COMPATIBILITY DATA UNAVAILABLE";
+    (_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_SUBTITLE) ctrlSetText "NO ATTACHMENTS SUPPORTED";
+    _nameCtrl ctrlSetText "NO CONFIGURABLE ATTACHMENTS";
+    _statusCtrl ctrlSetText "THIS WEAPON IS COMPLETE AS SHOWN";
 };

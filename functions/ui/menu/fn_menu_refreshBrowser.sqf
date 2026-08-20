@@ -1,8 +1,8 @@
 /*
     File: fn_menu_refreshBrowser.sqf
     Author: Legend
-    Description: Renders the fixed local-only item-browser card pool from the
-        cached canonical S.O.G. primary-weapon catalogue and presents supplied
+    Description: Renders the fixed local-only item-browser card pool from one
+        cached canonical S.O.G. weapon-slot catalogue and presents supplied
         owner-only entitlement state. It may submit explicit weapon-and-magazine
         intent through the shared authoritative request path, but never mutates
         equipment or authoritative state directly.
@@ -21,6 +21,13 @@ params [["_display", displayNull, [displayNull]]];
 if (isNull _display) exitWith {};
 
 private _cardIdcs = call bn_koth_fnc_menu_getItemCardControls;
+private _weaponSlot = toLower (uiNamespace getVariable ["BN_KOTH_menuBrowserSlot", "primary"]);
+if !(_weaponSlot in ["primary", "handgun"]) then {
+    _weaponSlot = "primary";
+};
+uiNamespace setVariable ["BN_KOTH_menuBrowserSlot", _weaponSlot];
+private _weaponSlotUpper = toUpper _weaponSlot;
+private _loadoutSlotIndex = if (_weaponSlot isEqualTo "handgun") then {2} else {0};
 
 private _settingsCfg = missionConfigFile >> "CfgBnKothArsenalSettings";
 private _catalogueClass = if (isClass _settingsCfg) then {
@@ -33,13 +40,15 @@ if (_catalogueClass isEqualTo "") then {
 };
 
 private _compatibilityCfg = missionConfigFile >> _catalogueClass >> "Equipment" >> "Compatibility";
-private _catalogueReady = missionNamespace getVariable ["BN_KOTH_menuBrowserWeaponCatalogueReady", false];
-private _catalogue = missionNamespace getVariable ["BN_KOTH_menuBrowserWeaponCatalogue", []];
+private _catalogueReadyKey = format ["BN_KOTH_menuBrowserWeaponCatalogueReady_%1", _weaponSlot];
+private _catalogueKey = format ["BN_KOTH_menuBrowserWeaponCatalogue_%1", _weaponSlot];
+private _catalogueReady = missionNamespace getVariable [_catalogueReadyKey, false];
+private _catalogue = missionNamespace getVariable [_catalogueKey, []];
 
 if (!_catalogueReady) then {
-    _catalogue = [_compatibilityCfg] call bn_koth_fnc_menu_buildBrowserWeaponEntries;
-    missionNamespace setVariable ["BN_KOTH_menuBrowserWeaponCatalogue", _catalogue];
-    missionNamespace setVariable ["BN_KOTH_menuBrowserWeaponCatalogueReady", true];
+    _catalogue = [_compatibilityCfg, _weaponSlotUpper] call bn_koth_fnc_menu_buildBrowserWeaponEntries;
+    missionNamespace setVariable [_catalogueKey, _catalogue];
+    missionNamespace setVariable [_catalogueReadyKey, true];
     uiNamespace setVariable ["BN_KOTH_menuBrowserPage", 0];
 };
 if !(_catalogue isEqualType []) then {
@@ -48,36 +57,36 @@ if !(_catalogue isEqualType []) then {
 
 // This is populated only by the server-validated loadout receiver. Do not fall
 // back to the player's local inventory when deciding whether a card is applied.
-private _intendedPrimaryClass = "";
-private _intendedPrimaryMagazine = "";
-private _intendedPrimaryAttachments = [];
+private _intendedWeaponClass = "";
+private _intendedMagazine = "";
+private _intendedAttachments = [];
 private _intendedLoadout = uiNamespace getVariable ["BN_KOTH_menuIntendedLoadout", []];
-if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) >= 1}) then {
-    private _primarySlot = _intendedLoadout select 0;
+if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) > _loadoutSlotIndex}) then {
+    private _intendedSlot = _intendedLoadout select _loadoutSlotIndex;
 
-    if ((_primarySlot isEqualType []) && {(count _primarySlot) >= 5}) then {
-        private _primaryClass = _primarySlot select 0;
-        private _primaryMagazineSlot = _primarySlot select 4;
+    if ((_intendedSlot isEqualType []) && {(count _intendedSlot) >= 5}) then {
+        private _appliedClass = _intendedSlot select 0;
+        private _appliedMagazineSlot = _intendedSlot select 4;
 
         if (
-            (_primaryClass isEqualType "") &&
-            {!(_primaryClass isEqualTo "")} &&
-            (_primaryMagazineSlot isEqualType []) &&
-            {(count _primaryMagazineSlot) >= 1}
+            (_appliedClass isEqualType "") &&
+            {!(_appliedClass isEqualTo "")} &&
+            (_appliedMagazineSlot isEqualType []) &&
+            {(count _appliedMagazineSlot) >= 1}
         ) then {
-            private _primaryMagazine = _primaryMagazineSlot select 0;
-            private _primaryMetadata = [toLower _primaryClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
+            private _appliedMagazine = _appliedMagazineSlot select 0;
+            private _appliedMetadata = [toLower _appliedClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
 
             if (
-                (_primaryMagazine isEqualType "") &&
-                {!(_primaryMagazine isEqualTo "")} &&
-                {_primaryMetadata getOrDefault ["success", false]}
+                (_appliedMagazine isEqualType "") &&
+                {!(_appliedMagazine isEqualTo "")} &&
+                {_appliedMetadata getOrDefault ["success", false]}
             ) then {
-                private _canonicalPrimaryClass = _primaryMetadata getOrDefault ["canonicalClass", ""];
-                private _canonicalPrimaryMagazine = toLower _primaryMagazine;
+                private _canonicalAppliedClass = _appliedMetadata getOrDefault ["canonicalClass", ""];
+                private _canonicalAppliedMagazine = toLower _appliedMagazine;
                 private _sourceMagazinesCfg = _compatibilityCfg >> "SourceMagazines";
                 private _weaponMagazinesCfg = _compatibilityCfg >> "WeaponMagazines";
-                private _compatibleCfg = _weaponMagazinesCfg >> _canonicalPrimaryClass;
+                private _compatibleCfg = _weaponMagazinesCfg >> _canonicalAppliedClass;
                 private _compatibleMagazines = if (isClass _compatibleCfg) then {
                     (getArray (_compatibleCfg >> "values")) apply {toLower _x}
                 } else {
@@ -85,25 +94,25 @@ if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) >= 1}) then {
                 };
 
                 if (
-                    !(_canonicalPrimaryClass isEqualTo "") &&
-                    {_canonicalPrimaryMagazine in _compatibleMagazines} &&
-                    {isClass (_sourceMagazinesCfg >> _canonicalPrimaryMagazine)} &&
-                    {isClass (configFile >> "CfgMagazines" >> _canonicalPrimaryMagazine)}
+                    !(_canonicalAppliedClass isEqualTo "") &&
+                    {_canonicalAppliedMagazine in _compatibleMagazines} &&
+                    {isClass (_sourceMagazinesCfg >> _canonicalAppliedMagazine)} &&
+                    {isClass (configFile >> "CfgMagazines" >> _canonicalAppliedMagazine)}
                 ) then {
-                    _intendedPrimaryClass = _canonicalPrimaryClass;
-                    _intendedPrimaryMagazine = _canonicalPrimaryMagazine;
+                    _intendedWeaponClass = _canonicalAppliedClass;
+                    _intendedMagazine = _canonicalAppliedMagazine;
                     {
-                        if (_x < (count _primarySlot)) then {
-                            private _attachmentClass = _primarySlot select _x;
+                        if (_x < (count _intendedSlot)) then {
+                            private _attachmentClass = _intendedSlot select _x;
                             if (_attachmentClass isEqualType "") then {
                                 _attachmentClass = toLower _attachmentClass;
                                 if !(_attachmentClass isEqualTo "") then {
-                                    _intendedPrimaryAttachments pushBackUnique _attachmentClass;
+                                    _intendedAttachments pushBackUnique _attachmentClass;
                                 };
                             };
                         };
                     } forEach [1, 2, 3, 6];
-                    _intendedPrimaryAttachments sort true;
+                    _intendedAttachments sort true;
                 };
             };
         };
@@ -167,7 +176,7 @@ if !(_page isEqualType 0) then {_page = 0};
 _page = (_page max 0) min (_pageCount - 1);
 uiNamespace setVariable ["BN_KOTH_menuBrowserPage", _page];
 
-(_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_TITLE) ctrlSetText "PRIMARY WEAPONS";
+(_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_TITLE) ctrlSetText (if (_weaponSlot isEqualTo "handgun") then {"SIDEARMS"} else {"PRIMARY WEAPONS"});
 (_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_SUBTITLE) ctrlSetText "CANONICAL S.O.G. WEAPONS";
 (_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL) ctrlSetText format ["PAGE %1 / %2", _page + 1, _pageCount];
 
@@ -269,14 +278,14 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
     };
     private _draftMatchesIntended =
         _draftIsValid &&
-        {_draftWeaponClass isEqualTo _intendedPrimaryClass} &&
-        {_draftMagazineClass isEqualTo _intendedPrimaryMagazine} &&
-        {_draftAttachments isEqualTo _intendedPrimaryAttachments};
+        {_draftWeaponClass isEqualTo _intendedWeaponClass} &&
+        {_draftMagazineClass isEqualTo _intendedMagazine} &&
+        {_draftAttachments isEqualTo _intendedAttachments};
     private _hasPendingAttachmentDraft = _hasAttachmentDraft && {!_draftMatchesIntended};
     private _canApply = _hasAccess && {_draftIsValid} && {!_draftMatchesIntended};
     private _isApplied =
         _hasAccess &&
-        {(_entryWeaponClass isEqualTo _intendedPrimaryClass)} &&
+        {(_entryWeaponClass isEqualTo _intendedWeaponClass)} &&
         {
             !_draftIsValid ||
             {_draftMatchesIntended}
@@ -347,8 +356,8 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
 
     private _applyAction = if (_canApply && {!_isApplied}) then {
         format [
-            "%1 call bn_koth_fnc_menu_applyPrimary;",
-            str [_draftWeaponClass, _draftMagazineClass, _draftAttachments]
+            "%1 call bn_koth_fnc_menu_applyWeaponComposition;",
+            str [_weaponSlot, _draftWeaponClass, _draftMagazineClass, _draftAttachments]
         ]
     } else {
         ""
@@ -357,8 +366,9 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
 
     if (_hasAccess) then {
         _secondaryAction buttonSetAction format [
-            "uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMapFromArray [['weaponClass', '%1'], ['browserPage', uiNamespace getVariable ['BN_KOTH_menuBrowserPage', 0]]]]; uiNamespace setVariable ['BN_KOTH_menuConfigureView', 'MAGAZINES']; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0]; uiNamespace setVariable ['BN_KOTH_menuConfigureAttachmentPage', 0]; ['LOADOUT_CONFIGURE'] call bn_koth_fnc_menu_refresh;",
-            _entryWeaponClass
+            "uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMapFromArray [['weaponClass', '%1'], ['weaponSlot', '%2'], ['browserPage', uiNamespace getVariable ['BN_KOTH_menuBrowserPage', 0]]]]; uiNamespace setVariable ['BN_KOTH_menuConfigureView', 'MAGAZINES']; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0]; uiNamespace setVariable ['BN_KOTH_menuConfigureAttachmentPage', 0]; ['LOADOUT_CONFIGURE'] call bn_koth_fnc_menu_refresh;",
+            _entryWeaponClass,
+            _weaponSlot
         ];
     };
 } forEach _cardIdcs;
