@@ -46,10 +46,10 @@ BASE MAGAZINES
 
 VARIANTS
 - families detected: 92
-- variant candidates: 87
+- variant candidates: 97
 - confidently derived relationships: 86
 - ambiguous relationships: 1
-- overrides applied: 0
+- overrides applied: 10
 
 ORPHANS / ERRORS
 - referenced magazine missing from catalogue: 0
@@ -57,17 +57,29 @@ ORPHANS / ERRORS
 
 PROGRESSION WORK
 - weapon count: 227
-- unique progression-weapon count: 141
+- unique progression-weapon count: 131
 - unique included base-mag count: 40
 - unique extra-mag count: 113
 - unique attachment count: 57
 - unique confirmed derived-class count: 86
-- total unique future progression assets: 311
+- total unique future progression assets: 301
 - weapon-magazine relationship links: 999
 - weapon-attachment relationship links: 111
 
 EXCLUSIONS
 - vnx_* records excluded: 0
+
+OVERRIDES
+- variantOf:vn_kbkg_gl->vn_kbkg
+- variantOf:vn_l1a1_01_camo->vn_l1a1_01
+- variantOf:vn_l1a1_01_gl->vn_l1a1_01
+- variantOf:vn_l1a1_02->vn_l1a1_01
+- variantOf:vn_l1a1_02_camo->vn_l1a1_01
+- variantOf:vn_l1a1_02_gl->vn_l1a1_01
+- variantOf:vn_l1a1_03->vn_l1a1_01
+- variantOf:vn_l1a1_03_camo->vn_l1a1_01
+- variantOf:vn_l1a1_xm148->vn_l1a1_01
+- variantOf:vn_l1a1_xm148_camo->vn_l1a1_01
 
 VALIDATION WARNINGS
 - baseMagazines: 119

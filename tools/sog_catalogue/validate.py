@@ -40,7 +40,11 @@ def validate_catalogue(catalogue: dict[str, Any]) -> dict[str, list[str]]:
             warnings["baseMagazines"].append(
                 f"{weapon['class']}: {weapon['baseMagazineConfidence']} ({', '.join(candidate['class'] for candidate in weapon.get('baseMagazineCandidates', []))})"
             )
-        if weapon.get("variantOf") and weapon.get("derivedRequirements"):
+        if weapon.get("variantOf"):
+            if weapon["variantOf"] not in all_assets:
+                raise CatalogueError(
+                    f"Weapon {weapon['class']} variantOf {weapon['variantOf']} is not present in the catalogue."
+                )
             for requirement in weapon["derivedRequirements"]:
                 if requirement not in all_assets:
                     raise CatalogueError(
@@ -210,9 +214,9 @@ def build_progression_rows(catalogue: dict[str, Any]) -> list[list[str]]:
 
     for weapon in catalogue["weapons"]:
         family = weapon.get("family") or ""
-        if weapon.get("variantOf") and weapon.get("derivedRequirements"):
+        if weapon.get("variantOf"):
             weapon_row = ensure_asset(weapon["class"], "Derived Weapon", "NO")
-            weapon_row["reasons"].add(f"confirmed derived of {weapon['variantOf']}")
+            weapon_row["reasons"].add(f"canonical alias of {weapon['variantOf']}")
             weapon_row["relatedWeapons"].add(weapon["variantOf"])
         else:
             weapon_row = ensure_asset(weapon["class"], "Weapon", "YES")

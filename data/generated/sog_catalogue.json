@@ -1857,10 +1857,12 @@
       ],
       "unlockableAttachments": [],
       "family": "kbkg",
-      "variantOf": null,
+      "variantOf": "vn_kbkg",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -2344,10 +2346,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l1a1",
-      "variantOf": null,
+      "variantOf": "vn_l1a1_01",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -2509,10 +2513,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l1a1",
-      "variantOf": null,
+      "variantOf": "vn_l1a1_01",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -2844,10 +2850,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l1a1",
-      "variantOf": null,
+      "variantOf": "vn_l1a1_01",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -3163,10 +3171,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l1a1",
-      "variantOf": null,
+      "variantOf": "vn_l1a1_01",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -3328,10 +3338,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l1a1",
-      "variantOf": null,
+      "variantOf": "vn_l1a1_01",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -3650,10 +3662,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l1a1",
-      "variantOf": null,
+      "variantOf": "vn_l1a1_01",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -3803,10 +3817,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l1a1",
-      "variantOf": null,
+      "variantOf": "vn_l1a1_01",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -4011,10 +4027,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l1a1",
-      "variantOf": null,
+      "variantOf": "vn_l1a1_01",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -4226,10 +4244,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l1a1",
-      "variantOf": null,
+      "variantOf": "vn_l1a1_01",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -40187,7 +40207,18 @@
       "vnx": []
     },
     "warnings": [],
-    "overridesApplied": [],
+    "overridesApplied": [
+      "variantOf:vn_kbkg_gl->vn_kbkg",
+      "variantOf:vn_l1a1_01_camo->vn_l1a1_01",
+      "variantOf:vn_l1a1_01_gl->vn_l1a1_01",
+      "variantOf:vn_l1a1_02->vn_l1a1_01",
+      "variantOf:vn_l1a1_02_camo->vn_l1a1_01",
+      "variantOf:vn_l1a1_02_gl->vn_l1a1_01",
+      "variantOf:vn_l1a1_03->vn_l1a1_01",
+      "variantOf:vn_l1a1_03_camo->vn_l1a1_01",
+      "variantOf:vn_l1a1_xm148->vn_l1a1_01",
+      "variantOf:vn_l1a1_xm148_camo->vn_l1a1_01"
+    ],
     "weaponExclusionReasons": {
       "vn_melee_base": "non_magazine_weapon_record",
       "vn_rifle": "non_magazine_weapon_record",
@@ -40251,10 +40282,10 @@
     },
     "variants": {
       "families": 92,
-      "candidates": 87,
+      "candidates": 97,
       "derived": 86,
       "ambiguous": 1,
-      "overrides": 0
+      "overrides": 10
     },
     "sourceAffiliations": {
       "weaponBuckets": {
@@ -40276,12 +40307,12 @@
     },
     "progression": {
       "weapons": 227,
-      "progressionWeapons": 141,
+      "progressionWeapons": 131,
       "includedBaseMagazines": 40,
       "extraMagazines": 113,
       "attachments": 57,
       "derivedClasses": 86,
-      "totalFutureProgressionAssets": 311,
+      "totalFutureProgressionAssets": 301,
       "weaponMagazineRelationships": 999,
       "weaponAttachmentRelationships": 111
     }

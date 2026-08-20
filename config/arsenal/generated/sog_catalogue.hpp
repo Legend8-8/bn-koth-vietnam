@@ -245,6 +245,7 @@
             displayName = "KBKG (Rifle Grenade)";
             weaponType = "rifle";
             family = "kbkg";
+            variantOf = "vn_kbkg";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_20mm_dgn_wp_mag", "vn_20mm_f1n60_frag_mag", "vn_20mm_kgn_frag_mag", "vn_20mm_pgn60_heat_mag", "vn_kbkg_mag", "vn_kbkg_t_mag", "vn_type56_mag", "vn_type56_t_mag"};
             sourceAffiliations[] = {"EAST"};
@@ -279,6 +280,7 @@
             displayName = "L1A1 (Aus/ Camo)";
             weaponType = "rifle";
             family = "l1a1";
+            variantOf = "vn_l1a1_01";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_l1a1_10_mag", "vn_l1a1_10_t_mag", "vn_l1a1_20_mag", "vn_l1a1_20_t_mag", "vn_l1a1_30_02_mag", "vn_l1a1_30_02_t_mag", "vn_l1a1_30_mag", "vn_l1a1_30_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -289,6 +291,7 @@
             displayName = "L1A1 (Aus/ Rifle Grenade)";
             weaponType = "rifle";
             family = "l1a1";
+            variantOf = "vn_l1a1_01";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_22mm_m61_frag_mag", "vn_22mm_n94_heat_mag", "vn_l1a1_10_mag", "vn_l1a1_10_t_mag", "vn_l1a1_20_mag", "vn_l1a1_20_t_mag", "vn_l1a1_30_02_mag", "vn_l1a1_30_02_t_mag", "vn_l1a1_30_mag", "vn_l1a1_30_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -313,6 +316,7 @@
             displayName = "L1A1 (NZ)";
             weaponType = "rifle";
             family = "l1a1";
+            variantOf = "vn_l1a1_01";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_l1a1_10_mag", "vn_l1a1_10_t_mag", "vn_l1a1_20_mag", "vn_l1a1_20_t_mag", "vn_l1a1_30_02_mag", "vn_l1a1_30_02_t_mag", "vn_l1a1_30_mag", "vn_l1a1_30_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -337,6 +341,7 @@
             displayName = "L1A1 (NZ/ Camo)";
             weaponType = "rifle";
             family = "l1a1";
+            variantOf = "vn_l1a1_01";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_l1a1_10_mag", "vn_l1a1_10_t_mag", "vn_l1a1_20_mag", "vn_l1a1_20_t_mag", "vn_l1a1_30_02_mag", "vn_l1a1_30_02_t_mag", "vn_l1a1_30_mag", "vn_l1a1_30_t_mag"};
         };
@@ -346,6 +351,7 @@
             displayName = "L1A1 (NZ/ Rifle Grenade)";
             weaponType = "rifle";
             family = "l1a1";
+            variantOf = "vn_l1a1_01";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_22mm_m61_frag_mag", "vn_22mm_n94_heat_mag", "vn_l1a1_10_mag", "vn_l1a1_10_t_mag", "vn_l1a1_20_mag", "vn_l1a1_20_t_mag", "vn_l1a1_30_02_mag", "vn_l1a1_30_02_t_mag", "vn_l1a1_30_mag", "vn_l1a1_30_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -370,6 +376,7 @@
             displayName = "L1A1 (SAS)";
             weaponType = "rifle";
             family = "l1a1";
+            variantOf = "vn_l1a1_01";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_l1a1_10_mag", "vn_l1a1_10_t_mag", "vn_l1a1_20_mag", "vn_l1a1_20_t_mag", "vn_l1a1_30_02_mag", "vn_l1a1_30_02_t_mag", "vn_l1a1_30_mag", "vn_l1a1_30_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -380,6 +387,7 @@
             displayName = "L1A1 (SAS/ Camo)";
             weaponType = "rifle";
             family = "l1a1";
+            variantOf = "vn_l1a1_01";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_l1a1_10_mag", "vn_l1a1_10_t_mag", "vn_l1a1_20_mag", "vn_l1a1_20_t_mag", "vn_l1a1_30_02_mag", "vn_l1a1_30_02_t_mag", "vn_l1a1_30_mag", "vn_l1a1_30_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -390,6 +398,7 @@
             displayName = "L1A1 (XM148)";
             weaponType = "launcher";
             family = "l1a1";
+            variantOf = "vn_l1a1_01";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag", "vn_l1a1_10_mag", "vn_l1a1_10_t_mag", "vn_l1a1_20_mag", "vn_l1a1_20_t_mag", "vn_l1a1_30_02_mag", "vn_l1a1_30_02_t_mag", "vn_l1a1_30_mag", "vn_l1a1_30_t_mag"};
         };
@@ -399,6 +408,7 @@
             displayName = "L1A1 (XM148/ Camo)";
             weaponType = "launcher";
             family = "l1a1";
+            variantOf = "vn_l1a1_01";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag", "vn_l1a1_10_mag", "vn_l1a1_10_t_mag", "vn_l1a1_20_mag", "vn_l1a1_20_t_mag", "vn_l1a1_30_02_mag", "vn_l1a1_30_02_t_mag", "vn_l1a1_30_mag", "vn_l1a1_30_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -8546,15 +8556,6 @@
                 resolvedWeaponClass = "vn_kbkg";
             };
         };
-        class vn_kbkg_gl
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_kbkg_gl";
-            };
-        };
         class vn_l1a1_01
         {
             class k_none
@@ -8576,87 +8577,6 @@
                 ambiguous = 1;
                 resolvedWeaponClass = "";
                 candidates[] = {"vn_l1a1_01_mrk", "vn_l1a1_02_mrk"};
-            };
-        };
-        class vn_l1a1_01_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l1a1_01_camo";
-            };
-        };
-        class vn_l1a1_01_gl
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l1a1_01_gl";
-            };
-        };
-        class vn_l1a1_02
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l1a1_02";
-            };
-        };
-        class vn_l1a1_02_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l1a1_02_camo";
-            };
-        };
-        class vn_l1a1_02_gl
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l1a1_02_gl";
-            };
-        };
-        class vn_l1a1_03
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l1a1_03";
-            };
-        };
-        class vn_l1a1_03_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l1a1_03_camo";
-            };
-        };
-        class vn_l1a1_xm148
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l1a1_xm148";
-            };
-        };
-        class vn_l1a1_xm148_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l1a1_xm148_camo";
             };
         };
         class vn_l2a1_01
@@ -10218,49 +10138,9 @@
         {
             values[] = {};
         };
-        class vn_kbkg_gl
-        {
-            values[] = {};
-        };
         class vn_l1a1_01
         {
             values[] = {"vn_b_l1a1", "vn_o_3x_l1a1"};
-        };
-        class vn_l1a1_01_camo
-        {
-            values[] = {};
-        };
-        class vn_l1a1_01_gl
-        {
-            values[] = {};
-        };
-        class vn_l1a1_02
-        {
-            values[] = {};
-        };
-        class vn_l1a1_02_camo
-        {
-            values[] = {};
-        };
-        class vn_l1a1_02_gl
-        {
-            values[] = {};
-        };
-        class vn_l1a1_03
-        {
-            values[] = {};
-        };
-        class vn_l1a1_03_camo
-        {
-            values[] = {};
-        };
-        class vn_l1a1_xm148
-        {
-            values[] = {};
-        };
-        class vn_l1a1_xm148_camo
-        {
-            values[] = {};
         };
         class vn_l2a1_01
         {

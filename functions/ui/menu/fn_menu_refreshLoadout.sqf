@@ -245,7 +245,7 @@ private _rowDefs = [
     _buttonCtrl ctrlSetBackgroundColor [0, 0, 0, 0];
 } forEach _rowDefs;
 
-_ctrlPrimaryButton buttonSetAction "['LOADOUT_PRIMARY'] call bn_koth_fnc_menu_refresh;";
+_ctrlPrimaryButton buttonSetAction "['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
 _ctrlHandgunButton buttonSetAction "['LOADOUT_HANDGUN'] call bn_koth_fnc_menu_refresh;";
 _ctrlLauncherButton buttonSetAction "['LOADOUT_LAUNCHER'] call bn_koth_fnc_menu_refresh;";
 _ctrlUniformButton buttonSetAction "['LOADOUT_UNIFORM'] call bn_koth_fnc_menu_refresh;";

@@ -28,6 +28,8 @@ if (isNull _display) exitWith {};
 
 private _validPages = [
     "LOADOUT",
+    "LOADOUT_BROWSER",
+    "LOADOUT_CONFIGURE",
     "LOADOUT_PRIMARY",
     "LOADOUT_HANDGUN",
     "LOADOUT_LAUNCHER",
@@ -137,6 +139,17 @@ private _ctrlPrimaryBack = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_BACK;
 private _ctrlCargoMinus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_MINUS;
 private _ctrlCargoPlus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_PLUS;
 private _ctrlPrimaryApply = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_APPLY;
+private _ctrlBrowserTitle = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_TITLE;
+private _ctrlBrowserSubtitle = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_SUBTITLE;
+private _ctrlBrowserBack = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_BACK;
+private _ctrlBrowserPagePrevious = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_PREVIOUS;
+private _ctrlBrowserPageNext = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_NEXT;
+private _ctrlBrowserPageLabel = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL;
+private _ctrlConfigureMagazines = _display displayCtrl BN_KOTH_IDC_MENU_CONFIGURE_MAGAZINES;
+private _ctrlConfigureAttachments = _display displayCtrl BN_KOTH_IDC_MENU_CONFIGURE_ATTACHMENTS;
+private _ctrlSessionSave = _display displayCtrl BN_KOTH_IDC_MENU_SESSION_SAVE_BUTTON;
+private _ctrlSessionLoad = _display displayCtrl BN_KOTH_IDC_MENU_SESSION_LOAD_BUTTON;
+private _ctrlSessionDelete = _display displayCtrl BN_KOTH_IDC_MENU_SESSION_DELETE_BUTTON;
 
 private _setNavState = {
     params ["_ctrl", "_isActive"];
@@ -219,6 +232,8 @@ _ctrlOperatorRole ctrlSetText _roleText;
 
 private _loadoutPages = [
     "LOADOUT",
+    "LOADOUT_BROWSER",
+    "LOADOUT_CONFIGURE",
     "LOADOUT_PRIMARY",
     "LOADOUT_HANDGUN",
     "LOADOUT_LAUNCHER",
@@ -294,7 +309,10 @@ private _mainViewControls = [
     _ctrlAttachmentsButton,
     _ctrlSectionTitle,
     _ctrlNotice,
-    _ctrlFooter
+    _ctrlFooter,
+    _ctrlSessionSave,
+    _ctrlSessionLoad,
+    _ctrlSessionDelete
 ];
 
 private _selectorViewControls = [
@@ -309,14 +327,74 @@ private _selectorViewControls = [
     _ctrlPrimaryApply
 ];
 
+private _browserViewControls = [
+    _ctrlBrowserTitle,
+    _ctrlBrowserSubtitle,
+    _ctrlBrowserBack,
+    _ctrlBrowserPagePrevious,
+    _ctrlBrowserPageNext,
+    _ctrlBrowserPageLabel
+];
+
+private _configureViewControls = [
+    _ctrlConfigureMagazines,
+    _ctrlConfigureAttachments
+];
+
+{
+    _browserViewControls append [
+        _display displayCtrl _x,
+        _display displayCtrl (_x + 1),
+        _display displayCtrl (_x + 2),
+        _display displayCtrl (_x + 3),
+        _display displayCtrl (_x + 4),
+        _display displayCtrl (_x + 5),
+        _display displayCtrl (_x + 6),
+        _display displayCtrl (_x + 7),
+        _display displayCtrl (_x + 8)
+    ];
+} forEach [
+    BN_KOTH_IDC_MENU_BROWSER_CARD_1_BG,
+    BN_KOTH_IDC_MENU_BROWSER_CARD_2_BG,
+    BN_KOTH_IDC_MENU_BROWSER_CARD_3_BG,
+    BN_KOTH_IDC_MENU_BROWSER_CARD_4_BG
+];
+
+private _navControls = [
+    _ctrlNavLoadout,
+    _ctrlNavStore,
+    _ctrlNavPerks,
+    _ctrlNavStats,
+    _ctrlNavProgression
+];
+
 private _showMainView = {
     { _x ctrlShow true; } forEach _mainViewControls;
     { _x ctrlShow false; } forEach _selectorViewControls;
+    { _x ctrlShow false; } forEach _browserViewControls;
+    { _x ctrlShow false; } forEach _configureViewControls;
+    { _x ctrlShow true; } forEach _navControls;
 };
 
 private _showSelectorView = {
     { _x ctrlShow false; } forEach _mainViewControls;
     { _x ctrlShow true; } forEach _selectorViewControls;
+    { _x ctrlShow false; } forEach _browserViewControls;
+    { _x ctrlShow false; } forEach _configureViewControls;
+    { _x ctrlShow true; } forEach _navControls;
+};
+
+private _showBrowserView = {
+    { _x ctrlShow false; } forEach _mainViewControls;
+    { _x ctrlShow false; } forEach _selectorViewControls;
+    { _x ctrlShow true; } forEach _browserViewControls;
+    { _x ctrlShow false; } forEach _configureViewControls;
+    { _x ctrlShow false; } forEach _navControls;
+};
+
+private _showConfigureView = {
+    call _showBrowserView;
+    { _x ctrlShow true; } forEach _configureViewControls;
 };
 
 private _showComingSoon = {
@@ -394,6 +472,16 @@ private _compatibilityCfg = missionConfigFile >> _catalogueClass >> "Equipment" 
 if (_activePage isEqualTo "LOADOUT") exitWith {
     call _showMainView;
     [_display, _intendedLoadout] call bn_koth_fnc_menu_refreshLoadout;
+};
+
+if (_activePage isEqualTo "LOADOUT_BROWSER") exitWith {
+    call _showBrowserView;
+    [_display] call bn_koth_fnc_menu_refreshBrowser;
+};
+
+if (_activePage isEqualTo "LOADOUT_CONFIGURE") exitWith {
+    call _showConfigureView;
+    [_display] call bn_koth_fnc_menu_refreshConfigure;
 };
 
 private _selectorMode = switch (_activePage) do {

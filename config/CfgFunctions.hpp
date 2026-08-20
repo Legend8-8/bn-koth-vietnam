@@ -186,6 +186,12 @@ class CfgFunctions
             class menu_close {file = "functions\ui\menu\fn_menu_close.sqf";};
             class menu_refresh {file = "functions\ui\menu\fn_menu_refresh.sqf";};
             class menu_refreshLoadout {file = "functions\ui\menu\fn_menu_refreshLoadout.sqf";};
+            class menu_refreshBrowser {file = "functions\ui\menu\fn_menu_refreshBrowser.sqf";};
+            class menu_refreshConfigure {file = "functions\ui\menu\fn_menu_refreshConfigure.sqf";};
+            class menu_refreshConfigureAttachments {file = "functions\ui\menu\fn_menu_refreshConfigureAttachments.sqf";};
+            class menu_selectConfigureMagazine {file = "functions\ui\menu\fn_menu_selectConfigureMagazine.sqf";};
+            class menu_getItemCardControls {file = "functions\ui\menu\fn_menu_getItemCardControls.sqf";};
+            class menu_buildBrowserWeaponEntries {file = "functions\ui\menu\fn_menu_buildBrowserWeaponEntries.sqf";};
             class menu_refreshSelector {file = "functions\ui\menu\fn_menu_refreshSelector.sqf";};
             class menu_buildWeaponEntries {file = "functions\ui\menu\fn_menu_buildWeaponEntries.sqf";};
             class menu_buildWearableEntries {file = "functions\ui\menu\fn_menu_buildWearableEntries.sqf";};

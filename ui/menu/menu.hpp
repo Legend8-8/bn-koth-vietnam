@@ -20,6 +20,11 @@
 #define BN_KOTH_MENU_LEFT_X BN_KOTH_MENU_X
 #define BN_KOTH_MENU_CENTER_X (BN_KOTH_MENU_LEFT_X + BN_KOTH_MENU_LEFT_W + BN_KOTH_MENU_GAP)
 #define BN_KOTH_MENU_RIGHT_X (BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W + BN_KOTH_MENU_GAP)
+#define BN_KOTH_MENU_BROWSER_X BN_KOTH_MENU_CENTER_X
+#define BN_KOTH_MENU_BROWSER_W (BN_KOTH_MENU_CENTER_W + BN_KOTH_MENU_GAP + BN_KOTH_MENU_RIGHT_W)
+#define BN_KOTH_MENU_BROWSER_CARD_GAP (safeZoneW * 0.010)
+#define BN_KOTH_MENU_BROWSER_CARD_W ((BN_KOTH_MENU_BROWSER_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 3) / 2)
+#define BN_KOTH_MENU_BROWSER_CARD_H (safeZoneH * 0.275)
 
 class BN_KOTH_RscMenu
 {
@@ -27,7 +32,7 @@ class BN_KOTH_RscMenu
     movingEnable = 0;
     enableSimulation = 1;
     onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_menuDisplay', _display]; _display displayAddEventHandler ['KeyDown', 'if ((_this select 1) isEqualTo 1) exitWith {[] call bn_koth_fnc_menu_close; true}; false']; ['LOADOUT'] call bn_koth_fnc_menu_refresh;";
-    onUnload = "uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuArsenalEnabled', false]; uiNamespace setVariable ['BN_KOTH_menuIntendedLoadout', []]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuLauncherEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingLauncher', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuUniformEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingUniform', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuVestEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingVest', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBackpackEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBackpack', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHeadgearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHeadgear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuFacewearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingFacewear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBinocularEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBinocular', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAssignedEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAttachmentEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAttachment', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuCargoEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', createHashMap];";
+    onUnload = "uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuArsenalEnabled', false]; uiNamespace setVariable ['BN_KOTH_menuIntendedLoadout', []]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuLauncherEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingLauncher', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuUniformEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingUniform', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuVestEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingVest', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBackpackEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBackpack', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHeadgearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHeadgear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuFacewearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingFacewear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBinocularEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBinocular', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAssignedEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAttachmentEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAttachment', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuCargoEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureDrafts', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0];";
 
     class controlsBackground
     {
@@ -263,6 +268,7 @@ class BN_KOTH_RscMenu
         class PrimaryPreview: BN_KOTH_RscPicture
         {
             idc = BN_KOTH_IDC_MENU_PRIMARY_PREVIEW;
+            style = 2096;
             text = "";
             x = BN_KOTH_MENU_LEFT_X + BN_KOTH_MENU_LEFT_W * 0.08;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.215;
@@ -634,6 +640,215 @@ class BN_KOTH_RscMenu
             x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.71;
             action = "private _p = uiNamespace getVariable ['BN_KOTH_menuPendingCargo', createHashMap]; _p set ['delta', 1]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', _p]; [] call bn_koth_fnc_menu_applyCargo;";
         };
+
+        // Fixed reusable two-column browser card pool. The renderer only
+        // changes local presentation; it never creates controls at runtime.
+        class BrowserTitle: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_TITLE;
+            text = "PRIMARY WEAPONS";
+            x = BN_KOTH_MENU_BROWSER_X + safeZoneW * 0.014;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.016;
+            w = BN_KOTH_MENU_BROWSER_W * 0.40;
+            h = safeZoneH * 0.035;
+            sizeEx = "0.036 * safeZoneH";
+        };
+
+        class BrowserSubtitle: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_SUBTITLE;
+            text = "ITEM BROWSER";
+            x = BN_KOTH_MENU_BROWSER_X + safeZoneW * 0.014;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.052;
+            w = BN_KOTH_MENU_BROWSER_W * 0.40;
+            h = safeZoneH * 0.024;
+        };
+
+        class BrowserBack: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_BACK;
+            text = "BACK";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_W - safeZoneW * 0.128;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.020;
+            w = safeZoneW * 0.110;
+            h = safeZoneH * 0.038;
+            action = "['LOADOUT'] call bn_koth_fnc_menu_refresh;";
+        };
+
+        class ConfigureMagazines: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_CONFIGURE_MAGAZINES;
+            text = "MAGAZINES";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_W * 0.43;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.020;
+            w = safeZoneW * 0.105;
+            h = safeZoneH * 0.038;
+            action = "uiNamespace setVariable ['BN_KOTH_menuConfigureView', 'MAGAZINES']; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0]; ['LOADOUT_CONFIGURE'] call bn_koth_fnc_menu_refresh;";
+        };
+
+        class ConfigureAttachments: ConfigureMagazines
+        {
+            idc = BN_KOTH_IDC_MENU_CONFIGURE_ATTACHMENTS;
+            text = "ATTACHMENTS";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_W * 0.61;
+            w = safeZoneW * 0.108;
+            action = "uiNamespace setVariable ['BN_KOTH_menuConfigureView', 'ATTACHMENTS']; uiNamespace setVariable ['BN_KOTH_menuConfigureAttachmentPage', 0]; ['LOADOUT_CONFIGURE'] call bn_koth_fnc_menu_refresh;";
+        };
+
+        class BrowserPagePrevious: BrowserBack
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_PAGE_PREVIOUS;
+            text = "<";
+            action = "";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_W * 0.38;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H - safeZoneH * 0.060;
+            w = safeZoneW * 0.038;
+            h = safeZoneH * 0.034;
+        };
+
+        class BrowserPageNext: BrowserPagePrevious
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_PAGE_NEXT;
+            text = ">";
+            action = "";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_W * 0.58;
+        };
+
+        class BrowserPageLabel: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL;
+            text = "PAGE 1 / 1";
+            style = 2;
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_W * 0.43;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H - safeZoneH * 0.056;
+            w = BN_KOTH_MENU_BROWSER_W * 0.15;
+            h = safeZoneH * 0.028;
+        };
+
+        class BrowserCardBackground: BN_KOTH_Menu_Background
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_BG;
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.088;
+            w = BN_KOTH_MENU_BROWSER_CARD_W;
+            h = BN_KOTH_MENU_BROWSER_CARD_H;
+            colorBackground[] = {0.075, 0.075, 0.065, 0.96};
+        };
+
+        class BrowserCardImageArea: BrowserCardBackground
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_IMAGE_AREA;
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.098;
+            w = BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            h = safeZoneH * 0.120;
+            colorBackground[] = {0.025, 0.025, 0.022, 0.92};
+        };
+
+        class BrowserCardImage: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_IMAGE;
+            style = 2096;
+            text = "";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.098;
+            w = BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            h = safeZoneH * 0.120;
+        };
+
+        class BrowserCardName: BN_KOTH_Menu_Value
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_NAME;
+            text = "TEST CARD A";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.226;
+            w = BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            h = safeZoneH * 0.026;
+        };
+
+        class BrowserCardStatus: BN_KOTH_Menu_Label
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_STATUS;
+            text = "OWNED - DEMO";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.253;
+            w = BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            h = safeZoneH * 0.020;
+        };
+
+        class BrowserCardLockOverlay: BrowserCardBackground
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_LOCK_OVERLAY;
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.088;
+            w = BN_KOTH_MENU_BROWSER_CARD_W;
+            h = BN_KOTH_MENU_BROWSER_CARD_H;
+            colorBackground[] = {0.01, 0.01, 0.01, 0.78};
+        };
+
+        class BrowserCardLockText: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_LOCK_TEXT;
+            text = "LOCKED UNTIL LEVEL 20";
+            style = 2;
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.196;
+            w = BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            h = safeZoneH * 0.038;
+            sizeEx = "0.024 * safeZoneH";
+            colorText[] = {0.94, 0.80, 0.34, 1};
+        };
+
+        class BrowserCardPrimaryAction: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_PRIMARY_ACTION;
+            text = "APPLY";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.294;
+            w = (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 3) * 0.5;
+            h = safeZoneH * 0.034;
+        };
+
+        class BrowserCardSecondaryAction: BrowserCardPrimaryAction
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_SECONDARY_ACTION;
+            text = "CONFIGURE";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2 + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 3) * 0.5 + BN_KOTH_MENU_BROWSER_CARD_GAP;
+        };
+
+        class BrowserCard2Background: BrowserCardBackground
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_BG;
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2 + BN_KOTH_MENU_BROWSER_CARD_W;
+        };
+        class BrowserCard2ImageArea: BrowserCardImageArea {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_IMAGE_AREA; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
+        class BrowserCard2Image: BrowserCardImage {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_IMAGE; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
+        class BrowserCard2Name: BrowserCardName {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_NAME; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
+        class BrowserCard2Status: BrowserCardStatus {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_STATUS; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
+        class BrowserCard2LockOverlay: BrowserCardLockOverlay {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_LOCK_OVERLAY; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2 + BN_KOTH_MENU_BROWSER_CARD_W;};
+        class BrowserCard2LockText: BrowserCardLockText {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_LOCK_TEXT; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
+        class BrowserCard2PrimaryAction: BrowserCardPrimaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_PRIMARY_ACTION; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
+        class BrowserCard2SecondaryAction: BrowserCardSecondaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_SECONDARY_ACTION; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 3) * 0.5 + BN_KOTH_MENU_BROWSER_CARD_GAP;};
+
+        class BrowserCard3Background: BrowserCardBackground {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_BG; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.382;};
+        class BrowserCard3ImageArea: BrowserCardImageArea {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_IMAGE_AREA; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.392;};
+        class BrowserCard3Image: BrowserCardImage {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_IMAGE; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.392;};
+        class BrowserCard3Name: BrowserCardName {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_NAME; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.520;};
+        class BrowserCard3Status: BrowserCardStatus {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_STATUS; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.547;};
+        class BrowserCard3LockOverlay: BrowserCardLockOverlay {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_LOCK_OVERLAY; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.382;};
+        class BrowserCard3LockText: BrowserCardLockText {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_LOCK_TEXT; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.490;};
+        class BrowserCard3PrimaryAction: BrowserCardPrimaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_PRIMARY_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.588;};
+        class BrowserCard3SecondaryAction: BrowserCardSecondaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_SECONDARY_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.588;};
+
+        class BrowserCard4Background: BrowserCard2Background {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_BG; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.382;};
+        class BrowserCard4ImageArea: BrowserCard2ImageArea {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_IMAGE_AREA; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.392;};
+        class BrowserCard4Image: BrowserCard2Image {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_IMAGE; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.392;};
+        class BrowserCard4Name: BrowserCard2Name {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_NAME; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.520;};
+        class BrowserCard4Status: BrowserCard2Status {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_STATUS; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.547;};
+        class BrowserCard4LockOverlay: BrowserCard2LockOverlay {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_LOCK_OVERLAY; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.382;};
+        class BrowserCard4LockText: BrowserCard2LockText {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_LOCK_TEXT; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.490;};
+        class BrowserCard4PrimaryAction: BrowserCard2PrimaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_PRIMARY_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.588;};
+        class BrowserCard4SecondaryAction: BrowserCard2SecondaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_SECONDARY_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.588;};
 
         class NavLoadout: BN_KOTH_Menu_NavButton
         {
