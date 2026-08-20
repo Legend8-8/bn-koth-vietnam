@@ -221,22 +221,22 @@ _ctrlNotice ctrlSetText (
 } forEach [_ctrlPrimary, _ctrlHandgun, _ctrlLauncher, _ctrlUniform, _ctrlVest, _ctrlHeadgear, _ctrlBackpack, _ctrlEquipment];
 
 private _rowDefs = [
-    [_ctrlTextPrimary, _ctrlPrimaryButton, 0.078, "PRIMARY", _primaryName],
-    [_ctrlTextHandgun, _ctrlHandgunButton, 0.138, "HANDGUN", _handgunName],
-    [_ctrlTextLauncher, _ctrlLauncherButton, 0.198, "LAUNCHER", _launcherName],
-    [_ctrlTextUniform, _ctrlUniformButton, 0.258, "UNIFORM", _uniformName],
-    [_ctrlTextVest, _ctrlVestButton, 0.318, "VEST", _vestName],
-    [_ctrlTextHeadgear, _ctrlHeadgearButton, 0.378, "HEADGEAR", _headgearName],
-    [_ctrlTextBackpack, _ctrlBackpackButton, 0.438, "BACKPACK", _backpackName],
-    [_ctrlTextEquipment, _ctrlEquipmentButton, 0.498, "EQUIPMENT", "ASSIGNED GEAR"]
+    [_ctrlTextPrimary, _ctrlPrimaryButton, "PRIMARY", _primaryName],
+    [_ctrlTextHandgun, _ctrlHandgunButton, "HANDGUN", _handgunName],
+    [_ctrlTextLauncher, _ctrlLauncherButton, "LAUNCHER", _launcherName],
+    [_ctrlTextUniform, _ctrlUniformButton, "UNIFORM", _uniformName],
+    [_ctrlTextVest, _ctrlVestButton, "VEST", _vestName],
+    [_ctrlTextHeadgear, _ctrlHeadgearButton, "HEADGEAR", _headgearName],
+    [_ctrlTextBackpack, _ctrlBackpackButton, "BACKPACK", _backpackName],
+    [_ctrlTextEquipment, _ctrlEquipmentButton, "EQUIPMENT", "ASSIGNED GEAR"]
 ];
 
 {
-    _x params ["_textCtrl", "_buttonCtrl", "_yOffset", "_label", "_value"];
+    _x params ["_textCtrl", "_buttonCtrl", "_label", "_value"];
 
     _textCtrl ctrlShow true;
     _textCtrl ctrlSetStructuredText parseText format [
-        "<t font='RobotoCondensed' size='0.72' color='#8F8B82'>%1</t><br/><t font='PuristaSemiBold' size='0.92' color='#E9E5DB'>%2</t>",
+        "<t font='RobotoCondensed' size='0.70' color='#A29D90'>%1</t><br/><t font='PuristaSemiBold' size='1.02' color='#E9E5DB'>%2</t>",
         _label,
         _value
     ];
@@ -302,4 +302,4 @@ _ctrlPicEquipment ctrlSetText "";
     _x ctrlEnable (!isNull player && {_arsenalEnabled});
 } forEach [_ctrlPrimaryButton, _ctrlHandgunButton, _ctrlLauncherButton, _ctrlUniformButton, _ctrlVestButton, _ctrlBackpackButton, _ctrlHeadgearButton, _ctrlEquipmentButton];
 
-_ctrlFooter ctrlSetText "SELECT A ROW TO CHANGE GEAR   |   > OPENS ITEM OPTIONS";
+_ctrlFooter ctrlSetText "  MANAGE LOADOUTS    |    SAVE / LOAD / DELETE BELOW";
