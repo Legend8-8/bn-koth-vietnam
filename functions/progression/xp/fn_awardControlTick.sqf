@@ -26,6 +26,7 @@ if (_controlXpAmount <= 0 && {_priorityXpAmount <= 0}) exitWith {0};
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 private _priorityMarker = "BN_KOTH_priorityZoneMarker";
+private _maximumControlHeight = missionNamespace getVariable ["BN_KOTH_maximumControlHeight", 50];
 private _priorityActive = missionNamespace getVariable ["BN_KOTH_priorityZoneActive", false]
     && {!((markerShape _priorityMarker) isEqualTo "")};
 private _rewarded = 0;
@@ -48,7 +49,10 @@ private _rewarded = 0;
                 _rewarded = _rewarded + 1;
             };
 
-            if (_priorityActive && {_priorityXpAmount > 0} && {_unit inArea _priorityMarker}) then {
+            if (_priorityActive
+                && {_priorityXpAmount > 0}
+                && {(getPosATL _unit select 2) < _maximumControlHeight}
+                && {_unit inArea _priorityMarker}) then {
                 [_uid, _priorityXpAmount, "priority"] call bn_koth_fnc_progression_xp_addXp;
                 _rewarded = _rewarded + 1;
             };
