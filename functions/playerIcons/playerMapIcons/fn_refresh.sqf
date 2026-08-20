@@ -13,14 +13,14 @@
 if (!hasInterface) exitWith {0};
 if (isNull player) exitWith {0};
 
-if !(missionNamespace getVariable ["BN_KOTH_playerIconsEnabled", true]) exitWith {
-    uiNamespace setVariable ["BN_KOTH_playerIconsDrawData", []];
+if !(missionNamespace getVariable ["BN_KOTH_playerMapIconsEnabled", true]) exitWith {
+    uiNamespace setVariable ["BN_KOTH_playerMapIconsDrawData", []];
     0
 };
 
 private _myUid = getPlayerUID player;
 if (_myUid isEqualTo "") exitWith {
-    uiNamespace setVariable ["BN_KOTH_playerIconsDrawData", []];
+    uiNamespace setVariable ["BN_KOTH_playerMapIconsDrawData", []];
     0
 };
 
@@ -34,14 +34,14 @@ if !([_mySide] call bn_koth_fnc_teams_validateSide) then {
     _mySide = side group player;
 };
 if !([_mySide] call bn_koth_fnc_teams_validateSide) exitWith {
-    uiNamespace setVariable ["BN_KOTH_playerIconsDrawData", []];
+    uiNamespace setVariable ["BN_KOTH_playerMapIconsDrawData", []];
     0
 };
 
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 private _playerStates = missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap];
-private _lastDrawData = uiNamespace getVariable ["BN_KOTH_playerIconsLastDrawData", []];
-private _lastDrawAt = uiNamespace getVariable ["BN_KOTH_playerIconsLastDrawAt", -1];
+private _lastDrawData = uiNamespace getVariable ["BN_KOTH_playerMapIconsLastDrawData", []];
+private _lastDrawAt = uiNamespace getVariable ["BN_KOTH_playerMapIconsLastDrawAt", -1];
 
 if !(_playerStates isEqualType createHashMap) then {
     _playerStates = createHashMap;
@@ -52,15 +52,15 @@ private _activeLookup = createHashMap;
     _activeLookup set [_x, true];
 } forEach _activeParticipants;
 
-private _iconTexture = missionNamespace getVariable ["BN_KOTH_playerIconsTexture", "\A3\ui_f\data\map\markers\military\triangle_CA.paa"];
-private _iconColor = missionNamespace getVariable ["BN_KOTH_playerIconsColorArray", [1, 1, 1, 1]];
-private _groupIconColor = missionNamespace getVariable ["BN_KOTH_playerIconsGroupColorArray", [0, 1, 0, 1]];
-private _voiceStates = missionNamespace getVariable ["BN_KOTH_playerIconsVoiceStates", createHashMap];
+private _iconTexture = missionNamespace getVariable ["BN_KOTH_playerMapIconsTexture", "\A3\ui_f\data\map\markers\military\triangle_CA.paa"];
+private _iconColor = missionNamespace getVariable ["BN_KOTH_playerMapIconsColorArray", [1, 1, 1, 1]];
+private _groupIconColor = missionNamespace getVariable ["BN_KOTH_playerMapIconsGroupColorArray", [0, 1, 1, 1]];
+private _voiceStates = missionNamespace getVariable ["BN_KOTH_playerMapIconsVoiceStates", createHashMap];
 if !(_voiceStates isEqualType createHashMap) then {
     _voiceStates = createHashMap;
 };
-private _showPassengerCount = missionNamespace getVariable ["BN_KOTH_playerIconsShowPassengerCount", true];
-private _showDriverName = missionNamespace getVariable ["BN_KOTH_playerIconsShowDriverName", true];
+private _showPassengerCount = missionNamespace getVariable ["BN_KOTH_playerMapIconsShowPassengerCount", true];
+private _showDriverName = missionNamespace getVariable ["BN_KOTH_playerMapIconsShowDriverName", true];
 
 private _eligiblePlayers = allPlayers select {
     private _unit = _x;
@@ -153,16 +153,16 @@ private _vehicleGroups = createHashMap;
     _drawData pushBack [getPosVisual _vehicle, getDir _vehicle, _label, _iconTexture, _vehicleColor, _hasLocalPlayer, _isTalking];
 } forEach (keys _vehicleGroups);
 
-uiNamespace setVariable ["BN_KOTH_playerIconsDrawData", _drawData];
+uiNamespace setVariable ["BN_KOTH_playerMapIconsDrawData", _drawData];
 
 if ((count _drawData) > 0) then {
-    uiNamespace setVariable ["BN_KOTH_playerIconsLastDrawData", _drawData];
-    uiNamespace setVariable ["BN_KOTH_playerIconsLastDrawAt", diag_tickTime];
+    uiNamespace setVariable ["BN_KOTH_playerMapIconsLastDrawData", _drawData];
+    uiNamespace setVariable ["BN_KOTH_playerMapIconsLastDrawAt", diag_tickTime];
 } else {
     private _roundState = missionNamespace getVariable ["BN_KOTH_roundState", "WAITING"];
     if (_roundState isEqualTo "ACTIVE" && {_lastDrawAt >= 0} && {(diag_tickTime - _lastDrawAt) < 1}) then {
-        uiNamespace setVariable ["BN_KOTH_playerIconsDrawData", _lastDrawData];
+        uiNamespace setVariable ["BN_KOTH_playerMapIconsDrawData", _lastDrawData];
     };
 };
 
-count (uiNamespace getVariable ["BN_KOTH_playerIconsDrawData", []])
+count (uiNamespace getVariable ["BN_KOTH_playerMapIconsDrawData", []])

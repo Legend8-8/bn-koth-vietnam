@@ -1,6 +1,6 @@
-class CfgBnKothPlayerIcons
+class CfgBnKothPlayerMapIcons
 {
-    // Master switch for the local map icon system.
+    // Master switch for the local player map icon system.
     enabled = 1;
 
     // Refresh interval in seconds for local icon data rebuilds.
