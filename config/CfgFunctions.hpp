@@ -80,11 +80,12 @@ class CfgFunctions
         class progression
         {
             class progression_xp_initServer {file = "functions\progression\xp\fn_initServer.sqf";};
-            class progression_xp_resetRound {file = "functions\progression\xp\fn_resetRound.sqf";};
             class progression_xp_getLevel {file = "functions\progression\xp\fn_getLevel.sqf";};
+            class progression_xp_getLevelProgress {file = "functions\progression\xp\fn_getLevelProgress.sqf";};
             class progression_xp_addXp {file = "functions\progression\xp\fn_addXp.sqf";};
             class progression_xp_awardControlTick {file = "functions\progression\xp\fn_awardControlTick.sqf";};
             class progression_xp_awardKill {file = "functions\progression\xp\fn_awardKill.sqf";};
+            class progression_evaluateWeaponEntitlement {file = "functions\progression\fn_evaluateWeaponEntitlement.sqf";};
         };
 
         class respawn
@@ -114,6 +115,7 @@ class CfgFunctions
             class loadouts_forceCloseInventory {file = "functions\loadouts\fn_forceCloseInventory.sqf";};
             class loadouts_clearPlayerState {file = "functions\loadouts\fn_clearPlayerState.sqf";};
             class loadouts_getStarterLoadout {file = "functions\loadouts\fn_getStarterLoadout.sqf";};
+            class loadouts_getWeaponMetadata {file = "functions\loadouts\fn_getWeaponMetadata.sqf";};
             class loadouts_validateLoadout {file = "functions\loadouts\fn_validateLoadout.sqf";};
             class loadouts_validateMutation {file = "functions\loadouts\fn_validateMutation.sqf";};
             class loadouts_validateWeaponComposition {file = "functions\loadouts\fn_validateWeaponComposition.sqf";};
@@ -172,6 +174,7 @@ class CfgFunctions
             class ui_requestState {file = "functions\ui\state\fn_requestState.sqf";};
             class ui_sendStateToClient {file = "functions\ui\state\fn_sendStateToClient.sqf";};
             class ui_receiveState {file = "functions\ui\state\fn_receiveState.sqf";};
+            class ui_receiveProgression {file = "functions\ui\state\fn_receiveProgression.sqf";};
             class ui_toggleDebugDisplay {file = "functions\ui\debug\fn_toggleDebugDisplay.sqf";};
             class ui_debugDisplayLoop {file = "functions\ui\debug\fn_debugDisplayLoop.sqf";};
             class ui_selectControlledUnit {file = "functions\ui\state\fn_selectControlledUnit.sqf";};

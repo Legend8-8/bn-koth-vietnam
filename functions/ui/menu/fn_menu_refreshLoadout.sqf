@@ -25,6 +25,17 @@ private _arsenalEnabled = uiNamespace getVariable [
     false
 ];
 
+private _resolveItemPicture = {
+    params ["_className"];
+    if (_className isEqualTo "") exitWith {""};
+    private _cfg = configFile >> "CfgWeapons" >> _className;
+    if !(isClass _cfg) then {_cfg = configFile >> "CfgVehicles" >> _className;};
+    if !(isClass _cfg) then {_cfg = configFile >> "CfgGlasses" >> _className;};
+    if !(isClass _cfg) then {_cfg = configFile >> "CfgMagazines" >> _className;};
+    if !(isClass _cfg) exitWith {""};
+    getText (_cfg >> "picture")
+};
+
 private _resolveItemName = {
     params ["_className"];
 
@@ -73,6 +84,28 @@ private _setLine = {
     _ctrl ctrlSetText format ["%1: %2", _label, _value];
 };
 
+private _ctrlTextPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_PRIMARY;
+private _ctrlTextHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_HANDGUN;
+private _ctrlTextLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_LAUNCHER;
+private _ctrlTextUniform = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_UNIFORM;
+private _ctrlTextVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_VEST;
+private _ctrlTextHeadgear = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_HEADGEAR;
+private _ctrlTextBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_BACKPACK;
+private _ctrlTextEquipment = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_EQUIPMENT;
+private _ctrlPicPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_PRIMARY;
+private _ctrlPicHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_HANDGUN;
+private _ctrlPicLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_LAUNCHER;
+private _ctrlPicUniform = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_UNIFORM;
+private _ctrlPicVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_VEST;
+private _ctrlPicHeadgear = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_HEADGEAR;
+private _ctrlPicBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_BACKPACK;
+private _ctrlPicEquipment = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_EQUIPMENT;
+private _ctrlCogPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_PRIMARY;
+private _ctrlCogHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_HANDGUN;
+private _ctrlCogLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_LAUNCHER;
+private _ctrlCogUniform = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_UNIFORM;
+private _ctrlCogVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_VEST;
+private _ctrlCogBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_BACKPACK;
 private _ctrlSectionTitle = _display displayCtrl BN_KOTH_IDC_MENU_SECTION_TITLE;
 private _ctrlNotice = _display displayCtrl BN_KOTH_IDC_MENU_NOTICE;
 private _ctrlFooter = _display displayCtrl BN_KOTH_IDC_MENU_FOOTER_TEXT;
@@ -137,98 +170,136 @@ _ctrlNotice ctrlSetText (
 {
     _x ctrlShow false;
 } forEach [
-    _ctrlPrimary,
-    _ctrlHandgun,
-    _ctrlLauncher,
-    _ctrlUniform,
-    _ctrlVest,
-    _ctrlBackpack,
-    _ctrlHeadgear,
     _ctrlFacewear,
     _ctrlBinocular,
-    _ctrlEquipment
+    _ctrlFacewearButton,
+    _ctrlBinocularButton,
+    _ctrlCargoButton,
+    _ctrlAttachmentsButton
 ];
 
 {
     _x ctrlShow true;
 } forEach [
+    _ctrlPrimary,
+    _ctrlHandgun,
+    _ctrlLauncher,
+    _ctrlUniform,
+    _ctrlVest,
+    _ctrlHeadgear,
+    _ctrlBackpack,
+    _ctrlEquipment,
     _ctrlPrimaryButton,
     _ctrlHandgunButton,
     _ctrlLauncherButton,
     _ctrlUniformButton,
     _ctrlVestButton,
-    _ctrlBackpackButton,
     _ctrlHeadgearButton,
-    _ctrlFacewearButton,
-    _ctrlBinocularButton,
+    _ctrlBackpackButton,
     _ctrlEquipmentButton,
-    _ctrlCargoButton,
-    _ctrlAttachmentsButton,
+    _ctrlPicPrimary,
+    _ctrlPicHandgun,
+    _ctrlPicLauncher,
+    _ctrlPicUniform,
+    _ctrlPicVest,
+    _ctrlPicHeadgear,
+    _ctrlPicBackpack,
+    _ctrlPicEquipment,
+    _ctrlCogPrimary,
+    _ctrlCogHandgun,
+    _ctrlCogLauncher,
+    _ctrlCogUniform,
+    _ctrlCogVest,
+    _ctrlCogBackpack,
     _ctrlSessionSave,
     _ctrlSessionLoad,
     _ctrlSessionDelete
 ];
 
-private _assignedCount = 0;
-if ((count _intendedLoadout) > 9) then {
-    private _assigned = _intendedLoadout select 9;
-    if (_assigned isEqualType []) then {
-        _assignedCount = {_x isEqualType "" && {!(_x isEqualTo "")}} count _assigned;
-    };
+{
+    _x ctrlShow false;
+} forEach [_ctrlPrimary, _ctrlHandgun, _ctrlLauncher, _ctrlUniform, _ctrlVest, _ctrlHeadgear, _ctrlBackpack, _ctrlEquipment];
+
+private _rowDefs = [
+    [_ctrlTextPrimary, _ctrlPrimaryButton, 0.078, "PRIMARY", _primaryName],
+    [_ctrlTextHandgun, _ctrlHandgunButton, 0.138, "HANDGUN", _handgunName],
+    [_ctrlTextLauncher, _ctrlLauncherButton, 0.198, "LAUNCHER", _launcherName],
+    [_ctrlTextUniform, _ctrlUniformButton, 0.258, "UNIFORM", _uniformName],
+    [_ctrlTextVest, _ctrlVestButton, 0.318, "VEST", _vestName],
+    [_ctrlTextHeadgear, _ctrlHeadgearButton, 0.378, "HEADGEAR", _headgearName],
+    [_ctrlTextBackpack, _ctrlBackpackButton, 0.438, "BACKPACK", _backpackName],
+    [_ctrlTextEquipment, _ctrlEquipmentButton, 0.498, "EQUIPMENT", "ASSIGNED GEAR"]
+];
+
+{
+    _x params ["_textCtrl", "_buttonCtrl", "_yOffset", "_label", "_value"];
+
+    _textCtrl ctrlShow true;
+    _textCtrl ctrlSetStructuredText parseText format [
+        "<t font='RobotoCondensed' size='0.72' color='#8F8B82'>%1</t><br/><t font='PuristaSemiBold' size='0.92' color='#E9E5DB'>%2</t>",
+        _label,
+        _value
+    ];
+
+    _buttonCtrl ctrlSetText "";
+    _buttonCtrl ctrlSetBackgroundColor [0, 0, 0, 0];
+} forEach _rowDefs;
+
+_ctrlPrimaryButton buttonSetAction "['LOADOUT_PRIMARY'] call bn_koth_fnc_menu_refresh;";
+_ctrlHandgunButton buttonSetAction "['LOADOUT_HANDGUN'] call bn_koth_fnc_menu_refresh;";
+_ctrlLauncherButton buttonSetAction "['LOADOUT_LAUNCHER'] call bn_koth_fnc_menu_refresh;";
+_ctrlUniformButton buttonSetAction "['LOADOUT_UNIFORM'] call bn_koth_fnc_menu_refresh;";
+_ctrlVestButton buttonSetAction "['LOADOUT_VEST'] call bn_koth_fnc_menu_refresh;";
+_ctrlHeadgearButton buttonSetAction "['LOADOUT_HEADGEAR'] call bn_koth_fnc_menu_refresh;";
+_ctrlBackpackButton buttonSetAction "['LOADOUT_BACKPACK'] call bn_koth_fnc_menu_refresh;";
+_ctrlEquipmentButton buttonSetAction "['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;";
+
+private _classAt = {
+    params ["_index", ["_stringSlot", false]];
+    if !((_intendedLoadout isEqualType []) && {(count _intendedLoadout) > _index}) exitWith {""};
+    private _slot = _intendedLoadout select _index;
+    if (_stringSlot) exitWith {if (_slot isEqualType "") then {toLower _slot} else {""}};
+    if ((_slot isEqualType []) && {(count _slot) > 0}) then {toLower (_slot select 0)} else {""}
 };
 
-private _cargoEntries = 0;
+private _primaryClass = [0] call _classAt;
+private _launcherClass = [1] call _classAt;
+private _handgunClass = [2] call _classAt;
+private _uniformClass = [3] call _classAt;
+private _vestClass = [4] call _classAt;
+private _backpackClass = [5] call _classAt;
+private _headgearClass = [6, true] call _classAt;
+
+_ctrlPicPrimary ctrlSetText ([_primaryClass] call _resolveItemPicture);
+_ctrlPicHandgun ctrlSetText ([_handgunClass] call _resolveItemPicture);
+_ctrlPicLauncher ctrlSetText ([_launcherClass] call _resolveItemPicture);
+_ctrlPicUniform ctrlSetText ([_uniformClass] call _resolveItemPicture);
+_ctrlPicVest ctrlSetText ([_vestClass] call _resolveItemPicture);
+_ctrlPicHeadgear ctrlSetText ([_headgearClass] call _resolveItemPicture);
+_ctrlPicBackpack ctrlSetText ([_backpackClass] call _resolveItemPicture);
+
+_ctrlPicEquipment ctrlSetText "";
+
 {
-    if ((count _intendedLoadout) > _x) then {
-        private _slot = _intendedLoadout select _x;
-        if ((_slot isEqualType []) && {(count _slot) > 1}) then {
-            private _cargo = _slot select 1;
-            if (_cargo isEqualType []) then {
-                _cargoEntries = _cargoEntries + (count _cargo);
-            };
-        };
-    };
-} forEach [3, 4, 5];
+    _x ctrlSetText ">";
+} forEach [_ctrlCogPrimary, _ctrlCogHandgun, _ctrlCogLauncher, _ctrlCogUniform, _ctrlCogVest, _ctrlCogBackpack];
 
-[_ctrlPrimary, "PRIMARY", _primaryName] call _setLine;
-[_ctrlHandgun, "HANDGUN", _handgunName] call _setLine;
-[_ctrlLauncher, "LAUNCHER", _launcherName] call _setLine;
-[_ctrlUniform, "UNIFORM", _uniformName] call _setLine;
-[_ctrlVest, "VEST", _vestName] call _setLine;
-[_ctrlBackpack, "BACKPACK", _backpackName] call _setLine;
-[_ctrlHeadgear, "HEADGEAR", _headgearName] call _setLine;
-[_ctrlFacewear, "FACEWEAR", _facewearName] call _setLine;
-[_ctrlBinocular, "BINOCULAR", _binocularName] call _setLine;
-[_ctrlEquipment, "EQUIPMENT", format ["ASSIGNED %1 | CARGO ENTRIES %2", _assignedCount, _cargoEntries]] call _setLine;
-
-_ctrlPrimaryButton ctrlSetText format ["PRIMARY: %1", _primaryName];
-_ctrlHandgunButton ctrlSetText format ["HANDGUN: %1", _handgunName];
-_ctrlLauncherButton ctrlSetText format ["LAUNCHER: %1", _launcherName];
-_ctrlUniformButton ctrlSetText format ["UNIFORM: %1", _uniformName];
-_ctrlVestButton ctrlSetText format ["VEST: %1", _vestName];
-_ctrlBackpackButton ctrlSetText format ["BACKPACK: %1", _backpackName];
-_ctrlHeadgearButton ctrlSetText format ["HEADGEAR: %1", _headgearName];
-_ctrlFacewearButton ctrlSetText format ["FACEWEAR: %1", _facewearName];
-_ctrlBinocularButton ctrlSetText format ["BINOCULAR: %1", _binocularName];
-_ctrlEquipmentButton ctrlSetText "ASSIGNED EQUIPMENT";
-_ctrlCargoButton ctrlSetText "CARGO / ITEMS";
-_ctrlAttachmentsButton ctrlSetText "ATTACHMENTS";
+{
+    _x params ["_ctrl", "_className"];
+    private _hasItem = !(_className isEqualTo "");
+    _ctrl ctrlShow _hasItem;
+    _ctrl ctrlEnable (_hasItem && {!isNull player} && {_arsenalEnabled});
+} forEach [
+    [_ctrlCogPrimary, _primaryClass],
+    [_ctrlCogHandgun, _handgunClass],
+    [_ctrlCogLauncher, _launcherClass],
+    [_ctrlCogUniform, _uniformClass],
+    [_ctrlCogVest, _vestClass],
+    [_ctrlCogBackpack, _backpackClass]
+];
 
 {
     _x ctrlEnable (!isNull player && {_arsenalEnabled});
-} forEach [
-    _ctrlPrimaryButton,
-    _ctrlHandgunButton,
-    _ctrlLauncherButton,
-    _ctrlUniformButton,
-    _ctrlVestButton,
-    _ctrlBackpackButton,
-    _ctrlHeadgearButton,
-    _ctrlFacewearButton,
-    _ctrlBinocularButton,
-    _ctrlEquipmentButton,
-    _ctrlCargoButton,
-    _ctrlAttachmentsButton
-];
+} forEach [_ctrlPrimaryButton, _ctrlHandgunButton, _ctrlLauncherButton, _ctrlUniformButton, _ctrlVestButton, _ctrlBackpackButton, _ctrlHeadgearButton, _ctrlEquipmentButton];
 
-_ctrlFooter ctrlSetText "SESSION KIT: USE SAVE KIT / LOAD KIT / DELETE KIT IN BOTTOM BAR";
+_ctrlFooter ctrlSetText "SELECT A ROW TO CHANGE GEAR   |   > OPENS ITEM OPTIONS";

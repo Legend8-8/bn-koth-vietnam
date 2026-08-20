@@ -425,6 +425,113 @@ private _sanitizeContainerCargo = {
     _result
 };
 
+private _resolveCargoUnitMass = {
+    params ["_className"];
+
+    private _magCfg = configFile >> "CfgMagazines" >> _className;
+    if (isClass _magCfg && {isNumber (_magCfg >> "mass")}) exitWith {
+        createHashMapFromArray [
+            ["success", true],
+            ["mass", (getNumber (_magCfg >> "mass")) max 0]
+        ]
+    };
+
+    private _itemInfoCfg = configFile >> "CfgWeapons" >> _className >> "ItemInfo";
+    if (isClass _itemInfoCfg && {isNumber (_itemInfoCfg >> "mass")}) exitWith {
+        createHashMapFromArray [
+            ["success", true],
+            ["mass", (getNumber (_itemInfoCfg >> "mass")) max 0]
+        ]
+    };
+
+    createHashMapFromArray [
+        ["success", false],
+        ["mass", 0]
+    ]
+};
+
+private _resolveContainerMaximumLoad = {
+    params ["_containerName", "_containerClass"];
+
+    if (_containerName isEqualTo "backpack") exitWith {
+        private _cfg = configFile >> "CfgVehicles" >> _containerClass;
+        if !(isClass _cfg) exitWith {-1};
+        if !(isNumber (_cfg >> "maximumLoad")) exitWith {-1};
+        (getNumber (_cfg >> "maximumLoad")) max 0
+    };
+
+    private _itemInfoCfg = configFile >> "CfgWeapons" >> _containerClass >> "ItemInfo";
+    if !(isClass _itemInfoCfg) exitWith {-1};
+
+    private _cargoContainerClass = getText (_itemInfoCfg >> "containerClass");
+    if (_cargoContainerClass isEqualTo "") exitWith {-1};
+
+    private _cargoCfg = configFile >> "CfgVehicles" >> _cargoContainerClass;
+    if !(isClass _cargoCfg) exitWith {-1};
+    if !(isNumber (_cargoCfg >> "maximumLoad")) exitWith {-1};
+
+    (getNumber (_cargoCfg >> "maximumLoad")) max 0
+};
+
+private _validateContainerCapacity = {
+    params ["_containerName", "_containerClass", "_cargoEntries"];
+
+    private _maximumLoad = [_containerName, _containerClass] call _resolveContainerMaximumLoad;
+    if (_maximumLoad < 0) exitWith {
+        createHashMapFromArray [
+            ["success", false],
+            ["code", "ERR_CONTAINER_CAPACITY_UNKNOWN"],
+            ["message", format ["Could not resolve %1 capacity for '%2'.", _containerName, _containerClass]]
+        ]
+    };
+
+    private _usedLoad = 0;
+    private _unknownClass = "";
+
+    {
+        if ((_x isEqualType []) && {(count _x) >= 2}) then {
+            private _entryClass = toLower (_x select 0);
+            private _entryCount = _x select 1;
+
+            if ((_entryClass isEqualType "") && {_entryCount isEqualType 0} && {_entryCount > 0}) then {
+                private _massResult = [_entryClass] call _resolveCargoUnitMass;
+                if !(_massResult getOrDefault ["success", false]) then {
+                    _unknownClass = _entryClass;
+                } else {
+                    _usedLoad = _usedLoad + ((_massResult getOrDefault ["mass", 0]) * _entryCount);
+                };
+            };
+        };
+    } forEach _cargoEntries;
+
+    if !(_unknownClass isEqualTo "") exitWith {
+        createHashMapFromArray [
+            ["success", false],
+            ["code", "ERR_CARGO_MASS_UNKNOWN"],
+            ["message", format ["Could not resolve cargo mass for '%1'.", _unknownClass]]
+        ]
+    };
+
+    if (_usedLoad > (_maximumLoad + 0.001)) exitWith {
+        createHashMapFromArray [
+            ["success", false],
+            ["code", "ERR_CONTAINER_CAPACITY_EXCEEDED"],
+            ["message", format [
+                "%1 is full: requested load %2 exceeds capacity %3.",
+                toUpper _containerName,
+                round _usedLoad,
+                round _maximumLoad
+            ]]
+        ]
+    };
+
+    createHashMapFromArray [
+        ["success", true],
+        ["code", "OK"],
+        ["message", "Container capacity validated."]
+    ]
+};
+
 private _slotIdRaw = _mutation getOrDefault ["slotId", "slot1"];
 if !(_slotIdRaw isEqualType "") then {
     _slotIdRaw = "slot1";
@@ -552,7 +659,26 @@ switch (_op) do {
                             _resultCode = _compositionResult getOrDefault ["code", "ERR_WEAPON_COMPOSITION"];
                             _resultMessage = _compositionResult getOrDefault ["message", "Saved weapon composition validation failed."];
                         } else {
-                            _validatedWeapons set [_slotName, _compositionResult getOrDefault ["validatedWeapon", createHashMap]];
+                            private _validatedWeapon = _compositionResult getOrDefault ["validatedWeapon", createHashMap];
+                            private _weaponClass = _validatedWeapon getOrDefault ["weaponClass", ""];
+                            if (_weaponClass isEqualTo "") then {
+                                _weaponClass = _validatedWeapon getOrDefault ["baseWeaponClass", ""];
+                            };
+
+                            private _entitlement = [
+                                _uid,
+                                _weaponClass
+                            ] call bn_koth_fnc_progression_evaluateWeaponEntitlement;
+
+                            if !(_entitlement getOrDefault ["entitled", false]) then {
+                                _resultCode = _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"];
+                                _resultMessage = _entitlement getOrDefault [
+                                    "message",
+                                    format ["Saved %1 weapon is no longer entitled for this player.", toLower _slotLabel]
+                                ];
+                            } else {
+                                _validatedWeapons set [_slotName, _validatedWeapon];
+                            };
                         };
                     };
                 };
@@ -962,6 +1088,31 @@ switch (_op) do {
             } else {
                 _containerCargo pushBack [_className, _newCount];
             };
+        };
+
+        private _capacityCheck = createHashMapFromArray [
+            ["success", true],
+            ["code", "OK"],
+            ["message", "Container capacity check not required for removal."]
+        ];
+
+        if (_delta > 0) then {
+            _capacityCheck = [
+                _container,
+                _containerClass,
+                _containerCargo
+            ] call _validateContainerCapacity;
+        };
+
+        // IMPORTANT: this exitWith is at the adjust_cargo case scope.
+        // A nested exitWith inside the _delta > 0 block only exits that block
+        // and the mutation would continue applying the overloaded cargo.
+        if !(_capacityCheck getOrDefault ["success", false]) exitWith {
+            [
+                _capacityCheck getOrDefault ["code", "ERR_CONTAINER_CAPACITY_EXCEEDED"],
+                _capacityCheck getOrDefault ["message", "Container capacity validation failed."],
+                _baseLoadoutId
+            ] call _resultFail
         };
 
         _containerSlot set [1, _containerCargo];

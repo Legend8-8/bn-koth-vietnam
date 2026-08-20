@@ -162,8 +162,13 @@ private _evaluateAttachmentSet = {
     _result
 };
 
+private _slotFilter = toLower (uiNamespace getVariable ["BN_KOTH_menuAttachmentSlotFilter", ""]);
+
 {
     _x params ["_slotName", "_slotIndex", "_slotLabel"];
+    if !(_slotFilter isEqualTo "") then {
+        if !(_slotName isEqualTo _slotFilter) then {continue;};
+    };
 
     private _slot = _intendedLoadout select _slotIndex;
     if !((_slot isEqualType []) && {(count _slot) >= 7}) then {continue;};

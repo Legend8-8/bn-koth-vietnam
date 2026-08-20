@@ -41,6 +41,12 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_ui_receiveProgression
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_ui_selectControlledUnit
         {
             allowedTargets = 1;

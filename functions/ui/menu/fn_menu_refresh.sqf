@@ -56,6 +56,11 @@ if !(_requestedPage isEqualTo "") then {
 };
 
 private _ctrlServer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_SERVER;
+private _ctrlHeaderPlayer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_PLAYER;
+private _ctrlHeaderLevel = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_LEVEL;
+private _ctrlHeaderXp = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_XP;
+private _ctrlHeaderXpTrack = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_TRACK;
+private _ctrlHeaderXpFill = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_FILL;
 private _ctrlOperatorName = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_NAME;
 private _ctrlOperatorTeam = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_TEAM;
 private _ctrlOperatorRole = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_ROLE_VALUE;
@@ -93,11 +98,44 @@ private _ctrlNavPerks = _display displayCtrl BN_KOTH_IDC_MENU_NAV_PERKS;
 private _ctrlNavStats = _display displayCtrl BN_KOTH_IDC_MENU_NAV_STATS;
 private _ctrlNavProgression = _display displayCtrl BN_KOTH_IDC_MENU_NAV_PROGRESSION;
 
+private _ctrlLoadoutBgPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_PRIMARY;
+private _ctrlLoadoutBgHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_HANDGUN;
+private _ctrlLoadoutBgLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_LAUNCHER;
+private _ctrlLoadoutBgUniform = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_UNIFORM;
+private _ctrlLoadoutBgVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_VEST;
+private _ctrlLoadoutBgHeadgear = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_HEADGEAR;
+private _ctrlLoadoutBgBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_BACKPACK;
+private _ctrlLoadoutBgEquipment = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_EQUIPMENT;
+private _ctrlLoadoutTextPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_PRIMARY;
+private _ctrlLoadoutTextHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_HANDGUN;
+private _ctrlLoadoutTextLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_LAUNCHER;
+private _ctrlLoadoutTextUniform = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_UNIFORM;
+private _ctrlLoadoutTextVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_VEST;
+private _ctrlLoadoutTextHeadgear = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_HEADGEAR;
+private _ctrlLoadoutTextBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_BACKPACK;
+private _ctrlLoadoutTextEquipment = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_EQUIPMENT;
+private _ctrlLoadoutPicPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_PRIMARY;
+private _ctrlLoadoutPicHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_HANDGUN;
+private _ctrlLoadoutPicLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_LAUNCHER;
+private _ctrlLoadoutPicUniform = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_UNIFORM;
+private _ctrlLoadoutPicVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_VEST;
+private _ctrlLoadoutPicHeadgear = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_HEADGEAR;
+private _ctrlLoadoutPicBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_BACKPACK;
+private _ctrlLoadoutPicEquipment = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_EQUIPMENT;
+private _ctrlLoadoutCogPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_PRIMARY;
+private _ctrlLoadoutCogHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_HANDGUN;
+private _ctrlLoadoutCogLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_LAUNCHER;
+private _ctrlLoadoutCogUniform = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_UNIFORM;
+private _ctrlLoadoutCogVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_VEST;
+private _ctrlLoadoutCogBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_BACKPACK;
+private _ctrlPrimaryPreview = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_PREVIEW;
 private _ctrlPrimaryTitle = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_TITLE;
 private _ctrlPrimaryCurrent = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_CURRENT;
 private _ctrlPrimaryList = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_LIST;
 private _ctrlPrimaryDetail = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_DETAIL;
 private _ctrlPrimaryBack = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_BACK;
+private _ctrlCargoMinus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_MINUS;
+private _ctrlCargoPlus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_PLUS;
 private _ctrlPrimaryApply = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_APPLY;
 
 private _setNavState = {
@@ -118,7 +156,41 @@ if (_serverName isEqualTo "") then {
 _ctrlServer ctrlSetText format ["SERVER  %1", _serverName];
 
 private _playerName = if (!isNull player) then {name player} else {profileName};
-_ctrlOperatorName ctrlSetText toUpper _playerName;
+private _playerNameUpper = toUpper _playerName;
+_ctrlOperatorName ctrlSetText _playerNameUpper;
+_ctrlHeaderPlayer ctrlSetText _playerNameUpper;
+
+private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
+if !(_progression isEqualType createHashMap) then {
+    _progression = createHashMap;
+};
+
+private _level = (_progression getOrDefault ["level", 1]) max 1;
+private _xp = (_progression getOrDefault ["xp", 0]) max 0;
+
+private _levelProgress = [_xp, _level] call bn_koth_fnc_progression_xp_getLevelProgress;
+_level = _levelProgress getOrDefault ["level", 1];
+private _maxLevel = _levelProgress getOrDefault ["maxLevel", 270];
+private _xpIntoLevel = _levelProgress getOrDefault ["xpIntoLevel", 0];
+private _xpRequired = _levelProgress getOrDefault ["xpRequired", 0];
+private _xpRatio = _levelProgress getOrDefault ["ratio", 1];
+
+_ctrlHeaderLevel ctrlSetText format ["LEVEL %1", _level];
+
+if (_level >= _maxLevel) then {
+    _ctrlHeaderXp ctrlSetText format ["MAX LEVEL  |  %1 XP", _xp];
+} else {
+    _ctrlHeaderXp ctrlSetText format ["%1 / %2 XP", round _xpIntoLevel, round _xpRequired];
+};
+
+private _trackPos = ctrlPosition _ctrlHeaderXpTrack;
+_ctrlHeaderXpFill ctrlSetPosition [
+    _trackPos select 0,
+    _trackPos select 1,
+    (_trackPos select 2) * _xpRatio,
+    _trackPos select 3
+];
+_ctrlHeaderXpFill ctrlCommit 0;
 
 private _sideLabel = "UNASSIGNED";
 if (!isNull player) then {
@@ -168,6 +240,36 @@ private _loadoutPages = [
 [_ctrlNavProgression, _activePage isEqualTo "PROGRESSION"] call _setNavState;
 
 private _mainViewControls = [
+    _ctrlLoadoutBgPrimary,
+    _ctrlLoadoutBgHandgun,
+    _ctrlLoadoutBgLauncher,
+    _ctrlLoadoutBgUniform,
+    _ctrlLoadoutBgVest,
+    _ctrlLoadoutBgHeadgear,
+    _ctrlLoadoutBgBackpack,
+    _ctrlLoadoutBgEquipment,
+    _ctrlLoadoutTextPrimary,
+    _ctrlLoadoutTextHandgun,
+    _ctrlLoadoutTextLauncher,
+    _ctrlLoadoutTextUniform,
+    _ctrlLoadoutTextVest,
+    _ctrlLoadoutTextHeadgear,
+    _ctrlLoadoutTextBackpack,
+    _ctrlLoadoutTextEquipment,
+    _ctrlLoadoutPicPrimary,
+    _ctrlLoadoutPicHandgun,
+    _ctrlLoadoutPicLauncher,
+    _ctrlLoadoutPicUniform,
+    _ctrlLoadoutPicVest,
+    _ctrlLoadoutPicHeadgear,
+    _ctrlLoadoutPicBackpack,
+    _ctrlLoadoutPicEquipment,
+    _ctrlLoadoutCogPrimary,
+    _ctrlLoadoutCogHandgun,
+    _ctrlLoadoutCogLauncher,
+    _ctrlLoadoutCogUniform,
+    _ctrlLoadoutCogVest,
+    _ctrlLoadoutCogBackpack,
     _ctrlPrimary,
     _ctrlHandgun,
     _ctrlLauncher,
@@ -196,6 +298,9 @@ private _mainViewControls = [
 ];
 
 private _selectorViewControls = [
+    _ctrlCargoMinus,
+    _ctrlCargoPlus,
+    _ctrlPrimaryPreview,
     _ctrlPrimaryTitle,
     _ctrlPrimaryCurrent,
     _ctrlPrimaryList,
@@ -254,6 +359,15 @@ private _showComingSoon = {
         _ctrlCargoButton,
         _ctrlAttachmentsButton
     ];
+};
+
+if !(_activePage isEqualTo "LOADOUT_ATTACHMENTS") then {
+    uiNamespace setVariable ["BN_KOTH_menuAttachmentSlotFilter", ""];
+};
+if !(_activePage isEqualTo "LOADOUT_CARGO") then {
+    uiNamespace setVariable ["BN_KOTH_menuCargoContainerFilter", ""];
+    uiNamespace setVariable ["BN_KOTH_menuCargoInitialContainer", ""];
+    uiNamespace setVariable ["BN_KOTH_menuCargoInitialInKit", createHashMap];
 };
 
 if !(_activePage in _loadoutPages) exitWith {

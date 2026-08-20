@@ -58,10 +58,13 @@ class BN_KOTH_Menu_List: BN_KOTH_RscListBox
 {
     style = 16;
     sizeEx = "0.018 * safeZoneH";
-    rowHeight = "0.03 * safeZoneH";
+    rowHeight = "0.042 * safeZoneH";
     colorBackground[] = {0.03, 0.03, 0.03, 0.65};
     colorSelectBackground[] = {0.19, 0.14, 0.07, 0.92};
     colorSelectBackground2[] = {0.19, 0.14, 0.07, 0.92};
+    pictureColor[] = {0.92, 0.90, 0.84, 0.95};
+    pictureColorSelect[] = {1, 1, 1, 1};
+    pictureColorDisabled[] = {0.5, 0.5, 0.5, 0.5};
 };
 
 class BN_KOTH_Menu_ActionButton: BN_KOTH_RscButton

@@ -57,8 +57,6 @@ _record set ["lastVoteRequestAt", -999];
 _record set ["lobbySpawnPosASL", _lobbySpawnPosAsl];
 _record set ["lobbySpawnDir", _lobbySpawnDir];
 _record set ["deployed", false];
-_record set ["xp", _record getOrDefault ["xp", 0]];
-_record set ["level", _record getOrDefault ["level", 1]];
 
 _records set [_uid, _record];
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];

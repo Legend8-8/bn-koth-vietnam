@@ -95,6 +95,23 @@ private _allSelected = _westCount + _eastCount;
 private _currentPlayerCount = if (_playerNames isEqualType createHashMap) then {count (keys _playerNames)} else {_allSelected};
 
 private _myUid = getPlayerUID player;
+
+private _playerProgression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
+if !(_playerProgression isEqualType createHashMap) then {
+    _playerProgression = createHashMap;
+};
+
+private _myXp = (_playerProgression getOrDefault ["xp", 0]) max 0;
+private _myLevel = (_playerProgression getOrDefault ["level", 1]) max 1;
+private _levelProgress = [_myXp, _myLevel] call bn_koth_fnc_progression_xp_getLevelProgress;
+
+_myLevel = _levelProgress getOrDefault ["level", 1];
+private _myMaxLevel = _levelProgress getOrDefault ["maxLevel", 270];
+private _myXpIntoLevel = _levelProgress getOrDefault ["xpIntoLevel", 0];
+private _myXpRequired = _levelProgress getOrDefault ["xpRequired", 0];
+private _myXpRatio = _levelProgress getOrDefault ["ratio", 1];
+private _myPlayerName = if (!isNull player) then {name player} else {profileName};
+
 private _myAssignedSide = sideUnknown;
 if (_playerAssignments isEqualType createHashMap) then {
     _myAssignedSide = _playerAssignments getOrDefault [_myUid, sideUnknown];
@@ -329,6 +346,13 @@ private _headerView = createHashMapFromArray [
     ["rightStatusValue", _headerRightValue],
     ["playerCount", _currentPlayerCount],
     ["maxPlayers", _maxPlayers],
+    ["playerName", _myPlayerName],
+    ["playerLevel", _myLevel],
+    ["playerMaxLevel", _myMaxLevel],
+    ["playerXp", _myXp],
+    ["playerXpIntoLevel", _myXpIntoLevel],
+    ["playerXpRequired", _myXpRequired],
+    ["playerXpRatio", _myXpRatio],
     ["headerInfo", format ["Capture and hold the objective to earn score. First team to reach %1 wins the round.", _scoreLimit]],
     ["scoreLimit", _scoreLimit],
     ["scoreTick", _scoreTick],

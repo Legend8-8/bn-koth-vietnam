@@ -84,6 +84,33 @@ if ((_selectedSlotIndex < 0) || {_selectedSlotIndex > 5}) then {
 };
 
 if (_assignedStage isEqualTo 1) then {
+    private _facewearClass = if ((count _intendedLoadout) > 7 && {(_intendedLoadout select 7) isEqualType ""}) then {toLower (_intendedLoadout select 7)} else {""};
+    private _facewearName = if (_facewearClass isEqualTo "") then {"NONE"} else {[_facewearClass] call _resolveItemName};
+
+    private _binocularClass = "";
+    if ((count _intendedLoadout) > 8) then {
+        private _binocSlot = _intendedLoadout select 8;
+        if (_binocSlot isEqualType "") then {_binocularClass = toLower _binocSlot;} else {
+            if ((_binocSlot isEqualType []) && {(count _binocSlot) > 0}) then {_binocularClass = toLower (_binocSlot select 0);};
+        };
+    };
+    private _binocularName = if (_binocularClass isEqualTo "") then {"NONE"} else {[_binocularClass] call _resolveItemName};
+
+    _entries pushBack (createHashMapFromArray [
+        ["displayName", format ["FACEWEAR: %1", _facewearName]],
+        ["weaponClass", _facewearClass],
+        ["targetPage", "LOADOUT_FACEWEAR"],
+        ["available", true],
+        ["equipped", false]
+    ]);
+    _entries pushBack (createHashMapFromArray [
+        ["displayName", format ["BINOCULAR: %1", _binocularName]],
+        ["weaponClass", _binocularClass],
+        ["targetPage", "LOADOUT_BINOCULAR"],
+        ["available", true],
+        ["equipped", false]
+    ]);
+
     for "_i" from 0 to 5 do {
         private _currentClass = toLower (_assigned select _i);
         private _currentName = if (_currentClass isEqualTo "") then {"NONE"} else {[_currentClass] call _resolveItemName};

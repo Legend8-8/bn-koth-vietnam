@@ -24,8 +24,26 @@ if ((count _playableSides) < 2) then {
     _playableSides = [west, east];
 };
 
+private _targetUid = getPlayerUID _targetPlayer;
+private _progressionByUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
+private _targetProgression = if (_progressionByUid isEqualType createHashMap) then {
+    _progressionByUid getOrDefault [_targetUid, createHashMap]
+} else {
+    createHashMap
+};
+if !(_targetProgression isEqualType createHashMap) then {
+    _targetProgression = createHashMap;
+};
+
+private _playerProgressionPayload = createHashMapFromArray [
+    ["uid", _targetUid],
+    ["xp", (_targetProgression getOrDefault ["xp", 0]) max 0],
+    ["level", (_targetProgression getOrDefault ["level", 1]) max 1]
+];
+
 private _payload = createHashMapFromArray [
     ["roundState", missionNamespace getVariable ["BN_KOTH_roundState", "WAITING"]],
+    ["playerProgression", _playerProgressionPayload],
     ["playerStates", missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap]],
     ["playerTeamAssignments", missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap]],
     ["playerNames", missionNamespace getVariable ["BN_KOTH_playerNames", createHashMap]],

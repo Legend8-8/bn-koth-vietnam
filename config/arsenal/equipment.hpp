@@ -23,6 +23,36 @@ class CfgBnKothArsenal
 
     class Equipment
     {
+        // Human-authored KOTH progression/balance metadata.
+        //
+        // Generated S.O.G. sourceAffiliations are factual evidence only and
+        // must never be used as KOTH faction entitlement.
+        //
+        // Schema for progression-controlled weapons:
+        //   nativeSide = "WEST" | "EAST";
+        //   minLevel = <number>;
+        //   licenseKills = <number>;
+        //   purchasePrice = <number>;   // optional until economy is implemented
+        //   rentalPrice = <number>;     // optional until economy is implemented
+        //   requiredPerks[] = {...};    // optional; progression owns perk state
+        //
+        // Structural variants do not receive separate progression metadata.
+        // Runtime lookup resolves them to their canonical base weapon first.
+        class Metadata
+        {
+            class Weapons
+            {
+                // First progression seed from the agreed design example.
+                class vn_l1a1_01
+                {
+                    nativeSide = "WEST";
+                    minLevel = 20;
+                    licenseKills = 50;
+                    requiredPerks[] = {};
+                };
+            };
+        };
+
         // Intentionally tiny, reviewable seed catalogue.
         class Items
         {

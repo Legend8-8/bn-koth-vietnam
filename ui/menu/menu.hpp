@@ -51,6 +51,36 @@ class BN_KOTH_RscMenu
             colorBackground[] = {0.08, 0.08, 0.07, 0.78};
         };
 
+        class BgProgression: BN_KOTH_Menu_Background
+        {
+            idc = BN_KOTH_IDC_MENU_BG_PROGRESSION;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.72;
+            y = BN_KOTH_MENU_Y + safeZoneH * 0.008;
+            w = BN_KOTH_MENU_W * 0.26;
+            h = safeZoneH * 0.070;
+            colorBackground[] = {0.035, 0.035, 0.03, 0.94};
+        };
+
+        class BgXpTrack: BN_KOTH_Menu_Background
+        {
+            idc = BN_KOTH_IDC_MENU_BG_XP_TRACK;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.735;
+            y = BN_KOTH_MENU_Y + safeZoneH * 0.064;
+            w = BN_KOTH_MENU_W * 0.225;
+            h = safeZoneH * 0.005;
+            colorBackground[] = {0.16, 0.15, 0.12, 0.95};
+        };
+
+        class BgXpFill: BN_KOTH_Menu_Background
+        {
+            idc = BN_KOTH_IDC_MENU_BG_XP_FILL;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.735;
+            y = BN_KOTH_MENU_Y + safeZoneH * 0.064;
+            w = 0;
+            h = safeZoneH * 0.005;
+            colorBackground[] = {0.76, 0.58, 0.20, 1};
+        };
+
         class BgLeft: BN_KOTH_Menu_Background
         {
             idc = BN_KOTH_IDC_MENU_BG_LEFT;
@@ -90,6 +120,7 @@ class BN_KOTH_RscMenu
             h = BN_KOTH_MENU_BOTTOM_H;
             colorBackground[] = {0.07, 0.07, 0.06, 0.78};
         };
+
     };
 
     class controls
@@ -138,6 +169,43 @@ class BN_KOTH_RscMenu
             h = safeZoneH * 0.024;
             sizeEx = "0.018 * safeZoneH";
             colorText[] = {0.86, 0.84, 0.78, 0.82};
+        };
+
+        class HeaderPlayer: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_HEADER_PLAYER;
+            text = "PLAYER";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.735;
+            y = BN_KOTH_MENU_Y + safeZoneH * 0.013;
+            w = BN_KOTH_MENU_W * 0.145;
+            h = safeZoneH * 0.024;
+            sizeEx = "0.023 * safeZoneH";
+            colorText[] = {0.92, 0.90, 0.84, 0.98};
+        };
+
+        class HeaderLevel: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_HEADER_LEVEL;
+            text = "LEVEL 1";
+            style = 1;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.875;
+            y = BN_KOTH_MENU_Y + safeZoneH * 0.013;
+            w = BN_KOTH_MENU_W * 0.085;
+            h = safeZoneH * 0.024;
+            sizeEx = "0.020 * safeZoneH";
+            colorText[] = {0.89, 0.70, 0.24, 1};
+        };
+
+        class HeaderXp: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_HEADER_XP;
+            text = "0 / 100 XP";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.735;
+            y = BN_KOTH_MENU_Y + safeZoneH * 0.039;
+            w = BN_KOTH_MENU_W * 0.225;
+            h = safeZoneH * 0.020;
+            sizeEx = "0.016 * safeZoneH";
+            colorText[] = {0.72, 0.70, 0.64, 0.98};
         };
 
         class OperatorTitle: BN_KOTH_Menu_Label
@@ -192,6 +260,17 @@ class BN_KOTH_RscMenu
             h = safeZoneH * 0.028;
         };
 
+        class PrimaryPreview: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_MENU_PRIMARY_PREVIEW;
+            text = "";
+            x = BN_KOTH_MENU_LEFT_X + BN_KOTH_MENU_LEFT_W * 0.08;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.215;
+            w = BN_KOTH_MENU_LEFT_W * 0.84;
+            h = safeZoneH * 0.30;
+            colorText[] = {1, 1, 1, 0.98};
+        };
+
         class SectionTitle: BN_KOTH_Menu_Title
         {
             idc = BN_KOTH_IDC_MENU_SECTION_TITLE;
@@ -226,14 +305,36 @@ class BN_KOTH_RscMenu
             h = safeZoneH * 0.028;
         };
 
+        class LoadoutBgPrimary: BN_KOTH_Menu_Background
+        {
+            idc = BN_KOTH_IDC_MENU_LOADOUT_BG_PRIMARY;
+            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.025;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.078;
+            w = BN_KOTH_MENU_CENTER_W * 0.90;
+            h = safeZoneH * 0.056;
+            colorBackground[] = {0.075, 0.075, 0.065, 0.94};
+        };
+        class LoadoutBgHandgun: LoadoutBgPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_BG_HANDGUN; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.138;};
+        class LoadoutBgLauncher: LoadoutBgPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_BG_LAUNCHER; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.198;};
+        class LoadoutBgUniform: LoadoutBgPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_BG_UNIFORM; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.258;};
+        class LoadoutBgVest: LoadoutBgPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_BG_VEST; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.318;};
+        class LoadoutBgHeadgear: LoadoutBgPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_BG_HEADGEAR; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.378;};
+        class LoadoutBgBackpack: LoadoutBgPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_BG_BACKPACK; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.438;};
+        class LoadoutBgEquipment: LoadoutBgPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_BG_EQUIPMENT; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.498;};
+
         class SlotPrimaryButton: BN_KOTH_Menu_ActionButton
         {
             idc = BN_KOTH_IDC_MENU_SLOT_PRIMARY_BUTTON;
             text = "";
-            x = BN_KOTH_MENU_CENTER_X + safeZoneW * 0.012;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.082;
-            w = BN_KOTH_MENU_CENTER_W * 0.92;
-            h = safeZoneH * 0.032;
+            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.025;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.078;
+            w = BN_KOTH_MENU_CENTER_W * 0.90;
+            h = safeZoneH * 0.056;
+            colorBackground[] = {0, 0, 0, 0};
+            colorBackgroundActive[] = {0, 0, 0, 0};
+            colorFocused[] = {0, 0, 0, 0};
+            colorBackgroundDisabled[] = {0, 0, 0, 0};
+            colorBorder[] = {0, 0, 0, 0};
             action = "['LOADOUT_PRIMARY'] call bn_koth_fnc_menu_refresh;";
         };
 
@@ -247,7 +348,7 @@ class BN_KOTH_RscMenu
         class SlotHandgunButton: SlotPrimaryButton
         {
             idc = BN_KOTH_IDC_MENU_SLOT_HANDGUN_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.122;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.138;
             action = "['LOADOUT_HANDGUN'] call bn_koth_fnc_menu_refresh;";
         };
 
@@ -261,7 +362,7 @@ class BN_KOTH_RscMenu
         class SlotLauncherButton: SlotPrimaryButton
         {
             idc = BN_KOTH_IDC_MENU_SLOT_LAUNCHER_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.162;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.198;
             action = "['LOADOUT_LAUNCHER'] call bn_koth_fnc_menu_refresh;";
         };
 
@@ -275,7 +376,7 @@ class BN_KOTH_RscMenu
         class SlotUniformButton: SlotPrimaryButton
         {
             idc = BN_KOTH_IDC_MENU_SLOT_UNIFORM_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.212;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.258;
             action = "['LOADOUT_UNIFORM'] call bn_koth_fnc_menu_refresh;";
         };
 
@@ -289,7 +390,7 @@ class BN_KOTH_RscMenu
         class SlotVestButton: SlotPrimaryButton
         {
             idc = BN_KOTH_IDC_MENU_SLOT_VEST_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.252;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.318;
             action = "['LOADOUT_VEST'] call bn_koth_fnc_menu_refresh;";
         };
 
@@ -303,7 +404,7 @@ class BN_KOTH_RscMenu
         class SlotHeadgearButton: SlotPrimaryButton
         {
             idc = BN_KOTH_IDC_MENU_SLOT_HEADGEAR_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.292;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.378;
             action = "['LOADOUT_HEADGEAR'] call bn_koth_fnc_menu_refresh;";
         };
 
@@ -317,7 +418,7 @@ class BN_KOTH_RscMenu
         class SlotBackpackButton: SlotPrimaryButton
         {
             idc = BN_KOTH_IDC_MENU_SLOT_BACKPACK_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.332;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.438;
             action = "['LOADOUT_BACKPACK'] call bn_koth_fnc_menu_refresh;";
         };
 
@@ -359,7 +460,7 @@ class BN_KOTH_RscMenu
         class SlotEquipmentButton: SlotPrimaryButton
         {
             idc = BN_KOTH_IDC_MENU_SLOT_EQUIPMENT_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.452;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.498;
             action = "['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;";
         };
 
@@ -378,6 +479,64 @@ class BN_KOTH_RscMenu
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.532;
             action = "['LOADOUT_ATTACHMENTS'] call bn_koth_fnc_menu_refresh;";
         };
+
+        // Main LOADOUT page: contained item art and two-line row text.
+        class LoadoutPicPrimary: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_PRIMARY;
+            text = "";
+            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.56;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.083;
+            w = BN_KOTH_MENU_CENTER_W * 0.22;
+            h = safeZoneH * 0.046;
+            colorText[] = {1, 1, 1, 0.96};
+            enable = 0;
+        };
+        class LoadoutPicHandgun: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_HANDGUN; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.143;};
+        class LoadoutPicLauncher: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_LAUNCHER; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.203;};
+        class LoadoutPicUniform: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_UNIFORM; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.263;};
+        class LoadoutPicVest: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_VEST; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.323;};
+        class LoadoutPicHeadgear: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_HEADGEAR; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.383;};
+        class LoadoutPicBackpack: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_BACKPACK; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.443;};
+        class LoadoutPicEquipment: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_EQUIPMENT; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.503;};
+
+        class LoadoutRowTextPrimary: BN_KOTH_RscStructuredText
+        {
+            idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_PRIMARY;
+            text = "";
+            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.055;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.083;
+            w = BN_KOTH_MENU_CENTER_W * 0.48;
+            h = safeZoneH * 0.050;
+            enable = 0;
+        };
+        class LoadoutRowTextHandgun: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_HANDGUN; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.143;};
+        class LoadoutRowTextLauncher: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_LAUNCHER; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.203;};
+        class LoadoutRowTextUniform: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_UNIFORM; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.263;};
+        class LoadoutRowTextVest: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_VEST; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.323;};
+        class LoadoutRowTextHeadgear: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_HEADGEAR; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.383;};
+        class LoadoutRowTextBackpack: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_BACKPACK; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.443;};
+        class LoadoutRowTextEquipment: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_EQUIPMENT; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.503;};
+
+        class LoadoutCogPrimary: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_LOADOUT_COG_PRIMARY;
+            text = ">";
+            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.835;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.088;
+            w = BN_KOTH_MENU_CENTER_W * 0.065;
+            h = safeZoneH * 0.036;
+            sizeEx = "0.022 * safeZoneH";
+            colorBackground[] = {0, 0, 0, 0};
+            colorBackgroundActive[] = {0.20, 0.15, 0.08, 0.88};
+            colorFocused[] = {0.20, 0.15, 0.08, 0.88};
+            action = "uiNamespace setVariable ['BN_KOTH_menuAttachmentSlotFilter','primary']; ['LOADOUT_ATTACHMENTS'] call bn_koth_fnc_menu_refresh;";
+        };
+        class LoadoutCogHandgun: LoadoutCogPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_COG_HANDGUN; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.148; action = "uiNamespace setVariable ['BN_KOTH_menuAttachmentSlotFilter','handgun']; ['LOADOUT_ATTACHMENTS'] call bn_koth_fnc_menu_refresh;";};
+        class LoadoutCogLauncher: LoadoutCogPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_COG_LAUNCHER; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.208; action = "uiNamespace setVariable ['BN_KOTH_menuAttachmentSlotFilter','launcher']; ['LOADOUT_ATTACHMENTS'] call bn_koth_fnc_menu_refresh;";};
+        class LoadoutCogUniform: LoadoutCogPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_COG_UNIFORM; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.268; action = "uiNamespace setVariable ['BN_KOTH_menuCargoContainerFilter','uniform']; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";};
+        class LoadoutCogVest: LoadoutCogPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_COG_VEST; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.328; action = "uiNamespace setVariable ['BN_KOTH_menuCargoContainerFilter','vest']; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";};
+        class LoadoutCogBackpack: LoadoutCogPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_COG_BACKPACK; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.448; action = "uiNamespace setVariable ['BN_KOTH_menuCargoContainerFilter','backpack']; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";};
 
         class SectionFooter: BN_KOTH_Menu_Subtitle
         {
@@ -454,6 +613,26 @@ class BN_KOTH_RscMenu
             w = BN_KOTH_MENU_CENTER_W * 0.44;
             h = safeZoneH * 0.04;
             action = "[] call bn_koth_fnc_menu_applyPrimary;";
+        };
+
+        class CargoMinus: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_CARGO_MINUS;
+            text = "-";
+            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.48;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H - safeZoneH * 0.095;
+            w = BN_KOTH_MENU_CENTER_W * 0.21;
+            h = safeZoneH * 0.04;
+            sizeEx = "0.028 * safeZoneH";
+            action = "private _p = uiNamespace getVariable ['BN_KOTH_menuPendingCargo', createHashMap]; _p set ['delta', -1]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', _p]; [] call bn_koth_fnc_menu_applyCargo;";
+        };
+
+        class CargoPlus: CargoMinus
+        {
+            idc = BN_KOTH_IDC_MENU_CARGO_PLUS;
+            text = "+";
+            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.71;
+            action = "private _p = uiNamespace getVariable ['BN_KOTH_menuPendingCargo', createHashMap]; _p set ['delta', 1]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', _p]; [] call bn_koth_fnc_menu_applyCargo;";
         };
 
         class NavLoadout: BN_KOTH_Menu_NavButton

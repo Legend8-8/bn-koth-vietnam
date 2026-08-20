@@ -26,16 +26,57 @@ if (isNull _display) exitWith {};
 
 disableSerialization;
 
+private _ctrlPrimaryPreview = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_PREVIEW;
 private _ctrlPrimaryTitle = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_TITLE;
 private _ctrlPrimaryCurrent = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_CURRENT;
 private _ctrlPrimaryList = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_LIST;
 private _ctrlPrimaryDetail = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_DETAIL;
 private _ctrlPrimaryApply = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_APPLY;
 private _ctrlPrimaryBack = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_BACK;
+private _ctrlCargoMinus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_MINUS;
+private _ctrlCargoPlus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_PLUS;
 
 // This function owns PrimaryList selection behaviour. Suppress selection
 // callbacks while rows are rebuilt or selected programmatically.
 _ctrlPrimaryList ctrlSetEventHandler ["LBSelChanged", ""];
+
+private _resolveEntryPicture = {
+    params ["_entry"];
+
+    if !(_entry isEqualType createHashMap) exitWith {""};
+
+    private _className = "";
+    {
+        if (_className isEqualTo "") then {
+            private _candidate = _entry getOrDefault [_x, ""];
+            if (_candidate isEqualType "" && {!(_candidate isEqualTo "")}) then {
+                _className = toLower _candidate;
+            };
+        };
+    } forEach [
+        "weaponClass",
+        "binocularClass",
+        "itemClass",
+        "attachmentClass",
+        "className"
+    ];
+
+    if (_className isEqualTo "") exitWith {""};
+
+    private _cfg = configFile >> "CfgWeapons" >> _className;
+    if !(isClass _cfg) then {
+        _cfg = configFile >> "CfgVehicles" >> _className;
+    };
+    if !(isClass _cfg) then {
+        _cfg = configFile >> "CfgGlasses" >> _className;
+    };
+    if !(isClass _cfg) then {
+        _cfg = configFile >> "CfgMagazines" >> _className;
+    };
+    if !(isClass _cfg) exitWith {""};
+
+    getText (_cfg >> "picture")
+};
 
 private _resolveItemName = {
     params ["_className"];
@@ -203,6 +244,50 @@ _ctrlPrimaryCurrent ctrlSetText format ["CURRENT: %1", switch (_selectorMode) do
 }];
 
 _ctrlPrimaryApply ctrlSetText _selectorApplyText;
+private _isCargoMode = _selectorMode isEqualTo "CARGO";
+_ctrlCargoMinus ctrlShow _isCargoMode;
+_ctrlCargoPlus ctrlShow _isCargoMode;
+_ctrlPrimaryApply ctrlShow (!_isCargoMode);
+
+if (_isCargoMode) then {
+    private _backPos = ctrlPosition _ctrlPrimaryBack;
+    private _applyPos = ctrlPosition _ctrlPrimaryApply;
+
+    // Intentional visual rhythm:
+    // BACK  [gap]  -  [gap]  +
+    private _cargoGap = safeZoneW * 0.004;
+
+    private _cargoStartX =
+        (_backPos select 0) +
+        (_backPos select 2) +
+        _cargoGap;
+
+    private _cargoRightX =
+        (_applyPos select 0) +
+        (_applyPos select 2);
+
+    private _cargoWidth =
+        (_cargoRightX - _cargoStartX) max 0;
+
+    private _buttonWidth =
+        ((_cargoWidth - _cargoGap) / 2) max 0;
+
+    _ctrlCargoMinus ctrlSetPosition [
+        _cargoStartX,
+        _applyPos select 1,
+        _buttonWidth,
+        _applyPos select 3
+    ];
+    _ctrlCargoMinus ctrlCommit 0;
+
+    _ctrlCargoPlus ctrlSetPosition [
+        _cargoStartX + _buttonWidth + _cargoGap,
+        _applyPos select 1,
+        _buttonWidth,
+        _applyPos select 3
+    ];
+    _ctrlCargoPlus ctrlCommit 0;
+};
 _ctrlPrimaryApply ctrlSetEventHandler [
     "ButtonClick",
     switch (_selectorMode) do {
@@ -238,6 +323,7 @@ _ctrlPrimaryBack ctrlSetText _backText;
 
 
 if (isNull player) exitWith {
+    _ctrlPrimaryPreview ctrlSetText "";
     lbClear _ctrlPrimaryList;
     _ctrlPrimaryDetail ctrlSetText "NO PLAYER CONTEXT";
     _ctrlPrimaryApply ctrlEnable false;
@@ -266,10 +352,37 @@ lbClear _ctrlPrimaryList;
         _label = format ["[EQUIPPED] %1", _label];
     };
     if !(_x getOrDefault ["available", false]) then {
-        _label = format ["%1 [UNAVAILABLE]", _label];
+        private _technicalAvailable = _x getOrDefault ["technicalAvailable", true];
+        private _entitlementCode = _x getOrDefault ["entitlementCode", ""];
+
+        if (!_technicalAvailable) then {
+            _label = format ["%1 [UNAVAILABLE]", _label];
+        } else {
+            private _lockSuffix = switch (_entitlementCode) do {
+                case "LOCKED_LEVEL": {
+                    format ["LVL %1", _x getOrDefault ["minLevel", 1]]
+                };
+                case "LOCKED_SIDE_LICENSE": {
+                    format [
+                        "%1/%2 KILLS",
+                        _x getOrDefault ["weaponKills", 0],
+                        _x getOrDefault ["licenseKills", 0]
+                    ]
+                };
+                case "LOCKED_PERK": {"PERK"};
+                case "REQUIRES_ACQUISITION": {"OWNERSHIP"};
+                default {"LOCKED"};
+            };
+
+            _label = format ["%1 [%2]", _label, _lockSuffix];
+        };
     };
 
     private _row = _ctrlPrimaryList lbAdd _label;
+    private _picture = [_x] call _resolveEntryPicture;
+    if !(_picture isEqualTo "") then {
+        _ctrlPrimaryList lbSetPicture [_row, _picture];
+    };
     _ctrlPrimaryList lbSetData [_row, str _x];
     _ctrlPrimaryList lbSetValue [_row, if (_x getOrDefault ["available", false]) then {1} else {0}];
 
@@ -279,6 +392,7 @@ lbClear _ctrlPrimaryList;
 } forEach _entries;
 
 if ((count _entries) <= 0) exitWith {
+    _ctrlPrimaryPreview ctrlSetText "";
     _ctrlPrimaryDetail ctrlSetText _selectorNoEntriesText;
     _ctrlPrimaryApply ctrlEnable false;
     uiNamespace setVariable [_pendingNamespaceKey, createHashMapFromArray [["available", false]]];
@@ -294,6 +408,7 @@ if (
     (_selectorMode isEqualTo "ASSIGNED") &&
     {_assignedStage isEqualTo 1}
 ) exitWith {
+    _ctrlPrimaryPreview ctrlSetText "";
     _ctrlPrimaryList lbSetCurSel -1;
     _ctrlPrimaryDetail ctrlSetText "SELECT AN ASSIGNED-EQUIPMENT SLOT";
     _ctrlPrimaryApply ctrlEnable false;
@@ -315,13 +430,19 @@ if (
                     {_selectedIndex < (count _entries)}
                 ) then {
                     private _selected = _entries select _selectedIndex;
-                    private _nextSlot = _selected getOrDefault ['assignedIndex', -1];
+                    private _targetPage = _selected getOrDefault ['targetPage', ''];
 
-                    if (_nextSlot in [0, 1, 2, 3, 4, 5]) then {
+                    if !(_targetPage isEqualTo '') then {
+                        [_targetPage] call bn_koth_fnc_menu_refresh;
+                    } else {
+                        private _nextSlot = _selected getOrDefault ['assignedIndex', -1];
+
+                        if (_nextSlot in [0, 1, 2, 3, 4, 5]) then {
                         uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 2];
                         uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', _nextSlot];
                         uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMapFromArray [['available', false]]];
-                        ['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;
+                            ['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;
+                        };
                     };
                 };
             };
@@ -337,6 +458,9 @@ if ((_selectedIndex < 0) || {_selectedIndex >= (count _entries)}) then {
 private _selected = _entries select _selectedIndex;
 private _selectedName = _selected getOrDefault ["displayName", "UNKNOWN"];
 private _selectedAvailable = _selected getOrDefault ["available", false];
+
+private _selectedPicture = [_selected] call _resolveEntryPicture;
+_ctrlPrimaryPreview ctrlSetText _selectedPicture;
 
 if (_selectedAvailable) then {
     private _enableApply = true;
@@ -402,13 +526,24 @@ if (_selectedAvailable) then {
             ]];
         };
         case "CARGO": {
-            _ctrlPrimaryDetail ctrlSetText format ["SELECTED: %1\nAPPLY TO SEND CARGO DELTA", _selectedName];
+            private _currentCount = (_selected getOrDefault ["currentCount", 0]) max 0;
+            private _priorityReason = _selected getOrDefault ["priorityReason", "AVAILABLE"];
+            _ctrlPrimaryDetail ctrlSetText format [
+                "SELECTED: %1\nCURRENT: x%2\n%3\nUSE - / + TO ADJUST",
+                _selectedName,
+                _currentCount,
+                _priorityReason
+            ];
             uiNamespace setVariable [_pendingNamespaceKey, createHashMapFromArray [
                 ["container", _selected getOrDefault ["container", ""]],
                 ["className", _selected getOrDefault ["className", ""]],
-                ["delta", _selected getOrDefault ["delta", 0]],
+                ["currentCount", _currentCount],
+                ["delta", 0],
                 ["available", true]
             ]];
+            _ctrlCargoMinus ctrlEnable (_currentCount > 0);
+            _ctrlCargoPlus ctrlEnable true;
+            _enableApply = false;
         };
         default {
             private _weaponClass = _selected getOrDefault ["weaponClass", ""];
@@ -433,8 +568,55 @@ if (_selectedAvailable) then {
         _ctrlPrimaryApply ctrlEnable true;
     };
 } else {
-    _ctrlPrimaryDetail ctrlSetText format ["SELECTED: %1\nSTATUS: UNAVAILABLE", _selectedName];
-    uiNamespace setVariable [_pendingNamespaceKey, createHashMapFromArray [["available", false]]];
+    private _technicalAvailable = _selected getOrDefault ["technicalAvailable", true];
+    private _entitlementMessage = _selected getOrDefault ["entitlementMessage", ""];
+    private _entitlementCode = _selected getOrDefault ["entitlementCode", ""];
+
+    if (!_technicalAvailable) then {
+        _ctrlPrimaryDetail ctrlSetText format [
+            "SELECTED: %1\nSTATUS: UNAVAILABLE\nNO COMPATIBLE DEFAULT MAGAZINE",
+            _selectedName
+        ];
+    } else {
+        private _extraLine = switch (_entitlementCode) do {
+            case "LOCKED_LEVEL": {
+                format [
+                    "LEVEL %1 / %2",
+                    _selected getOrDefault ["playerLevel", 1],
+                    _selected getOrDefault ["minLevel", 1]
+                ]
+            };
+            case "LOCKED_SIDE_LICENSE": {
+                format [
+                    "LICENCE KILLS %1 / %2",
+                    _selected getOrDefault ["weaponKills", 0],
+                    _selected getOrDefault ["licenseKills", 0]
+                ]
+            };
+            case "LOCKED_PERK": {
+                format [
+                    "MISSING PERKS: %1",
+                    (_selected getOrDefault ["missingPerks", []]) joinString ", "
+                ]
+            };
+            case "REQUIRES_ACQUISITION": {
+                "OWNERSHIP / RENTAL REQUIRED"
+            };
+            default {""};
+        };
+
+        _ctrlPrimaryDetail ctrlSetText format [
+            "SELECTED: %1\nSTATUS: LOCKED\n%2\n%3",
+            _selectedName,
+            _entitlementMessage,
+            _extraLine
+        ];
+    };
+
+    uiNamespace setVariable [
+        _pendingNamespaceKey,
+        createHashMapFromArray [["available", false]]
+    ];
     _ctrlPrimaryApply ctrlEnable false;
 };
 
