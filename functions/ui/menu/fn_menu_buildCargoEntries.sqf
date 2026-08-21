@@ -37,6 +37,14 @@ private _resolveItemName = {
     if (_name isEqualTo "") then {toUpper _className} else {_name}
 };
 
+private _resolveItemPicture = {
+    params ["_className"];
+    private _cfg = configFile >> "CfgWeapons" >> _className;
+    if !(isClass _cfg) then {_cfg = configFile >> "CfgMagazines" >> _className;};
+    if !(isClass _cfg) exitWith {""};
+    getText (_cfg >> "picture")
+};
+
 private _containerFilter = toLower (uiNamespace getVariable ["BN_KOTH_menuCargoContainerFilter", ""]);
 private _containers = [];
 
@@ -159,6 +167,8 @@ if (isClass _sourceItemsCfg) then {
 };
 
 private _sortable = [];
+private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
+if !(_progression isEqualType createHashMap) then {_progression = createHashMap};
 {
     _x params ["_containerName", "_index"];
     private _slot = _intendedLoadout select _index;
@@ -178,6 +188,36 @@ private _sortable = [];
         private _className = _x;
         private _currentCount = _counts getOrDefault [_className, 0];
         private _displayName = [_className] call _resolveItemName;
+        private _category = "EQUIPMENT";
+        if (_className in _currentWeaponAmmo) then {
+            _category = "AMMUNITION";
+        } else {
+            private _sourceMagazineCfg = _sourceMagazinesCfg >> _className;
+            if (isClass _sourceMagazineCfg) then {
+                private _factualCategory = toLower (getText (_sourceMagazineCfg >> "category"));
+                _category = if (((_factualCategory find "smoke") >= 0) || {(_factualCategory find "flare") >= 0}) then {
+                    "SMOKE"
+                } else {
+                    if ((_factualCategory find "grenade") >= 0) then {"GRENADES"} else {"AMMUNITION"}
+                };
+            } else {
+                private _itemType = [_className] call BIS_fnc_itemType;
+                private _subType = if ((_itemType isEqualType []) && {(count _itemType) >= 2}) then {toLower (_itemType select 1)} else {""};
+                if (((_subType find "firstaid") >= 0) || {_subType isEqualTo "medikit"}) then {
+                    _category = "MEDICAL";
+                } else {
+                    if (
+                        (_subType in ["map", "gps", "radio", "compass", "watch"]) ||
+                        {(_subType find "uav") >= 0}
+                    ) then {
+                        _category = "NAVIGATION";
+                    };
+                };
+            };
+        };
+        private _metadata = ["Consumables", _className] call bn_koth_fnc_loadouts_getItemMetadata;
+        private _entitlement = [_progression, _metadata, _className] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+        private _entitled = _entitlement getOrDefault ["entitled", false];
         private _priority = 2;
         private _reason = "AVAILABLE";
 
@@ -193,12 +233,22 @@ private _sortable = [];
 
         private _entry = createHashMapFromArray [
             ["displayName", format ["%1  x%2", _displayName, _currentCount]],
+            ["itemName", _displayName],
+            ["picture", [_className] call _resolveItemPicture],
+            ["category", _category],
             ["container", _containerName],
             ["className", _className],
             ["currentCount", _currentCount],
             ["priority", _priority],
             ["priorityReason", _reason],
-            ["available", true],
+            ["available", _entitled || {_currentCount > 0}],
+            ["canAdd", _entitled],
+            ["entitled", _entitled],
+            ["entitlementCode", _entitlement getOrDefault ["code", "LOCKED_STATE"]],
+            ["entitlementMessage", _entitlement getOrDefault ["message", "Item entitlement is unavailable."]],
+            ["playerLevel", _entitlement getOrDefault ["playerLevel", 1]],
+            ["minLevel", _metadata getOrDefault ["minLevel", 1]],
+            ["missingPerks", _entitlement getOrDefault ["missingPerks", []]],
             ["equipped", _currentCount > 0]
         ];
         _sortable pushBack [format ["%1|%2", _priority, toLower _displayName], _entry];

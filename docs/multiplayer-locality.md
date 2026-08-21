@@ -53,6 +53,9 @@ Database access| Server
 Gameplay vehicle creation| Server
 Local player loadout interface| Owning client
 Loadout entitlement validation| Server
+Named kit profile storage and management| Owning client; stored data remains untrusted intent
+Arsenal physical-loadout reconciliation| Server reads the owned player object
+Arsenal preview framework| Owning client; currently disabled
 Safe-zone physical inventory blocking| Owning client
 Safe-zone ground-loot and corpse cleanup| Server
 Respawn presentation| Owning client

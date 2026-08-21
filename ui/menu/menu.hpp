@@ -35,7 +35,7 @@ class BN_KOTH_RscMenu
     movingEnable = 0;
     enableSimulation = 1;
     onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_menuDisplay', _display]; _display displayAddEventHandler ['KeyDown', 'if ((_this select 1) isEqualTo 1) exitWith {[] call bn_koth_fnc_menu_close; true}; false']; ['LOADOUT'] call bn_koth_fnc_menu_refresh;";
-    onUnload = "uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuArsenalEnabled', false]; uiNamespace setVariable ['BN_KOTH_menuIntendedLoadout', []]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuLauncherEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingLauncher', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuUniformEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingUniform', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuVestEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingVest', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBackpackEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBackpack', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHeadgearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHeadgear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuFacewearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingFacewear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBinocularEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBinocular', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAssignedEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAttachmentEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAttachment', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuCargoEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureDrafts', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0];";
+    onUnload = "[] call bn_koth_fnc_menu_stopPlayerPreview; uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuArsenalEnabled', false]; uiNamespace setVariable ['BN_KOTH_menuIntendedLoadout', []]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuLauncherEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingLauncher', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuUniformEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingUniform', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuVestEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingVest', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBackpackEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBackpack', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHeadgearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHeadgear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuFacewearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingFacewear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBinocularEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBinocular', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAssignedEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAttachmentEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAttachment', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuCargoEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureDrafts', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0];";
 
     class controlsBackground
     {
@@ -292,6 +292,18 @@ class BN_KOTH_RscMenu
             colorText[] = {1, 1, 1, 0.98};
         };
 
+        class PlayerPreview: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_MENU_PLAYER_PREVIEW;
+            style = 48;
+            text = "";
+            x = BN_KOTH_MENU_LEFT_X + BN_KOTH_MENU_LEFT_W * 0.06;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.205;
+            w = BN_KOTH_MENU_LEFT_W * 0.88;
+            h = safeZoneH * 0.50;
+            colorText[] = {1, 1, 1, 1};
+        };
+
         class SectionTitle: BN_KOTH_Menu_Title
         {
             idc = BN_KOTH_IDC_MENU_SECTION_TITLE;
@@ -490,15 +502,7 @@ class BN_KOTH_RscMenu
             idc = BN_KOTH_IDC_MENU_SLOT_CARGO_BUTTON;
             text = "CARGO / ITEMS";
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.492;
-            action = "['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";
-        };
-
-        class SlotAttachmentsButton: SlotPrimaryButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_ATTACHMENTS_BUTTON;
-            text = "ATTACHMENTS";
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.532;
-            action = "['LOADOUT_ATTACHMENTS'] call bn_koth_fnc_menu_refresh;";
+            action = "uiNamespace setVariable ['BN_KOTH_menuSelectorReturnPage','LOADOUT']; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";
         };
 
         // Main LOADOUT page: contained item art and two-line row text.
@@ -515,10 +519,10 @@ class BN_KOTH_RscMenu
         };
         class LoadoutPicHandgun: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_HANDGUN; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP + safeZoneH * 0.006;};
         class LoadoutPicLauncher: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_LAUNCHER; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 2 + safeZoneH * 0.006;};
-        class LoadoutPicUniform: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_UNIFORM; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 3 + safeZoneH * 0.006;};
-        class LoadoutPicVest: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_VEST; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 4 + safeZoneH * 0.006;};
-        class LoadoutPicHeadgear: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_HEADGEAR; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 5 + safeZoneH * 0.006;};
-        class LoadoutPicBackpack: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_BACKPACK; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 6 + safeZoneH * 0.006;};
+        class LoadoutPicUniform: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_UNIFORM; style = 2096; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 3 + safeZoneH * 0.006;};
+        class LoadoutPicVest: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_VEST; style = 2096; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 4 + safeZoneH * 0.006;};
+        class LoadoutPicHeadgear: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_HEADGEAR; style = 2096; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 5 + safeZoneH * 0.006;};
+        class LoadoutPicBackpack: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_BACKPACK; style = 2096; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 6 + safeZoneH * 0.006;};
         class LoadoutPicEquipment: LoadoutPicPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_PIC_EQUIPMENT; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 7 + safeZoneH * 0.006;};
 
         class LoadoutRowTextPrimary: BN_KOTH_RscStructuredText
@@ -539,26 +543,6 @@ class BN_KOTH_RscMenu
         class LoadoutRowTextBackpack: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_BACKPACK; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 6 + safeZoneH * 0.010;};
         class LoadoutRowTextEquipment: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_EQUIPMENT; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 7 + safeZoneH * 0.010;};
 
-        class LoadoutCogPrimary: BN_KOTH_Menu_ActionButton
-        {
-            idc = BN_KOTH_IDC_MENU_LOADOUT_COG_PRIMARY;
-            text = ">";
-            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.885;
-            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + safeZoneH * 0.016;
-            w = BN_KOTH_MENU_CENTER_W * 0.07;
-            h = safeZoneH * 0.036;
-            sizeEx = "0.022 * safeZoneH";
-            colorBackground[] = {0, 0, 0, 0};
-            colorBackgroundActive[] = {0.20, 0.15, 0.08, 0.88};
-            colorFocused[] = {0.20, 0.15, 0.08, 0.88};
-            action = "uiNamespace setVariable ['BN_KOTH_menuAttachmentSlotFilter','primary']; ['LOADOUT_ATTACHMENTS'] call bn_koth_fnc_menu_refresh;";
-        };
-        class LoadoutCogHandgun: LoadoutCogPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_COG_HANDGUN; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP + safeZoneH * 0.016; action = "uiNamespace setVariable ['BN_KOTH_menuAttachmentSlotFilter','handgun']; ['LOADOUT_ATTACHMENTS'] call bn_koth_fnc_menu_refresh;";};
-        class LoadoutCogLauncher: LoadoutCogPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_COG_LAUNCHER; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 2 + safeZoneH * 0.016; action = "uiNamespace setVariable ['BN_KOTH_menuAttachmentSlotFilter','launcher']; ['LOADOUT_ATTACHMENTS'] call bn_koth_fnc_menu_refresh;";};
-        class LoadoutCogUniform: LoadoutCogPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_COG_UNIFORM; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 3 + safeZoneH * 0.016; action = "uiNamespace setVariable ['BN_KOTH_menuCargoContainerFilter','uniform']; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";};
-        class LoadoutCogVest: LoadoutCogPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_COG_VEST; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 4 + safeZoneH * 0.016; action = "uiNamespace setVariable ['BN_KOTH_menuCargoContainerFilter','vest']; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";};
-        class LoadoutCogBackpack: LoadoutCogPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_COG_BACKPACK; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 6 + safeZoneH * 0.016; action = "uiNamespace setVariable ['BN_KOTH_menuCargoContainerFilter','backpack']; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";};
-
         class SectionFooter: BN_KOTH_Menu_Subtitle
         {
             idc = BN_KOTH_IDC_MENU_FOOTER_TEXT;
@@ -570,6 +554,25 @@ class BN_KOTH_RscMenu
             sizeEx = "0.017 * safeZoneH";
             colorText[] = {0.84, 0.82, 0.78, 0.74};
             colorBackground[] = {0.10, 0.10, 0.085, 0.96};
+        };
+
+        class KitManageButton: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_MANAGE;
+            text = "MANAGE LOADOUTS";
+            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.025;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H - safeZoneH * 0.052;
+            w = BN_KOTH_MENU_CENTER_W * 0.46;
+            h = safeZoneH * 0.038;
+            action = "uiNamespace setVariable ['BN_KOTH_menuKitPage', 0]; ['LOADOUT_KITS'] call bn_koth_fnc_menu_refresh;";
+        };
+
+        class KitSaveCurrentButton: KitManageButton
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_SAVE_CURRENT;
+            text = "SAVE CURRENT KIT";
+            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.515;
+            action = "uiNamespace setVariable ['BN_KOTH_menuKitSelectedId', '']; ['LOADOUT_KITS'] call bn_koth_fnc_menu_refresh;";
         };
 
         class PrimaryTitle: BN_KOTH_Menu_Title
@@ -662,7 +665,7 @@ class BN_KOTH_RscMenu
         class BrowserTitle: BN_KOTH_Menu_Title
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_TITLE;
-            text = "PRIMARY WEAPONS";
+            text = "";
             x = BN_KOTH_MENU_BROWSER_X + safeZoneW * 0.014;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.016;
             w = BN_KOTH_MENU_BROWSER_W * 0.40;
@@ -673,11 +676,41 @@ class BN_KOTH_RscMenu
         class BrowserSubtitle: BN_KOTH_Menu_Subtitle
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_SUBTITLE;
-            text = "ITEM BROWSER";
+            text = "";
             x = BN_KOTH_MENU_BROWSER_X + safeZoneW * 0.014;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.052;
             w = BN_KOTH_MENU_BROWSER_W * 0.40;
             h = safeZoneH * 0.024;
+        };
+
+        class KitName: BN_KOTH_Menu_Edit
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_NAME;
+            text = "";
+            x = BN_KOTH_MENU_BROWSER_X + safeZoneW * 0.014;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.052;
+            w = BN_KOTH_MENU_BROWSER_W * 0.38;
+            h = safeZoneH * 0.030;
+        };
+
+        class KitSave: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_SAVE;
+            text = "SAVE NEW";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_W * 0.43;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.052;
+            w = BN_KOTH_MENU_BROWSER_W * 0.15;
+            h = safeZoneH * 0.030;
+            action = "['', ''] call bn_koth_fnc_menu_saveSessionKit;";
+        };
+
+        class KitRename: KitSave
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_RENAME;
+            text = "RENAME SELECTED";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_W * 0.59;
+            w = BN_KOTH_MENU_BROWSER_W * 0.20;
+            action = "['', uiNamespace getVariable ['BN_KOTH_menuKitSelectedId', '']] call bn_koth_fnc_menu_saveSessionKit;";
         };
 
         class BrowserBack: BN_KOTH_Menu_ActionButton
@@ -711,6 +744,53 @@ class BN_KOTH_RscMenu
             action = "uiNamespace setVariable ['BN_KOTH_menuConfigureView', 'ATTACHMENTS']; uiNamespace setVariable ['BN_KOTH_menuConfigureAttachmentPage', 0]; ['LOADOUT_CONFIGURE'] call bn_koth_fnc_menu_refresh;";
         };
 
+        class CargoCategoryAmmunition: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_CARGO_CATEGORY_AMMUNITION;
+            text = "AMMO";
+            x = BN_KOTH_MENU_BROWSER_X + safeZoneW * 0.012;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.056;
+            w = (BN_KOTH_MENU_BROWSER_W - safeZoneW * 0.029) / 6;
+            h = safeZoneH * 0.026;
+            sizeEx = "0.017 * safeZoneH";
+            action = "uiNamespace setVariable ['BN_KOTH_menuCargoCategory','AMMUNITION']; uiNamespace setVariable ['BN_KOTH_menuCargoPage',0]; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";
+        };
+        class CargoCategoryGrenades: CargoCategoryAmmunition
+        {
+            idc = BN_KOTH_IDC_MENU_CARGO_CATEGORY_GRENADES;
+            text = "GRENADES";
+            x = BN_KOTH_MENU_BROWSER_X + safeZoneW * 0.012 + ((BN_KOTH_MENU_BROWSER_W - safeZoneW * 0.029) / 6) * 1;
+            action = "uiNamespace setVariable ['BN_KOTH_menuCargoCategory','GRENADES']; uiNamespace setVariable ['BN_KOTH_menuCargoPage',0]; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";
+        };
+        class CargoCategorySmoke: CargoCategoryAmmunition
+        {
+            idc = BN_KOTH_IDC_MENU_CARGO_CATEGORY_SMOKE;
+            text = "SMOKE";
+            x = BN_KOTH_MENU_BROWSER_X + safeZoneW * 0.012 + ((BN_KOTH_MENU_BROWSER_W - safeZoneW * 0.029) / 6) * 2;
+            action = "uiNamespace setVariable ['BN_KOTH_menuCargoCategory','SMOKE']; uiNamespace setVariable ['BN_KOTH_menuCargoPage',0]; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";
+        };
+        class CargoCategoryMedical: CargoCategoryAmmunition
+        {
+            idc = BN_KOTH_IDC_MENU_CARGO_CATEGORY_MEDICAL;
+            text = "MEDICAL";
+            x = BN_KOTH_MENU_BROWSER_X + safeZoneW * 0.012 + ((BN_KOTH_MENU_BROWSER_W - safeZoneW * 0.029) / 6) * 3;
+            action = "uiNamespace setVariable ['BN_KOTH_menuCargoCategory','MEDICAL']; uiNamespace setVariable ['BN_KOTH_menuCargoPage',0]; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";
+        };
+        class CargoCategoryNavigation: CargoCategoryAmmunition
+        {
+            idc = BN_KOTH_IDC_MENU_CARGO_CATEGORY_NAVIGATION;
+            text = "NAV / COMMS";
+            x = BN_KOTH_MENU_BROWSER_X + safeZoneW * 0.012 + ((BN_KOTH_MENU_BROWSER_W - safeZoneW * 0.029) / 6) * 4;
+            action = "uiNamespace setVariable ['BN_KOTH_menuCargoCategory','NAVIGATION']; uiNamespace setVariable ['BN_KOTH_menuCargoPage',0]; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";
+        };
+        class CargoCategoryEquipment: CargoCategoryAmmunition
+        {
+            idc = BN_KOTH_IDC_MENU_CARGO_CATEGORY_EQUIPMENT;
+            text = "EQUIPMENT";
+            x = BN_KOTH_MENU_BROWSER_X + safeZoneW * 0.012 + ((BN_KOTH_MENU_BROWSER_W - safeZoneW * 0.029) / 6) * 5;
+            action = "uiNamespace setVariable ['BN_KOTH_menuCargoCategory','EQUIPMENT']; uiNamespace setVariable ['BN_KOTH_menuCargoPage',0]; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";
+        };
+
         class BrowserPagePrevious: BrowserBack
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_PAGE_PREVIOUS;
@@ -733,7 +813,7 @@ class BN_KOTH_RscMenu
         class BrowserPageLabel: BN_KOTH_Menu_Subtitle
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL;
-            text = "PAGE 1 / 1";
+            text = "";
             style = 2;
             x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_W * 0.43;
             y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H - safeZoneH * 0.056;
@@ -775,7 +855,7 @@ class BN_KOTH_RscMenu
         class BrowserCardName: BN_KOTH_Menu_Value
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_NAME;
-            text = "TEST CARD A";
+            text = "";
             x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.226;
             w = BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
@@ -785,7 +865,7 @@ class BN_KOTH_RscMenu
         class BrowserCardStatus: BN_KOTH_Menu_Label
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_STATUS;
-            text = "OWNED - DEMO";
+            text = "";
             x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.253;
             w = BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
@@ -805,7 +885,7 @@ class BN_KOTH_RscMenu
         class BrowserCardLockText: BN_KOTH_Menu_Title
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_LOCK_TEXT;
-            text = "LOCKED UNTIL LEVEL 20";
+            text = "";
             style = 2;
             x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.196;
@@ -818,7 +898,7 @@ class BN_KOTH_RscMenu
         class BrowserCardPrimaryAction: BN_KOTH_Menu_ActionButton
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_PRIMARY_ACTION;
-            text = "APPLY";
+            text = "";
             x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.294;
             w = (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 3) * 0.5;
@@ -828,7 +908,7 @@ class BN_KOTH_RscMenu
         class BrowserCardSecondaryAction: BrowserCardPrimaryAction
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_SECONDARY_ACTION;
-            text = "CONFIGURE";
+            text = "";
             x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2 + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 3) * 0.5 + BN_KOTH_MENU_BROWSER_CARD_GAP;
         };
 
@@ -920,37 +1000,5 @@ class BN_KOTH_RscMenu
             action = "[] call bn_koth_fnc_menu_close;";
         };
 
-        class SessionSaveButton: BN_KOTH_Menu_ActionButton
-        {
-            idc = BN_KOTH_IDC_MENU_SESSION_SAVE_BUTTON;
-            text = "SAVE KIT";
-            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W - safeZoneW * 0.37;
-            y = BN_KOTH_MENU_BOTTOM_Y + safeZoneH * 0.014;
-            w = safeZoneW * 0.11;
-            h = BN_KOTH_MENU_BOTTOM_H - safeZoneH * 0.028;
-            action = "['slot1'] call bn_koth_fnc_menu_saveSessionKit;";
-        };
-
-        class SessionLoadButton: BN_KOTH_Menu_ActionButton
-        {
-            idc = BN_KOTH_IDC_MENU_SESSION_LOAD_BUTTON;
-            text = "LOAD KIT";
-            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W - safeZoneW * 0.25;
-            y = BN_KOTH_MENU_BOTTOM_Y + safeZoneH * 0.014;
-            w = safeZoneW * 0.11;
-            h = BN_KOTH_MENU_BOTTOM_H - safeZoneH * 0.028;
-            action = "['slot1'] call bn_koth_fnc_menu_loadSessionKit;";
-        };
-
-        class SessionDeleteButton: BN_KOTH_Menu_ActionButton
-        {
-            idc = BN_KOTH_IDC_MENU_SESSION_DELETE_BUTTON;
-            text = "DELETE KIT";
-            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W - safeZoneW * 0.13;
-            y = BN_KOTH_MENU_BOTTOM_Y + safeZoneH * 0.014;
-            w = safeZoneW * 0.11;
-            h = BN_KOTH_MENU_BOTTOM_H - safeZoneH * 0.028;
-            action = "['slot1'] call bn_koth_fnc_menu_deleteSessionKit;";
-        };
     };
 };

@@ -605,10 +605,23 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                             ["message", format ["Class '%1' is not a uniform item.", _uniformClass]]
                                         ];
                                     } else {
-                                        _validatedWeapons set [
-                                            "uniform",
-                                            createHashMapFromArray [["uniformClass", _uniformClass]]
-                                        ];
+                                        private _uniformEntitlement = [
+                                            _uid,
+                                            "Wearables",
+                                            _uniformClass
+                                        ] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        if !(_uniformEntitlement getOrDefault ["entitled", false]) then {
+                                            _slotFailure = createHashMapFromArray [
+                                                ["success", false],
+                                                ["code", _uniformEntitlement getOrDefault ["code", "ERR_WEARABLE_ENTITLEMENT"]],
+                                                ["message", _uniformEntitlement getOrDefault ["message", "Uniform is not entitled for this player."]]
+                                            ];
+                                        } else {
+                                            _validatedWeapons set [
+                                                "uniform",
+                                                createHashMapFromArray [["uniformClass", _uniformClass]]
+                                            ];
+                                        };
                                     };
                                 };
                             };
@@ -686,10 +699,12 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                             ["message", format ["Class '%1' is not a vest item.", _vestClass]]
                                         ];
                                     } else {
-                                        _validatedWeapons set [
-                                            "vest",
-                                            createHashMapFromArray [["vestClass", _vestClass]]
-                                        ];
+                                        private _entitlement = [_uid,"Wearables",_vestClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        if !(_entitlement getOrDefault ["entitled",false]) then {
+                                            _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Vest is not entitled for this player."]]];
+                                        } else {
+                                            _validatedWeapons set ["vest",createHashMapFromArray [["vestClass",_vestClass]]];
+                                        };
                                     };
                                 };
                             };
@@ -755,10 +770,23 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                         ["message", format ["Backpack '%1' is not publicly available.", _backpackClass]]
                                     ];
                                 } else {
-                                    _validatedWeapons set [
-                                        "backpack",
-                                        createHashMapFromArray [["backpackClass", _backpackClass]]
-                                    ];
+                                    private _backpackEntitlement = [
+                                        _uid,
+                                        "Wearables",
+                                        _backpackClass
+                                    ] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                    if !(_backpackEntitlement getOrDefault ["entitled", false]) then {
+                                        _slotFailure = createHashMapFromArray [
+                                            ["success", false],
+                                            ["code", _backpackEntitlement getOrDefault ["code", "ERR_WEARABLE_ENTITLEMENT"]],
+                                            ["message", _backpackEntitlement getOrDefault ["message", "Backpack is not entitled for this player."]]
+                                        ];
+                                    } else {
+                                        _validatedWeapons set [
+                                            "backpack",
+                                            createHashMapFromArray [["backpackClass", _backpackClass]]
+                                        ];
+                                    };
                                 };
                             };
                         };
@@ -832,10 +860,12 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                             ["message", format ["Class '%1' is not a headgear item.", _headgearClass]]
                                         ];
                                     } else {
-                                        _validatedWeapons set [
-                                            "headgear",
-                                            createHashMapFromArray [["headgearClass", _headgearClass]]
-                                        ];
+                                        private _entitlement = [_uid,"Wearables",_headgearClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        if !(_entitlement getOrDefault ["entitled",false]) then {
+                                            _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Headgear is not entitled for this player."]]];
+                                        } else {
+                                            _validatedWeapons set ["headgear",createHashMapFromArray [["headgearClass",_headgearClass]]];
+                                        };
                                     };
                                 };
                             };
@@ -894,10 +924,12 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                     ["message", format ["Facewear '%1' is not publicly available.", _facewearClass]]
                                 ];
                             } else {
-                                _validatedWeapons set [
-                                    "facewear",
-                                    createHashMapFromArray [["facewearClass", _facewearClass]]
-                                ];
+                                private _entitlement = [_uid,"Wearables",_facewearClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                if !(_entitlement getOrDefault ["entitled",false]) then {
+                                    _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Facewear is not entitled for this player."]]];
+                                } else {
+                                    _validatedWeapons set ["facewear",createHashMapFromArray [["facewearClass",_facewearClass]]];
+                                };
                             };
                         };
                     };

@@ -532,14 +532,11 @@ private _validateContainerCapacity = {
     ]
 };
 
-private _slotIdRaw = _mutation getOrDefault ["slotId", "slot1"];
-if !(_slotIdRaw isEqualType "") then {
-    _slotIdRaw = "slot1";
-};
-private _slotId = toLower _slotIdRaw;
-if !(_slotId in ["slot1", "slot2", "slot3"]) then {
-    _slotId = "slot1";
-};
+// A local kit id is diagnostic correlation only. It grants no authority and
+// is never used to fetch server state; the complete payload is revalidated.
+private _kitIdRaw = _mutation getOrDefault ["kitId", "local_kit"];
+if !(_kitIdRaw isEqualType "") then {_kitIdRaw = "local_kit"};
+private _kitId = (_kitIdRaw select [0, 64]);
 
 private _opRaw = _mutation getOrDefault ["op", ""];
 if !(_opRaw isEqualType "") exitWith {
@@ -557,62 +554,24 @@ private _resultCode = "OK";
 
 switch (_op) do {
     case "snapshot": {
+        // Reconcile from the server-observed physical unit state. This keeps
+        // partial Arsenal mutations from rebuilding a stale intended kit after
+        // the player has dropped equipment outside the menu.
+        private _physicalLoadout = getUnitLoadout _player;
+        if !(_physicalLoadout isEqualType [] && {(count _physicalLoadout) >= 10}) exitWith {
+            ["ERR_PHYSICAL_LOADOUT_SHAPE", "Server could not read the player's current physical loadout.", _baseLoadoutId] call _resultFail
+        };
+        _mutatedLoadout = +_physicalLoadout;
         _shouldApply = false;
-        _resultMessage = "Authoritative intended loadout snapshot provided.";
+        _resultMessage = "Authoritative loadout state reconciled from the physical player unit.";
     };
 
-    case "save_session_kit": {
-        private _savedByUid = missionNamespace getVariable ["BN_KOTH_savedLoadoutsByUid", createHashMap];
-        if !(_savedByUid isEqualType createHashMap) then {
-            _savedByUid = createHashMap;
-        };
-
-        private _playerSaves = _savedByUid getOrDefault [_uid, createHashMap];
-        if !(_playerSaves isEqualType createHashMap) then {
-            _playerSaves = createHashMap;
-        };
-
-        _playerSaves set [_slotId, +_mutatedLoadout];
-        _savedByUid set [_uid, _playerSaves];
-        missionNamespace setVariable ["BN_KOTH_savedLoadoutsByUid", _savedByUid];
-
-        _shouldApply = false;
-        _resultMessage = format ["Session kit '%1' saved.", _slotId];
-    };
-
-    case "delete_session_kit": {
-        private _savedByUid = missionNamespace getVariable ["BN_KOTH_savedLoadoutsByUid", createHashMap];
-        if !(_savedByUid isEqualType createHashMap) then {
-            _savedByUid = createHashMap;
-        };
-
-        private _playerSaves = _savedByUid getOrDefault [_uid, createHashMap];
-        if !(_playerSaves isEqualType createHashMap) then {
-            _playerSaves = createHashMap;
-        };
-
-        _playerSaves deleteAt _slotId;
-        _savedByUid set [_uid, _playerSaves];
-        missionNamespace setVariable ["BN_KOTH_savedLoadoutsByUid", _savedByUid];
-
-        _shouldApply = false;
-        _resultMessage = format ["Session kit '%1' deleted.", _slotId];
-    };
-
-    case "load_session_kit": {
-        private _savedByUid = missionNamespace getVariable ["BN_KOTH_savedLoadoutsByUid", createHashMap];
-        if !(_savedByUid isEqualType createHashMap) then {
-            _savedByUid = createHashMap;
-        };
-
-        private _playerSaves = _savedByUid getOrDefault [_uid, createHashMap];
-        if !(_playerSaves isEqualType createHashMap) then {
-            _playerSaves = createHashMap;
-        };
-
-        private _savedLoadout = _playerSaves getOrDefault [_slotId, []];
+    case "load_local_kit": {
+        // Local profile data is untrusted. It enters only as intent and passes
+        // every canonical, entitlement, compatibility and capacity check below.
+        private _savedLoadout = _mutation getOrDefault ["savedLoadout", []];
         if !((_savedLoadout isEqualType []) && {(count _savedLoadout) >= 10}) exitWith {
-            ["ERR_SAVED_KIT_MISSING", format ["Session kit '%1' does not exist.", _slotId], _baseLoadoutId] call _resultFail
+            ["ERR_SAVED_KIT_MALFORMED", format ["Local kit '%1' has an invalid loadout shape.", _kitId], _baseLoadoutId] call _resultFail
         };
 
         _mutatedLoadout = +_savedLoadout;
@@ -746,6 +705,13 @@ switch (_op) do {
                 _resultCode = _assignedCheck getOrDefault ["code", "ERR_ASSIGNED_ITEM_SLOT_MISMATCH"];
                 _resultMessage = _assignedCheck getOrDefault ["message", "Saved kit assigned item is invalid."];
             };
+            if !(_itemClass isEqualTo "") then {
+                private _entitlement=[_uid,"Wearables",_itemClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                if !(_entitlement getOrDefault ["entitled",false]) exitWith {
+                    _resultCode=_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"];
+                    _resultMessage=_entitlement getOrDefault ["message","Saved assigned item is not entitled."];
+                };
+            };
             _assignedSlot set [_i, _itemClass];
         };
 
@@ -774,9 +740,48 @@ switch (_op) do {
                 if !((_binocType isEqualType []) && {(count _binocType) >= 2} && {(toLower (_binocType select 1)) isEqualTo "binocular"}) then {
                     _resultCode = "ERR_BINOCULAR_INVALID";
                     _resultMessage = format ["Saved binocular class '%1' is invalid.", _binocClass];
+                } else {
+                    private _entitlement=[_uid,"Wearables",_binocClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                    if !(_entitlement getOrDefault ["entitled",false]) then {_resultCode=_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"];_resultMessage=_entitlement getOrDefault ["message","Saved binocular is not entitled."];};
                 };
             };
         };
+
+        if !(_resultCode isEqualTo "OK") exitWith {
+            [_resultCode, _resultMessage, _baseLoadoutId] call _resultFail
+        };
+
+        // Revalidate every wearable class; local profile data may have been edited.
+        {
+            if (_resultCode isEqualTo "OK") then {
+                _x params ["_index","_kind"];
+                private _rawSlot = _mutatedLoadout select _index;
+                private _class = if (_index in [3,4,5]) then {
+                    if ((_rawSlot isEqualType []) && {(count _rawSlot)>0}) then {toLower (_rawSlot select 0)} else {""}
+                } else {
+                    if (_rawSlot isEqualType "") then {toLower _rawSlot} else {"__invalid__"}
+                };
+                if (_class isEqualTo "__invalid__") then {
+                    _resultCode="ERR_WEARABLE_SLOT_SHAPE"; _resultMessage=format ["Saved %1 slot has invalid shape.",_kind];
+                } else {
+                    if !(_class isEqualTo "") then {
+                        private _factual = switch (_kind) do {
+                            case "uniform": {private _c=configFile>>"CfgWeapons">>_class; isClass _c && {(getNumber (_c>>"scope"))>=2} && {(getNumber (_c>>"ItemInfo">>"type")) isEqualTo 801}};
+                            case "vest": {private _c=configFile>>"CfgWeapons">>_class; isClass _c && {(getNumber (_c>>"scope"))>=2} && {(getNumber (_c>>"ItemInfo">>"type")) isEqualTo 701}};
+                            case "backpack": {isClass (configFile>>"CfgVehicles">>_class) && {_class isKindOf ["Bag_Base",configFile>>"CfgVehicles"]}};
+                            case "headgear": {private _c=configFile>>"CfgWeapons">>_class; isClass _c && {(getNumber (_c>>"scope"))>=2} && {(getNumber (_c>>"ItemInfo">>"type")) isEqualTo 605}};
+                            default {isClass (configFile>>"CfgGlasses">>_class) && {(getNumber (configFile>>"CfgGlasses">>_class>>"scope"))>=2}};
+                        };
+                        if (!_factual || {((_class find "vn_") != 0)}) then {
+                            _resultCode="ERR_WEARABLE_INVALID"; _resultMessage=format ["Saved %1 class '%2' is not a canonical S.O.G. item.",_kind,_class];
+                        } else {
+                            private _entitlement=[_uid,"Wearables",_class] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                            if !(_entitlement getOrDefault ["entitled",false]) then {_resultCode=_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"];_resultMessage=_entitlement getOrDefault ["message",format ["Saved %1 is not entitled.",_kind]];};
+                        };
+                    };
+                };
+            };
+        } forEach [[3,"uniform"],[4,"vest"],[5,"backpack"],[6,"headgear"],[7,"facewear"]];
 
         if !(_resultCode isEqualTo "OK") exitWith {
             [_resultCode, _resultMessage, _baseLoadoutId] call _resultFail
@@ -809,6 +814,16 @@ switch (_op) do {
                                         if !(_cargoClassCheck getOrDefault ["success", false]) then {
                                             _resultCode = _cargoClassCheck getOrDefault ["code", "ERR_CARGO_CLASS_UNKNOWN"];
                                             _resultMessage = _cargoClassCheck getOrDefault ["message", "Saved cargo class validation failed."];
+                                        } else {
+                                            private _cargoEntitlement = [
+                                                _uid,
+                                                "Consumables",
+                                                _entryClass
+                                            ] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                            if !(_cargoEntitlement getOrDefault ["entitled", false]) then {
+                                                _resultCode = _cargoEntitlement getOrDefault ["code", "ERR_CONSUMABLE_ENTITLEMENT"];
+                                                _resultMessage = _cargoEntitlement getOrDefault ["message", "Saved cargo item is no longer entitled for this player."];
+                                            };
                                         };
                                     };
                                 };
@@ -819,11 +834,18 @@ switch (_op) do {
             };
         } forEach [3, 4, 5];
 
+        {
+            if (_resultCode isEqualTo "OK") then {
+                private _capacity=[_x,_mutatedLoadout] call _validateContainerCapacity;
+                if !(_capacity getOrDefault ["success",false]) then {_resultCode=_capacity getOrDefault ["code","ERR_CONTAINER_CAPACITY_EXCEEDED"];_resultMessage=_capacity getOrDefault ["message","Saved container exceeds capacity."];};
+            };
+        } forEach ["uniform","vest","backpack"];
+
         if !(_resultCode isEqualTo "OK") exitWith {
             [_resultCode, _resultMessage, _baseLoadoutId] call _resultFail
         };
 
-        _resultMessage = format ["Session kit '%1' loaded and revalidated.", _slotId];
+        _resultMessage = format ["Local kit '%1' loaded and revalidated.", _kitId];
     };
 
     case "set_binocular": {
@@ -847,6 +869,11 @@ switch (_op) do {
             private _itemType = [_binocularClass] call BIS_fnc_itemType;
             if !((_itemType isEqualType []) && {(count _itemType) >= 2} && {(toLower (_itemType select 1)) isEqualTo "binocular"}) exitWith {
                 ["ERR_BINOCULAR_INVALID", format ["Class '%1' is not a binocular item.", _binocularClass], _baseLoadoutId] call _resultFail
+            };
+
+            private _entitlement = [_uid,"Wearables",_binocularClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+            if !(_entitlement getOrDefault ["entitled",false]) exitWith {
+                [_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"],_entitlement getOrDefault ["message","Binocular is not entitled for this player."],_baseLoadoutId] call _resultFail
             };
 
             _mutatedLoadout set [8, _binocularClass];
@@ -926,6 +953,14 @@ switch (_op) do {
 
         if !(isClass (_sourceItemsCfg >> _attachmentClass)) exitWith {
             ["ERR_UNKNOWN_ATTACHMENT", format ["Attachment '%1' is not present in canonical source items.", _attachmentClass], _baseLoadoutId] call _resultFail
+        };
+
+        private _assignedEntitlement = createHashMapFromArray [["entitled",true]];
+        if !(_itemClass isEqualTo "") then {
+            _assignedEntitlement = [_uid,"Wearables",_itemClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+        };
+        if !(_assignedEntitlement getOrDefault ["entitled",false]) exitWith {
+            [_assignedEntitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"],_assignedEntitlement getOrDefault ["message","Assigned item is not entitled for this player."],_baseLoadoutId] call _resultFail
         };
 
         private _attachmentEntitlement = createHashMapFromArray [["entitled", true]];
@@ -1095,6 +1130,30 @@ switch (_op) do {
         private _kind = _classCheck getOrDefault ["kind", ""];
         private _ammoCount = _classCheck getOrDefault ["ammoCount", 0];
 
+        private _cargoEntitlement = createHashMapFromArray [
+            ["success", true],
+            ["entitled", true],
+            ["code", "ENTITLED_REMOVAL"],
+            ["message", "Cargo removal requires no entitlement."]
+        ];
+        if (_delta > 0) then {
+            _cargoEntitlement = [
+                _uid,
+                "Consumables",
+                _className
+            ] call bn_koth_fnc_progression_evaluateItemEntitlement;
+        };
+
+        // IMPORTANT: reject at the adjust_cargo case scope. An exitWith inside
+        // the positive-delta block above would only exit that nested block.
+        if !(_cargoEntitlement getOrDefault ["entitled", false]) exitWith {
+            [
+                _cargoEntitlement getOrDefault ["code", "ERR_CONSUMABLE_ENTITLEMENT"],
+                _cargoEntitlement getOrDefault ["message", "Cargo item is not entitled for this player."],
+                _baseLoadoutId
+            ] call _resultFail
+        };
+
         private _existingCount = 0;
         {
             private _entryClass = toLower (_x select 0);
@@ -1176,6 +1235,6 @@ createHashMapFromArray [
     ["validatedWeapons", createHashMap],
     ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"],
     ["shouldApply", _shouldApply],
-    ["savedSlotId", _slotId],
+    ["savedKitId", _kitId],
     ["mutationOp", _op]
 ]

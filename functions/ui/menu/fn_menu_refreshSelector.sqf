@@ -320,6 +320,19 @@ private _backText = switch (_selectorMode) do {
 };
 
 _ctrlPrimaryBack ctrlSetText _backText;
+private _backAction = if (_selectorMode isEqualTo "ASSIGNED" && {_assignedStage isEqualTo 2}) then {
+    "uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; ['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;"
+} else {
+    if (
+        (_selectorMode isEqualTo "CARGO") &&
+        {(uiNamespace getVariable ["BN_KOTH_menuSelectorReturnPage", "LOADOUT"]) isEqualTo "LOADOUT_BROWSER"}
+    ) then {
+        "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'uniform']; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;"
+    } else {
+        "['LOADOUT'] call bn_koth_fnc_menu_refresh;"
+    }
+};
+_ctrlPrimaryBack buttonSetAction _backAction;
 
 
 if (isNull player) exitWith {
@@ -433,7 +446,18 @@ if (
                     private _targetPage = _selected getOrDefault ['targetPage', ''];
 
                     if !(_targetPage isEqualTo '') then {
-                        [_targetPage] call bn_koth_fnc_menu_refresh;
+                        private _browserSlot = switch (_targetPage) do {
+                            case 'LOADOUT_FACEWEAR': {'facewear'};
+                            case 'LOADOUT_BINOCULAR': {'binocular'};
+                            default {''};
+                        };
+                        if !(_browserSlot isEqualTo '') then {
+                            uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', _browserSlot];
+                            uiNamespace setVariable ['BN_KOTH_menuBrowserSnapPending', true];
+                            ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;
+                        } else {
+                            [_targetPage] call bn_koth_fnc_menu_refresh;
+                        };
                     } else {
                         private _nextSlot = _selected getOrDefault ['assignedIndex', -1];
 
@@ -542,7 +566,7 @@ if (_selectedAvailable) then {
                 ["available", true]
             ]];
             _ctrlCargoMinus ctrlEnable (_currentCount > 0);
-            _ctrlCargoPlus ctrlEnable true;
+            _ctrlCargoPlus ctrlEnable (_selected getOrDefault ["canAdd", true]);
             _enableApply = false;
         };
         default {

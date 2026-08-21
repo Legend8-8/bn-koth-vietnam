@@ -22,10 +22,16 @@ if (isNull _display) exitWith {};
 
 private _cardIdcs = call bn_koth_fnc_menu_getItemCardControls;
 private _weaponSlot = toLower (uiNamespace getVariable ["BN_KOTH_menuBrowserSlot", "primary"]);
-if !(_weaponSlot in ["primary", "handgun", "launcher"]) then {
+if !(_weaponSlot in ["primary", "handgun", "launcher", "uniform", "vest", "headgear", "facewear", "binocular", "backpack", "assigned"]) then {
     _weaponSlot = "primary";
 };
 uiNamespace setVariable ["BN_KOTH_menuBrowserSlot", _weaponSlot];
+if (_weaponSlot isEqualTo "assigned") exitWith {
+    [_display] call bn_koth_fnc_menu_refreshAssignedBrowser;
+};
+if (_weaponSlot in ["uniform", "vest", "headgear", "facewear", "binocular", "backpack"]) exitWith {
+    [_display, _weaponSlot] call bn_koth_fnc_menu_refreshWearableBrowser;
+};
 private _weaponSlotUpper = toUpper _weaponSlot;
 private _loadoutSlotIndex = switch (_weaponSlot) do {
     case "handgun": {2};
@@ -188,6 +194,11 @@ private _pageCount = ceil ((count _entries) / _pageSize);
 _pageCount = _pageCount max 1;
 
 private _page = uiNamespace getVariable ["BN_KOTH_menuBrowserPage", 0];
+if (uiNamespace getVariable ["BN_KOTH_menuBrowserSnapPending", false]) then {
+    private _appliedIndex = _entries findIf {(_x getOrDefault ["weaponClass", ""]) isEqualTo _intendedWeaponClass};
+    if (_appliedIndex >= 0) then {_page = floor (_appliedIndex / _pageSize)};
+    uiNamespace setVariable ["BN_KOTH_menuBrowserSnapPending", false];
+};
 if !(_page isEqualType 0) then {_page = 0};
 _page = (_page max 0) min (_pageCount - 1);
 uiNamespace setVariable ["BN_KOTH_menuBrowserPage", _page];

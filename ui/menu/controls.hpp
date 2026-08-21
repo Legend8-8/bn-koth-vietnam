@@ -77,3 +77,9 @@ class BN_KOTH_Menu_ActionButton: BN_KOTH_RscButton
     colorBackgroundActive[] = {0.20, 0.15, 0.08, 0.96};
     colorFocused[] = {0.20, 0.15, 0.08, 0.96};
 };
+
+class BN_KOTH_Menu_Edit: BN_KOTH_RscEdit
+{
+    style = 0;
+    sizeEx = "0.020 * safeZoneH";
+};

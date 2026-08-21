@@ -28,4 +28,7 @@ Run build.py to export trimmed mission folders for all maps under maps/<map_name
 5. Notes
 
 - user_paths.py is gitignored as machine-local config.
-- If links already exist, setup_dev_environment.py only adds missing links.
+- Existing linked mission content is retained. The merged `config/` subtree is
+  refreshed from shared and map-specific sources on every setup run because it
+  cannot be represented by one direct directory link. This keeps function
+  registrations and other shared configuration current in existing missions.

@@ -237,6 +237,24 @@ Examples:
 
 Test the directly affected system and any system that depends on it.
 
+For the Arsenal rework, also verify:
+
+- opening at the correct team mapboard reconciles the overview from the
+  server-observed physical player loadout;
+- each browser opens on the currently applied item when one exists, without
+  repeatedly overriding manual pagination;
+- locked weapons, attachments, wearables, assigned items, and positive cargo
+  additions cannot be submitted successfully by an under-level client;
+- cargo removal remains possible when entitlement has subsequently been lost;
+- partial slot changes do not restore unrelated equipment;
+- locally named kits survive a client restart, while edited or malformed local
+  profile data is rejected by server validation;
+- repeated browser, Configure, cargo, assigned-item, and kit-manager entry and
+  exit does not leave stale controls, actions, pages, or draft state;
+- the disabled operator preview creates no camera or render-to-texture view;
+- client and server RPT files remain free of Arsenal script errors throughout
+  the complete flow.
+
 14. Definition of Tested
 
 A feature may be considered tested when:

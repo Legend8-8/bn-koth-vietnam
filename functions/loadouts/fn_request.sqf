@@ -16,12 +16,18 @@ params [
 
 // Client entry point: send intent only. Never send a player object or side as authority.
 if (hasInterface && {!isServer}) exitWith {
+    if (_request isEqualType createHashMap) then {
+        _request set ["arsenalBoardNetId", uiNamespace getVariable ["BN_KOTH_menuArsenalBoardNetId", ""]];
+    };
     [_request] remoteExecCall ["bn_koth_fnc_loadouts_request", 2];
 };
 
 // Hosted-server player entry point: force the same remote-exec path so
 // remoteExecutedOwner is authoritative exactly as it will be on dedicated.
 if (hasInterface && {isServer} && {remoteExecutedOwner <= 0}) exitWith {
+    if (_request isEqualType createHashMap) then {
+        _request set ["arsenalBoardNetId", uiNamespace getVariable ["BN_KOTH_menuArsenalBoardNetId", ""]];
+    };
     [_request] remoteExecCall ["bn_koth_fnc_loadouts_request", 2];
 };
 
@@ -63,24 +69,22 @@ _record set ["lastLoadoutRequestAt", _now];
 _records set [_uid, _record];
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
-// Read-only snapshots may be requested anywhere. Every operation capable of
-// changing or storing loadout state requires authoritative access at the
-// player's active team mapboard. The client-side menu capability flag is
-// presentation only and is never trusted here.
+// Every operation capable of changing or storing loadout state requires
+// authoritative access at the player's active team mapboard. The client-side
+// menu capability flag is presentation only and is never trusted here.
 private _requiresArsenalAccess = true;
 
+// Snapshot intent contains no client inventory. The server reads the player
+// object and returns that observation without applying equipment.
 if (_request isEqualType createHashMap) then {
-    private _requestKeys = keys _request;
-
-    if (((count _requestKeys) isEqualTo 1) && {"mutation" in _requestKeys}) then {
-        private _mutation = _request getOrDefault ["mutation", createHashMap];
-
-        if (_mutation isEqualType createHashMap) then {
-            private _mutationOp = toLower (_mutation getOrDefault ["op", ""]);
-            _requiresArsenalAccess = !(_mutationOp isEqualTo "snapshot");
-        };
+    private _mutation = _request getOrDefault ["mutation", createHashMap];
+    if (_mutation isEqualType createHashMap) then {
+        _requiresArsenalAccess = !((toLower (_mutation getOrDefault ["op", ""])) isEqualTo "snapshot");
     };
 };
+
+private _arsenalBoardNetId = if (_request isEqualType createHashMap) then {_request getOrDefault ["arsenalBoardNetId", ""]} else {""};
+if (_request isEqualType createHashMap) then {_request deleteAt "arsenalBoardNetId";};
 
 private _arsenalAccessFailure = "";
 
@@ -129,7 +133,20 @@ if (_requiresArsenalAccess) then {
     };
 
     if (_arsenalAccessFailure isEqualTo "") then {
-        _boardTarget = missionNamespace getVariable [_boardRef, objNull];
+        if (_arsenalBoardNetId isEqualType "" && {!(_arsenalBoardNetId isEqualTo "")}) then {
+            _boardTarget = objectFromNetId _arsenalBoardNetId;
+        };
+
+        private _configuredBoard = missionNamespace getVariable [_boardRef, objNull];
+        if (!isNull _boardTarget && {!isNull _configuredBoard} && {!(_boardTarget isEqualTo _configuredBoard)}) then {
+            _boardTarget = objNull;
+        };
+
+        if (!isNull _boardTarget && {!((markerShape _boardRef) isEqualTo "")} && {(_boardTarget distance2D (markerPos _boardRef)) > 8}) then {
+            _boardTarget = objNull;
+        };
+
+        if (isNull _boardTarget) then {_boardTarget = _configuredBoard;};
 
         if (isNull _boardTarget && {!((markerShape _boardRef) isEqualTo "")}) then {
             private _boardPos = markerPos _boardRef;

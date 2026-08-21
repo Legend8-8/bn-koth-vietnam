@@ -23,4 +23,6 @@ if (isNull _display) then {
 
 if (!isNull _display) then {
     _display closeDisplay 2;
+} else {
+    [] call bn_koth_fnc_menu_stopPlayerPreview;
 };

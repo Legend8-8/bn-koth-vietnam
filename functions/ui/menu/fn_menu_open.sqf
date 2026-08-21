@@ -5,6 +5,7 @@
     Execution: Client
     Parameters:
         0: Arsenal capability requested by the local menu opener <BOOL> (optional, default false)
+        1: Actual local action target mapboard <OBJECT> (optional)
     Returns:
         True when open, otherwise false <BOOL>
     Public: Yes
@@ -13,12 +14,14 @@
 #include "..\..\..\ui\menu\idcs.hpp"
 
 params [
-    ["_arsenalEnabled", false, [true]]
+    ["_arsenalEnabled", false, [true]],
+    ["_arsenalBoard", objNull, [objNull]]
 ];
 
 if (!hasInterface) exitWith {false};
 
 uiNamespace setVariable ["BN_KOTH_menuArsenalEnabled", _arsenalEnabled];
+uiNamespace setVariable ["BN_KOTH_menuArsenalBoardNetId", if (isNull _arsenalBoard) then {""} else {netId _arsenalBoard}];
 
 disableSerialization;
 

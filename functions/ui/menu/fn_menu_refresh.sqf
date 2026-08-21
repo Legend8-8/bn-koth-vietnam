@@ -42,6 +42,7 @@ private _validPages = [
     "LOADOUT_EQUIPMENT",
     "LOADOUT_ATTACHMENTS",
     "LOADOUT_CARGO",
+    "LOADOUT_KITS",
     "STORE",
     "PERKS",
     "STATS",
@@ -93,7 +94,6 @@ private _ctrlFacewearButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_FACEWEA
 private _ctrlBinocularButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_BINOCULAR_BUTTON;
 private _ctrlEquipmentButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_EQUIPMENT_BUTTON;
 private _ctrlCargoButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_CARGO_BUTTON;
-private _ctrlAttachmentsButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_ATTACHMENTS_BUTTON;
 
 private _ctrlNavLoadout = _display displayCtrl BN_KOTH_IDC_MENU_NAV_LOADOUT;
 private _ctrlNavStore = _display displayCtrl BN_KOTH_IDC_MENU_NAV_STORE;
@@ -125,12 +125,6 @@ private _ctrlLoadoutPicVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_
 private _ctrlLoadoutPicHeadgear = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_HEADGEAR;
 private _ctrlLoadoutPicBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_BACKPACK;
 private _ctrlLoadoutPicEquipment = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_EQUIPMENT;
-private _ctrlLoadoutCogPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_PRIMARY;
-private _ctrlLoadoutCogHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_HANDGUN;
-private _ctrlLoadoutCogLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_LAUNCHER;
-private _ctrlLoadoutCogUniform = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_UNIFORM;
-private _ctrlLoadoutCogVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_VEST;
-private _ctrlLoadoutCogBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_COG_BACKPACK;
 private _ctrlPrimaryPreview = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_PREVIEW;
 private _ctrlPrimaryTitle = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_TITLE;
 private _ctrlPrimaryCurrent = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_CURRENT;
@@ -148,9 +142,17 @@ private _ctrlBrowserPageNext = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAG
 private _ctrlBrowserPageLabel = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL;
 private _ctrlConfigureMagazines = _display displayCtrl BN_KOTH_IDC_MENU_CONFIGURE_MAGAZINES;
 private _ctrlConfigureAttachments = _display displayCtrl BN_KOTH_IDC_MENU_CONFIGURE_ATTACHMENTS;
-private _ctrlSessionSave = _display displayCtrl BN_KOTH_IDC_MENU_SESSION_SAVE_BUTTON;
-private _ctrlSessionLoad = _display displayCtrl BN_KOTH_IDC_MENU_SESSION_LOAD_BUTTON;
-private _ctrlSessionDelete = _display displayCtrl BN_KOTH_IDC_MENU_SESSION_DELETE_BUTTON;
+private _ctrlCargoCategoryAmmunition = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_AMMUNITION;
+private _ctrlCargoCategoryGrenades = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_GRENADES;
+private _ctrlCargoCategorySmoke = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_SMOKE;
+private _ctrlCargoCategoryMedical = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_MEDICAL;
+private _ctrlCargoCategoryNavigation = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_NAVIGATION;
+private _ctrlCargoCategoryEquipment = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_EQUIPMENT;
+private _ctrlKitName = _display displayCtrl BN_KOTH_IDC_MENU_KIT_NAME;
+private _ctrlKitSave = _display displayCtrl BN_KOTH_IDC_MENU_KIT_SAVE;
+private _ctrlKitRename = _display displayCtrl BN_KOTH_IDC_MENU_KIT_RENAME;
+private _ctrlKitManage = _display displayCtrl BN_KOTH_IDC_MENU_KIT_MANAGE;
+private _ctrlKitSaveCurrent = _display displayCtrl BN_KOTH_IDC_MENU_KIT_SAVE_CURRENT;
 
 private _setNavState = {
     params ["_ctrl", "_isActive"];
@@ -246,7 +248,8 @@ private _loadoutPages = [
     "LOADOUT_BINOCULAR",
     "LOADOUT_EQUIPMENT",
     "LOADOUT_ATTACHMENTS",
-    "LOADOUT_CARGO"
+    "LOADOUT_CARGO",
+    "LOADOUT_KITS"
 ];
 
 [_ctrlNavLoadout, _activePage in _loadoutPages] call _setNavState;
@@ -280,12 +283,6 @@ private _mainViewControls = [
     _ctrlLoadoutPicHeadgear,
     _ctrlLoadoutPicBackpack,
     _ctrlLoadoutPicEquipment,
-    _ctrlLoadoutCogPrimary,
-    _ctrlLoadoutCogHandgun,
-    _ctrlLoadoutCogLauncher,
-    _ctrlLoadoutCogUniform,
-    _ctrlLoadoutCogVest,
-    _ctrlLoadoutCogBackpack,
     _ctrlPrimary,
     _ctrlHandgun,
     _ctrlLauncher,
@@ -307,13 +304,11 @@ private _mainViewControls = [
     _ctrlBinocularButton,
     _ctrlEquipmentButton,
     _ctrlCargoButton,
-    _ctrlAttachmentsButton,
     _ctrlSectionTitle,
     _ctrlNotice,
     _ctrlFooter,
-    _ctrlSessionSave,
-    _ctrlSessionLoad,
-    _ctrlSessionDelete
+    _ctrlKitManage,
+    _ctrlKitSaveCurrent
 ];
 
 private _selectorViewControls = [
@@ -337,13 +332,26 @@ private _browserViewControls = [
     _ctrlBrowserPageLabel
 ];
 
+private _browserCardControls = [];
+
 private _configureViewControls = [
     _ctrlConfigureMagazines,
     _ctrlConfigureAttachments
 ];
 
+private _cargoBrowserControls = [
+    _ctrlCargoCategoryAmmunition,
+    _ctrlCargoCategoryGrenades,
+    _ctrlCargoCategorySmoke,
+    _ctrlCargoCategoryMedical,
+    _ctrlCargoCategoryNavigation,
+    _ctrlCargoCategoryEquipment
+];
+
+private _kitManagerControls = [_ctrlKitName, _ctrlKitSave, _ctrlKitRename];
+
 {
-    _browserViewControls append [
+    _browserCardControls append [
         _display displayCtrl _x,
         _display displayCtrl (_x + 1),
         _display displayCtrl (_x + 2),
@@ -374,7 +382,10 @@ private _showMainView = {
     { _x ctrlShow true; } forEach _mainViewControls;
     { _x ctrlShow false; } forEach _selectorViewControls;
     { _x ctrlShow false; } forEach _browserViewControls;
+    { _x ctrlShow false; } forEach _browserCardControls;
     { _x ctrlShow false; } forEach _configureViewControls;
+    { _x ctrlShow false; } forEach _cargoBrowserControls;
+    { _x ctrlShow false; } forEach _kitManagerControls;
     { _x ctrlShow true; } forEach _navControls;
 };
 
@@ -383,7 +394,10 @@ private _showSelectorView = {
     { _x ctrlShow false; } forEach _mainViewControls;
     { _x ctrlShow true; } forEach _selectorViewControls;
     { _x ctrlShow false; } forEach _browserViewControls;
+    { _x ctrlShow false; } forEach _browserCardControls;
     { _x ctrlShow false; } forEach _configureViewControls;
+    { _x ctrlShow false; } forEach _cargoBrowserControls;
+    { _x ctrlShow false; } forEach _kitManagerControls;
     { _x ctrlShow true; } forEach _navControls;
 };
 
@@ -392,7 +406,10 @@ private _showBrowserView = {
     { _x ctrlShow false; } forEach _mainViewControls;
     { _x ctrlShow false; } forEach _selectorViewControls;
     { _x ctrlShow true; } forEach _browserViewControls;
+    { _x ctrlShow false; } forEach _browserCardControls;
     { _x ctrlShow false; } forEach _configureViewControls;
+    { _x ctrlShow false; } forEach _cargoBrowserControls;
+    { _x ctrlShow false; } forEach _kitManagerControls;
     { _x ctrlShow false; } forEach _navControls;
 };
 
@@ -438,8 +455,7 @@ private _showComingSoon = {
         _ctrlFacewearButton,
         _ctrlBinocularButton,
         _ctrlEquipmentButton,
-        _ctrlCargoButton,
-        _ctrlAttachmentsButton
+        _ctrlCargoButton
     ];
 };
 
@@ -450,6 +466,19 @@ if !(_activePage isEqualTo "LOADOUT_CARGO") then {
     uiNamespace setVariable ["BN_KOTH_menuCargoContainerFilter", ""];
     uiNamespace setVariable ["BN_KOTH_menuCargoInitialContainer", ""];
     uiNamespace setVariable ["BN_KOTH_menuCargoInitialInKit", createHashMap];
+    if !(_activePage isEqualTo "LOADOUT_BROWSER") then {
+        uiNamespace setVariable ["BN_KOTH_menuSelectorReturnPage", "LOADOUT"];
+    };
+};
+
+private _showKitManagerView = {
+    call _showBrowserView;
+    { _x ctrlShow true; } forEach _kitManagerControls;
+};
+
+private _showCargoBrowserView = {
+    call _showBrowserView;
+    { _x ctrlShow true; } forEach _cargoBrowserControls;
 };
 
 if !(_activePage in _loadoutPages) exitWith {
@@ -486,6 +515,16 @@ if (_activePage isEqualTo "LOADOUT_BROWSER") exitWith {
 if (_activePage isEqualTo "LOADOUT_CONFIGURE") exitWith {
     call _showConfigureView;
     [_display] call bn_koth_fnc_menu_refreshConfigure;
+};
+
+if (_activePage isEqualTo "LOADOUT_CARGO") exitWith {
+    call _showCargoBrowserView;
+    [_display, _intendedLoadout, _compatibilityCfg] call bn_koth_fnc_menu_refreshCargoBrowser;
+};
+
+if (_activePage isEqualTo "LOADOUT_KITS") exitWith {
+    call _showKitManagerView;
+    [_display] call bn_koth_fnc_menu_refreshSessionKits;
 };
 
 private _selectorMode = switch (_activePage) do {

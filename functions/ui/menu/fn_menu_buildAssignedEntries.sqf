@@ -19,6 +19,8 @@ params [
 ];
 
 private _entries = [];
+private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
+if !(_progression isEqualType createHashMap) then {_progression = createHashMap};
 private _sourceItemsCfg = _compatibilityCfg >> "SourceItems";
 if !(isClass _sourceItemsCfg) exitWith {_entries};
 
@@ -72,7 +74,9 @@ for "_i" from 0 to 5 do {
             if (_displayName isEqualTo "") then {
                 _displayName = [_class] call _resolveItemName;
             };
-            _slotArray pushBack [_displayName, _class];
+            private _metadata = ["Wearables", _class] call bn_koth_fnc_loadouts_getItemMetadata;
+            private _entitlement = [_progression, _metadata, _class] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+            _slotArray pushBack [_displayName, _class, _metadata, _entitlement];
             _slotCandidates set [_i, _slotArray];
         };
     };
@@ -138,11 +142,18 @@ if (_assignedStage isEqualTo 1) then {
     {
         private _name = _x select 0;
         private _class = _x select 1;
+        private _metadata = _x select 2;
+        private _entitlement = _x select 3;
+        private _itemCfg = configFile >> "CfgWeapons" >> _class;
         _entries pushBack (createHashMapFromArray [
             ["displayName", format ["%1: %2", _slotLabels select _selectedSlotIndex, _name]],
             ["assignedIndex", _selectedSlotIndex],
             ["itemClass", _class],
-            ["available", true],
+            ["available", _entitlement getOrDefault ["entitled", false]],
+            ["technicalAvailable", true],
+            ["entitlementCode", _entitlement getOrDefault ["code", "LOCKED_STATE"]],
+            ["minLevel", _metadata getOrDefault ["minLevel", 1]],
+            ["picture", getText (_itemCfg >> "picture")],
             ["equipped", _class isEqualTo toLower (_assigned select _selectedSlotIndex)]
         ]);
     } forEach _sortable;

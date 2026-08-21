@@ -14,7 +14,6 @@ if (!isServer) exitWith {0};
 
 // Session-scoped authoritative loadout intent state keyed by UID.
 missionNamespace setVariable ["BN_KOTH_playerLoadoutState", createHashMap];
-missionNamespace setVariable ["BN_KOTH_savedLoadoutsByUid", createHashMap];
 missionNamespace setVariable ["BN_KOTH_loadoutDefinitions", createHashMap];
 missionNamespace setVariable ["BN_KOTH_loadoutsInitialized", false];
 
