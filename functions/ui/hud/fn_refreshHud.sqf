@@ -2,7 +2,7 @@
     File: fn_refreshHud.sqf
     Author: Legend
     Edited: Mongo
-    Description: Renders scores, AO control detail, Priority status, and safe-zone status.
+    Description: Renders scores, AO status, score progress, and safe-zone notices.
     Execution: Client
     Parameters:
         None
@@ -17,26 +17,6 @@ if (!hasInterface) exitWith {};
 
 private _display = uiNamespace getVariable ["BN_KOTH_hudDisplay", displayNull];
 if (isNull _display) exitWith {};
-
-private _priorityMarker = "BN_KOTH_priorityZoneMarker";
-private _priorityAvailable = !((markerShape _priorityMarker) isEqualTo "")
-    && {(markerAlpha _priorityMarker) > 0};
-
-private _priorityCfg = missionConfigFile >> "CfgBnKothZone";
-private _maximumControlHeight = if (isClass _priorityCfg && {isNumber (_priorityCfg >> "maximumControlHeight")}) then {
-    getNumber (_priorityCfg >> "maximumControlHeight")
-} else {
-    50
-};
-private _playerInPriority = _priorityAvailable
-    && {!isNull player}
-    && {(getPosATL player select 2) < _maximumControlHeight}
-    && {player inArea _priorityMarker};
-private _priorityWeight = if (isClass _priorityCfg) then {
-    (getNumber (_priorityCfg >> "priorityControlWeight")) max 1
-} else {
-    2
-};
 
 private _scoringCfg = missionConfigFile >> "CfgBnKothScoring";
 private _teamScores = missionNamespace getVariable [
@@ -75,50 +55,6 @@ switch (_zoneState) do {
     };
 };
 
-private _population = missionNamespace getVariable ["BN_KOTH_zonePopulation", createHashMap];
-private _raw = [0, 0];
-private _weighted = [0, 0];
-private _priority = [0, 0];
-if (_population isEqualType createHashMap) then {
-    _raw = _population getOrDefault ["raw", [0, 0]];
-    _weighted = _population getOrDefault ["weighted", [0, 0]];
-    _priority = _population getOrDefault ["priority", [0, 0]];
-} else {
-    // Compatibility with a snapshot produced by the previous array-only state.
-    _raw = _population;
-    _weighted = _population;
-};
-
-private _readPair = {
-    params ["_values"];
-    [
-        if ((count _values) > 0) then {_values select 0} else {0},
-        if ((count _values) > 1) then {_values select 1} else {0}
-    ]
-};
-_raw = [_raw] call _readPair;
-_weighted = [_weighted] call _readPair;
-_priority = [_priority] call _readPair;
-
-private _playableSides = missionNamespace getVariable ["BN_KOTH_playableSides", [west, east]];
-if ((count _playableSides) < 2) then {_playableSides = [west, east];};
-private _sideA = _playableSides select 0;
-private _sideB = _playableSides select 1;
-
-private _toWestEast = {
-    params ["_values"];
-    private _westValue = 0;
-    private _eastValue = 0;
-    if (_sideA isEqualTo west) then {_westValue = _values select 0;};
-    if (_sideB isEqualTo west) then {_westValue = _values select 1;};
-    if (_sideA isEqualTo east) then {_eastValue = _values select 0;};
-    if (_sideB isEqualTo east) then {_eastValue = _values select 1;};
-    [_westValue, _eastValue]
-};
-private _rawWestEast = [_raw] call _toWestEast;
-private _weightedWestEast = [_weighted] call _toWestEast;
-private _priorityWestEast = [_priority] call _toWestEast;
-
 private _roundLeadText = "ROUND: TIED";
 if (_westScore > _eastScore) then {
     _roundLeadText = format ["ROUND LEAD: WEST +%1", _westScore - _eastScore];
@@ -128,47 +64,76 @@ if (_westScore > _eastScore) then {
     };
 };
 
-private _priorityText = "";
-private _priorityVisible = _priorityAvailable;
-if (_priorityAvailable) then {
-    _priorityText = if (_playerInPriority) then {
-        format ["YOU: IN PRIORITY - %1x CONTROL", _priorityWeight]
-    } else {
-        "YOU: OUTSIDE PRIORITY"
-    };
-};
-
-private _safeZoneText = "";
-private _safeZoneColor = [0.48, 1, 0.58, 1];
-private _safeZoneVisible = false;
-if (!isNull player && {player getVariable ["BN_KOTH_enemySafeZoneIntruder", false]}) then {
-    _safeZoneText = "ENEMY SAFE ZONE - WEAPONS AND VEHICLES DISABLED";
-    _safeZoneColor = [1, 0.35, 0.30, 1];
-    _safeZoneVisible = true;
+private _enemySafeZoneVisible = !isNull player
+    && {player getVariable ["BN_KOTH_enemySafeZoneIntruder", false]};
+private _enemySafeZoneText = if (_enemySafeZoneVisible) then {
+    "ENEMY SAFE ZONE LEAVE NOW"
 } else {
-    if (!isNull player && {player getVariable ["BN_KOTH_safeZoneProtected", false]}) then {
-        _safeZoneText = "SAFE ZONE - PROTECTED - WEAPONS DISABLED";
-        _safeZoneVisible = true;
+    ""
+};
+
+private _safeZoneProtected = !isNull player
+    && {player getVariable ["BN_KOTH_safeZoneProtected", false]};
+private _previousSafeZoneProtected = uiNamespace getVariable [
+    "BN_KOTH_hudSafeZonePreviousProtected",
+    _safeZoneProtected
+];
+private _safeZoneExitUntil = uiNamespace getVariable [
+    "BN_KOTH_hudSafeZoneExitUntil",
+    -1
+];
+private _safeZonePresentationActive = !isNull player
+    && {alive player}
+    && {(missionNamespace getVariable ["BN_KOTH_roundState", ""]) in ["PREPARING", "ACTIVE"]};
+private _now = diag_tickTime;
+
+if (_safeZoneProtected isNotEqualTo _previousSafeZoneProtected) then {
+    if (_previousSafeZoneProtected
+        && {!_safeZoneProtected}
+        && {_safeZonePresentationActive}
+        && {!_enemySafeZoneVisible}) then {
+        private _respawnConfig = missionConfigFile >> "CfgBnKothRespawn";
+        private _exitMessageSeconds = if (isClass _respawnConfig
+            && {isNumber (_respawnConfig >> "friendlySafeZoneExitMessageSeconds")}) then {
+            getNumber (_respawnConfig >> "friendlySafeZoneExitMessageSeconds")
+        } else {
+            5
+        };
+
+        _safeZoneExitUntil = _now + (_exitMessageSeconds max 0);
+        uiNamespace setVariable ["BN_KOTH_hudSafeZoneExitUntil", _safeZoneExitUntil];
+    };
+
+    uiNamespace setVariable ["BN_KOTH_hudSafeZonePreviousProtected", _safeZoneProtected];
+};
+
+if (!_safeZonePresentationActive || {_safeZoneProtected} || {_enemySafeZoneVisible}) then {
+    if (_safeZoneExitUntil >= 0) then {
+        _safeZoneExitUntil = -1;
+        uiNamespace setVariable ["BN_KOTH_hudSafeZoneExitUntil", _safeZoneExitUntil];
     };
 };
 
-private _actualText = format ["ACTUAL PLAYERS  W %1 | E %2", _rawWestEast select 0, _rawWestEast select 1];
-private _weightedText = format ["WEIGHTED CONTROL  W %1 | E %2", _weightedWestEast select 0, _weightedWestEast select 1];
-private _prioritySummaryText = format ["PRIORITY OCCUPANCY  W %1 | E %2", _priorityWestEast select 0, _priorityWestEast select 1];
+private _safeZoneVisible = _safeZonePresentationActive
+    && {!_safeZoneProtected}
+    && {!_enemySafeZoneVisible}
+    && {_now < _safeZoneExitUntil};
+private _safeZoneText = if (_safeZoneVisible) then {
+    "LEAVING SAFE ZONE"
+} else {
+    ""
+};
+
 private _staticKey = [
     _westScore,
     _eastScore,
     _statusText,
     _statusColor,
     _roundLeadText,
-    _actualText,
-    _weightedText,
-    _prioritySummaryText,
-    _priorityText,
-    _priorityVisible,
     _safeZoneText,
-    _safeZoneColor,
-    _safeZoneVisible
+    _safeZoneVisible,
+    _enemySafeZoneText,
+    _enemySafeZoneVisible
 ];
 
 if !((uiNamespace getVariable ["BN_KOTH_hudStaticKey", []]) isEqualTo _staticKey) then {
@@ -177,18 +142,14 @@ if !((uiNamespace getVariable ["BN_KOTH_hudStaticKey", []]) isEqualTo _staticKey
     (_display displayCtrl BN_KOTH_IDC_HUD_STATUS) ctrlSetText _statusText;
     (_display displayCtrl BN_KOTH_IDC_HUD_STATUS) ctrlSetTextColor _statusColor;
     (_display displayCtrl BN_KOTH_IDC_HUD_ROUND_LEAD) ctrlSetText _roundLeadText;
-    (_display displayCtrl BN_KOTH_IDC_HUD_ACTUAL) ctrlSetText _actualText;
-    (_display displayCtrl BN_KOTH_IDC_HUD_WEIGHTED) ctrlSetText _weightedText;
-    (_display displayCtrl BN_KOTH_IDC_HUD_PRIORITY_SUMMARY) ctrlSetText _prioritySummaryText;
-
-    private _priorityCtrl = _display displayCtrl BN_KOTH_IDC_HUD_PRIORITY;
-    _priorityCtrl ctrlSetText _priorityText;
-    _priorityCtrl ctrlShow _priorityVisible;
 
     private _safeZoneCtrl = _display displayCtrl BN_KOTH_IDC_HUD_SAFE_ZONE;
     _safeZoneCtrl ctrlSetText _safeZoneText;
-    _safeZoneCtrl ctrlSetTextColor _safeZoneColor;
     _safeZoneCtrl ctrlShow _safeZoneVisible;
+
+    private _enemySafeZoneCtrl = _display displayCtrl BN_KOTH_IDC_HUD_ENEMY_SAFE_ZONE;
+    _enemySafeZoneCtrl ctrlSetText _enemySafeZoneText;
+    _enemySafeZoneCtrl ctrlShow _enemySafeZoneVisible;
     uiNamespace setVariable ["BN_KOTH_hudStaticKey", _staticKey];
 };
 

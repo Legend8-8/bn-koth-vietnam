@@ -108,7 +108,11 @@ Zone-related changes must verify:
 - disconnected players are removed from the calculation;
 - zone state updates at the expected interval;
 - actual-player, weighted-control and Priority-occupancy values come from the same eligible-player pass;
-- the HUD maps playable-side order to WEST/EAST correctly and reports personal Priority status.
+- the bottom-right HUD shows WEST/EAST team scores, AO status, round lead, and
+  scoring progress without showing actual-player, weighted-control,
+  Priority-occupancy, or personal Priority-status rows;
+- removing those HUD rows does not change published population values, Priority
+  weighting, zone control, scoring, or the debug display.
 
 If vehicle occupants count toward control, test players entering and leaving vehicles inside the zone.
 
@@ -133,8 +137,18 @@ Respawn-related changes must verify:
 - enemy spawn positions cannot be used;
 - protection is active only while a deployed player is spatially inside the player's own active safe zone;
 - leaving removes protection and re-entering restores it without a timer;
+- no friendly safe-zone status indicator is visible while protection is active;
+- leaving a friendly safe zone shows the exact top-screen `LEAVING SAFE ZONE`
+  message in green for five seconds and then removes it;
+- re-entering the friendly safe zone removes the exit message immediately, and
+  death, respawn, enemy-safe-zone entry, or a non-active safe-zone round state
+  does not leave or create a false exit message;
 - protected players cannot fire, cause damage, or receive damage;
 - an enemy intruder cannot fire, cause damage, or enter a vehicle but remains damageable;
+- entering an opposing safe zone shows the exact persistent top-screen warning
+  `ENEMY SAFE ZONE LEAVE NOW` in red text, and leaving removes it;
+- the enemy warning does not interfere with the friendly exit notification or
+  unrelated HUD controls;
 - an enemy already in a vehicle is ejected when entering the opposing safe zone;
 - an enemy intruder can be run over by a protected friendly vehicle inside that safe zone;
 - friendly vehicles are protected only when their center is inside their own safe zone;
