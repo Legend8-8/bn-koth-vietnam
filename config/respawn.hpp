@@ -4,5 +4,6 @@ class CfgBnKothRespawn
     // a slower authoritative tick without losing safety or gameplay correctness.
     safeZoneCheckIntervalSeconds = 5.0;
     blockedActionMessageCooldownSeconds = 1;
+    friendlySafeZoneExitMessageSeconds = 5;
     corpseCleanupDelaySeconds = 300;
 };

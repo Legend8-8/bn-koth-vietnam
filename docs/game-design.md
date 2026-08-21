@@ -63,6 +63,11 @@ The score interval, points awarded per interval and winning score must be config
 
 The server is responsible for calculating and awarding all team score.
 
+The deployed bottom-right HUD presents WEST and EAST team scores, current AO
+control status, the round lead, and scoring progress. Raw player population,
+weighted control, Priority occupancy, and personal Priority status remain part
+of authoritative gameplay where applicable but are not displayed in that panel.
+
 5. Player Progression
 
 The first progression implementation is round-scoped and log-only. XP and
@@ -106,6 +111,11 @@ Phase 3 deliberately replaces the former action- and timeout-based spawn-protect
 - Leaving the team's safe zone removes protection immediately; re-entering restores it.
 - Protection does not expire on a timer and is not consumed by attempting to fire or cause damage. Those actions are blocked while protection is active.
 - Protected players cannot fire weapons or cause outgoing damage and cannot receive incoming damage.
+- No HUD indicator is displayed while friendly safe-zone protection is active.
+- Leaving the friendly safe zone displays a full-width green `LEAVING SAFE ZONE`
+  message across the top of the deployed HUD for five seconds. Re-entering the
+  safe zone, dying, entering an enemy safe zone, or leaving an active safe-zone
+  round state removes the message immediately.
 - Players must not be able to spawn at an enemy base.
 
 An enemy inside the opposing team's safe zone is an intruder:
@@ -114,7 +124,10 @@ An enemy inside the opposing team's safe zone is an intruder:
 - an intruder already in a vehicle is ejected when the vehicle enters the opposing safe zone;
 - no countdown, execution, or forced relocation is used;
 - the intruder remains vulnerable to damage and may be run over inside the opposing safe zone;
-- a persistent HUD warning identifies the restricted and vulnerable state.
+- a persistent full-width warning with red text across the top of the deployed HUD
+  displays `ENEMY SAFE ZONE LEAVE NOW` while the player remains an intruder; the
+  warning disappears after leaving, and the entry and blocked-action notifications
+  identify the weapon, vehicle and vulnerability restrictions.
 
 Vehicle protection is also spatial:
 
