@@ -119,3 +119,25 @@ class BN_KOTH_RscListBox
         autoScrollEnabled = 1;
     };
 };
+
+class BN_KOTH_RscEdit
+{
+    access = 0;
+    type = 2;
+    idc = -1;
+    style = 0;
+    x = 0;
+    y = 0;
+    w = 0.2;
+    h = 0.04;
+    text = "";
+    font = "RobotoCondensed";
+    sizeEx = "0.022 * safeZoneH";
+    colorText[] = {0.95, 0.95, 0.93, 1};
+    colorDisabled[] = {0.6, 0.6, 0.58, 0.5};
+    colorSelection[] = {0.32, 0.24, 0.10, 1};
+    colorBackground[] = {0.035, 0.035, 0.03, 0.96};
+    autocomplete = "";
+    canModify = 1;
+    shadow = 0;
+};

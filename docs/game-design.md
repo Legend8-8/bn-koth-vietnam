@@ -80,8 +80,11 @@ The current implementation awards XP for:
 - validated participation inside the active Priority zone during a scoring interval;
 - validated opposing player kills.
 
-The current level cap is configurable and defaults to 270. Levels do not yet
-gate loadouts, vehicles, currency, or equipment.
+The current level cap is configurable and defaults to 270. The Arsenal now
+supports human-authored level and perk requirements for canonical weapons,
+attachments, wearable/assigned items, and cargo additions. The server repeats
+all entitlement checks before accepting equipment intent. Vehicles, currency,
+ownership, prices, rentals, and stock are not implemented by this work.
 
 Future progression may include:
 
@@ -147,11 +150,16 @@ Physical inventory access is disabled inside both active safe zones:
 
 7. Equipment
 
-The first playable version uses preset faction-appropriate loadouts.
+The Arsenal provides server-validated selection of faction-appropriate S.O.G.
+Prairie Fire weapons, compatible magazines and attachments, wearable and
+assigned equipment, and container cargo. Clients present candidates and submit
+intent; the server owns validation and application.
 
 Equipment must be defined in configuration rather than spread throughout gameplay functions.
 
-Future versions may include equipment shops and progression-based unlocks.
+Future versions may include equipment shops, purchases, rentals, and broader
+progression balance. No economy behavior is implied by current availability or
+entitlement presentation.
 
 8. Vehicles
 

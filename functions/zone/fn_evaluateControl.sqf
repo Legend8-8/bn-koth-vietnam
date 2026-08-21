@@ -18,6 +18,7 @@ if (!isServer) exitWith {sideUnknown};
 
 private _roundState = [] call bn_koth_fnc_round_getState;
 if !(_roundState isEqualTo "ACTIVE") exitWith {
+    missionNamespace setVariable ["BN_KOTH_zoneEligibleSnapshot", createHashMap];
     ["BN_KOTH_zoneController", sideUnknown] call bn_koth_fnc_common_publicState;
     ["BN_KOTH_zoneState", "NEUTRAL"] call bn_koth_fnc_common_publicState;
     ["BN_KOTH_zonePopulation", createHashMapFromArray [
@@ -33,6 +34,7 @@ if !(_roundState isEqualTo "ACTIVE") exitWith {
 
 private _marker = missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""];
 if (_marker isEqualTo "") exitWith {
+    missionNamespace setVariable ["BN_KOTH_zoneEligibleSnapshot", createHashMap];
     if !(missionNamespace getVariable ["BN_KOTH_warnedMissingZoneMarker", false]) then {
         missionNamespace setVariable ["BN_KOTH_warnedMissingZoneMarker", true];
         ["Zone evaluation skipped: BN_KOTH_activeZoneMarker is empty.", "WARN"] call bn_koth_fnc_common_log;
@@ -115,6 +117,10 @@ private _sideAPriorityCount = 0;
 private _sideBPriorityCount = 0;
 private _priorityWestCount = 0;
 private _priorityEastCount = 0;
+private _sideAEligibleUids = [];
+private _sideBEligibleUids = [];
+private _sideAPriorityUids = [];
+private _sideBPriorityUids = [];
 
 {
     private _player = _x;
@@ -126,18 +132,24 @@ private _priorityEastCount = 0;
     };
     private _controlWeight = if (_inPriority) then {_priorityZoneControlWeight} else {1};
 
+    private _uid = getPlayerUID _player;
+
     if (_side isEqualTo _sideA) then {
         _sideARawCount = _sideARawCount + 1;
         _sideAWeightedCount = _sideAWeightedCount + _controlWeight;
+        _sideAEligibleUids pushBack _uid;
         if (_inPriority) then {
             _sideAPriorityCount = _sideAPriorityCount + 1;
+            _sideAPriorityUids pushBack _uid;
         };
     } else {
         if (_side isEqualTo _sideB) then {
             _sideBRawCount = _sideBRawCount + 1;
             _sideBWeightedCount = _sideBWeightedCount + _controlWeight;
+            _sideBEligibleUids pushBack _uid;
             if (_inPriority) then {
                 _sideBPriorityCount = _sideBPriorityCount + 1;
+                _sideBPriorityUids pushBack _uid;
             };
         };
     };
@@ -213,6 +225,12 @@ if (!(_previousController isEqualTo _controller)) then {
 if !(_previousState isEqualTo _zoneState) then {
     [format ["Zone state changed to %1", _zoneState]] call bn_koth_fnc_common_log;
 };
+
+missionNamespace setVariable ["BN_KOTH_zoneEligibleSnapshot", createHashMapFromArray [
+    ["sides", [_sideA, _sideB]],
+    ["eligibleUids", [_sideAEligibleUids, _sideBEligibleUids]],
+    ["priorityUids", [_sideAPriorityUids, _sideBPriorityUids]]
+]];
 
 ["BN_KOTH_zoneController", _controller] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_zoneState", _zoneState] call bn_koth_fnc_common_publicState;

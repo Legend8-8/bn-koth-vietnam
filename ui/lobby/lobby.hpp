@@ -82,6 +82,26 @@ class BN_KOTH_RscLobby
             colorBackground[] = {0.08, 0.08, 0.07, 0.68};
         };
 
+        class BgHeaderXpTrack: BN_KOTH_Lobby_Background
+        {
+            idc = BN_KOTH_IDC_BG_HEADER_XP_TRACK;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.912;
+            y = BN_KOTH_UI_Y + safeZoneH * 0.069;
+            w = BN_KOTH_UI_W * 0.075;
+            h = safeZoneH * 0.004;
+            colorBackground[] = {0.16, 0.15, 0.12, 0.95};
+        };
+
+        class BgHeaderXpFill: BN_KOTH_Lobby_Background
+        {
+            idc = BN_KOTH_IDC_BG_HEADER_XP_FILL;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.872;
+            y = BN_KOTH_UI_Y + safeZoneH * 0.069;
+            w = 0;
+            h = safeZoneH * 0.004;
+            colorBackground[] = {0.76, 0.58, 0.20, 1};
+        };
+
         class BgInfoStrip: BN_KOTH_Lobby_Background
         {
             x = BN_KOTH_CHAT_X;
@@ -396,9 +416,9 @@ class HeaderPlayersLabel: BN_KOTH_Lobby_SectionLabel
     text = "PLAYERS";
     style = 2;
 
-    x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.71;
+    x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.705;
     y = BN_KOTH_UI_Y + safeZoneH * 0.018;
-    w = BN_KOTH_UI_W * 0.15;
+    w = BN_KOTH_UI_W * 0.12;
     h = safeZoneH * 0.018;
 
     colorText[] = {0.78, 0.76, 0.70, 0.72};
@@ -410,9 +430,9 @@ class HeaderPlayers: BN_KOTH_Lobby_Subtitle
     text = "0 / 100";
     style = 2;
 
-    x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.71;
+    x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.705;
     y = BN_KOTH_UI_Y + safeZoneH * 0.047;
-    w = BN_KOTH_UI_W * 0.15;
+    w = BN_KOTH_UI_W * 0.12;
     h = safeZoneH * 0.022;
 
     sizeEx = "0.024 * safeZoneH";
@@ -424,9 +444,9 @@ class HeaderPlayers: BN_KOTH_Lobby_Subtitle
             idc = BN_KOTH_IDC_HEADER_RIGHT_TITLE;
             text = "ROUND STATUS";
             style = 2;
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.86;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.785;
             y = BN_KOTH_UI_Y + safeZoneH * 0.018;
-            w = BN_KOTH_UI_W * 0.11;
+            w = BN_KOTH_UI_W * 0.095;
             h = safeZoneH * 0.018;
             colorText[] = {0.78, 0.76, 0.70, 0.72};
         };
@@ -436,11 +456,65 @@ class HeaderPlayers: BN_KOTH_Lobby_Subtitle
             idc = BN_KOTH_IDC_HEADER_RIGHT_VALUE;
             text = "WAITING FOR TEAMS";
             style = 2;
-            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.84;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.780;
             y = BN_KOTH_UI_Y + safeZoneH * 0.047;
-            w = BN_KOTH_UI_W * 0.14;
+            w = BN_KOTH_UI_W * 0.105;
             h = safeZoneH * 0.022;
+            sizeEx = "0.018 * safeZoneH";
             colorText[] = {0.95, 0.94, 0.90, 0.90};
+        };
+
+        class HeaderRankBadge: BN_KOTH_Lobby_Value
+        {
+            idc = BN_KOTH_IDC_HEADER_RANK_BADGE;
+            text = "1";
+            style = 2;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.887;
+            y = BN_KOTH_UI_Y + safeZoneH * 0.018;
+            w = BN_KOTH_UI_W * 0.022;
+            h = safeZoneH * 0.044;
+            sizeEx = "0.028 * safeZoneH";
+            colorText[] = {0.89, 0.70, 0.24, 1};
+            colorBackground[] = {0.12, 0.11, 0.08, 0.92};
+        };
+
+        class HeaderPlayerName: BN_KOTH_Lobby_SectionLabel
+        {
+            idc = BN_KOTH_IDC_HEADER_PLAYER_NAME;
+            text = "PLAYER";
+            style = 0;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.912;
+            y = BN_KOTH_UI_Y + safeZoneH * 0.009;
+            w = BN_KOTH_UI_W * 0.075;
+            h = safeZoneH * 0.018;
+            sizeEx = "0.015 * safeZoneH";
+            colorText[] = {0.92, 0.90, 0.84, 0.98};
+        };
+
+        class HeaderPlayerLevel: BN_KOTH_Lobby_Subtitle
+        {
+            idc = BN_KOTH_IDC_HEADER_PLAYER_LEVEL;
+            text = "LEVEL 1";
+            style = 0;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.912;
+            y = BN_KOTH_UI_Y + safeZoneH * 0.029;
+            w = BN_KOTH_UI_W * 0.075;
+            h = safeZoneH * 0.020;
+            sizeEx = "0.018 * safeZoneH";
+            colorText[] = {0.89, 0.70, 0.24, 1};
+        };
+
+        class HeaderXp: BN_KOTH_Lobby_SectionLabel
+        {
+            idc = BN_KOTH_IDC_HEADER_XP;
+            text = "0 / 100 XP";
+            style = 0;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.912;
+            y = BN_KOTH_UI_Y + safeZoneH * 0.049;
+            w = BN_KOTH_UI_W * 0.075;
+            h = safeZoneH * 0.016;
+            sizeEx = "0.013 * safeZoneH";
+            colorText[] = {0.74, 0.72, 0.66, 0.96};
         };
 
         class HeaderInfoIcon: BN_KOTH_Lobby_SectionLabel

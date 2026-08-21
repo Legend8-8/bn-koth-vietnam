@@ -19,6 +19,8 @@ params [
 ];
 
 private _entries = [];
+private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
+if !(_progression isEqualType createHashMap) then {_progression = createHashMap};
 private _sourceItemsCfg = _compatibilityCfg >> "SourceItems";
 if !(isClass _sourceItemsCfg) exitWith {_entries};
 
@@ -72,7 +74,9 @@ for "_i" from 0 to 5 do {
             if (_displayName isEqualTo "") then {
                 _displayName = [_class] call _resolveItemName;
             };
-            _slotArray pushBack [_displayName, _class];
+            private _metadata = ["Wearables", _class] call bn_koth_fnc_loadouts_getItemMetadata;
+            private _entitlement = [_progression, _metadata, _class] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+            _slotArray pushBack [_displayName, _class, _metadata, _entitlement];
             _slotCandidates set [_i, _slotArray];
         };
     };
@@ -84,6 +88,33 @@ if ((_selectedSlotIndex < 0) || {_selectedSlotIndex > 5}) then {
 };
 
 if (_assignedStage isEqualTo 1) then {
+    private _facewearClass = if ((count _intendedLoadout) > 7 && {(_intendedLoadout select 7) isEqualType ""}) then {toLower (_intendedLoadout select 7)} else {""};
+    private _facewearName = if (_facewearClass isEqualTo "") then {"NONE"} else {[_facewearClass] call _resolveItemName};
+
+    private _binocularClass = "";
+    if ((count _intendedLoadout) > 8) then {
+        private _binocSlot = _intendedLoadout select 8;
+        if (_binocSlot isEqualType "") then {_binocularClass = toLower _binocSlot;} else {
+            if ((_binocSlot isEqualType []) && {(count _binocSlot) > 0}) then {_binocularClass = toLower (_binocSlot select 0);};
+        };
+    };
+    private _binocularName = if (_binocularClass isEqualTo "") then {"NONE"} else {[_binocularClass] call _resolveItemName};
+
+    _entries pushBack (createHashMapFromArray [
+        ["displayName", format ["FACEWEAR: %1", _facewearName]],
+        ["weaponClass", _facewearClass],
+        ["targetPage", "LOADOUT_FACEWEAR"],
+        ["available", true],
+        ["equipped", false]
+    ]);
+    _entries pushBack (createHashMapFromArray [
+        ["displayName", format ["BINOCULAR: %1", _binocularName]],
+        ["weaponClass", _binocularClass],
+        ["targetPage", "LOADOUT_BINOCULAR"],
+        ["available", true],
+        ["equipped", false]
+    ]);
+
     for "_i" from 0 to 5 do {
         private _currentClass = toLower (_assigned select _i);
         private _currentName = if (_currentClass isEqualTo "") then {"NONE"} else {[_currentClass] call _resolveItemName};
@@ -111,11 +142,18 @@ if (_assignedStage isEqualTo 1) then {
     {
         private _name = _x select 0;
         private _class = _x select 1;
+        private _metadata = _x select 2;
+        private _entitlement = _x select 3;
+        private _itemCfg = configFile >> "CfgWeapons" >> _class;
         _entries pushBack (createHashMapFromArray [
             ["displayName", format ["%1: %2", _slotLabels select _selectedSlotIndex, _name]],
             ["assignedIndex", _selectedSlotIndex],
             ["itemClass", _class],
-            ["available", true],
+            ["available", _entitlement getOrDefault ["entitled", false]],
+            ["technicalAvailable", true],
+            ["entitlementCode", _entitlement getOrDefault ["code", "LOCKED_STATE"]],
+            ["minLevel", _metadata getOrDefault ["minLevel", 1]],
+            ["picture", getText (_itemCfg >> "picture")],
             ["equipped", _class isEqualTo toLower (_assigned select _selectedSlotIndex)]
         ]);
     } forEach _sortable;

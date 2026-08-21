@@ -1,7 +1,10 @@
 /*
     File: fn_addXp.sqf
     Author: Tylervip
-    Description: Adds validated XP to a server-owned player record.
+    Edited: Legend
+    Description: Adds validated XP to progression-owned server session state.
+        Player identity/lifecycle remains owned by BN_KOTH_playerRecords.
+        XP and level are owned only by BN_KOTH_playerProgression.
     Execution: Server
     Parameters:
         0: Player UID <STRING>
@@ -19,27 +22,54 @@ if (_uid isEqualTo "") exitWith {createHashMap};
 if (_amount <= 0) exitWith {createHashMap};
 if (_reason isEqualTo "") exitWith {createHashMap};
 
-private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
-if !(_records isEqualType createHashMap) exitWith {createHashMap};
+private _playerRecords = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
+if !(_playerRecords isEqualType createHashMap) exitWith {createHashMap};
 
-private _record = _records getOrDefault [_uid, createHashMap];
-if !(_record isEqualType createHashMap) exitWith {createHashMap};
+private _playerRecord = _playerRecords getOrDefault [_uid, createHashMap];
+if !(_playerRecord isEqualType createHashMap) exitWith {createHashMap};
 
-private _oldXp = _record getOrDefault ["xp", 0];
+private _progressionByUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
+if !(_progressionByUid isEqualType createHashMap) exitWith {
+    ["XP award rejected: BN_KOTH_playerProgression missing/invalid", "WARN"] call bn_koth_fnc_common_log;
+    createHashMap
+};
+
+private _progression = _progressionByUid getOrDefault [_uid, createHashMap];
+if !(_progression isEqualType createHashMap) then {
+    _progression = createHashMap;
+};
+
+private _oldXp = _progression getOrDefault ["xp", 0];
 private _newXp = (_oldXp max 0) + _amount;
 private _newLevel = [_newXp] call bn_koth_fnc_progression_xp_getLevel;
 
-_record set ["xp", _newXp];
-_record set ["level", _newLevel];
-_records set [_uid, _record];
-missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+_progression set ["uid", _uid];
+_progression set ["xp", _newXp];
+_progression set ["level", _newLevel];
+_progressionByUid set [_uid, _progression];
+missionNamespace setVariable ["BN_KOTH_playerProgression", _progressionByUid];
 
-private _state = createHashMapFromArray [
+private _result = createHashMapFromArray [
     ["uid", _uid],
     ["xp", _newXp],
     ["level", _newLevel],
     ["reason", _reason]
 ];
+
+private _clientPayload = createHashMapFromArray [
+    ["uid", _uid],
+    ["xp", _newXp],
+    ["level", _newLevel]
+];
+
+private _ownerId = _playerRecord getOrDefault ["ownerId", -1];
+if (_ownerId > 2) then {
+    [_clientPayload] remoteExecCall ["bn_koth_fnc_ui_receiveProgression", _ownerId];
+} else {
+    if (_ownerId isEqualTo 2 && {hasInterface}) then {
+        [_clientPayload] call bn_koth_fnc_ui_receiveProgression;
+    };
+};
 
 [format [
     "XP award UID=%1 reason=%2 amount=%3 total=%4 level=%5",
@@ -50,4 +80,4 @@ private _state = createHashMapFromArray [
     _newLevel
 ]] call bn_koth_fnc_common_log;
 
-_state
+_result

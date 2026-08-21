@@ -117,6 +117,46 @@ class RuntimeGenerationTests(unittest.TestCase):
         self.assertNotIn("rental", text)
         self.assertNotIn("level", text)
 
+    def test_hpp_emits_canonical_alias_without_structural_requirements(self) -> None:
+        catalogue = {
+            "weapons": [
+                {
+                    "class": "vn_l1a1_01",
+                    "displayName": "L1A1 (Aus)",
+                    "weaponType": "rifle",
+                    "family": "l1a1",
+                    "variantOf": None,
+                    "variantTraits": [],
+                    "derivedRequirements": [],
+                    "baseMagazine": None,
+                    "baseMagazineConfidence": "ambiguous",
+                    "compatibleMagazines": [],
+                    "compatibleAttachments": [],
+                    "sourceAffiliations": [],
+                },
+                {
+                    "class": "vn_l1a1_01_camo",
+                    "displayName": "L1A1 (Aus/ Camo)",
+                    "weaponType": "rifle",
+                    "family": "l1a1",
+                    "variantOf": "vn_l1a1_01",
+                    "variantTraits": [],
+                    "derivedRequirements": [],
+                    "baseMagazine": None,
+                    "baseMagazineConfidence": "ambiguous",
+                    "compatibleMagazines": [],
+                    "compatibleAttachments": [],
+                    "sourceAffiliations": [],
+                },
+            ],
+            "magazines": [],
+            "items": [],
+        }
+
+        text = build_runtime_hpp_text(catalogue)
+        self.assertIn('variantOf = "vn_l1a1_01";', text)
+        self.assertNotIn("class vn_l1a1_01_camo\n        {\n            base =", text)
+
     def test_variant_index_emits_chained_direct_lookup_keys(self) -> None:
         catalogue = {
             "weapons": [

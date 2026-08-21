@@ -71,99 +71,13 @@ private _resolveBaseWeapon = {
     _cursor
 };
 
-private _evaluateAttachmentSet = {
-    params ["_baseWeaponClass", "_attachments"];
-
-    private _result = createHashMapFromArray [
-        ["available", false],
-        ["resolvedWeaponClass", _baseWeaponClass]
-    ];
-
-    private _transformingAttachments = [];
-    private _transformCfg = _transformingCfg >> _baseWeaponClass;
-    if (isClass _transformCfg) then {
-        _transformingAttachments = (getArray (_transformCfg >> "values")) apply {toLower _x};
-    };
-
-    private _structural = [];
-    private _ordinary = [];
-
-    {
-        private _attachment = toLower _x;
-        if (_attachment in _transformingAttachments) then {
-            _structural pushBackUnique _attachment;
-        } else {
-            _ordinary pushBackUnique _attachment;
-        };
-    } forEach _attachments;
-
-    _structural sort true;
-    _ordinary sort true;
-
-    private _resolvedWeaponClass = _baseWeaponClass;
-    private _valid = true;
-
-    if ((count _structural) > 0) then {
-        private _baseVariantCfg = _variantIndexCfg >> _baseWeaponClass;
-
-        if !(isClass _baseVariantCfg) then {
-            _valid = false;
-        };
-
-        if (_valid) then {
-            private _variantKey = "k_" + (_structural joinString "__");
-            private _variantCfg = _baseVariantCfg >> _variantKey;
-
-            if !(isClass _variantCfg) then {
-                _valid = false;
-            } else {
-                if ((getNumber (_variantCfg >> "ambiguous")) > 0) then {
-                    _valid = false;
-                } else {
-                    private _expectedStructural = getArray (_variantCfg >> "structuralAttachments");
-                    _expectedStructural = _expectedStructural apply {toLower _x};
-                    _expectedStructural sort true;
-
-                    if !(_expectedStructural isEqualTo _structural) then {
-                        _valid = false;
-                    } else {
-                        _resolvedWeaponClass = toLower (getText (_variantCfg >> "resolvedWeaponClass"));
-
-                        if (
-                            (_resolvedWeaponClass isEqualTo "") ||
-                            {!(isClass (_sourceWeaponsCfg >> _resolvedWeaponClass))}
-                        ) then {
-                            _valid = false;
-                        };
-                    };
-                };
-            };
-        };
-    };
-
-    if (_valid) then {
-        private _resolvedAttachmentCompat = [];
-        private _resolvedAttachmentCfg = _weaponAttachmentsCfg >> _resolvedWeaponClass;
-        if (isClass _resolvedAttachmentCfg) then {
-            _resolvedAttachmentCompat = (getArray (_resolvedAttachmentCfg >> "values")) apply {toLower _x};
-        };
-
-        private _incompatibleOrdinary = _ordinary findIf {!(_x in _resolvedAttachmentCompat)};
-        if (_incompatibleOrdinary >= 0) then {
-            _valid = false;
-        };
-    };
-
-    if (_valid) then {
-        _result set ["available", true];
-        _result set ["resolvedWeaponClass", _resolvedWeaponClass];
-    };
-
-    _result
-};
+private _slotFilter = toLower (uiNamespace getVariable ["BN_KOTH_menuAttachmentSlotFilter", ""]);
 
 {
     _x params ["_slotName", "_slotIndex", "_slotLabel"];
+    if !(_slotFilter isEqualTo "") then {
+        if !(_slotName isEqualTo _slotFilter) then {continue;};
+    };
 
     private _slot = _intendedLoadout select _slotIndex;
     if !((_slot isEqualType []) && {(count _slot) >= 7}) then {continue;};
@@ -190,8 +104,8 @@ private _evaluateAttachmentSet = {
         private _attName = [_attClass] call _resolveItemName;
 
         private _remainingAttachments = _currentAttachments - [_attClass];
-        private _removeResult = [_baseWeaponClass, _remainingAttachments] call _evaluateAttachmentSet;
-        private _removeAvailable = _removeResult getOrDefault ["available", false];
+        private _removeResult = [_baseWeaponClass, _remainingAttachments, [], _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
+        private _removeAvailable = _removeResult getOrDefault ["complete", false];
 
         _entries pushBack (createHashMapFromArray [
             ["displayName", if (_removeAvailable) then {
@@ -239,8 +153,8 @@ private _evaluateAttachmentSet = {
         _candidateAttachments pushBackUnique _attClass;
         _candidateAttachments sort true;
 
-        private _addResult = [_baseWeaponClass, _candidateAttachments] call _evaluateAttachmentSet;
-        private _addAvailable = _addResult getOrDefault ["available", false];
+        private _addResult = [_baseWeaponClass, _candidateAttachments, [], _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
+        private _addAvailable = _addResult getOrDefault ["complete", false];
 
         _entries pushBack (createHashMapFromArray [
             ["displayName", if (_addAvailable) then {
