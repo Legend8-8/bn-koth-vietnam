@@ -27,6 +27,14 @@ private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", create
         continue;
     };
 
+    private _state = _record getOrDefault ["state", "LOBBY"];
+    if (_state isEqualTo "RESPAWNING") then {
+        _record set ["assignedSide", sideUnknown];
+        _record set ["voteLocationId", ""];
+        _records set [_uid, _record];
+        continue;
+    };
+
     private _ownerPlayer = [_ownerId] call bn_koth_fnc_teams_getPlayerByOwner;
     if (isNull _ownerPlayer) then {
         continue;

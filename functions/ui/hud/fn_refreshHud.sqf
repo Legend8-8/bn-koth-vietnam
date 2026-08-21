@@ -21,9 +21,17 @@ if (isNull _display) exitWith {};
 private _priorityMarker = "BN_KOTH_priorityZoneMarker";
 private _priorityAvailable = !((markerShape _priorityMarker) isEqualTo "")
     && {(markerAlpha _priorityMarker) > 0};
-private _playerInPriority = _priorityAvailable && {!isNull player} && {player inArea _priorityMarker};
 
 private _priorityCfg = missionConfigFile >> "CfgBnKothZone";
+private _maximumControlHeight = if (isClass _priorityCfg && {isNumber (_priorityCfg >> "maximumControlHeight")}) then {
+    getNumber (_priorityCfg >> "maximumControlHeight")
+} else {
+    50
+};
+private _playerInPriority = _priorityAvailable
+    && {!isNull player}
+    && {(getPosATL player select 2) < _maximumControlHeight}
+    && {player inArea _priorityMarker};
 private _priorityWeight = if (isClass _priorityCfg) then {
     (getNumber (_priorityCfg >> "priorityControlWeight")) max 1
 } else {

@@ -54,6 +54,7 @@ if ((count _playableSides) < 2) then {
 
 private _sideA = _playableSides select 0;
 private _sideB = _playableSides select 1;
+private _maximumControlHeight = missionNamespace getVariable ["BN_KOTH_maximumControlHeight", 50];
 
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
@@ -104,6 +105,7 @@ private _players = allPlayers select {
     && {_recordAssignedSide in _playableSides}
     && {!isNull _recordUnit}
     && {_recordUnit isEqualTo _x}
+    && {(getPosATL _x select 2) < _maximumControlHeight}
     && {_x inArea _marker}
 };
 

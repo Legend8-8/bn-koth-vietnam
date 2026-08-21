@@ -131,12 +131,18 @@ class CfgFunctions
             class loadouts_receiveValidatedLoadout {file = "functions\loadouts\fn_receiveValidatedLoadout.sqf";};
         };
 
-        class playerIcons
+        class playerMapIcons
         {
-            class playerIcons_initPlayerLocal {file = "functions\playerIcons\fn_initPlayerLocal.sqf";};
-            class playerIcons_initMicOverlay {file = "functions\playerIcons\fn_initMicOverlay.sqf";};
-            class playerIcons_refresh {file = "functions\playerIcons\fn_refresh.sqf";};
-            class playerIcons_setVoiceState {file = "functions\playerIcons\fn_setVoiceState.sqf";};
+            class playerMapIcons_initPlayerLocal {file = "functions\playerIcons\playerMapIcons\fn_initPlayerLocal.sqf";};
+            class playerMapIcons_initMicOverlay {file = "functions\playerIcons\playerMapIcons\fn_initMicOverlay.sqf";};
+            class playerMapIcons_refresh {file = "functions\playerIcons\playerMapIcons\fn_refresh.sqf";};
+            class playerMapIcons_setVoiceState {file = "functions\playerIcons\playerMapIcons\fn_setVoiceState.sqf";};
+        };
+
+        class player3DIcons
+        {
+            class player3DIcons_initPlayerLocal {file = "functions\playerIcons\player3DIcons\fn_initPlayerLocal.sqf";};
+            class player3DIcons_draw {file = "functions\playerIcons\player3DIcons\fn_draw.sqf";};
         };
 
         class vehicles
