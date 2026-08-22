@@ -40,7 +40,7 @@ class BN_KOTH_RscHud
             idc = BN_KOTH_IDC_HUD_WEST_SCORE;
             text = "WEST 0";
             style = 0;
-            font = "PuristaSemiBold";
+            font = "EtelkaMonospaceProBold";
             x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
             y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.06;
             w = BN_KOTH_HUD_W * 0.30;
@@ -70,7 +70,7 @@ class BN_KOTH_RscHud
             idc = BN_KOTH_IDC_HUD_EAST_SCORE;
             text = "0 EAST";
             style = 1;
-            font = "PuristaSemiBold";
+            font = "EtelkaMonospaceProBold";
             x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.65;
             y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.06;
             w = BN_KOTH_HUD_W * 0.30;

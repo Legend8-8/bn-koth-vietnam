@@ -17,7 +17,7 @@ private _subtitleControl = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_SUBTITL
 private _pageLabelControl = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL;
 _titleControl ctrlSetText "SAVED LOADOUTS";
 _subtitleControl ctrlSetText "LOCAL CLIENT KITS - SERVER VALIDATED ON LOAD";
-_subtitleControl ctrlShow true;
+_subtitleControl ctrlShow false;
 _pageLabelControl ctrlSetText "PAGE 1 / 1";
 
 private _kits = profileNamespace getVariable ["BN_KOTH_savedKits_v2", []];

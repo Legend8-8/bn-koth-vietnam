@@ -39,7 +39,7 @@ class BN_KOTH_RscLobby
     idd = BN_KOTH_IDD_LOBBY;
     movingEnable = 0;
     enableSimulation = 1;
-    onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_lobbyDisplay', _display]; _display displayAddEventHandler ['KeyDown', '_this call bn_koth_fnc_ui_handleLobbyKeyDown']; [] call bn_koth_fnc_ui_refreshLobby; private _discordButton = _display displayCtrl 8304; if !(isNull _discordButton) then {_discordButton ctrlSetURL 'https://discord.gg/haNcSAEhKS'; _discordButton ctrlSetURLOverlayMode 0;};";
+    onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_lobbyDisplay', _display]; _display displayAddEventHandler ['KeyDown', '_this call bn_koth_fnc_ui_handleLobbyKeyDown']; [] call bn_koth_fnc_ui_refreshLobby; private _discordButton = _display displayCtrl 8304; if !(isNull _discordButton) then {_discordButton ctrlSetURL 'https://discord.gg/bro-nation'; _discordButton ctrlSetURLOverlayMode 0;};";
     onUnload = "uiNamespace setVariable ['BN_KOTH_lobbyDisplay', displayNull];";
 
     class controlsBackground
