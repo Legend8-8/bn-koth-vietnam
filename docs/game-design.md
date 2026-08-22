@@ -112,10 +112,10 @@ Phase 3 deliberately replaces the former action- and timeout-based spawn-protect
 - Protection does not expire on a timer and is not consumed by attempting to fire or cause damage. Those actions are blocked while protection is active.
 - Protected players cannot fire weapons or cause outgoing damage and cannot receive incoming damage.
 - No HUD indicator is displayed while friendly safe-zone protection is active.
-- Leaving the friendly safe zone displays a full-width green `LEAVING SAFE ZONE`
-  message across the top of the deployed HUD for five seconds. Re-entering the
-  safe zone, dying, entering an enemy safe zone, or leaving an active safe-zone
-  round state removes the message immediately.
+- Leaving the friendly safe zone displays a centered, half-screen-width green
+  `LEAVING SAFE ZONE` banner slightly below the top of the deployed HUD for five
+  seconds. Re-entering the safe zone, dying, entering an enemy safe zone, or
+  leaving an active safe-zone round state removes the message immediately.
 - Players must not be able to spawn at an enemy base.
 
 An enemy inside the opposing team's safe zone is an intruder:
@@ -124,10 +124,11 @@ An enemy inside the opposing team's safe zone is an intruder:
 - an intruder already in a vehicle is ejected when the vehicle enters the opposing safe zone;
 - no countdown, execution, or forced relocation is used;
 - the intruder remains vulnerable to damage and may be run over inside the opposing safe zone;
-- a persistent full-width warning with red text across the top of the deployed HUD
-  displays `ENEMY SAFE ZONE LEAVE NOW` while the player remains an intruder; the
-  warning disappears after leaving, and the entry and blocked-action notifications
-  identify the weapon, vehicle and vulnerability restrictions.
+- a persistent, centered, half-screen-width warning with red text displays
+  `ENEMY SAFE ZONE LEAVE NOW` slightly below the top of the deployed HUD while
+  the player remains an intruder; the warning disappears after leaving, and the
+  entry and blocked-action notifications identify the weapon, vehicle and
+  vulnerability restrictions.
 
 Vehicle protection is also spatial:
 
