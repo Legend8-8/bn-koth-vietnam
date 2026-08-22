@@ -46,6 +46,7 @@ uiNamespace setVariable ["BN_KOTH_hudDisplay", displayNull];
 [_debugEnabled] call bn_koth_fnc_ui_toggleDebugDisplay;
 [] call bn_koth_fnc_ui_updateLobbyBlackout;
 [] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;
+[] call bn_koth_fnc_escMenu_initPlayerLocal;
 
 if (isNil {missionNamespace getVariable "BN_KOTH_lifecycleHooksInstalled"}) then {
     missionNamespace setVariable ["BN_KOTH_lifecycleHooksInstalled", true];

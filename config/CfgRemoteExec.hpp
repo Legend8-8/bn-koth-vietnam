@@ -77,6 +77,12 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_escMenu_initPlayerLocal
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_playerMapIcons_setVoiceState
         {
             allowedTargets = 0;

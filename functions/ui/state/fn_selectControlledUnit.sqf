@@ -23,6 +23,7 @@ if (isNull _targetUnit) exitWith {
 if (player isEqualTo _targetUnit) exitWith {
     [] call bn_koth_fnc_respawn_initPlayerLocal;
     [] call bn_koth_fnc_loadouts_initPlayerLocal;
+    [] call bn_koth_fnc_escMenu_initPlayerLocal;
     true
 };
 
@@ -43,6 +44,7 @@ diag_log format [
 if (player isEqualTo _targetUnit) then {
     [] call bn_koth_fnc_respawn_initPlayerLocal;
     [] call bn_koth_fnc_loadouts_initPlayerLocal;
+    [] call bn_koth_fnc_escMenu_initPlayerLocal;
     [] call bn_koth_fnc_ui_updateLobbyBlackout;
     [] call bn_koth_fnc_ui_evaluateStateReadiness;
     [] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;

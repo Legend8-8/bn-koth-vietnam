@@ -141,3 +141,57 @@ class BN_KOTH_RscEdit
     canModify = 1;
     shadow = 0;
 };
+
+class BN_KOTH_RscListNBox
+{
+    access = 0;
+    type = 102;
+    style = 16;
+    idc = -1;
+    x = 0;
+    y = 0;
+    w = 0.4;
+    h = 0.4;
+    font = "RobotoCondensed";
+    sizeEx = "0.023 * safeZoneH";
+    rowHeight = "0.030 * safeZoneH";
+    color[] = {1, 1, 1, 1};
+    colorDisabled[] = {1, 1, 1, 0.3};
+    colorSelect[] = {1, 1, 1, 1};
+    colorSelect2[] = {1, 1, 1, 1};
+    colorSelectBackground[] = {0.19, 0.19, 0.17, 0.95};
+    colorSelectBackground2[] = {0.19, 0.19, 0.17, 0.95};
+    colorText[] = {1, 1, 1, 1};
+    colorBackground[] = {0.02, 0.02, 0.02, 0.88};
+    colorScrollbar[] = {1, 1, 1, 0.6};
+    soundSelect[] = {"", 0.1, 1};
+    soundExpand[] = {"", 0.1, 1};
+    soundCollapse[] = {"", 0.1, 1};
+    drawSideArrows = 0;
+    idcLeft = -1;
+    idcRight = -1;
+    period = 1;
+    maxHistoryDelay = 1;
+    autoScrollSpeed = -1;
+    autoScrollDelay = 5;
+    autoScrollRewind = 0;
+    class ListScrollBar
+    {
+        color[] = {1, 1, 1, 0.6};
+        autoScrollEnabled = 1;
+    };
+};
+
+class BN_KOTH_RscSlider
+{
+    type = 3;
+    style = 1024;
+    idc = -1;
+    x = 0;
+    y = 0;
+    w = 0.3;
+    h = 0.025;
+    color[] = {1, 1, 1, 0.8};
+    colorActive[] = {0.95, 0.78, 0.28, 1};
+    shadow = 0;
+};
