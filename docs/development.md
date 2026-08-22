@@ -32,3 +32,9 @@ Run build.py to export trimmed mission folders for all maps under maps/<map_name
   refreshed from shared and map-specific sources on every setup run because it
   cannot be represented by one direct directory link. This keeps function
   registrations and other shared configuration current in existing missions.
+
+6. Multiplayer Handoff Reference
+
+When adding or modifying player-representation transitions, use the locality lifecycle documented in docs/multiplayer-locality.md section 4.1 (Representation handoff lifecycle).
+
+Short rule: initPlayerLocal.sqf is client startup only, while bn_koth_fnc_teams_transferRepresentation is the server-owned handoff path for moving a player to a new representation unit.
