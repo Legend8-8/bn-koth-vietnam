@@ -44,8 +44,16 @@ private _next = createHashMapFromArray [
     ["value", _value]
 ];
 
-_leaders set [_leaderKey, _next];
-["BN_KOTH_liveLeaders", _leaders] call bn_koth_fnc_common_publicState;
+// Publish a fresh top-level hashmap. Mutating the missionNamespace-owned map in
+// place makes common_publicState compare the value against itself and skip the
+// broadcast as "unchanged".
+private _nextLeaders = createHashMap;
+{
+    _nextLeaders set [_x, _leaders get _x];
+} forEach (keys _leaders);
+
+_nextLeaders set [_leaderKey, _next];
+["BN_KOTH_liveLeaders", _nextLeaders] call bn_koth_fnc_common_publicState;
 
 [format [
     "Live leader changed: category=%1 uid=%2 name=%3 value=%4",

@@ -836,10 +836,34 @@ switch (_op) do {
 
         {
             if (_resultCode isEqualTo "OK") then {
-                private _capacity=[_x,_mutatedLoadout] call _validateContainerCapacity;
-                if !(_capacity getOrDefault ["success",false]) then {_resultCode=_capacity getOrDefault ["code","ERR_CONTAINER_CAPACITY_EXCEEDED"];_resultMessage=_capacity getOrDefault ["message","Saved container exceeds capacity."];};
+                _x params ["_containerName", "_containerIndex"];
+
+                private _containerSlot = _mutatedLoadout select _containerIndex;
+                if ((_containerSlot isEqualType []) && {(count _containerSlot) > 0}) then {
+                    private _containerClass = toLower (_containerSlot select 0);
+                    private _containerCargo = if ((count _containerSlot) > 1) then {
+                        [_containerSlot select 1] call _sanitizeContainerCargo
+                    } else {
+                        []
+                    };
+
+                    private _capacity = [
+                        _containerName,
+                        _containerClass,
+                        _containerCargo
+                    ] call _validateContainerCapacity;
+
+                    if !(_capacity getOrDefault ["success", false]) then {
+                        _resultCode = _capacity getOrDefault ["code", "ERR_CONTAINER_CAPACITY_EXCEEDED"];
+                        _resultMessage = _capacity getOrDefault ["message", "Saved container exceeds capacity."];
+                    };
+                };
             };
-        } forEach ["uniform","vest","backpack"];
+        } forEach [
+            ["uniform", 3],
+            ["vest", 4],
+            ["backpack", 5]
+        ];
 
         if !(_resultCode isEqualTo "OK") exitWith {
             [_resultCode, _resultMessage, _baseLoadoutId] call _resultFail
