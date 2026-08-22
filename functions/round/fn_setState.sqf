@@ -108,6 +108,10 @@ switch (_newState) do {
     };
 
     case "ACTIVE": {
+        // Round-only stats reset on entry to ACTIVE so completed leaders remain
+        // visible through ENDING, RESETTING, WAITING and the next map vote.
+        [] call bn_koth_fnc_roundStats_reset;
+
         private _slotIds = missionNamespace getVariable ["BN_KOTH_vehicleManagedSlotIds", []];
         if ((count _slotIds) <= 0) then {
             [] call bn_koth_fnc_vehicles_buildActiveLocationSlots;

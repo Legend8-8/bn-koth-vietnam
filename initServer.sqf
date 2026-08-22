@@ -40,6 +40,7 @@ missionNamespace setVariable ["BN_KOTH_playableSides", _resolvedSides, true];
 
 [] call bn_koth_fnc_loadouts_initServer;
 [] call bn_koth_fnc_progression_xp_initServer;
+[] call bn_koth_fnc_roundStats_initServer;
 [] call bn_koth_fnc_respawn_initServer;
 [] call bn_koth_fnc_teams_initServer;
 [] call bn_koth_fnc_vehicles_initServer;

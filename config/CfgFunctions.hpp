@@ -39,6 +39,15 @@ class CfgFunctions
             class round_isLocationValid {file = "functions\round\fn_isLocationValid.sqf";};
         };
 
+        class roundStats
+        {
+            class roundStats_initServer {file = "functions\roundStats\fn_initServer.sqf";};
+            class roundStats_reset {file = "functions\roundStats\fn_reset.sqf";};
+            class roundStats_updateLeader {file = "functions\roundStats\fn_updateLeader.sqf";};
+            class roundStats_recordKill {file = "functions\roundStats\fn_recordKill.sqf";};
+            class roundStats_recordObjectiveTick {file = "functions\roundStats\fn_recordObjectiveTick.sqf";};
+        };
+
         class teams
         {
             class teams_validateSide {file = "functions\teams\fn_validateSide.sqf";};
@@ -182,6 +191,7 @@ class CfgFunctions
             class ui_refreshLobbyTeams {file = "functions\ui\lobby\fn_refreshLobbyTeams.sqf";};
             class ui_refreshLobbyCenter {file = "functions\ui\lobby\fn_refreshLobbyCenter.sqf";};
             class ui_refreshLobbyVote {file = "functions\ui\lobby\fn_refreshLobbyVote.sqf";};
+            class ui_refreshLobbyLeaders {file = "functions\ui\lobby\fn_refreshLobbyLeaders.sqf";};
             class ui_updateLobbyLifecycle {file = "functions\ui\lobby\fn_updateLobbyLifecycle.sqf";};
             class ui_requestState {file = "functions\ui\state\fn_requestState.sqf";};
             class ui_sendStateToClient {file = "functions\ui\state\fn_sendStateToClient.sqf";};

@@ -42,6 +42,7 @@ private _playerProgressionPayload = [
 
 private _payload = createHashMapFromArray [
     ["roundState", missionNamespace getVariable ["BN_KOTH_roundState", "WAITING"]],
+    ["liveLeaders", missionNamespace getVariable ["BN_KOTH_liveLeaders", createHashMap]],
     ["playerProgression", _playerProgressionPayload],
     ["playerStates", missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap]],
     ["playerTeamAssignments", missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap]],
