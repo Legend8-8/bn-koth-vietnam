@@ -22,6 +22,7 @@ if !(_payload isEqualType createHashMap) exitWith {};
 
 private _keyMap = createHashMapFromArray [
     ["roundState", "BN_KOTH_roundState"],
+    ["liveLeaders", "BN_KOTH_liveLeaders"],
     ["playerProgression", "BN_KOTH_playerProgressionLocal"],
     ["playerStates", "BN_KOTH_playerStates"],
     ["playerTeamAssignments", "BN_KOTH_playerTeamAssignments"],

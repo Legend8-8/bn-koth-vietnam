@@ -43,6 +43,7 @@ bn-koth-vietnam/
 ├── functions/
 │   ├── common/
 │   ├── round/
+│   ├── roundStats/
 │   ├── teams/
 │   ├── zone/
 │   ├── scoring/
@@ -109,6 +110,38 @@ Contains:
 - resetting a round;
 - declaring a winner.
 
+"functions/roundStats/"
+
+Owns server-authoritative, round-only competitive player statistics and the
+small Live Leaders presentation projection.
+
+Current responsibilities include:
+
+- kills and deaths for the active round;
+- current and best valid-PvP kill streaks;
+- physical objective-point contribution from actual team score ticks;
+- `BN_KOTH_roundStats`, keyed by player UID and kept server-only;
+- `BN_KOTH_liveLeaders`, the small client-visible projection used by the lobby.
+
+Round statistics consume existing authoritative gameplay decisions rather than
+recalculating them:
+
+- canonical kill identity/validity comes from `functions/combat/`;
+- objective eligibility comes from `BN_KOTH_zoneEligibleSnapshot`;
+- objective points are recorded only when `functions/scoring/` actually awards
+  the corresponding team score tick.
+
+Live Leaders use a strict-greater replacement rule. Equal values do not replace
+the current card holder, so the first player to reach a leading value keeps the
+card until another player exceeds it.
+
+Round stats reset only when the next round enters `ACTIVE`. They remain intact
+through `ENDING`, `RESETTING`, `WAITING` and map voting so the completed round's
+leaders can still be shown in the lobby.
+
+Round-only statistics are deliberately separate from persistent progression and
+future lifetime statistics.
+
 "functions/teams/"
 
 Contains:
@@ -172,18 +205,23 @@ Contains:
 
 "functions/progression/"
 
-Contains progression systems:
+Contains player progression systems:
 
-- `xp/` owns server-authoritative round XP, level calculation, and Priority-zone,
-  control, and combat reward hooks;
-- `cash/` — reserved for the future cash system;
-- unlocks;
-- player statistics.
+- `xp/` owns server-authoritative XP awards, level calculation, level progress,
+  and Priority-zone, control, and combat reward hooks;
+- `cash/` remains reserved for the future cash/economy system;
+- progression entitlement evaluation consumes authoritative level/rule data;
+- future persistent unlocks, perks, licences and reward multipliers belong to
+  progression/persistence boundaries rather than client UI.
 
-XP state is stored in server-owned player records. Award results are written to
-the server log for now. The current implementation resets XP and levels at
-round reset and does not provide persistence, currency, HUD presentation, or
-unlock enforcement.
+Current progression state is stored in the server-owned
+`BN_KOTH_playerProgression` map keyed by UID. It is session-scoped for now and
+is not yet database-backed. Clients receive only presentation state required
+for UI.
+
+Round-only competitive statistics do not belong to progression. They are owned
+by `functions/roundStats/` and reset on the next `ACTIVE` round without changing
+persistent/session progression values.
 
 "functions/persistence/"
 
@@ -241,6 +279,10 @@ The scoring system decides whether and how score is awarded.
 
 The zone system must not directly edit the team score variable.
 
+Round statistics are downstream consumers of those authoritative decisions.
+They must not reinterpret kill validity, duplicate AO eligibility checks, award
+team score, or award progression rewards.
+
 8. Function Files
 
 Each function file must include:
@@ -283,6 +325,8 @@ Authoritative server state includes:
 - team scores;
 - winning side;
 - player progression;
+- server-only round statistics;
+- the client-visible Live Leaders projection;
 - purchases;
 - spawned gameplay vehicles.
 

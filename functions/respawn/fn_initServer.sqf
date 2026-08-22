@@ -54,6 +54,10 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
 
     private _killRecord = [_killed, _killer, _instigator] call bn_koth_fnc_combat_handleKill;
 
+    if (_killRecord isEqualType createHashMap && {count _killRecord > 0}) then {
+        [_killRecord] call bn_koth_fnc_roundStats_recordKill;
+    };
+
     if (_isPlayerEntity && {!alive _killed}) then {
         if (_killRecord isEqualType createHashMap && {count _killRecord > 0}) then {
             [_killRecord] call bn_koth_fnc_progression_xp_awardKill;

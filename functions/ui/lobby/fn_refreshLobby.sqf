@@ -405,3 +405,4 @@ private _voteView = createHashMapFromArray [
 [_display, _teamView] call bn_koth_fnc_ui_refreshLobbyTeams;
 [_display, _centerView] call bn_koth_fnc_ui_refreshLobbyCenter;
 [_display, _voteView] call bn_koth_fnc_ui_refreshLobbyVote;
+[_display] call bn_koth_fnc_ui_refreshLobbyLeaders;
