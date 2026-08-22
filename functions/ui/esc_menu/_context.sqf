@@ -1,3 +1,0 @@
-/*
-    ESC menu function module context marker.
-*/

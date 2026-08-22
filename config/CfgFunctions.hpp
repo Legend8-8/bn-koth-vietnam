@@ -56,6 +56,7 @@ class CfgFunctions
             class teams_removePlayer {file = "functions\teams\fn_removePlayer.sqf";};
             class teams_requestSelection {file = "functions\teams\fn_requestSelection.sqf";};
             class teams_returnSelectedPlayerToLobby {file = "functions\teams\fn_returnSelectedPlayerToLobby.sqf";};
+            class teams_isScoreBelowSwitchThreshold {file = "functions\teams\fn_isScoreBelowSwitchThreshold.sqf";};
             class teams_publishState {file = "functions\teams\fn_publishState.sqf";};
             class teams_getEligibleSelectedUids {file = "functions\teams\fn_getEligibleSelectedUids.sqf";};
             class teams_getPlayerByOwner {file = "functions\teams\fn_getPlayerByOwner.sqf";};
@@ -206,6 +207,8 @@ class CfgFunctions
             class escMenu_installPauseButtons {file = "functions\ui\esc_menu\fn_installPauseButtons.sqf";};
             class escMenu_openKeybindings {file = "functions\ui\esc_menu\fn_openKeybindings.sqf";};
             class escMenu_openOptions {file = "functions\ui\esc_menu\fn_openOptions.sqf";};
+            class escMenu_switchTeams {file = "functions\ui\esc_menu\fn_switchTeams.sqf";};
+            class escMenu_refreshSwitchTeamsButton {file = "functions\ui\esc_menu\fn_refreshSwitchTeamsButton.sqf";};
             class escMenu_keybinds_getBind {file = "functions\ui\esc_menu\fn_keybinds_getBind.sqf";};
             class escMenu_keybinds_init {file = "functions\ui\esc_menu\fn_keybinds_init.sqf";};
             class escMenu_keybinds_changeBind {file = "functions\ui\esc_menu\fn_keybinds_changeBind.sqf";};

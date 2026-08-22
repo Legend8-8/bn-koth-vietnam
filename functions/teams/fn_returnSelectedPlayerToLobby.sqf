@@ -27,15 +27,15 @@ if (_ownerId <= 0) exitWith {
 };
 
 private _roundState = [] call bn_koth_fnc_round_getState;
-if !(_roundState isEqualTo "WAITING") exitWith {
+if !(_roundState in ["WAITING", "ACTIVE"]) exitWith {
     [format ["returnSelectedPlayerToLobby rejected: invalid round state=%1 UID=%2", _roundState, _uid], "WARN"] call bn_koth_fnc_common_log;
     false
 };
 
 private _state = _record getOrDefault ["state", "LOBBY"];
 private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
-if !(_state isEqualTo "TEAM_SELECTED") exitWith {
-    [_ownerId, "Return to lobby rejected: you are not currently team selected."] call bn_koth_fnc_teams_notifyPlayer;
+if !(_state in ["TEAM_SELECTED", "ACTIVE"]) exitWith {
+    [_ownerId, "Return to lobby rejected: you are not currently team selected or deployed."] call bn_koth_fnc_teams_notifyPlayer;
     false
 };
 
@@ -44,18 +44,39 @@ if !([_assignedSide] call bn_koth_fnc_teams_validateSide) exitWith {
     false
 };
 
-private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
-if (_uid in _activeParticipants) exitWith {
-    [_ownerId, "Return to lobby rejected: you are currently deployed."] call bn_koth_fnc_teams_notifyPlayer;
-    [format ["returnSelectedPlayerToLobby rejected: active participant UID=%1", _uid], "WARN"] call bn_koth_fnc_common_log;
+if (_roundState isEqualTo "ACTIVE" && {!([] call bn_koth_fnc_teams_isScoreBelowSwitchThreshold)}) exitWith {
+    [_ownerId, "Switch teams rejected: locked once a team is close to winning."] call bn_koth_fnc_teams_notifyPlayer;
+    [format ["returnSelectedPlayerToLobby rejected: score threshold exceeded UID=%1", _uid], "WARN"] call bn_koth_fnc_common_log;
     false
 };
 
+private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
+if (_uid in _activeParticipants) then {
+    _activeParticipants = _activeParticipants - [_uid];
+    ["BN_KOTH_activeParticipants", _activeParticipants] call bn_koth_fnc_common_publicState;
+};
+
+private _oldGameplayUnit = _record getOrDefault ["currentUnit", objNull];
+
 private _lobbyOk = [_uid] call bn_koth_fnc_teams_assignLobbyRepresentation;
+if (!_lobbyOk) then {
+    // First attempt can lose the ownership handoff race; retry once before giving up.
+    _lobbyOk = [_uid] call bn_koth_fnc_teams_assignLobbyRepresentation;
+};
 if (!_lobbyOk) exitWith {
     [_ownerId, "Return to lobby failed: lobby representation is not ready."] call bn_koth_fnc_teams_notifyPlayer;
     [format ["returnSelectedPlayerToLobby failed: lobby handoff UID=%1", _uid], "ERROR"] call bn_koth_fnc_common_log;
     false
+};
+
+// Force-remove the vacated gameplay body; transferRepresentation only deletes it when isPlayer is already false.
+private _newCurrentUnit = ((_records getOrDefault [_uid, createHashMap]) getOrDefault ["currentUnit", objNull]);
+if (!isNull _oldGameplayUnit && {!(_oldGameplayUnit isEqualTo _newCurrentUnit)}) then {
+    private _oldGroup = group _oldGameplayUnit;
+    deleteVehicle _oldGameplayUnit;
+    if (!isNull _oldGroup && {(count units _oldGroup) isEqualTo 0}) then {
+        deleteGroup _oldGroup;
+    };
 };
 
 [_uid] call bn_koth_fnc_loadouts_clearPlayerState;

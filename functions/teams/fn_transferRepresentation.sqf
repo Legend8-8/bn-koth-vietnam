@@ -35,9 +35,16 @@ if (isNull _oldUnit) then {
 [_targetUnit] remoteExecCall ["bn_koth_fnc_ui_selectControlledUnit", _ownerId];
 
 private _deadline = serverTime + 5;
-waitUntil {
-    (serverTime >= _deadline)
-    || {(owner _targetUnit) isEqualTo _ownerId}
+if (canSuspend) then {
+    waitUntil {
+        (serverTime >= _deadline)
+        || {(owner _targetUnit) isEqualTo _ownerId}
+    };
+} else {
+    // Reached unscheduled (e.g. a remoteExecCall loopback on a listen-server host); waitUntil
+    // would throw "Suspending not allowed in this context" here, so fall back to a single
+    // immediate ownership check instead of looping.
+    [format ["transferRepresentation running unscheduled for UID %1; skipping ownership wait.", _uid], "WARN"] call bn_koth_fnc_common_log;
 };
 
 if (!isNull _targetUnit && {(owner _targetUnit) isEqualTo _ownerId}) exitWith {
