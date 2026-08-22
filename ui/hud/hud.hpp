@@ -1,5 +1,3 @@
-// Edited: Mongo
-
 #include "idcs.hpp"
 
 #define BN_KOTH_HUD_W (safeZoneW * 0.19)
