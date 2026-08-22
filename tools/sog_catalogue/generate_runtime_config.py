@@ -55,6 +55,10 @@ def is_confirmed_variant(weapon: dict[str, Any]) -> bool:
     return bool(weapon.get("variantOf") and weapon.get("derivedRequirements"))
 
 
+def is_canonical_alias(weapon: dict[str, Any]) -> bool:
+    return bool(weapon.get("variantOf"))
+
+
 def build_weapon_classes(weapons: list[dict[str, Any]]) -> list[str]:
     lines: list[str] = ["    class SourceWeapons", "    {"]
     for weapon in sorted(weapons, key=lambda record: record["class"]):
@@ -64,10 +68,11 @@ def build_weapon_classes(weapons: list[dict[str, Any]]) -> list[str]:
         lines.append(f"            displayName = {arma_escape(weapon.get('displayName', ''))};")
         lines.append(f"            weaponType = {arma_escape(weapon.get('weaponType', ''))};")
         append_optional_string(lines, "family", weapon.get("family"))
-        if is_confirmed_variant(weapon):
+        if is_canonical_alias(weapon):
             append_optional_string(lines, "variantOf", weapon.get("variantOf"))
-            append_optional_array(lines, "variantTraits", sorted(weapon.get("variantTraits", [])))
-            append_optional_array(lines, "derivedRequirements", sorted(weapon.get("derivedRequirements", [])))
+            if is_confirmed_variant(weapon):
+                append_optional_array(lines, "variantTraits", sorted(weapon.get("variantTraits", [])))
+                append_optional_array(lines, "derivedRequirements", sorted(weapon.get("derivedRequirements", [])))
         append_optional_string(lines, "baseMagazine", weapon.get("baseMagazine"))
         lines.append(f"            baseMagazineConfidence = {arma_escape(weapon.get('baseMagazineConfidence', 'unknown'))};")
         append_optional_array(lines, "compatibleMagazines", sorted(weapon.get("compatibleMagazines", [])))

@@ -24,16 +24,4 @@ if (!_available || {_weaponClass isEqualTo ""} || {_magazineClass isEqualTo ""})
     false
 };
 
-private _request = createHashMapFromArray [
-    ["weapons", createHashMapFromArray [
-        ["handgun", createHashMapFromArray [
-            ["weaponClass", _weaponClass],
-            ["magazines", [_magazineClass]],
-            ["attachments", []]
-        ]]
-    ]]
-];
-
-[_request] call bn_koth_fnc_loadouts_request;
-
-true
+["handgun", _weaponClass, _magazineClass, []] call bn_koth_fnc_menu_applyWeaponComposition

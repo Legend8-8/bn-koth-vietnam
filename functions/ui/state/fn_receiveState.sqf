@@ -22,6 +22,7 @@ if !(_payload isEqualType createHashMap) exitWith {};
 
 private _keyMap = createHashMapFromArray [
     ["roundState", "BN_KOTH_roundState"],
+    ["playerProgression", "BN_KOTH_playerProgressionLocal"],
     ["playerStates", "BN_KOTH_playerStates"],
     ["playerTeamAssignments", "BN_KOTH_playerTeamAssignments"],
     ["playerNames", "BN_KOTH_playerNames"],
@@ -72,3 +73,8 @@ private _keyMap = createHashMapFromArray [
 [] call bn_koth_fnc_ui_updateLobbyLifecycle;
 [] call bn_koth_fnc_ui_refreshHud;
 [] call bn_koth_fnc_ui_refreshLobby;
+
+private _menuDisplay = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
+if (!isNull _menuDisplay) then {
+    [] call bn_koth_fnc_menu_refresh;
+};

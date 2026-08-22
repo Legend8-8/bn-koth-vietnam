@@ -80,11 +80,17 @@ class CfgFunctions
         class progression
         {
             class progression_xp_initServer {file = "functions\progression\xp\fn_initServer.sqf";};
-            class progression_xp_resetRound {file = "functions\progression\xp\fn_resetRound.sqf";};
             class progression_xp_getLevel {file = "functions\progression\xp\fn_getLevel.sqf";};
+            class progression_xp_getLevelProgress {file = "functions\progression\xp\fn_getLevelProgress.sqf";};
             class progression_xp_addXp {file = "functions\progression\xp\fn_addXp.sqf";};
             class progression_xp_awardControlTick {file = "functions\progression\xp\fn_awardControlTick.sqf";};
             class progression_xp_awardKill {file = "functions\progression\xp\fn_awardKill.sqf";};
+            class progression_buildPresentationState {file = "functions\progression\fn_buildPresentationState.sqf";};
+            class progression_evaluateWeaponEntitlement {file = "functions\progression\fn_evaluateWeaponEntitlement.sqf";};
+            class progression_evaluateWeaponEntitlementRules {file = "functions\progression\fn_evaluateWeaponEntitlementRules.sqf";};
+            class progression_evaluateAttachmentEntitlement {file = "functions\progression\fn_evaluateAttachmentEntitlement.sqf";};
+            class progression_evaluateItemEntitlement {file = "functions\progression\fn_evaluateItemEntitlement.sqf";};
+            class progression_evaluateItemEntitlementRules {file = "functions\progression\fn_evaluateItemEntitlementRules.sqf";};
         };
 
         class respawn
@@ -114,6 +120,8 @@ class CfgFunctions
             class loadouts_forceCloseInventory {file = "functions\loadouts\fn_forceCloseInventory.sqf";};
             class loadouts_clearPlayerState {file = "functions\loadouts\fn_clearPlayerState.sqf";};
             class loadouts_getStarterLoadout {file = "functions\loadouts\fn_getStarterLoadout.sqf";};
+            class loadouts_getWeaponMetadata {file = "functions\loadouts\fn_getWeaponMetadata.sqf";};
+            class loadouts_getItemMetadata {file = "functions\loadouts\fn_getItemMetadata.sqf";};
             class loadouts_validateLoadout {file = "functions\loadouts\fn_validateLoadout.sqf";};
             class loadouts_validateMutation {file = "functions\loadouts\fn_validateMutation.sqf";};
             class loadouts_validateWeaponComposition {file = "functions\loadouts\fn_validateWeaponComposition.sqf";};
@@ -178,6 +186,7 @@ class CfgFunctions
             class ui_requestState {file = "functions\ui\state\fn_requestState.sqf";};
             class ui_sendStateToClient {file = "functions\ui\state\fn_sendStateToClient.sqf";};
             class ui_receiveState {file = "functions\ui\state\fn_receiveState.sqf";};
+            class ui_receiveProgression {file = "functions\ui\state\fn_receiveProgression.sqf";};
             class ui_toggleDebugDisplay {file = "functions\ui\debug\fn_toggleDebugDisplay.sqf";};
             class ui_debugDisplayLoop {file = "functions\ui\debug\fn_debugDisplayLoop.sqf";};
             class ui_selectControlledUnit {file = "functions\ui\state\fn_selectControlledUnit.sqf";};
@@ -185,18 +194,34 @@ class CfgFunctions
             class ui_addKillFeedEntry {file = "functions\ui\fn_addKillFeedEntry.sqf";};
             class menu_open {file = "functions\ui\menu\fn_menu_open.sqf";};
             class menu_close {file = "functions\ui\menu\fn_menu_close.sqf";};
+            class menu_startPlayerPreview {file = "functions\ui\menu\fn_menu_startPlayerPreview.sqf";};
+            class menu_stopPlayerPreview {file = "functions\ui\menu\fn_menu_stopPlayerPreview.sqf";};
             class menu_refresh {file = "functions\ui\menu\fn_menu_refresh.sqf";};
             class menu_refreshLoadout {file = "functions\ui\menu\fn_menu_refreshLoadout.sqf";};
+            class menu_refreshBrowser {file = "functions\ui\menu\fn_menu_refreshBrowser.sqf";};
+            class menu_refreshConfigure {file = "functions\ui\menu\fn_menu_refreshConfigure.sqf";};
+            class menu_refreshConfigureAttachments {file = "functions\ui\menu\fn_menu_refreshConfigureAttachments.sqf";};
+            class menu_evaluateWeaponComposition {file = "functions\ui\menu\fn_menu_evaluateWeaponComposition.sqf";};
+            class menu_selectConfigureMagazine {file = "functions\ui\menu\fn_menu_selectConfigureMagazine.sqf";};
+            class menu_selectConfigureAttachment {file = "functions\ui\menu\fn_menu_selectConfigureAttachment.sqf";};
+            class menu_getItemCardControls {file = "functions\ui\menu\fn_menu_getItemCardControls.sqf";};
+            class menu_buildBrowserWeaponEntries {file = "functions\ui\menu\fn_menu_buildBrowserWeaponEntries.sqf";};
+            class menu_buildBrowserWearableEntries {file = "functions\ui\menu\fn_menu_buildBrowserWearableEntries.sqf";};
+            class menu_refreshWearableBrowser {file = "functions\ui\menu\fn_menu_refreshWearableBrowser.sqf";};
+            class menu_refreshAssignedBrowser {file = "functions\ui\menu\fn_menu_refreshAssignedBrowser.sqf";};
+            class menu_refreshCargoBrowser {file = "functions\ui\menu\fn_menu_refreshCargoBrowser.sqf";};
             class menu_refreshSelector {file = "functions\ui\menu\fn_menu_refreshSelector.sqf";};
             class menu_buildWeaponEntries {file = "functions\ui\menu\fn_menu_buildWeaponEntries.sqf";};
             class menu_buildWearableEntries {file = "functions\ui\menu\fn_menu_buildWearableEntries.sqf";};
             class menu_buildAttachmentEntries {file = "functions\ui\menu\fn_menu_buildAttachmentEntries.sqf";};
             class menu_buildAssignedEntries {file = "functions\ui\menu\fn_menu_buildAssignedEntries.sqf";};
             class menu_buildCargoEntries {file = "functions\ui\menu\fn_menu_buildCargoEntries.sqf";};
+            class menu_applyWeaponComposition {file = "functions\ui\menu\fn_menu_applyWeaponComposition.sqf";};
             class menu_applyPrimary {file = "functions\ui\menu\fn_menu_applyPrimary.sqf";};
             class menu_applyHandgun {file = "functions\ui\menu\fn_menu_applyHandgun.sqf";};
             class menu_applyLauncher {file = "functions\ui\menu\fn_menu_applyLauncher.sqf";};
             class menu_applyUniform {file = "functions\ui\menu\fn_menu_applyUniform.sqf";};
+            class menu_applyWearable {file = "functions\ui\menu\fn_menu_applyWearable.sqf";};
             class menu_applyVest {file = "functions\ui\menu\fn_menu_applyVest.sqf";};
             class menu_applyBackpack {file = "functions\ui\menu\fn_menu_applyBackpack.sqf";};
             class menu_applyHeadgear {file = "functions\ui\menu\fn_menu_applyHeadgear.sqf";};
@@ -205,9 +230,11 @@ class CfgFunctions
             class menu_applyAssigned {file = "functions\ui\menu\fn_menu_applyAssigned.sqf";};
             class menu_applyAttachment {file = "functions\ui\menu\fn_menu_applyAttachment.sqf";};
             class menu_applyCargo {file = "functions\ui\menu\fn_menu_applyCargo.sqf";};
+            class menu_adjustCargo {file = "functions\ui\menu\fn_menu_adjustCargo.sqf";};
             class menu_saveSessionKit {file = "functions\ui\menu\fn_menu_saveSessionKit.sqf";};
             class menu_loadSessionKit {file = "functions\ui\menu\fn_menu_loadSessionKit.sqf";};
             class menu_deleteSessionKit {file = "functions\ui\menu\fn_menu_deleteSessionKit.sqf";};
+            class menu_refreshSessionKits {file = "functions\ui\menu\fn_menu_refreshSessionKits.sqf";};
         };
     };
 };

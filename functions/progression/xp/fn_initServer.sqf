@@ -1,7 +1,7 @@
 /*
     File: fn_initServer.sqf
     Author: Tylervip
-    Description: Initializes server-owned round XP configuration and state.
+    Description: Initializes server-owned session progression configuration and state.
     Execution: Server
     Parameters:
         None
@@ -51,4 +51,10 @@ missionNamespace setVariable ["BN_KOTH_xpLevelBase", _xpLevelBase max 1];
 missionNamespace setVariable ["BN_KOTH_xpLevelStep", _xpLevelStep max 0];
 missionNamespace setVariable ["BN_KOTH_xpMaxLevel", _maxLevel max 1];
 
-[] call bn_koth_fnc_progression_xp_resetRound;
+private _progressionByUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
+if !(_progressionByUid isEqualType createHashMap) then {
+    _progressionByUid = createHashMap;
+};
+missionNamespace setVariable ["BN_KOTH_playerProgression", _progressionByUid];
+
+["Session progression initialized", "INFO"] call bn_koth_fnc_common_log;

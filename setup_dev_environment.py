@@ -88,7 +88,11 @@ def ensure_merged_config_links(target_folder, content_root, map_folder):
 
     shared_config = content_root / "config"
     if shared_config.exists() and shared_config.is_dir():
-        copy_into_target(target_config, shared_config, overwrite=False)
+        # Config is the one mission subtree that cannot be linked directly
+        # because shared and map-specific sources must be merged. Refresh the
+        # shared copy on every setup run; otherwise existing mission folders
+        # silently retain stale CfgFunctions registrations and other config.
+        copy_into_target(target_config, shared_config, overwrite=True)
 
     if map_folder is not None:
         map_config = map_folder / "config"

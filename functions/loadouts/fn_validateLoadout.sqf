@@ -226,6 +226,75 @@ if !(isClass _arsenalCfg) exitWith {
 };
 
 private _compatibilityCfg = _arsenalCfg >> "Equipment" >> "Compatibility";
+
+private _validateWeaponEntitlement = {
+    params ["_validatedWeapon"];
+
+    if !(_validatedWeapon isEqualType createHashMap) exitWith {
+        createHashMapFromArray [
+            ["success", false],
+            ["entitled", false],
+            ["code", "ERR_WEAPON_ENTITLEMENT_INPUT"],
+            ["message", "Validated weapon payload is invalid."]
+        ]
+    };
+
+    if (_validatedWeapon getOrDefault ["clear", false]) exitWith {
+        createHashMapFromArray [
+            ["success", true],
+            ["entitled", true],
+            ["code", "ENTITLED_CLEAR"],
+            ["message", "Empty weapon slot requires no entitlement."]
+        ]
+    };
+
+    private _weaponClass = _validatedWeapon getOrDefault ["weaponClass", ""];
+    if (_weaponClass isEqualTo "") then {
+        _weaponClass = _validatedWeapon getOrDefault ["baseWeaponClass", ""];
+    };
+
+    [_uid, _weaponClass] call bn_koth_fnc_progression_evaluateWeaponEntitlement
+};
+
+private _validateAttachmentEntitlements = {
+    params ["_validatedWeapon"];
+
+    private _failure = createHashMap;
+    private _attachments = _validatedWeapon getOrDefault ["attachments", []];
+    if !(_attachments isEqualType []) exitWith {
+        createHashMapFromArray [
+            ["success", false],
+            ["entitled", false],
+            ["code", "ERR_VALIDATED_ATTACHMENTS_TYPE"],
+            ["message", "Validated attachment payload is invalid."]
+        ]
+    };
+
+    {
+        if ((count _failure) isEqualTo 0) then {
+            private _entitlement = [
+                _uid,
+                _x
+            ] call bn_koth_fnc_progression_evaluateAttachmentEntitlement;
+
+            if !(_entitlement getOrDefault ["entitled", false]) then {
+                _failure = _entitlement;
+            };
+        };
+    } forEach _attachments;
+
+    if ((count _failure) > 0) then {
+        _failure
+    } else {
+        createHashMapFromArray [
+            ["success", true],
+            ["entitled", true],
+            ["code", "ENTITLED_ATTACHMENTS"],
+            ["message", "Attachment minimum-level entitlement satisfied."]
+        ]
+    }
+};
+
 if !(_requestMode isEqualTo "configured") then {
     if !(isClass _compatibilityCfg) exitWith {
         ["ERR_COMPATIBILITY_MISSING", "Weapon composition validation requires canonical compatibility config.", _requestedLoadoutId, _authoritativeSideToken] call _fail
@@ -253,6 +322,26 @@ if (_requestMode isEqualTo "primary") exitWith {
         "validatedWeapon",
         createHashMap
     ];
+
+    private _entitlement = [_validatedPrimary] call _validateWeaponEntitlement;
+    if !(_entitlement getOrDefault ["entitled", false]) exitWith {
+        [
+            _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"],
+            _entitlement getOrDefault ["message", "Primary weapon is not entitled for this player."],
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    private _attachmentEntitlement = [_validatedPrimary] call _validateAttachmentEntitlements;
+    if !(_attachmentEntitlement getOrDefault ["entitled", false]) exitWith {
+        [
+            _attachmentEntitlement getOrDefault ["code", "ERR_ATTACHMENT_ENTITLEMENT"],
+            _attachmentEntitlement getOrDefault ["message", "Primary attachment is not entitled for this player."],
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
 
     private _validatedWeapons = createHashMapFromArray [
         ["primary", _validatedPrimary]
@@ -336,7 +425,23 @@ if (_requestMode isEqualTo "weapons") exitWith {
     if ("primary" in _slotKeys) then {
         private _primaryResult = ["primary", "PRIMARY", "Primary"] call _validateSlot;
         if (_primaryResult getOrDefault ["success", false]) then {
-            _validatedWeapons set ["primary", _primaryResult getOrDefault ["validatedWeapon", createHashMap]];
+            private _validatedPrimary = _primaryResult getOrDefault ["validatedWeapon", createHashMap];
+            private _entitlement = [_validatedPrimary] call _validateWeaponEntitlement;
+
+            if (_entitlement getOrDefault ["entitled", false]) then {
+                private _attachmentEntitlement = [_validatedPrimary] call _validateAttachmentEntitlements;
+                if (_attachmentEntitlement getOrDefault ["entitled", false]) then {
+                    _validatedWeapons set ["primary", _validatedPrimary];
+                } else {
+                    _slotFailure = _attachmentEntitlement;
+                };
+            } else {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"]],
+                    ["message", _entitlement getOrDefault ["message", "Primary weapon is not entitled for this player."]]
+                ];
+            };
         } else {
             _slotFailure = _primaryResult;
         };
@@ -384,7 +489,23 @@ if (_requestMode isEqualTo "weapons") exitWith {
                 } else {
                     private _launcherResult = ["launcher", "LAUNCHER", "Launcher"] call _validateSlot;
                     if (_launcherResult getOrDefault ["success", false]) then {
-                        _validatedWeapons set ["launcher", _launcherResult getOrDefault ["validatedWeapon", createHashMap]];
+                        private _validatedLauncher = _launcherResult getOrDefault ["validatedWeapon", createHashMap];
+                        private _entitlement = [_validatedLauncher] call _validateWeaponEntitlement;
+
+                        if (_entitlement getOrDefault ["entitled", false]) then {
+                            private _attachmentEntitlement = [_validatedLauncher] call _validateAttachmentEntitlements;
+                            if (_attachmentEntitlement getOrDefault ["entitled", false]) then {
+                                _validatedWeapons set ["launcher", _validatedLauncher];
+                            } else {
+                                _slotFailure = _attachmentEntitlement;
+                            };
+                        } else {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"]],
+                                ["message", _entitlement getOrDefault ["message", "Launcher is not entitled for this player."]]
+                            ];
+                        };
                     } else {
                         _slotFailure = _launcherResult;
                     };
@@ -396,7 +517,23 @@ if (_requestMode isEqualTo "weapons") exitWith {
     if (((count _slotFailure) isEqualTo 0) && {"handgun" in _slotKeys}) then {
         private _handgunResult = ["handgun", "HANDGUN", "Handgun"] call _validateSlot;
         if (_handgunResult getOrDefault ["success", false]) then {
-            _validatedWeapons set ["handgun", _handgunResult getOrDefault ["validatedWeapon", createHashMap]];
+            private _validatedHandgun = _handgunResult getOrDefault ["validatedWeapon", createHashMap];
+            private _entitlement = [_validatedHandgun] call _validateWeaponEntitlement;
+
+            if (_entitlement getOrDefault ["entitled", false]) then {
+                private _attachmentEntitlement = [_validatedHandgun] call _validateAttachmentEntitlements;
+                if (_attachmentEntitlement getOrDefault ["entitled", false]) then {
+                    _validatedWeapons set ["handgun", _validatedHandgun];
+                } else {
+                    _slotFailure = _attachmentEntitlement;
+                };
+            } else {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"]],
+                    ["message", _entitlement getOrDefault ["message", "Handgun is not entitled for this player."]]
+                ];
+            };
         } else {
             _slotFailure = _handgunResult;
         };
@@ -468,10 +605,23 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                             ["message", format ["Class '%1' is not a uniform item.", _uniformClass]]
                                         ];
                                     } else {
-                                        _validatedWeapons set [
-                                            "uniform",
-                                            createHashMapFromArray [["uniformClass", _uniformClass]]
-                                        ];
+                                        private _uniformEntitlement = [
+                                            _uid,
+                                            "Wearables",
+                                            _uniformClass
+                                        ] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        if !(_uniformEntitlement getOrDefault ["entitled", false]) then {
+                                            _slotFailure = createHashMapFromArray [
+                                                ["success", false],
+                                                ["code", _uniformEntitlement getOrDefault ["code", "ERR_WEARABLE_ENTITLEMENT"]],
+                                                ["message", _uniformEntitlement getOrDefault ["message", "Uniform is not entitled for this player."]]
+                                            ];
+                                        } else {
+                                            _validatedWeapons set [
+                                                "uniform",
+                                                createHashMapFromArray [["uniformClass", _uniformClass]]
+                                            ];
+                                        };
                                     };
                                 };
                             };
@@ -549,10 +699,12 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                             ["message", format ["Class '%1' is not a vest item.", _vestClass]]
                                         ];
                                     } else {
-                                        _validatedWeapons set [
-                                            "vest",
-                                            createHashMapFromArray [["vestClass", _vestClass]]
-                                        ];
+                                        private _entitlement = [_uid,"Wearables",_vestClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        if !(_entitlement getOrDefault ["entitled",false]) then {
+                                            _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Vest is not entitled for this player."]]];
+                                        } else {
+                                            _validatedWeapons set ["vest",createHashMapFromArray [["vestClass",_vestClass]]];
+                                        };
                                     };
                                 };
                             };
@@ -618,10 +770,23 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                         ["message", format ["Backpack '%1' is not publicly available.", _backpackClass]]
                                     ];
                                 } else {
-                                    _validatedWeapons set [
-                                        "backpack",
-                                        createHashMapFromArray [["backpackClass", _backpackClass]]
-                                    ];
+                                    private _backpackEntitlement = [
+                                        _uid,
+                                        "Wearables",
+                                        _backpackClass
+                                    ] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                    if !(_backpackEntitlement getOrDefault ["entitled", false]) then {
+                                        _slotFailure = createHashMapFromArray [
+                                            ["success", false],
+                                            ["code", _backpackEntitlement getOrDefault ["code", "ERR_WEARABLE_ENTITLEMENT"]],
+                                            ["message", _backpackEntitlement getOrDefault ["message", "Backpack is not entitled for this player."]]
+                                        ];
+                                    } else {
+                                        _validatedWeapons set [
+                                            "backpack",
+                                            createHashMapFromArray [["backpackClass", _backpackClass]]
+                                        ];
+                                    };
                                 };
                             };
                         };
@@ -695,10 +860,12 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                             ["message", format ["Class '%1' is not a headgear item.", _headgearClass]]
                                         ];
                                     } else {
-                                        _validatedWeapons set [
-                                            "headgear",
-                                            createHashMapFromArray [["headgearClass", _headgearClass]]
-                                        ];
+                                        private _entitlement = [_uid,"Wearables",_headgearClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        if !(_entitlement getOrDefault ["entitled",false]) then {
+                                            _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Headgear is not entitled for this player."]]];
+                                        } else {
+                                            _validatedWeapons set ["headgear",createHashMapFromArray [["headgearClass",_headgearClass]]];
+                                        };
                                     };
                                 };
                             };
@@ -757,10 +924,12 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                     ["message", format ["Facewear '%1' is not publicly available.", _facewearClass]]
                                 ];
                             } else {
-                                _validatedWeapons set [
-                                    "facewear",
-                                    createHashMapFromArray [["facewearClass", _facewearClass]]
-                                ];
+                                private _entitlement = [_uid,"Wearables",_facewearClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                if !(_entitlement getOrDefault ["entitled",false]) then {
+                                    _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Facewear is not entitled for this player."]]];
+                                } else {
+                                    _validatedWeapons set ["facewear",createHashMapFromArray [["facewearClass",_facewearClass]]];
+                                };
                             };
                         };
                     };

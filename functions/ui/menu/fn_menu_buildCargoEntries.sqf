@@ -1,7 +1,9 @@
 /*
     File: fn_menu_buildCargoEntries.sqf
     Author: Legend
-    Description: Builds cargo mutation candidates from canonical compatibility and source data.
+    Description: Builds cargo quantity candidates. Current-weapon ammunition is
+        shown first, then items already present in the selected container, then
+        remaining supported cargo choices.
     Execution: Client
     Parameters:
         0: Intended loadout snapshot <ARRAY>
@@ -26,94 +28,121 @@ private _weaponMagazinesCfg = _compatibilityCfg >> "WeaponMagazines";
 private _resolveItemName = {
     params ["_className"];
     if (_className isEqualTo "") exitWith {"NONE"};
-
     private _cfg = configFile >> "CfgWeapons" >> _className;
-    if !(isClass _cfg) then {
-        _cfg = configFile >> "CfgVehicles" >> _className;
-    };
-    if !(isClass _cfg) then {
-        _cfg = configFile >> "CfgGlasses" >> _className;
-    };
-    if !(isClass _cfg) then {
-        _cfg = configFile >> "CfgMagazines" >> _className;
-    };
+    if !(isClass _cfg) then {_cfg = configFile >> "CfgVehicles" >> _className;};
+    if !(isClass _cfg) then {_cfg = configFile >> "CfgGlasses" >> _className;};
+    if !(isClass _cfg) then {_cfg = configFile >> "CfgMagazines" >> _className;};
     if !(isClass _cfg) exitWith {toUpper _className};
-
-    private _displayName = getText (_cfg >> "displayName");
-    if (_displayName isEqualTo "") then {toUpper _className} else {_displayName}
+    private _name = getText (_cfg >> "displayName");
+    if (_name isEqualTo "") then {toUpper _className} else {_name}
 };
 
+private _resolveItemPicture = {
+    params ["_className"];
+    private _cfg = configFile >> "CfgWeapons" >> _className;
+    if !(isClass _cfg) then {_cfg = configFile >> "CfgMagazines" >> _className;};
+    if !(isClass _cfg) exitWith {""};
+    getText (_cfg >> "picture")
+};
+
+private _containerFilter = toLower (uiNamespace getVariable ["BN_KOTH_menuCargoContainerFilter", ""]);
 private _containers = [];
+
 {
     _x params ["_name", "_index"];
+    if !(_containerFilter isEqualTo "") then {
+        if !(_name isEqualTo _containerFilter) then {continue;};
+    };
+    if ((count _intendedLoadout) <= _index) then {continue;};
     private _slot = _intendedLoadout select _index;
     if ((_slot isEqualType []) && {(count _slot) >= 2}) then {
         private _containerClass = toLower (_slot select 0);
-        if !(_containerClass isEqualTo "") then {
-            _containers pushBack _x;
-        };
+        if !(_containerClass isEqualTo "") then {_containers pushBack _x;};
     };
 } forEach [["uniform", 3], ["vest", 4], ["backpack", 5]];
 
 if ((count _containers) <= 0) exitWith {_entries};
 
+private _initialContainer = uiNamespace getVariable ["BN_KOTH_menuCargoInitialContainer", ""];
+private _initialInKit = uiNamespace getVariable ["BN_KOTH_menuCargoInitialInKit", createHashMap];
+
+if (
+    !(_initialInKit isEqualType createHashMap) ||
+    {!(_initialContainer isEqualTo _containerFilter)}
+) then {
+    _initialInKit = createHashMap;
+
+    {
+        _x params ["_containerName", "_index"];
+        private _slot = _intendedLoadout select _index;
+        private _cargo = _slot select 1;
+        if !(_cargo isEqualType []) then {_cargo = [];};
+
+        {
+            if ((_x isEqualType []) && {(count _x) >= 2}) then {
+                private _className = toLower (_x select 0);
+                private _count = _x select 1;
+                if (
+                    (_className isEqualType "") &&
+                    {!(_className isEqualTo "")} &&
+                    {_count isEqualType 0} &&
+                    {_count > 0}
+                ) then {
+                    _initialInKit set [_className, true];
+                };
+            };
+        } forEach _cargo;
+    } forEach _containers;
+
+    uiNamespace setVariable ["BN_KOTH_menuCargoInitialContainer", _containerFilter];
+    uiNamespace setVariable ["BN_KOTH_menuCargoInitialInKit", _initialInKit];
+};
+
+private _currentWeaponAmmo = [];
+if (isClass _weaponMagazinesCfg) then {
+    {
+        if ((count _intendedLoadout) <= _x) then {continue;};
+        private _slot = _intendedLoadout select _x;
+        if !((_slot isEqualType []) && {(count _slot) >= 1}) then {continue;};
+        private _weaponClass = toLower (_slot select 0);
+        if (_weaponClass isEqualTo "") then {continue;};
+        private _magCfg = _weaponMagazinesCfg >> _weaponClass;
+        if (isClass _magCfg) then {
+            {_currentWeaponAmmo pushBackUnique (toLower _x);} forEach (getArray (_magCfg >> "values"));
+        };
+    } forEach [0, 1, 2];
+};
+
+private _candidates = +_currentWeaponAmmo;
+
+// Anything already in the selected container stays visible and ranks near the top.
 {
     _x params ["_containerName", "_index"];
     private _slot = _intendedLoadout select _index;
     private _cargo = _slot select 1;
-    if !(_cargo isEqualType []) then {
-        _cargo = [];
-    };
-
+    if !(_cargo isEqualType []) then {_cargo = [];};
     {
         if ((_x isEqualType []) && {(count _x) >= 2}) then {
-            private _entryClass = toLower (_x select 0);
-            private _entryCount = _x select 1;
-            if ((_entryClass isEqualType "") && {(_entryCount isEqualType 0)} && {_entryCount > 0}) then {
-                _entries pushBack (createHashMapFromArray [
-                    ["displayName", format ["REMOVE %1: %2 (x%3)", toUpper _containerName, [_entryClass] call _resolveItemName, _entryCount]],
-                    ["container", _containerName],
-                    ["className", _entryClass],
-                    ["delta", -1],
-                    ["available", true],
-                    ["equipped", false]
-                ]);
+            private _className = toLower (_x select 0);
+            private _count = _x select 1;
+            if ((_className isEqualType "") && {!(_className isEqualTo "")} && {_count isEqualType 0} && {_count > 0}) then {
+                _candidates pushBackUnique _className;
             };
         };
     } forEach _cargo;
 } forEach _containers;
 
-private _candidateClasses = [];
-
-if (isClass _weaponMagazinesCfg) then {
-    {
-        private _slot = _intendedLoadout select _x;
-        if ((_slot isEqualType []) && {(count _slot) >= 1}) then {
-            private _weaponClass = toLower (_slot select 0);
-            private _magCfg = _weaponMagazinesCfg >> _weaponClass;
-            if (isClass _magCfg) then {
-                {
-                    _candidateClasses pushBackUnique (toLower _x);
-                } forEach (getArray (_magCfg >> "values"));
-            };
-        };
-    } forEach [0, 1, 2];
-};
-
 if (isClass _sourceMagazinesCfg) then {
     {
         private _class = toLower (configName _x);
         private _category = toLower (getText (_x >> "category"));
-
         if (
             ((_category find "grenade") >= 0) ||
             ((_category find "smoke") >= 0) ||
             (_category isEqualTo "throwable_grenade") ||
             (_category isEqualTo "throwable_smoke") ||
             (_category isEqualTo "throwable_flare")
-        ) then {
-            _candidateClasses pushBackUnique _class;
-        };
+        ) then {_candidates pushBackUnique _class;};
     } forEach ("true" configClasses _sourceMagazinesCfg);
 };
 
@@ -122,7 +151,6 @@ if (isClass _sourceItemsCfg) then {
         private _class = toLower (configName _x);
         private _itemType = [_class] call BIS_fnc_itemType;
         if !((_itemType isEqualType []) && {(count _itemType) >= 2}) then {continue;};
-
         private _subType = toLower (_itemType select 1);
         if (
             (_subType isEqualTo "map") ||
@@ -131,32 +159,102 @@ if (isClass _sourceItemsCfg) then {
             (_subType isEqualTo "radio") ||
             (_subType isEqualTo "compass") ||
             (_subType isEqualTo "watch") ||
-            ((_subType find "nvg") >= 0)
-        ) then {
-            _candidateClasses pushBackUnique _class;
-        };
+            ((_subType find "nvg") >= 0) ||
+            ((_subType find "firstaid") >= 0) ||
+            (_subType isEqualTo "medikit")
+        ) then {_candidates pushBackUnique _class;};
     } forEach ("true" configClasses _sourceItemsCfg);
 };
 
-private _added = 0;
+private _sortable = [];
+private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
+if !(_progression isEqualType createHashMap) then {_progression = createHashMap};
 {
-    private _className = _x;
-    if (_added > 250) then {break;};
+    _x params ["_containerName", "_index"];
+    private _slot = _intendedLoadout select _index;
+    private _cargo = _slot select 1;
+    if !(_cargo isEqualType []) then {_cargo = [];};
+
+    private _counts = createHashMap;
+    {
+        if ((_x isEqualType []) && {(count _x) >= 2}) then {
+            private _className = toLower (_x select 0);
+            private _count = _x select 1;
+            if ((_className isEqualType "") && {_count isEqualType 0}) then {_counts set [_className, _count max 0];};
+        };
+    } forEach _cargo;
 
     {
-        _x params ["_containerName", "_index"];
+        private _className = _x;
+        private _currentCount = _counts getOrDefault [_className, 0];
+        private _displayName = [_className] call _resolveItemName;
+        private _category = "EQUIPMENT";
+        if (_className in _currentWeaponAmmo) then {
+            _category = "AMMUNITION";
+        } else {
+            private _sourceMagazineCfg = _sourceMagazinesCfg >> _className;
+            if (isClass _sourceMagazineCfg) then {
+                private _factualCategory = toLower (getText (_sourceMagazineCfg >> "category"));
+                _category = if (((_factualCategory find "smoke") >= 0) || {(_factualCategory find "flare") >= 0}) then {
+                    "SMOKE"
+                } else {
+                    if ((_factualCategory find "grenade") >= 0) then {"GRENADES"} else {"AMMUNITION"}
+                };
+            } else {
+                private _itemType = [_className] call BIS_fnc_itemType;
+                private _subType = if ((_itemType isEqualType []) && {(count _itemType) >= 2}) then {toLower (_itemType select 1)} else {""};
+                if (((_subType find "firstaid") >= 0) || {_subType isEqualTo "medikit"}) then {
+                    _category = "MEDICAL";
+                } else {
+                    if (
+                        (_subType in ["map", "gps", "radio", "compass", "watch"]) ||
+                        {(_subType find "uav") >= 0}
+                    ) then {
+                        _category = "NAVIGATION";
+                    };
+                };
+            };
+        };
+        private _metadata = ["Consumables", _className] call bn_koth_fnc_loadouts_getItemMetadata;
+        private _entitlement = [_progression, _metadata, _className] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+        private _entitled = _entitlement getOrDefault ["entitled", false];
+        private _priority = 2;
+        private _reason = "AVAILABLE";
 
-        _entries pushBack (createHashMapFromArray [
-            ["displayName", format ["ADD %1: %2", toUpper _containerName, [_className] call _resolveItemName]],
+        if (_className in _currentWeaponAmmo) then {
+            _priority = 0;
+            _reason = "CURRENT WEAPON AMMO";
+        } else {
+            if (_initialInKit getOrDefault [_className, false]) then {
+                _priority = 1;
+                _reason = "IN KIT";
+            };
+        };
+
+        private _entry = createHashMapFromArray [
+            ["displayName", format ["%1  x%2", _displayName, _currentCount]],
+            ["itemName", _displayName],
+            ["picture", [_className] call _resolveItemPicture],
+            ["category", _category],
             ["container", _containerName],
             ["className", _className],
-            ["delta", 1],
-            ["available", true],
-            ["equipped", false]
-        ]);
-        _added = _added + 1;
-    } forEach _containers;
+            ["currentCount", _currentCount],
+            ["priority", _priority],
+            ["priorityReason", _reason],
+            ["available", _entitled || {_currentCount > 0}],
+            ["canAdd", _entitled],
+            ["entitled", _entitled],
+            ["entitlementCode", _entitlement getOrDefault ["code", "LOCKED_STATE"]],
+            ["entitlementMessage", _entitlement getOrDefault ["message", "Item entitlement is unavailable."]],
+            ["playerLevel", _entitlement getOrDefault ["playerLevel", 1]],
+            ["minLevel", _metadata getOrDefault ["minLevel", 1]],
+            ["missingPerks", _entitlement getOrDefault ["missingPerks", []]],
+            ["equipped", _currentCount > 0]
+        ];
+        _sortable pushBack [format ["%1|%2", _priority, toLower _displayName], _entry];
+    } forEach _candidates;
+} forEach _containers;
 
-} forEach _candidateClasses;
-
+_sortable sort true;
+{_entries pushBack (_x select 1);} forEach _sortable;
 _entries

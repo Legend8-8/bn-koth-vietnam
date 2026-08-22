@@ -2,9 +2,26 @@ from __future__ import annotations
 
 import csv
 import io
+import re
 from typing import Any
 
 from .catalogue import CatalogueError
+
+
+LAUNCHER_MAGAZINE_CATEGORIES = {
+    "grenade_20mm",
+    "grenade_22mm",
+    "grenade_40mm",
+    "launcher_round",
+}
+
+SMALLARM_MAGAZINE_CATEGORIES = {
+    "pistol_mag",
+    "smg_mag",
+    "rifle_mag",
+    "lmg_mag",
+    "shotgun_mag",
+}
 
 
 def validate_catalogue(catalogue: dict[str, Any]) -> dict[str, list[str]]:
@@ -13,7 +30,11 @@ def validate_catalogue(catalogue: dict[str, Any]) -> dict[str, list[str]]:
     items = catalogue["items"]
     warnings: dict[str, list[str]] = {
         "baseMagazines": [],
+        "duplicateRootDisplayNames": [],
+        "integratedLauncherRoots": [],
         "relationships": [],
+        "suspiciousLauncherRoots": [],
+        "unresolvedRelatedRoots": [],
         "variants": [],
         "orphans": [],
         "exclusions": [],
@@ -40,7 +61,11 @@ def validate_catalogue(catalogue: dict[str, Any]) -> dict[str, list[str]]:
             warnings["baseMagazines"].append(
                 f"{weapon['class']}: {weapon['baseMagazineConfidence']} ({', '.join(candidate['class'] for candidate in weapon.get('baseMagazineCandidates', []))})"
             )
-        if weapon.get("variantOf") and weapon.get("derivedRequirements"):
+        if weapon.get("variantOf"):
+            if weapon["variantOf"] not in all_assets:
+                raise CatalogueError(
+                    f"Weapon {weapon['class']} variantOf {weapon['variantOf']} is not present in the catalogue."
+                )
             for requirement in weapon["derivedRequirements"]:
                 if requirement not in all_assets:
                     raise CatalogueError(
@@ -50,6 +75,10 @@ def validate_catalogue(catalogue: dict[str, Any]) -> dict[str, list[str]]:
             warnings["variants"].append(
                 f"{weapon['class']}: family={weapon['family']} candidate={weapon['variantCandidateOf']} remains ambiguous"
             )
+
+    root_audit_warnings = build_root_audit_warnings(weapons, magazines)
+    for category, entries in root_audit_warnings.items():
+        warnings[category].extend(entries)
 
     relationship_state = catalogue["relationships"]
     for weapon_class, magazine_class in relationship_state["oneSidedWeaponToMagazine"]:
@@ -65,6 +94,125 @@ def validate_catalogue(catalogue: dict[str, Any]) -> dict[str, list[str]]:
         warnings["exclusions"].append(entry)
 
     return warnings
+
+
+def normalize_display_name(value: str) -> str:
+    normalized = value.strip().lower()
+    normalized = re.sub(r"\s+", " ", normalized)
+    return normalized
+
+
+def root_weapon_records(weapons: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [weapon for weapon in weapons if not weapon.get("variantOf")]
+
+
+def weapon_muzzle_kinds(weapon: dict[str, Any]) -> list[str]:
+    return sorted(
+        {
+            muzzle.get("kind", "")
+            for muzzle in weapon.get("muzzles", {}).values()
+            if muzzle.get("kind", "")
+        }
+    )
+
+
+def weapon_magazine_categories(weapon: dict[str, Any], magazine_map: dict[str, dict[str, Any]]) -> list[str]:
+    return sorted(
+        {
+            magazine_map[magazine_class]["category"]
+            for magazine_class in weapon.get("compatibleMagazines", [])
+            if magazine_class in magazine_map
+        }
+    )
+
+
+def format_root_details(weapon: dict[str, Any], magazine_map: dict[str, dict[str, Any]]) -> str:
+    muzzle_kinds = weapon_muzzle_kinds(weapon)
+    magazine_categories = weapon_magazine_categories(weapon, magazine_map)
+    return (
+        f"{weapon['class']} display={weapon.get('displayName', '')} "
+        f"type={weapon.get('weaponType', '')} family={weapon.get('family', '')} "
+        f"muzzles={'+'.join(muzzle_kinds) if muzzle_kinds else 'none'} "
+        f"magCategories={'+'.join(magazine_categories) if magazine_categories else 'none'}"
+    )
+
+
+def root_sort_key(weapon: dict[str, Any]) -> tuple[str, str, str]:
+    return (
+        weapon.get("family") or "",
+        normalize_display_name(weapon.get("displayName", "")),
+        weapon["class"],
+    )
+
+
+def build_root_audit_warnings(weapons: list[dict[str, Any]], magazines: list[dict[str, Any]]) -> dict[str, list[str]]:
+    roots = root_weapon_records(weapons)
+    magazine_map = {magazine["class"]: magazine for magazine in magazines}
+
+    roots_by_family: dict[str, list[dict[str, Any]]] = {}
+    for weapon in roots:
+        family = weapon.get("family") or ""
+        roots_by_family.setdefault(family, []).append(weapon)
+
+    unresolved_related_roots = []
+    for family, family_roots in roots_by_family.items():
+        if family == "" or len(family_roots) <= 1:
+            continue
+
+        sorted_family_roots = sorted(family_roots, key=root_sort_key)
+        for weapon in sorted_family_roots:
+            related_classes = [candidate["class"] for candidate in sorted_family_roots if candidate["class"] != weapon["class"]]
+            unresolved_related_roots.append(
+                (
+                    root_sort_key(weapon),
+                    f"{format_root_details(weapon, magazine_map)} relatedRoots={','.join(related_classes)}"
+                )
+            )
+
+    roots_by_display: dict[str, list[dict[str, Any]]] = {}
+    for weapon in roots:
+        display_key = normalize_display_name(weapon.get("displayName", ""))
+        if display_key == "":
+            continue
+        roots_by_display.setdefault(display_key, []).append(weapon)
+
+    duplicate_root_display_names = []
+    for display_key, display_roots in roots_by_display.items():
+        if len(display_roots) <= 1:
+            continue
+
+        sorted_display_roots = sorted(display_roots, key=root_sort_key)
+        duplicate_root_display_names.append(
+            (
+                (
+                    sorted_display_roots[0].get("family") or "",
+                    display_key,
+                    sorted_display_roots[0]["class"],
+                ),
+                f"display={display_key} roots=" + " | ".join(format_root_details(weapon, magazine_map) for weapon in sorted_display_roots),
+            )
+        )
+
+    suspicious_launcher_roots = []
+    integrated_launcher_roots = []
+    for weapon in roots:
+        muzzle_kinds = set(weapon_muzzle_kinds(weapon))
+        magazine_categories = set(weapon_magazine_categories(weapon, magazine_map))
+        has_launcher_path = "launcher" in muzzle_kinds or bool(magazine_categories & LAUNCHER_MAGAZINE_CATEGORIES)
+        has_smallarm_path = "primary_firearm" in muzzle_kinds or "rifle_mag" in muzzle_kinds or bool(magazine_categories & SMALLARM_MAGAZINE_CATEGORIES)
+
+        if weapon.get("weaponType") == "launcher" and not has_launcher_path:
+            suspicious_launcher_roots.append((root_sort_key(weapon), format_root_details(weapon, magazine_map)))
+
+        if has_smallarm_path and has_launcher_path:
+            integrated_launcher_roots.append((root_sort_key(weapon), format_root_details(weapon, magazine_map)))
+
+    return {
+        "duplicateRootDisplayNames": [entry for _key, entry in sorted(duplicate_root_display_names, key=lambda item: item[0])],
+        "integratedLauncherRoots": [entry for _key, entry in sorted(integrated_launcher_roots, key=lambda item: item[0])],
+        "suspiciousLauncherRoots": [entry for _key, entry in sorted(suspicious_launcher_roots, key=lambda item: item[0])],
+        "unresolvedRelatedRoots": [entry for _key, entry in sorted(unresolved_related_roots, key=lambda item: item[0])],
+    }
 
 
 def assert_unique_classes(weapons: list[dict[str, Any]], magazines: list[dict[str, Any]], items: list[dict[str, Any]]) -> None:
@@ -169,7 +317,8 @@ def render_report(catalogue: dict[str, Any], warnings: dict[str, list[str]]) -> 
     if not any(warnings.values()):
         sections.append("- none")
     else:
-        for category, entries in warnings.items():
+        for category in sorted(warnings):
+            entries = warnings[category]
             if not entries:
                 continue
             sections.append(f"- {category}: {len(entries)}")
@@ -210,9 +359,9 @@ def build_progression_rows(catalogue: dict[str, Any]) -> list[list[str]]:
 
     for weapon in catalogue["weapons"]:
         family = weapon.get("family") or ""
-        if weapon.get("variantOf") and weapon.get("derivedRequirements"):
+        if weapon.get("variantOf"):
             weapon_row = ensure_asset(weapon["class"], "Derived Weapon", "NO")
-            weapon_row["reasons"].add(f"confirmed derived of {weapon['variantOf']}")
+            weapon_row["reasons"].add(f"canonical alias of {weapon['variantOf']}")
             weapon_row["relatedWeapons"].add(weapon["variantOf"])
         else:
             weapon_row = ensure_asset(weapon["class"], "Weapon", "YES")

@@ -80,7 +80,8 @@ private _resolveBoardTarget = {
                 private _menuActionId = _board addAction [
                     "Open Menu",
                     {
-                        [true] call bn_koth_fnc_menu_open;
+                        params ["_target"];
+                        [true, _target] call bn_koth_fnc_menu_open;
                     },
                     nil,
                     1.5,

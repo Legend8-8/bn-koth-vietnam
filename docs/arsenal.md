@@ -1082,6 +1082,38 @@ The request implementation deliberately handles:
 
 Future progression entitlement must integrate inside the existing server validator through a progression-owned API. It must not create a second request, validation or application path.
 
+### Arsenal V1 weapon composition drafts
+
+The primary-weapon, sidearm and launcher browsers share one card, Configure,
+draft and request architecture. Each browser may submit one complete
+client-selected composition for its explicit weapon slot:
+
+```text
+canonical base weapon
++ one compatible magazine
++ zero or more compatible attachments
+```
+
+The client draft is presentation and intent only. The server independently:
+
+- resolves structural variants from generated compatibility data;
+- validates the magazine against the resolved weapon;
+- validates every attachment against the resolved weapon;
+- validates weapon entitlement;
+- validates any human-authored attachment minimum level;
+- builds the accepted composition into the authoritative intended loadout.
+
+Only the server-returned validated loadout is applied through the existing
+owned application path. Viable but incomplete structural attachment drafts are
+not submittable.
+
+The browser slot context is presentation only. The request contains a
+`weapons.primary`, `weapons.handgun`, or `weapons.launcher` intent, and the
+server validates that slot through the shared weapon-composition validator
+before building the authoritative intended loadout. Launcher presentation also
+provides an explicit `NONE` choice. That choice submits an empty launcher-slot
+intent; only the server validates and applies the resulting removal.
+
 Safe-zone anti-duplication boundaries are:
 
 - never treat a client inventory snapshot or client-supplied `getUnitLoadout` result as entitlement or persistence authority;
@@ -1471,3 +1503,93 @@ Does it display/select equipment?
 ```
 
 Keep those ownership boundaries intact and the Arsenal can grow without being redesigned every time another feature is added.
+
+---
+
+## 41. Wearable And Cargo Entitlement
+
+Wearable container selection and container contents are separate concerns.
+
+- `Metadata >> Wearables` owns human-authored level and perk requirements for
+  uniform and later wearable selection.
+- `Metadata >> Consumables` owns human-authored level and perk requirements for
+  cargo items.
+- Generated S.O.G. facts remain the source of class identity, pictures, item
+  type, weapon-magazine relationships, and cargo validity.
+- Presentation categories may organize cargo for browsing, but a category never
+  grants entitlement.
+- Client UI evaluates the shared pure rule interpreter only for presentation.
+- The server re-evaluates entitlement before accepting a wearable selection or
+  positive cargo adjustment.
+- Cargo removal remains permitted when an item is no longer entitled, so a
+  player can always clean up an existing kit.
+
+Unconfigured wearable and consumable metadata is deliberately uncontrolled. No
+level, perk, price, ownership, stock, or economy rule may be inferred from the
+factual catalogue or from a presentation category.
+
+Cargo presentation uses the shared two-column card workspace. Factual candidates
+are grouped for navigation as ammunition, grenades, smoke/flares, medical,
+navigation/comms, or equipment. Cards display the authoritative intended-kit
+quantity and submit one-unit add/remove intents. Empty categories are disabled.
+These categories organize presentation only; the server continues to own class
+validity, entitlement, quantity limits, container capacity, and application.
+
+Uniforms, vests, backpacks, headgear, facewear, and binoculars share the
+large-card item browser. Each slot keeps
+its own factual catalogue and applied-state lookup. Backpack `NONE` is an
+explicit clear intent, and only an applied non-empty container may open its
+cargo configuration view. Human-authored `Metadata >> Wearables` requirements
+are evaluated for presentation and repeated by the server before a selection
+is accepted. Assigned equipment remains slot-first because map, navigation,
+radio, compass, watch, and NVG positions are independent loadout fields; both
+its slot and candidate stages use the card workspace, and candidates use the
+same entitlement rules.
+
+Weapon art may use the overview row's wide framing, while uniform, vest,
+headgear, and backpack art preserves its source aspect ratio in both overview
+and browser presentation. Wearable pictures must not be stretched to fill the
+weapon-shaped frame.
+
+Opening any card browser sets a one-shot snap request. The renderer locates the
+currently applied logical item and opens its page. Pagination after entry is
+fully user-controlled and does not repeatedly jump back to the applied item.
+
+Opening the Arsenal requests a server-owned reconciliation snapshot. The server
+reads the current physical player unit, replaces the stored intended-loadout
+baseline with that observation, and returns it without applying equipment.
+Clients do not submit inventory contents. This prevents later partial mutations
+from restoring equipment that the player physically dropped between Arsenal
+sessions while preserving the server as the state owner.
+
+Saved kits are stored only in the local client's `profileNamespace`. Saving and
+deleting do not mutate server gameplay state. A locally stored kit is never an
+authority source: LOAD submits the complete stored array as untrusted intent,
+and the server repeats structural weapon/attachment validation, factual slot
+validation, progression entitlement checks, assigned-slot rules, cargo class
+and quantity checks, and container capacity checks before the single owned
+application path may equip it. Editing local profile data therefore cannot
+grant equipment or bypass progression.
+
+The Loadout overview exposes `MANAGE LOADOUTS` and `SAVE CURRENT KIT` in its
+centre footer. The manager supports up to twelve locally named kits, including
+load, rename, and delete. The former fixed `slot1` profile record is migrated
+once as `MIGRATED KIT`; the old profile key is then removed. Kit names and ids
+are presentation metadata only. The server never resolves equipment from a
+client kit id and validates the complete submitted loadout independently.
+
+State-changing Arsenal requests also include the network id of the actual
+mapboard whose local action opened the menu. The server treats that id only as
+a target hint: it resolves the object itself and verifies it against the
+configured side mapboard or marker and player distance before accepting the
+mutation. This avoids selecting a different nearby board while preserving the
+server-owned access decision.
+
+The operator-panel render-to-texture control and client-local camera lifecycle
+helpers are retained as disabled preview framework. The menu does not currently
+start that camera. The attempted live-player view was rejected because its
+world-relative framing could not provide the deliberately staged presentation
+required by the design reference. A future implementation may use a locally
+owned, presentation-only mannequin in a fixed decorated scene. It must never
+equip or mutate the gameplay player, and simultaneous clients must not share or
+compete over preview state.

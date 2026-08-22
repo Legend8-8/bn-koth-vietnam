@@ -28,6 +28,8 @@ if (isNull _display) exitWith {};
 
 private _validPages = [
     "LOADOUT",
+    "LOADOUT_BROWSER",
+    "LOADOUT_CONFIGURE",
     "LOADOUT_PRIMARY",
     "LOADOUT_HANDGUN",
     "LOADOUT_LAUNCHER",
@@ -40,6 +42,7 @@ private _validPages = [
     "LOADOUT_EQUIPMENT",
     "LOADOUT_ATTACHMENTS",
     "LOADOUT_CARGO",
+    "LOADOUT_KITS",
     "STORE",
     "PERKS",
     "STATS",
@@ -56,6 +59,12 @@ if !(_requestedPage isEqualTo "") then {
 };
 
 private _ctrlServer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_SERVER;
+private _ctrlHeaderPlayer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_PLAYER;
+private _ctrlHeaderLevel = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_LEVEL;
+private _ctrlHeaderXp = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_XP;
+private _ctrlHeaderXpTrack = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_TRACK;
+private _ctrlHeaderXpFill = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_FILL;
+private _ctrlBrowserWorkspace = _display displayCtrl BN_KOTH_IDC_MENU_BG_BROWSER_WORKSPACE;
 private _ctrlOperatorName = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_NAME;
 private _ctrlOperatorTeam = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_TEAM;
 private _ctrlOperatorRole = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_ROLE_VALUE;
@@ -85,7 +94,6 @@ private _ctrlFacewearButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_FACEWEA
 private _ctrlBinocularButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_BINOCULAR_BUTTON;
 private _ctrlEquipmentButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_EQUIPMENT_BUTTON;
 private _ctrlCargoButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_CARGO_BUTTON;
-private _ctrlAttachmentsButton = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_ATTACHMENTS_BUTTON;
 
 private _ctrlNavLoadout = _display displayCtrl BN_KOTH_IDC_MENU_NAV_LOADOUT;
 private _ctrlNavStore = _display displayCtrl BN_KOTH_IDC_MENU_NAV_STORE;
@@ -93,12 +101,58 @@ private _ctrlNavPerks = _display displayCtrl BN_KOTH_IDC_MENU_NAV_PERKS;
 private _ctrlNavStats = _display displayCtrl BN_KOTH_IDC_MENU_NAV_STATS;
 private _ctrlNavProgression = _display displayCtrl BN_KOTH_IDC_MENU_NAV_PROGRESSION;
 
+private _ctrlLoadoutBgPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_PRIMARY;
+private _ctrlLoadoutBgHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_HANDGUN;
+private _ctrlLoadoutBgLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_LAUNCHER;
+private _ctrlLoadoutBgUniform = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_UNIFORM;
+private _ctrlLoadoutBgVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_VEST;
+private _ctrlLoadoutBgHeadgear = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_HEADGEAR;
+private _ctrlLoadoutBgBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_BACKPACK;
+private _ctrlLoadoutBgEquipment = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_BG_EQUIPMENT;
+private _ctrlLoadoutTextPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_PRIMARY;
+private _ctrlLoadoutTextHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_HANDGUN;
+private _ctrlLoadoutTextLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_LAUNCHER;
+private _ctrlLoadoutTextUniform = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_UNIFORM;
+private _ctrlLoadoutTextVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_VEST;
+private _ctrlLoadoutTextHeadgear = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_HEADGEAR;
+private _ctrlLoadoutTextBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_BACKPACK;
+private _ctrlLoadoutTextEquipment = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_EQUIPMENT;
+private _ctrlLoadoutPicPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_PRIMARY;
+private _ctrlLoadoutPicHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_HANDGUN;
+private _ctrlLoadoutPicLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_LAUNCHER;
+private _ctrlLoadoutPicUniform = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_UNIFORM;
+private _ctrlLoadoutPicVest = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_VEST;
+private _ctrlLoadoutPicHeadgear = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_HEADGEAR;
+private _ctrlLoadoutPicBackpack = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_BACKPACK;
+private _ctrlLoadoutPicEquipment = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_EQUIPMENT;
+private _ctrlPrimaryPreview = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_PREVIEW;
 private _ctrlPrimaryTitle = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_TITLE;
 private _ctrlPrimaryCurrent = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_CURRENT;
 private _ctrlPrimaryList = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_LIST;
 private _ctrlPrimaryDetail = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_DETAIL;
 private _ctrlPrimaryBack = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_BACK;
+private _ctrlCargoMinus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_MINUS;
+private _ctrlCargoPlus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_PLUS;
 private _ctrlPrimaryApply = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_APPLY;
+private _ctrlBrowserTitle = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_TITLE;
+private _ctrlBrowserSubtitle = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_SUBTITLE;
+private _ctrlBrowserBack = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_BACK;
+private _ctrlBrowserPagePrevious = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_PREVIOUS;
+private _ctrlBrowserPageNext = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_NEXT;
+private _ctrlBrowserPageLabel = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL;
+private _ctrlConfigureMagazines = _display displayCtrl BN_KOTH_IDC_MENU_CONFIGURE_MAGAZINES;
+private _ctrlConfigureAttachments = _display displayCtrl BN_KOTH_IDC_MENU_CONFIGURE_ATTACHMENTS;
+private _ctrlCargoCategoryAmmunition = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_AMMUNITION;
+private _ctrlCargoCategoryGrenades = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_GRENADES;
+private _ctrlCargoCategorySmoke = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_SMOKE;
+private _ctrlCargoCategoryMedical = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_MEDICAL;
+private _ctrlCargoCategoryNavigation = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_NAVIGATION;
+private _ctrlCargoCategoryEquipment = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_CATEGORY_EQUIPMENT;
+private _ctrlKitName = _display displayCtrl BN_KOTH_IDC_MENU_KIT_NAME;
+private _ctrlKitSave = _display displayCtrl BN_KOTH_IDC_MENU_KIT_SAVE;
+private _ctrlKitRename = _display displayCtrl BN_KOTH_IDC_MENU_KIT_RENAME;
+private _ctrlKitManage = _display displayCtrl BN_KOTH_IDC_MENU_KIT_MANAGE;
+private _ctrlKitSaveCurrent = _display displayCtrl BN_KOTH_IDC_MENU_KIT_SAVE_CURRENT;
 
 private _setNavState = {
     params ["_ctrl", "_isActive"];
@@ -118,7 +172,41 @@ if (_serverName isEqualTo "") then {
 _ctrlServer ctrlSetText format ["SERVER  %1", _serverName];
 
 private _playerName = if (!isNull player) then {name player} else {profileName};
-_ctrlOperatorName ctrlSetText toUpper _playerName;
+private _playerNameUpper = toUpper _playerName;
+_ctrlOperatorName ctrlSetText _playerNameUpper;
+_ctrlHeaderPlayer ctrlSetText _playerNameUpper;
+
+private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
+if !(_progression isEqualType createHashMap) then {
+    _progression = createHashMap;
+};
+
+private _level = (_progression getOrDefault ["level", 1]) max 1;
+private _xp = (_progression getOrDefault ["xp", 0]) max 0;
+
+private _levelProgress = [_xp, _level] call bn_koth_fnc_progression_xp_getLevelProgress;
+_level = _levelProgress getOrDefault ["level", 1];
+private _maxLevel = _levelProgress getOrDefault ["maxLevel", 270];
+private _xpIntoLevel = _levelProgress getOrDefault ["xpIntoLevel", 0];
+private _xpRequired = _levelProgress getOrDefault ["xpRequired", 0];
+private _xpRatio = _levelProgress getOrDefault ["ratio", 1];
+
+_ctrlHeaderLevel ctrlSetText format ["LEVEL %1", _level];
+
+if (_level >= _maxLevel) then {
+    _ctrlHeaderXp ctrlSetText format ["MAX LEVEL  |  %1 XP", _xp];
+} else {
+    _ctrlHeaderXp ctrlSetText format ["%1 / %2 XP", round _xpIntoLevel, round _xpRequired];
+};
+
+private _trackPos = ctrlPosition _ctrlHeaderXpTrack;
+_ctrlHeaderXpFill ctrlSetPosition [
+    _trackPos select 0,
+    _trackPos select 1,
+    (_trackPos select 2) * _xpRatio,
+    _trackPos select 3
+];
+_ctrlHeaderXpFill ctrlCommit 0;
 
 private _sideLabel = "UNASSIGNED";
 if (!isNull player) then {
@@ -147,6 +235,8 @@ _ctrlOperatorRole ctrlSetText _roleText;
 
 private _loadoutPages = [
     "LOADOUT",
+    "LOADOUT_BROWSER",
+    "LOADOUT_CONFIGURE",
     "LOADOUT_PRIMARY",
     "LOADOUT_HANDGUN",
     "LOADOUT_LAUNCHER",
@@ -158,7 +248,8 @@ private _loadoutPages = [
     "LOADOUT_BINOCULAR",
     "LOADOUT_EQUIPMENT",
     "LOADOUT_ATTACHMENTS",
-    "LOADOUT_CARGO"
+    "LOADOUT_CARGO",
+    "LOADOUT_KITS"
 ];
 
 [_ctrlNavLoadout, _activePage in _loadoutPages] call _setNavState;
@@ -168,6 +259,30 @@ private _loadoutPages = [
 [_ctrlNavProgression, _activePage isEqualTo "PROGRESSION"] call _setNavState;
 
 private _mainViewControls = [
+    _ctrlLoadoutBgPrimary,
+    _ctrlLoadoutBgHandgun,
+    _ctrlLoadoutBgLauncher,
+    _ctrlLoadoutBgUniform,
+    _ctrlLoadoutBgVest,
+    _ctrlLoadoutBgHeadgear,
+    _ctrlLoadoutBgBackpack,
+    _ctrlLoadoutBgEquipment,
+    _ctrlLoadoutTextPrimary,
+    _ctrlLoadoutTextHandgun,
+    _ctrlLoadoutTextLauncher,
+    _ctrlLoadoutTextUniform,
+    _ctrlLoadoutTextVest,
+    _ctrlLoadoutTextHeadgear,
+    _ctrlLoadoutTextBackpack,
+    _ctrlLoadoutTextEquipment,
+    _ctrlLoadoutPicPrimary,
+    _ctrlLoadoutPicHandgun,
+    _ctrlLoadoutPicLauncher,
+    _ctrlLoadoutPicUniform,
+    _ctrlLoadoutPicVest,
+    _ctrlLoadoutPicHeadgear,
+    _ctrlLoadoutPicBackpack,
+    _ctrlLoadoutPicEquipment,
     _ctrlPrimary,
     _ctrlHandgun,
     _ctrlLauncher,
@@ -189,13 +304,17 @@ private _mainViewControls = [
     _ctrlBinocularButton,
     _ctrlEquipmentButton,
     _ctrlCargoButton,
-    _ctrlAttachmentsButton,
     _ctrlSectionTitle,
     _ctrlNotice,
-    _ctrlFooter
+    _ctrlFooter,
+    _ctrlKitManage,
+    _ctrlKitSaveCurrent
 ];
 
 private _selectorViewControls = [
+    _ctrlCargoMinus,
+    _ctrlCargoPlus,
+    _ctrlPrimaryPreview,
     _ctrlPrimaryTitle,
     _ctrlPrimaryCurrent,
     _ctrlPrimaryList,
@@ -204,14 +323,99 @@ private _selectorViewControls = [
     _ctrlPrimaryApply
 ];
 
+private _browserViewControls = [
+    _ctrlBrowserTitle,
+    _ctrlBrowserSubtitle,
+    _ctrlBrowserBack,
+    _ctrlBrowserPagePrevious,
+    _ctrlBrowserPageNext,
+    _ctrlBrowserPageLabel
+];
+
+private _browserCardControls = [];
+
+private _configureViewControls = [
+    _ctrlConfigureMagazines,
+    _ctrlConfigureAttachments
+];
+
+private _cargoBrowserControls = [
+    _ctrlCargoCategoryAmmunition,
+    _ctrlCargoCategoryGrenades,
+    _ctrlCargoCategorySmoke,
+    _ctrlCargoCategoryMedical,
+    _ctrlCargoCategoryNavigation,
+    _ctrlCargoCategoryEquipment
+];
+
+private _kitManagerControls = [_ctrlKitName, _ctrlKitSave, _ctrlKitRename];
+
+{
+    _browserCardControls append [
+        _display displayCtrl _x,
+        _display displayCtrl (_x + 1),
+        _display displayCtrl (_x + 2),
+        _display displayCtrl (_x + 3),
+        _display displayCtrl (_x + 4),
+        _display displayCtrl (_x + 5),
+        _display displayCtrl (_x + 6),
+        _display displayCtrl (_x + 7),
+        _display displayCtrl (_x + 8)
+    ];
+} forEach [
+    BN_KOTH_IDC_MENU_BROWSER_CARD_1_BG,
+    BN_KOTH_IDC_MENU_BROWSER_CARD_2_BG,
+    BN_KOTH_IDC_MENU_BROWSER_CARD_3_BG,
+    BN_KOTH_IDC_MENU_BROWSER_CARD_4_BG
+];
+
+private _navControls = [
+    _ctrlNavLoadout,
+    _ctrlNavStore,
+    _ctrlNavPerks,
+    _ctrlNavStats,
+    _ctrlNavProgression
+];
+
 private _showMainView = {
+    _ctrlBrowserWorkspace ctrlShow false;
     { _x ctrlShow true; } forEach _mainViewControls;
     { _x ctrlShow false; } forEach _selectorViewControls;
+    { _x ctrlShow false; } forEach _browserViewControls;
+    { _x ctrlShow false; } forEach _browserCardControls;
+    { _x ctrlShow false; } forEach _configureViewControls;
+    { _x ctrlShow false; } forEach _cargoBrowserControls;
+    { _x ctrlShow false; } forEach _kitManagerControls;
+    { _x ctrlShow true; } forEach _navControls;
 };
 
 private _showSelectorView = {
+    _ctrlBrowserWorkspace ctrlShow false;
     { _x ctrlShow false; } forEach _mainViewControls;
     { _x ctrlShow true; } forEach _selectorViewControls;
+    { _x ctrlShow false; } forEach _browserViewControls;
+    { _x ctrlShow false; } forEach _browserCardControls;
+    { _x ctrlShow false; } forEach _configureViewControls;
+    { _x ctrlShow false; } forEach _cargoBrowserControls;
+    { _x ctrlShow false; } forEach _kitManagerControls;
+    { _x ctrlShow true; } forEach _navControls;
+};
+
+private _showBrowserView = {
+    _ctrlBrowserWorkspace ctrlShow true;
+    { _x ctrlShow false; } forEach _mainViewControls;
+    { _x ctrlShow false; } forEach _selectorViewControls;
+    { _x ctrlShow true; } forEach _browserViewControls;
+    { _x ctrlShow false; } forEach _browserCardControls;
+    { _x ctrlShow false; } forEach _configureViewControls;
+    { _x ctrlShow false; } forEach _cargoBrowserControls;
+    { _x ctrlShow false; } forEach _kitManagerControls;
+    { _x ctrlShow false; } forEach _navControls;
+};
+
+private _showConfigureView = {
+    call _showBrowserView;
+    { _x ctrlShow true; } forEach _configureViewControls;
 };
 
 private _showComingSoon = {
@@ -251,9 +455,30 @@ private _showComingSoon = {
         _ctrlFacewearButton,
         _ctrlBinocularButton,
         _ctrlEquipmentButton,
-        _ctrlCargoButton,
-        _ctrlAttachmentsButton
+        _ctrlCargoButton
     ];
+};
+
+if !(_activePage isEqualTo "LOADOUT_ATTACHMENTS") then {
+    uiNamespace setVariable ["BN_KOTH_menuAttachmentSlotFilter", ""];
+};
+if !(_activePage isEqualTo "LOADOUT_CARGO") then {
+    uiNamespace setVariable ["BN_KOTH_menuCargoContainerFilter", ""];
+    uiNamespace setVariable ["BN_KOTH_menuCargoInitialContainer", ""];
+    uiNamespace setVariable ["BN_KOTH_menuCargoInitialInKit", createHashMap];
+    if !(_activePage isEqualTo "LOADOUT_BROWSER") then {
+        uiNamespace setVariable ["BN_KOTH_menuSelectorReturnPage", "LOADOUT"];
+    };
+};
+
+private _showKitManagerView = {
+    call _showBrowserView;
+    { _x ctrlShow true; } forEach _kitManagerControls;
+};
+
+private _showCargoBrowserView = {
+    call _showBrowserView;
+    { _x ctrlShow true; } forEach _cargoBrowserControls;
 };
 
 if !(_activePage in _loadoutPages) exitWith {
@@ -280,6 +505,26 @@ private _compatibilityCfg = missionConfigFile >> _catalogueClass >> "Equipment" 
 if (_activePage isEqualTo "LOADOUT") exitWith {
     call _showMainView;
     [_display, _intendedLoadout] call bn_koth_fnc_menu_refreshLoadout;
+};
+
+if (_activePage isEqualTo "LOADOUT_BROWSER") exitWith {
+    call _showBrowserView;
+    [_display] call bn_koth_fnc_menu_refreshBrowser;
+};
+
+if (_activePage isEqualTo "LOADOUT_CONFIGURE") exitWith {
+    call _showConfigureView;
+    [_display] call bn_koth_fnc_menu_refreshConfigure;
+};
+
+if (_activePage isEqualTo "LOADOUT_CARGO") exitWith {
+    call _showCargoBrowserView;
+    [_display, _intendedLoadout, _compatibilityCfg] call bn_koth_fnc_menu_refreshCargoBrowser;
+};
+
+if (_activePage isEqualTo "LOADOUT_KITS") exitWith {
+    call _showKitManagerView;
+    [_display] call bn_koth_fnc_menu_refreshSessionKits;
 };
 
 private _selectorMode = switch (_activePage) do {
