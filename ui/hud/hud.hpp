@@ -6,6 +6,10 @@
 #define BN_KOTH_HUD_X (safeZoneX + safeZoneW - BN_KOTH_HUD_W - safeZoneW * 0.012)
 #define BN_KOTH_HUD_Y (safeZoneY + safeZoneH - BN_KOTH_HUD_H - safeZoneH * 0.025)
 
+#define BN_KOTH_SAFE_ZONE_BANNER_W (safeZoneW * 0.50)
+#define BN_KOTH_SAFE_ZONE_BANNER_X (safeZoneX + safeZoneW * 0.25)
+#define BN_KOTH_SAFE_ZONE_BANNER_Y (safeZoneY + safeZoneH * 0.04)
+
 class BN_KOTH_RscHud
 {
     idd = -1;
@@ -119,9 +123,9 @@ class BN_KOTH_RscHud
             text = "";
             style = 2;
             font = "PuristaSemiBold";
-            x = safeZoneX;
-            y = safeZoneY + safeZoneH * 0.02;
-            w = safeZoneW;
+            x = BN_KOTH_SAFE_ZONE_BANNER_X;
+            y = BN_KOTH_SAFE_ZONE_BANNER_Y;
+            w = BN_KOTH_SAFE_ZONE_BANNER_W;
             h = safeZoneH * 0.055;
             sizeEx = "0.03 * safeZoneH";
             colorText[] = {0.10, 1, 0.20, 1};
@@ -134,9 +138,9 @@ class BN_KOTH_RscHud
             text = "";
             style = 2;
             font = "PuristaSemiBold";
-            x = safeZoneX;
-            y = safeZoneY + safeZoneH * 0.02;
-            w = safeZoneW;
+            x = BN_KOTH_SAFE_ZONE_BANNER_X;
+            y = BN_KOTH_SAFE_ZONE_BANNER_Y;
+            w = BN_KOTH_SAFE_ZONE_BANNER_W;
             h = safeZoneH * 0.055;
             sizeEx = "0.03 * safeZoneH";
             colorText[] = {1, 0.10, 0.10, 1};

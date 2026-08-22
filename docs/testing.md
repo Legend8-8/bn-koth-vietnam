@@ -138,15 +138,17 @@ Respawn-related changes must verify:
 - protection is active only while a deployed player is spatially inside the player's own active safe zone;
 - leaving removes protection and re-entering restores it without a timer;
 - no friendly safe-zone status indicator is visible while protection is active;
-- leaving a friendly safe zone shows the exact top-screen `LEAVING SAFE ZONE`
-  message in green for five seconds and then removes it;
+- leaving a friendly safe zone shows the exact `LEAVING SAFE ZONE` message in
+  green for five seconds in a centered, half-screen-width banner at the shared,
+  slightly lowered top position and then removes it;
 - re-entering the friendly safe zone removes the exit message immediately, and
   death, respawn, enemy-safe-zone entry, or a non-active safe-zone round state
   does not leave or create a false exit message;
 - protected players cannot fire, cause damage, or receive damage;
 - an enemy intruder cannot fire, cause damage, or enter a vehicle but remains damageable;
-- entering an opposing safe zone shows the exact persistent top-screen warning
-  `ENEMY SAFE ZONE LEAVE NOW` in red text, and leaving removes it;
+- entering an opposing safe zone shows the exact persistent warning
+  `ENEMY SAFE ZONE LEAVE NOW` in red text in the same centered,
+  half-screen-width banner position, and leaving removes it;
 - the enemy warning does not interfere with the friendly exit notification or
   unrelated HUD controls;
 - an enemy already in a vehicle is ejected when entering the opposing safe zone;
