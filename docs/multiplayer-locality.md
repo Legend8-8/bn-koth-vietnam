@@ -111,6 +111,41 @@ Must not become a dumping ground.
 
 It should contain only shared startup that genuinely needs to execute on every machine, or direct execution into clearly owned initialisation functions.
 
+4.1 Representation handoff lifecycle
+
+The transfer function bn_koth_fnc_teams_transferRepresentation is a server-owned handoff primitive.
+
+Use it when a player must be moved to a newly created or newly selected representation unit, such as:
+
+- lobby representation assignment;
+- gameplay deployment assignment;
+- any server-authoritative role/unit transition.
+
+Do not call this handoff function from client startup files.
+
+The startup file initPlayerLocal.sqf runs once on each client and initializes local systems for that client. It is not the place to authoritatively choose or transfer representation ownership.
+
+Server-side usage pattern:
+
+[_uid, _targetUnit, _targetState, _deletePrevious] call bn_koth_fnc_teams_transferRepresentation;
+
+Parameter meaning:
+
+- _uid: player UID string;
+- _targetUnit: server-selected representation unit object;
+- _targetState: logical player state string (for example LOBBY or DEPLOYING);
+- _deletePrevious: whether to delete the previous non-player representation after successful handoff.
+
+On success, the lifecycle is:
+
+1. Server validates record and owner.
+2. Server asks owning client to selectPlayer through bn_koth_fnc_ui_selectControlledUnit.
+3. Server waits until target-unit locality ownership matches the player owner.
+4. Server updates authoritative player record state.
+5. Server triggers post-handoff local reinitialization on the owning client (map icons, 3D icons, ESC menu), plus server-side curator setup.
+
+This split keeps authority server-side while still ensuring client-local systems are reinstalled after ownership changes.
+
 5. State Distribution
 
 The server stores authoritative state.
