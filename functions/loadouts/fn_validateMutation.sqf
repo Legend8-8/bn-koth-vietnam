@@ -1142,54 +1142,83 @@ switch (_op) do {
 
         _containerCargo = [_containerCargo] call _sanitizeContainerCargo;
 
-        private _classCheck = [_className, _mutatedLoadout] call _validateCargoClass;
-        if !(_classCheck getOrDefault ["success", false]) exitWith {
-            [
-                _classCheck getOrDefault ["code", "ERR_CARGO_CLASS_UNKNOWN"],
-                _classCheck getOrDefault ["message", "Cargo class validation failed."],
-                _baseLoadoutId
-            ] call _resultFail
-        };
-
-        private _kind = _classCheck getOrDefault ["kind", ""];
-        private _ammoCount = _classCheck getOrDefault ["ammoCount", 0];
-
-        private _cargoEntitlement = createHashMapFromArray [
-            ["success", true],
-            ["entitled", true],
-            ["code", "ENTITLED_REMOVAL"],
-            ["message", "Cargo removal requires no entitlement."]
-        ];
-        if (_delta > 0) then {
-            _cargoEntitlement = [
-                _uid,
-                "Consumables",
-                _className
-            ] call bn_koth_fnc_progression_evaluateItemEntitlement;
-        };
-
-        // IMPORTANT: reject at the adjust_cargo case scope. An exitWith inside
-        // the positive-delta block above would only exit that nested block.
-        if !(_cargoEntitlement getOrDefault ["entitled", false]) exitWith {
-            [
-                _cargoEntitlement getOrDefault ["code", "ERR_CONSUMABLE_ENTITLEMENT"],
-                _cargoEntitlement getOrDefault ["message", "Cargo item is not entitled for this player."],
-                _baseLoadoutId
-            ] call _resultFail
+        // Existing authoritative cargo must always be removable. Do not make a
+        // negative mutation depend on current catalogue membership, weapon
+        // compatibility or progression entitlement: those gates decide what a
+        // player may ADD, not what they may discard.
+        private _matchingEntries = _containerCargo select {
+            (_x isEqualType []) &&
+            {(count _x) >= 2} &&
+            {toLower (_x select 0) isEqualTo _className}
         };
 
         private _existingCount = 0;
         {
-            private _entryClass = toLower (_x select 0);
-            if (_entryClass isEqualTo _className) then {
-                if ((_kind isEqualTo "magazine") && {(count _x) >= 3}) then {
-                    _existingCount = _existingCount + (_x select 1);
-                };
-                if ((_kind isEqualTo "item") && {(count _x) == 2}) then {
-                    _existingCount = _existingCount + (_x select 1);
+            private _entryCount = _x select 1;
+            if (_entryCount isEqualType 0) then {
+                _existingCount = _existingCount + _entryCount;
+            };
+        } forEach _matchingEntries;
+
+        if ((_delta < 0) && {_existingCount <= 0}) exitWith {
+            [
+                "ERR_CARGO_NOT_PRESENT",
+                format ["Cargo '%1' is not present in %2.", _className, _container],
+                _baseLoadoutId
+            ] call _resultFail
+        };
+
+        private _kind = "";
+        private _ammoCount = 0;
+        private _cargoValidationFailure = createHashMap;
+
+        if (_delta > 0) then {
+            private _classCheck = [_className, _mutatedLoadout] call _validateCargoClass;
+            if !(_classCheck getOrDefault ["success", false]) then {
+                _cargoValidationFailure = createHashMapFromArray [
+                    ["code", _classCheck getOrDefault ["code", "ERR_CARGO_CLASS_UNKNOWN"]],
+                    ["message", _classCheck getOrDefault ["message", "Cargo class validation failed."]]
+                ];
+            } else {
+                _kind = _classCheck getOrDefault ["kind", ""];
+                _ammoCount = _classCheck getOrDefault ["ammoCount", 0];
+
+                private _cargoEntitlement = [
+                    _uid,
+                    "Consumables",
+                    _className
+                ] call bn_koth_fnc_progression_evaluateItemEntitlement;
+
+                if !(_cargoEntitlement getOrDefault ["entitled", false]) then {
+                    _cargoValidationFailure = createHashMapFromArray [
+                        ["code", _cargoEntitlement getOrDefault ["code", "ERR_CONSUMABLE_ENTITLEMENT"]],
+                        ["message", _cargoEntitlement getOrDefault ["message", "Cargo item is not entitled for this player."]]
+                    ];
                 };
             };
-        } forEach _containerCargo;
+        } else {
+            // Preserve authoritative entry shape for partial removal.
+            private _sample = _matchingEntries select 0;
+            if ((count _sample) >= 3) then {
+                _kind = "magazine";
+                _ammoCount = _sample select 2;
+                if !(_ammoCount isEqualType 0) then {
+                    _ammoCount = 0;
+                };
+            } else {
+                _kind = "item";
+            };
+        };
+
+        // Reject at the adjust_cargo case scope. Nested exitWith inside the
+        // positive-delta validation block would only exit that block.
+        if ((count _cargoValidationFailure) > 0) exitWith {
+            [
+                _cargoValidationFailure getOrDefault ["code", "ERR_CARGO_VALIDATION"],
+                _cargoValidationFailure getOrDefault ["message", "Cargo validation failed."],
+                _baseLoadoutId
+            ] call _resultFail
+        };
 
         private _newCount = _existingCount + _delta;
         if (_newCount < 0) then {
