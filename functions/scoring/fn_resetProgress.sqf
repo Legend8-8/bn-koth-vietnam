@@ -13,7 +13,7 @@
 if (!isServer) exitWith {};
 
 private _scoringCfg = missionConfigFile >> "CfgBnKothScoring";
-private _duration = missionNamespace getVariable ["BN_KOTH_scoreTickInterval", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {5}];
+private _duration = missionNamespace getVariable ["BN_KOTH_scoreTickInterval", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {15}];
 if (_duration < 1) then {
     _duration = 1;
 };

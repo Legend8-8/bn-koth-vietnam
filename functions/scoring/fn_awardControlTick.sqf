@@ -16,7 +16,7 @@ if (!isServer) exitWith {};
 private _roundState = [] call bn_koth_fnc_round_getState;
 private _scoringCfg = missionConfigFile >> "CfgBnKothScoring";
 private _scoreTick = missionNamespace getVariable ["BN_KOTH_scoreTick", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTick")} else {1}];
-private _scoreTickInterval = missionNamespace getVariable ["BN_KOTH_scoreTickInterval", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {5}];
+private _scoreTickInterval = missionNamespace getVariable ["BN_KOTH_scoreTickInterval", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {15}];
 private _scoreLimit = missionNamespace getVariable ["BN_KOTH_scoreLimit", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreLimit")} else {100}];
 
 private _playableSides = missionNamespace getVariable ["BN_KOTH_playableSides", [west, east]];

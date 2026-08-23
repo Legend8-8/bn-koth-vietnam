@@ -160,7 +160,7 @@ private _progressStartedAt = -1;
 private _progressActive = false;
 private _progressDuration = missionNamespace getVariable [
     "BN_KOTH_scoreTickInterval",
-    if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {5}
+    if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {15}
 ];
 if (_progress isEqualType createHashMap) then {
     _progressSide = _progress getOrDefault ["side", sideUnknown];
