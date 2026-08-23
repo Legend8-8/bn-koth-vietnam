@@ -89,6 +89,7 @@ class CfgFunctions
         class progression
         {
             class progression_xp_initServer {file = "functions\progression\xp\fn_initServer.sqf";};
+            class progression_xp_getXpThresholdForLevel {file = "functions\progression\xp\fn_getXpThresholdForLevel.sqf";};
             class progression_xp_getLevel {file = "functions\progression\xp\fn_getLevel.sqf";};
             class progression_xp_getLevelProgress {file = "functions\progression\xp\fn_getLevelProgress.sqf";};
             class progression_xp_addXp {file = "functions\progression\xp\fn_addXp.sqf";};

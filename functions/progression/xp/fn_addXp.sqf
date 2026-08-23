@@ -59,7 +59,9 @@ private _result = createHashMapFromArray [
 private _clientPayload = createHashMapFromArray [
     ["uid", _uid],
     ["xp", _newXp],
-    ["level", _newLevel]
+    ["level", _newLevel],
+    ["amount", _amount],
+    ["reason", _reason]
 ];
 
 private _ownerId = _playerRecord getOrDefault ["ownerId", -1];

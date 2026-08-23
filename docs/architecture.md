@@ -216,8 +216,10 @@ Contains player progression systems:
 
 Current progression state is stored in the server-owned
 `BN_KOTH_playerProgression` map keyed by UID. It is session-scoped for now and
-is not yet database-backed. Clients receive only presentation state required
-for UI.
+is not yet database-backed. Cumulative XP is the stable progression value;
+level is derived from the config-owned curve so future persistence can load XP
+without duplicating balance rules into the database layer. Clients receive only
+presentation state required for UI.
 
 Round-only competitive statistics do not belong to progression. They are owned
 by `functions/roundStats/` and reset on the next `ACTIVE` round without changing
