@@ -115,7 +115,19 @@ class CfgBnKothArsenal
         {
             class Weapons
             {
-                // First progression seed from the agreed design example.
+                // Canonical logical-weapon side policy. Structural variants
+                // inherit these entries through canonical metadata lookup.
+                class vn_ak_01 {allowedSides[] = {"EAST"};};
+                class vn_dp28 {allowedSides[] = {"EAST"};};
+                class vn_f1_smg {allowedSides[] = {"WEST"};};
+                // vn_fkb1_pm remains unconfigured pending manual review.
+                class vn_gau5a {allowedSides[] = {"WEST"};};
+                class vn_hd {allowedSides[] = {"WEST"};};
+                class vn_hp {allowedSides[] = {"WEST"};};
+                class vn_izh54 {allowedSides[] = {"EAST"};};
+                class vn_k50m {allowedSides[] = {"EAST"};};
+                class vn_k98k {allowedSides[] = {"EAST"};};
+                class vn_kbkg {allowedSides[] = {"EAST"};};
                 class vn_l1a1_01
                 {
                     allowedSides[] = {"WEST"};
@@ -123,6 +135,84 @@ class CfgBnKothArsenal
                     licenseKills = 50;
                     requiredPerks[] = {};
                 };
+                class vn_l2a1_01 {allowedSides[] = {"WEST"};};
+                class vn_l2a3 {allowedSides[] = {"WEST"};};
+                class vn_l34a1 {allowedSides[] = {"WEST"};};
+                class vn_l4 {allowedSides[] = {"WEST"};};
+                class vn_m10 {allowedSides[] = {"WEST"};};
+                class vn_m127 {allowedSides[] = {"WEST"};};
+                class vn_m14 {allowedSides[] = {"WEST"};};
+                class vn_m14a1 {allowedSides[] = {"WEST"};};
+                class vn_m16 {allowedSides[] = {"WEST"};};
+                class vn_m16_usaf {allowedSides[] = {"WEST"};};
+                class vn_m1891 {allowedSides[] = {"EAST"};};
+                class vn_m1895 {allowedSides[] = {"EAST"};};
+                class vn_m1897 {allowedSides[] = {"WEST"};};
+                class vn_m1903 {allowedSides[] = {"WEST"};};
+                class vn_m1911 {allowedSides[] = {"WEST"};};
+                class vn_m1918 {allowedSides[] = {"WEST"};};
+                class vn_m1928_tommy {allowedSides[] = {"WEST"};};
+                class vn_m1928a1_tommy {allowedSides[] = {"WEST"};};
+                class vn_m1_garand {allowedSides[] = {"WEST"};};
+                class vn_m1a1_tommy {allowedSides[] = {"WEST"};};
+                class vn_m1carbine {allowedSides[] = {"WEST", "EAST"};};
+                class vn_m1carbine_shorty {allowedSides[] = {"WEST"};};
+                class vn_m20a1b1_01 {allowedSides[] = {"WEST"};};
+                class vn_m21 {allowedSides[] = {"WEST"};};
+                class vn_m2carbine {allowedSides[] = {"WEST"};};
+                class vn_m36 {allowedSides[] = {"EAST"};};
+                class vn_m38 {allowedSides[] = {"EAST"};};
+                class vn_m3a1 {allowedSides[] = {"WEST", "EAST"};};
+                class vn_m3carbine {allowedSides[] = {"WEST"};};
+                class vn_m40a1 {allowedSides[] = {"WEST"};};
+                class vn_m45 {allowedSides[] = {"WEST"};};
+                class vn_m4956 {allowedSides[] = {"EAST"};};
+                class vn_m60 {allowedSides[] = {"WEST"};};
+                class vn_m63a {allowedSides[] = {"WEST"};};
+                class vn_m63a_cdo {allowedSides[] = {"WEST"};};
+                class vn_m63a_lmg {allowedSides[] = {"WEST"};};
+                class vn_m712 {allowedSides[] = {"EAST"};};
+                class vn_m72 {allowedSides[] = {"WEST"};};
+                class vn_m79 {allowedSides[] = {"WEST", "EAST"};};
+                class vn_m9130 {allowedSides[] = {"EAST"};};
+                class vn_mat49 {allowedSides[] = {"WEST"};};
+                class vn_mat49_vc {allowedSides[] = {"EAST"};};
+                class vn_mc10 {allowedSides[] = {"WEST"};};
+                class vn_mg42 {allowedSides[] = {"EAST"};};
+                class vn_mk1_udg {allowedSides[] = {"WEST"};};
+                class vn_mk22 {allowedSides[] = {"WEST"};};
+                class vn_mp40 {allowedSides[] = {"EAST"};};
+                class vn_mpu {allowedSides[] = {"WEST"};};
+                class vn_mx991_m1911 {allowedSides[] = {"WEST"};};
+                class vn_p38 {allowedSides[] = {"EAST"};};
+                class vn_p38s {allowedSides[] = {"WEST"};};
+                class vn_pk {allowedSides[] = {"EAST"};};
+                class vn_pm {allowedSides[] = {"EAST"};};
+                class vn_ppk {allowedSides[] = {"EAST"};};
+                class vn_pps43 {allowedSides[] = {"EAST"};};
+                class vn_pps52 {allowedSides[] = {"EAST"};};
+                class vn_ppsh41 {allowedSides[] = {"EAST"};};
+                class vn_rpd {allowedSides[] = {"WEST", "EAST"};};
+                class vn_rpg2 {allowedSides[] = {"WEST", "EAST"};};
+                class vn_rpg7 {allowedSides[] = {"EAST"};};
+                class vn_sa7 {allowedSides[] = {"EAST"};};
+                class vn_sa7b {allowedSides[] = {"EAST"};};
+                class vn_sks {allowedSides[] = {"EAST"};};
+                class vn_sten {allowedSides[] = {"WEST"};};
+                class vn_svd {allowedSides[] = {"EAST"};};
+                class vn_tt33 {allowedSides[] = {"EAST"};};
+                class vn_type56 {allowedSides[] = {"WEST", "EAST"};};
+                class vn_type64 {allowedSides[] = {"EAST"};};
+                // Intentional KOTH balance override: the factual catalogue
+                // reports WEST provenance, while gameplay assigns this
+                // integral-suppressed Chinese SMG to EAST for capability parity.
+                class vn_type64_smg {allowedSides[] = {"EAST"};};
+                class vn_vz54 {allowedSides[] = {"EAST"};};
+                class vn_vz61 {allowedSides[] = {"EAST"};};
+                class vn_welrod {allowedSides[] = {"WEST"};};
+                class vn_xm16e1 {allowedSides[] = {"WEST"};};
+                class vn_xm177 {allowedSides[] = {"WEST"};};
+                class vn_xm177e1 {allowedSides[] = {"WEST"};};
             };
 
             class Attachments {};
