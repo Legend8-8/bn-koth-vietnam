@@ -50,6 +50,10 @@ private _usedBinds = [];
 
 _display setVariable ["BN_KOTH_escMenuUsedBinds", _usedBinds];
 
-_list ctrlAddEventHandler ["LBDblClick", {
-    _this call bn_koth_fnc_escMenu_keybindings_captureInput;
+_list ctrlAddEventHandler ["LBSelChanged", {
+    _this params ["_list", "_row"];
+    if (_row >= 0) then {
+        _list lnbSetText [[_row, 1], "PRESS A KEY..."];
+        [_list, _row] call bn_koth_fnc_escMenu_keybindings_captureInput;
+    };
 }];

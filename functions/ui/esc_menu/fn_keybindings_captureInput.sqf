@@ -15,15 +15,51 @@
 if ((count _this) >= 6) exitWith {
     _this params ["_list", "_key", "_shift", "_ctrl", "_alt", "_row"];
 
+    private _forbidden = [DIK_LSHIFT, DIK_RSHIFT, DIK_LCONTROL, DIK_RCONTROL, DIK_LMENU, DIK_RMENU];
+
+    // Modifier-only presses may be part of a combination. Keep capture alive.
+    if (_key in _forbidden) exitWith {true};
+
+    // Escape cancels capture without changing the binding and restores the
+    // row text from the unchanged working binding.
+    if (_key isEqualTo DIK_ESCAPE) exitWith {
+        private _captureEh = _list getVariable ["BN_KOTH_escMenuCaptureEh", -1];
+        if (_captureEh >= 0) then {
+            _list ctrlRemoveEventHandler ["KeyDown", _captureEh];
+            _list setVariable ["BN_KOTH_escMenuCaptureEh", -1];
+        };
+
+        private _display = ctrlParent _list;
+        private _usedBinds = _display getVariable ["BN_KOTH_escMenuUsedBinds", []];
+        private _bind = _usedBinds param [_row, []];
+
+        if ((_bind isEqualType []) && {(count _bind) >= 4}) then {
+            private _keyId = _bind select 0;
+            private _bindShift = _bind select 1;
+            private _bindCtrl = _bind select 2;
+            private _bindAlt = _bind select 3;
+
+            private _keyName = keyName _keyId;
+            if (_keyName isEqualTo "") then {
+                _keyName = str _keyId;
+            };
+
+            if (_bindAlt) then {_keyName = "ALT+" + _keyName;};
+            if (_bindCtrl) then {_keyName = "CTRL+" + _keyName;};
+            if (_bindShift) then {_keyName = "SHIFT+" + _keyName;};
+
+            _list lnbSetText [[_row, 1], _keyName];
+        };
+
+        true
+    };
+
+    // A valid key has been received. End capture after consuming it once.
     private _captureEh = _list getVariable ["BN_KOTH_escMenuCaptureEh", -1];
     if (_captureEh >= 0) then {
         _list ctrlRemoveEventHandler ["KeyDown", _captureEh];
         _list setVariable ["BN_KOTH_escMenuCaptureEh", -1];
     };
-
-    private _forbidden = [DIK_LSHIFT, DIK_RSHIFT, DIK_LCONTROL, DIK_RCONTROL, DIK_LMENU, DIK_RMENU];
-    if (_key in _forbidden) exitWith {true};
-    if (_key isEqualTo DIK_ESCAPE) exitWith {true};
 
     private _display = ctrlParent _list;
     private _usedBinds = _display getVariable ["BN_KOTH_escMenuUsedBinds", []];
