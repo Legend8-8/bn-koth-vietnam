@@ -45,7 +45,7 @@ private _teamScores = missionNamespace getVariable [
 ];
 private _scoreLimit = missionNamespace getVariable ["BN_KOTH_scoreLimit", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreLimit")} else {100}];
 private _scoreTick = missionNamespace getVariable ["BN_KOTH_scoreTick", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTick")} else {1}];
-private _scoreTickInterval = missionNamespace getVariable ["BN_KOTH_scoreTickInterval", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {5}];
+private _scoreTickInterval = missionNamespace getVariable ["BN_KOTH_scoreTickInterval", if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {15}];
 private _maxPlayers = missionNamespace getVariable [
     "BN_KOTH_maxPlayers",
     if (isClass _lobbyCfg) then {getNumber (_lobbyCfg >> "maxPlayers")} else {

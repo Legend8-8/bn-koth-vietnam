@@ -27,7 +27,7 @@ if (_defaultMaxPlayers < 1) then {
 };
 
 private _scoreTick = _viewModel getOrDefault ["scoreTick", 1];
-private _scoreTickInterval = _viewModel getOrDefault ["scoreTickInterval", 5];
+private _scoreTickInterval = _viewModel getOrDefault ["scoreTickInterval", 15];
 private _scoreLimit = _viewModel getOrDefault ["scoreLimit", 100];
 
 if (_scoreTick < 0) then {
