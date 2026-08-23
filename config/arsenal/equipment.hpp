@@ -9,6 +9,42 @@ class CfgBnKothArsenal
             unitClass = "vn_b_men_sog_07";
             starter = 1;
             category = "starter";
+
+            primaryWeapon = "vn_m1903";
+            primaryMagazineCount = 4;
+            primaryMagazineContainer = "vest";
+            primaryAttachments[] = {};
+
+            handgunWeapon = "vn_m1911";
+            handgunMagazineCount = 1;
+            handgunMagazineContainer = "vest";
+            handgunAttachments[] = {};
+
+            launcherWeapon = "";
+            launcherMagazineCount = 0;
+            launcherMagazineContainer = "backpack";
+            launcherAttachments[] = {};
+
+            uniform = "vn_b_uniform_aus_01_01";
+            vest = "vn_b_vest_sog_04";
+            backpack = "";
+            headgear = "";
+            facewear = "";
+            binocular = "";
+
+            cargo[] = {
+                {"vn_b_item_firstaidkit", 2, "uniform"}
+            };
+
+            // Arma assigned-item order: map, GPS/terminal, radio, compass, watch, NVG.
+            assignedItems[] = {
+                "vn_b_item_map",
+                "",
+                "vn_b_item_radio_urc10",
+                "vn_b_item_compass_sog",
+                "vn_b_item_watch",
+                ""
+            };
         };
 
         class starter_east
@@ -18,6 +54,42 @@ class CfgBnKothArsenal
             unitClass = "vn_o_men_nva_04";
             starter = 1;
             category = "starter";
+
+            primaryWeapon = "vn_k98k";
+            primaryMagazineCount = 4;
+            primaryMagazineContainer = "vest";
+            primaryAttachments[] = {};
+
+            handgunWeapon = "vn_pm";
+            handgunMagazineCount = 1;
+            handgunMagazineContainer = "vest";
+            handgunAttachments[] = {};
+
+            launcherWeapon = "";
+            launcherMagazineCount = 0;
+            launcherMagazineContainer = "backpack";
+            launcherAttachments[] = {};
+
+            uniform = "vn_o_uniform_nva_army_03_03";
+            vest = "vn_o_vest_01";
+            backpack = "";
+            headgear = "";
+            facewear = "";
+            binocular = "";
+
+            cargo[] = {
+                {"vn_o_item_firstaidkit", 2, "uniform"}
+            };
+
+            // Arma assigned-item order: map, GPS/terminal, radio, compass, watch, NVG.
+            assignedItems[] = {
+                "vn_o_item_map",
+                "",
+                "vn_o_item_radio_m252",
+                "vn_b_item_compass_sog",
+                "vn_b_item_watch",
+                ""
+            };
         };
     };
 

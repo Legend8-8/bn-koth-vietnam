@@ -245,68 +245,6 @@ private _extractWeaponComposition = {
     ]
 };
 
-private _validateAssignedClassForIndex = {
-    params ["_assignedIndex", "_itemClass"];
-
-    private _assignedFail = {
-        params ["_code", "_message"];
-        createHashMapFromArray [
-            ["success", false],
-            ["code", _code],
-            ["message", _message]
-        ]
-    };
-
-    if (_itemClass isEqualTo "") exitWith {
-        createHashMapFromArray [
-            ["success", true],
-            ["code", "OK"],
-            ["message", "Assigned slot clear intent accepted."]
-        ]
-    };
-
-    if !(isClass (_sourceItemsCfg >> _itemClass)) exitWith {
-        [
-            "ERR_ASSIGNED_ITEM_UNKNOWN",
-            format ["Assigned item '%1' is missing from canonical SourceItems.", _itemClass]
-        ] call _assignedFail
-    };
-
-    if !(isClass (configFile >> "CfgWeapons" >> _itemClass)) exitWith {
-        ["ERR_ASSIGNED_ITEM_CONFIG_MISSING", format ["Assigned item '%1' is missing from CfgWeapons.", _itemClass]] call _assignedFail
-    };
-
-    private _itemType = [_itemClass] call BIS_fnc_itemType;
-    if !((_itemType isEqualType []) && {(count _itemType) >= 2}) exitWith {
-        ["ERR_ASSIGNED_ITEM_TYPE_UNKNOWN", format ["Assigned item '%1' type could not be resolved.", _itemClass]] call _assignedFail
-    };
-
-    private _subType = toLower (_itemType select 1);
-
-    private _allowed = switch (_assignedIndex) do {
-        case 0: {_subType isEqualTo "map"};
-        case 1: {(_subType isEqualTo "gps") || {_subType find "uav" >= 0}};
-        case 2: {_subType isEqualTo "radio"};
-        case 3: {_subType isEqualTo "compass"};
-        case 4: {_subType isEqualTo "watch"};
-        case 5: {_subType find "nvg" >= 0};
-        default {false};
-    };
-
-    if (!_allowed) exitWith {
-        [
-            "ERR_ASSIGNED_ITEM_SLOT_MISMATCH",
-            format ["Assigned item '%1' subtype '%2' is not valid for assigned slot index %3.", _itemClass, _subType, _assignedIndex]
-        ] call _assignedFail
-    };
-
-    createHashMapFromArray [
-        ["success", true],
-        ["code", "OK"],
-        ["message", "Assigned slot item validated."]
-    ]
-};
-
 private _resolveAllowedCargoMagazines = {
     params ["_loadout"];
 
@@ -700,7 +638,7 @@ switch (_op) do {
 
         for "_i" from 0 to 5 do {
             private _itemClass = toLower (_assignedSlot select _i);
-            private _assignedCheck = [_i, _itemClass] call _validateAssignedClassForIndex;
+            private _assignedCheck = [_i, _itemClass, _sourceItemsCfg] call bn_koth_fnc_loadouts_validateAssignedItemSlot;
             if !(_assignedCheck getOrDefault ["success", false]) exitWith {
                 _resultCode = _assignedCheck getOrDefault ["code", "ERR_ASSIGNED_ITEM_SLOT_MISMATCH"];
                 _resultMessage = _assignedCheck getOrDefault ["message", "Saved kit assigned item is invalid."];
@@ -922,7 +860,7 @@ switch (_op) do {
         };
 
         private _itemClass = toLower _itemClassRaw;
-        private _assignedCheck = [_assignedIndex, _itemClass] call _validateAssignedClassForIndex;
+        private _assignedCheck = [_assignedIndex, _itemClass, _sourceItemsCfg] call bn_koth_fnc_loadouts_validateAssignedItemSlot;
         if !(_assignedCheck getOrDefault ["success", false]) exitWith {
             [
                 _assignedCheck getOrDefault ["code", "ERR_ASSIGNED_ITEM_SLOT_MISMATCH"],

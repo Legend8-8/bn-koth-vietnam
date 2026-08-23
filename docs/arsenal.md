@@ -778,13 +778,33 @@ Do not infer starter equipment from:
 
 Starter equipment must remain usable even when progression/persistence systems are unavailable.
 
+Each starter class owns the human-authored equipment choice: primary, launcher
+and handgun weapons and attachments; uniform, vest, backpack, headgear, facewear
+and binocular classes; spare-magazine counts and target containers; generic starter
+cargo; and the six assigned-item slots in Arma order (map, GPS/terminal, radio,
+compass, watch, NVG). Empty optional classnames explicitly clear that slot.
+
+Runtime derives each configured weapon's loaded and spare magazine classname
+from the generated canonical S.O.G. `baseMagazine` fact; starter config does not
+duplicate that factual choice. Magazines and attachments are then validated
+against generated compatibility. Runtime initialization resolves structural variants,
+derives loaded and spare magazine capacity from `CfgMagazines`, constructs the
+physical Unit Loadout Array shapes, and rejects an invalid definition with a
+specific server log. Changing a starter equipment choice must therefore be a
+config edit; weapon facts and loadout mechanics remain outside the balance
+definition.
+
 ---
 
 ## 18. Server Loadout Initialization
 
 `fn_initServer.sqf` owns server initialization of configured loadout definitions.
 
-Configured template loadouts are resolved once at server initialization and stored in server-owned state.
+Configured template loadouts are resolved once at server initialization, then
+their explicitly configured starter choices are validated and mechanically
+built into complete loadouts stored in server-owned state. The template supplies
+an engine-valid baseline shape; it is not the balance owner for configured
+starter equipment.
 
 Do not recreate template units or rediscover starter loadouts per request.
 

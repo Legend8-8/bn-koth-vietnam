@@ -170,6 +170,16 @@ Respawn-related changes must verify:
 - safe-zone status survives respawn representation handoff and is cleared outside active safe-zone states;
 - reconnecting does not produce invalid spawn state.
 
+Starter-loadout configuration changes must additionally verify on a dedicated
+server that both WEST and EAST definitions initialize, receive the configured
+side-correct assigned equipment, derive each weapon's generated canonical
+`baseMagazine`, load those compatible magazines at
+their actual `CfgMagazines` capacity, carry the configured spare counts in the
+configured containers, and remain the native respawn/deployment fallback.
+Invalid weapon compatibility, assigned-slot order, equipment classes, cargo
+classes, counts, or cargo-without-container definitions must be rejected with a
+clear server RPT warning rather than silently falling back to template gear.
+
 9. Join In Progress Testing
 
 A joining player must receive the current active mission state rather than assuming a new round.
