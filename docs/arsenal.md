@@ -156,9 +156,10 @@ This answers:
 
 > How do we want this equipment to behave in KOTH?
 
-Future examples include:
+Examples include:
 
-- native faction;
+- allowed KOTH sides;
+- visual appearance side;
 - minimum level;
 - license kill requirement;
 - purchase price;
@@ -351,28 +352,45 @@ KOTH faction behaviour is human-authored.
 
 ---
 
-## 7. Native Faction Model
+## 7. KOTH Side Policy
 
-Weapons may later receive a human-authored KOTH native faction.
-
-Conceptually:
+KOTH side policy is human-authored and deliberately independent from factual
+S.O.G. provenance and progression balance:
 
 ```cpp
 class vn_l1a1_01
 {
-    nativeSide = "WEST";
+    allowedSides[] = {"WEST"};
 };
 ```
 
-The exact final schema may evolve, but the concept is important.
+`allowedSides[]` answers:
 
-`nativeSide` answers:
+> Which KOTH sides may use or acquire this logical item?
 
-> Which faction naturally receives normal access to this weapon?
+An empty or absent `allowedSides[]` temporarily leaves combat equipment
+uncontrolled while balance metadata is authored. It must never be populated
+from `sourceAffiliations[]` automatically. Structural weapon variants inherit
+the canonical root weapon metadata and never receive separate side policy.
 
-It does not permanently prohibit cross-faction use.
+Visual equipment additionally requires:
 
-Cross-faction access is governed by the weapon license system described below.
+```cpp
+appearanceSide = "WEST"; // or "EAST"
+```
+
+`appearanceSide` identifies which KOTH faction the item visually represents.
+Uniforms, vests, backpacks, headgear, and facewear fail closed when this field
+is absent or invalid; opposing appearance equipment is rejected even if its
+`allowedSides[]` value is broader. No battlefield-loot exception currently
+exists.
+
+These fields remain separate concepts:
+
+- `sourceAffiliations[]`: generated factual S.O.G. provenance;
+- `allowedSides[]`: human-authored KOTH gameplay availability;
+- `appearanceSide`: human-authored KOTH visual identity;
+- `minLevel`, licences, ownership, and prices: progression/economy policy.
 
 ---
 
@@ -504,21 +522,22 @@ This allows battlefield scavenging and weapon familiarity to matter without bypa
 
 ---
 
-## 11. License = Cross-Faction Permission
+## 11. Licence Progress Is Independent From Side Policy
 
 A weapon license represents mastery.
 
 Conceptually:
 
-> The player has demonstrated enough experience with this weapon to use it outside its native faction.
+> The player has demonstrated the configured mastery requirement for this weapon.
 
-A license does **not** mean the player owns the weapon.
+A licence does **not** mean the player owns the weapon, and it does not widen
+`allowedSides[]`. Side availability is a separate human-authored KOTH decision.
 
 Example:
 
 ```text
 L1A1
-Native faction: WEST
+Allowed sides: WEST
 Minimum level: 20
 License kills: 50
 ```
@@ -534,12 +553,12 @@ Ownership: no
 Result:
 
 ```text
-License: yes
-Cross-faction permission: yes
+Licence: yes
+Side permission: WEST only
 Permanent ownership: no
 ```
 
-The player may therefore rent the weapon on either faction, subject to economy/rental rules.
+Any later rental remains subject to both `allowedSides[]` and economy rules.
 
 ---
 
@@ -553,7 +572,7 @@ It does not answer:
 
 > Has this player mastered the weapon?
 
-Purchasing therefore does not automatically grant a cross-faction license.
+Purchasing therefore does not alter `allowedSides[]`.
 
 Example:
 
@@ -563,7 +582,7 @@ L1A1 kills: 10/50
 L1A1 ownership: yes
 ```
 
-On the native faction:
+On an allowed side:
 
 ```text
 Level requirement: complete
@@ -571,20 +590,19 @@ Ownership: complete
 → permanent access
 ```
 
-On the opposing faction:
+On a side absent from `allowedSides[]`:
 
 ```text
 Level requirement: complete
 Ownership: complete
-License: incomplete
-→ cross-faction access denied
+→ side access denied regardless of ownership or licence
 ```
 
 Money must not bypass the mastery requirement.
 
 ---
 
-## 13. Owned + Licensed = Fully Completed Weapon
+## 13. Owned + Licensed = Progression Completion
 
 When a player has both permanent ownership and the weapon license:
 
@@ -594,7 +612,8 @@ Ownership: yes
 License: yes
 ```
 
-the weapon becomes permanently usable on both its native and opposing faction.
+the weapon has completed those progression requirements on every side listed in
+its `allowedSides[]` metadata.
 
 No rental is required.
 
@@ -610,14 +629,14 @@ A rental does not become ownership.
 
 A rental does not bypass minimum level.
 
-Cross-faction rental additionally requires the weapon license.
+Rental never widens `allowedSides[]`.
 
 Conceptually:
 
 ```text
 LEVEL GATE
     ↓
-FACTION / LICENSE GATE
+ALLOWED-SIDE GATE
     ↓
 OWNED?
     YES → permanent access
@@ -673,8 +692,8 @@ Ownership: yes
 Result:
 
 ```text
-native faction: permanent access
-opposing faction: denied
+allowed side: permanent access
+other side: denied by allowedSides
 license progress: 10/50
 ```
 
@@ -692,8 +711,8 @@ Result:
 
 ```text
 license: complete
-native faction: rental required
-opposing faction: rental allowed
+allowed side: rental required
+other side: denied by allowedSides
 permanent ownership: no
 ```
 
@@ -712,8 +731,8 @@ Result:
 ```text
 license: complete
 ownership: complete
-native faction: permanent access
-opposing faction: permanent access
+allowed side: permanent access
+other side: denied unless explicitly included in allowedSides
 rental required: no
 ```
 
@@ -730,19 +749,14 @@ The future server-side entitlement sequence should conceptually be:
         ↓
 2. Is the weapon/magazine/attachment combination factually valid?
         ↓
-3. Has the player reached the minimum level?
+3. Does human-authored allowedSides include the current KOTH side (or leave
+   combat equipment temporarily uncontrolled)?
         ↓
-4. Is the current side the weapon's native faction?
-
-   YES:
-       owned or otherwise valid native access?
-
-   NO:
-       license complete?
-           NO → reject
-           YES → owned or valid rental?
+4. Has the player reached the minimum level and other progression requirements?
         ↓
-5. VALID
+5. Is ownership/rental valid where required?
+        ↓
+6. VALID
 ```
 
 The exact API between `functions/loadouts/` and `functions/progression/` must be deliberately designed when progression is implemented.
@@ -1261,7 +1275,7 @@ Do not permanently patch generated output by hand.
 Changing things such as:
 
 ```text
-L1A1 native faction
+L1A1 allowed sides
 L1A1 minimum level
 L1A1 license kill requirement
 L1A1 purchase price
@@ -1288,7 +1302,7 @@ The exact final schema remains to be implemented, but maintenance should eventua
 ```cpp
 class vn_l1a1_01
 {
-    nativeSide = "WEST";
+    allowedSides[] = {"WEST"};
     minLevel = 20;
     licenseKills = 50;
     purchasePrice = 100000;
@@ -1340,7 +1354,7 @@ should not require:
 
 The same principle applies to:
 
-- native faction;
+- allowed sides;
 - kill requirement;
 - price;
 - rental cost.

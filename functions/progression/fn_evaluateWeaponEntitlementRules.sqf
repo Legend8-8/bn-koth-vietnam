@@ -49,22 +49,39 @@ private _finish = {
     _result
 };
 
-if (!_configured) exitWith {
-    [true, true, "ENTITLED_UNCONTROLLED", "Weapon has no KOTH progression metadata.",
-        createHashMapFromArray [["accessType", "UNCONTROLLED"]]] call _finish
-};
-
 private _playerLevel = (_progression getOrDefault ["level", 1]) max 1;
 private _minLevel = (_metadata getOrDefault ["minLevel", 1]) max 1;
-private _nativeSide = toUpper (_metadata getOrDefault ["nativeSide", ""]);
+private _allowedSides = _metadata getOrDefault ["allowedSides", []];
+if !(_allowedSides isEqualType []) then {_allowedSides = []};
 private _licenseKillsRequired = (_metadata getOrDefault ["licenseKills", 0]) max 0;
 private _requiredPerks = _metadata getOrDefault ["requiredPerks", []];
 if !(_requiredPerks isEqualType []) then {_requiredPerks = []};
 
+private _sidePolicy = [
+    _sideToken,
+    _metadata,
+    false
+] call bn_koth_fnc_progression_evaluateEquipmentSidePolicyRules;
+
+if !(_sidePolicy getOrDefault ["allowed", false]) exitWith {
+    [false, false,
+        _sidePolicy getOrDefault ["code", "LOCKED_SIDE"],
+        _sidePolicy getOrDefault ["message", "Weapon is not available to this KOTH side."],
+        createHashMapFromArray [
+            ["allowedSides", _allowedSides],
+            ["accessType", "NONE"]
+        ]] call _finish
+};
+
+if (!_configured) exitWith {
+    [true, true, "ENTITLED_UNCONTROLLED", "Weapon has no KOTH progression metadata.",
+        createHashMapFromArray [["allowedSides", _allowedSides], ["accessType", "UNCONTROLLED"]]] call _finish
+};
+
 if (_playerLevel < _minLevel) exitWith {
     [false, false, "LOCKED_LEVEL", format ["Requires level %1.", _minLevel],
         createHashMapFromArray [
-            ["nativeSide", _nativeSide],
+            ["allowedSides", _allowedSides],
             ["playerLevel", _playerLevel],
             ["minLevel", _minLevel],
             ["licenseKills", _licenseKillsRequired],
@@ -99,7 +116,7 @@ private _missingPerks = [];
 if ((count _missingPerks) > 0) exitWith {
     [false, false, "LOCKED_PERK", "Required perk entitlement is incomplete.",
         createHashMapFromArray [
-            ["nativeSide", _nativeSide],
+            ["allowedSides", _allowedSides],
             ["playerLevel", _playerLevel],
             ["minLevel", _minLevel],
             ["weaponKills", _kills],
@@ -109,26 +126,10 @@ if ((count _missingPerks) > 0) exitWith {
         ]] call _finish
 };
 
-private _isNativeSide = _nativeSide isEqualTo "" || {_sideToken isEqualTo _nativeSide};
-
-if (!_isNativeSide && {!_licenseComplete}) exitWith {
-    [false, false, "LOCKED_SIDE_LICENSE",
-        format ["Cross-faction access requires %1 weapon kills.", _licenseKillsRequired],
-        createHashMapFromArray [
-            ["nativeSide", _nativeSide],
-            ["playerLevel", _playerLevel],
-            ["minLevel", _minLevel],
-            ["weaponKills", _kills],
-            ["licenseKills", _licenseKillsRequired],
-            ["licenseComplete", false],
-            ["accessType", "NONE"]
-        ]] call _finish
-};
-
 if (_isOwned) exitWith {
     [true, true, "ENTITLED", "Permanent weapon entitlement is valid.",
         createHashMapFromArray [
-            ["nativeSide", _nativeSide],
+            ["allowedSides", _allowedSides],
             ["playerLevel", _playerLevel],
             ["minLevel", _minLevel],
             ["weaponKills", _kills],
@@ -143,7 +144,7 @@ if (_isOwned) exitWith {
 if (_isRented) exitWith {
     [true, true, "ENTITLED", "Temporary weapon rental entitlement is valid.",
         createHashMapFromArray [
-            ["nativeSide", _nativeSide],
+            ["allowedSides", _allowedSides],
             ["playerLevel", _playerLevel],
             ["minLevel", _minLevel],
             ["weaponKills", _kills],
@@ -155,16 +156,10 @@ if (_isRented) exitWith {
         ]] call _finish
 };
 
-private _canRent = _isNativeSide || {_licenseComplete};
-
 [true, false, "REQUIRES_ACQUISITION",
-    if (_isNativeSide) then {
-        "Weapon is level-eligible but requires ownership or rental."
-    } else {
-        "Cross-faction weapon is licensed but requires ownership or rental."
-    },
+    "Weapon is side- and level-eligible but requires ownership or rental.",
     createHashMapFromArray [
-        ["nativeSide", _nativeSide],
+        ["allowedSides", _allowedSides],
         ["playerLevel", _playerLevel],
         ["minLevel", _minLevel],
         ["weaponKills", _kills],
@@ -173,6 +168,6 @@ private _canRent = _isNativeSide || {_licenseComplete};
         ["owned", false],
         ["rented", false],
         ["canPurchase", true],
-        ["canRent", _canRent],
+        ["canRent", true],
         ["accessType", "NONE"]
     ]] call _finish

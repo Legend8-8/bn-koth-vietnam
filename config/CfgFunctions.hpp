@@ -96,6 +96,7 @@ class CfgFunctions
             class progression_xp_awardControlTick {file = "functions\progression\xp\fn_awardControlTick.sqf";};
             class progression_xp_awardKill {file = "functions\progression\xp\fn_awardKill.sqf";};
             class progression_buildPresentationState {file = "functions\progression\fn_buildPresentationState.sqf";};
+            class progression_evaluateEquipmentSidePolicyRules {file = "functions\progression\fn_evaluateEquipmentSidePolicyRules.sqf";};
             class progression_evaluateWeaponEntitlement {file = "functions\progression\fn_evaluateWeaponEntitlement.sqf";};
             class progression_evaluateWeaponEntitlementRules {file = "functions\progression\fn_evaluateWeaponEntitlementRules.sqf";};
             class progression_evaluateAttachmentEntitlement {file = "functions\progression\fn_evaluateAttachmentEntitlement.sqf";};

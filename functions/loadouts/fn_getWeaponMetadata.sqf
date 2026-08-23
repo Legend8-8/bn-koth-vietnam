@@ -67,7 +67,7 @@ while {_safety < 16} do {
 private _metadataCfg = _arsenalCfg >> "Metadata" >> "Weapons" >> _canonicalClass;
 private _configured = isClass _metadataCfg;
 
-private _nativeSide = "";
+private _allowedSides = [];
 private _minLevel = 1;
 private _licenseKills = 0;
 private _purchasePrice = -1;
@@ -75,7 +75,9 @@ private _rentalPrice = -1;
 private _requiredPerks = [];
 
 if (_configured) then {
-    _nativeSide = toUpper (getText (_metadataCfg >> "nativeSide"));
+    if (isArray (_metadataCfg >> "allowedSides")) then {
+        _allowedSides = (getArray (_metadataCfg >> "allowedSides")) apply {toUpper _x};
+    };
 
     if (isNumber (_metadataCfg >> "minLevel")) then {
         _minLevel = (getNumber (_metadataCfg >> "minLevel")) max 1;
@@ -104,7 +106,7 @@ createHashMapFromArray [
     ["requestedClass", _requestedClass],
     ["canonicalClass", _canonicalClass],
     ["configured", _configured],
-    ["nativeSide", _nativeSide],
+    ["allowedSides", _allowedSides],
     ["minLevel", _minLevel],
     ["licenseKills", _licenseKills],
     ["purchasePrice", _purchasePrice],

@@ -38,3 +38,16 @@ Run build.py to export trimmed mission folders for all maps under maps/<map_name
 When adding or modifying player-representation transitions, use the locality lifecycle documented in docs/multiplayer-locality.md section 4.1 (Representation handoff lifecycle).
 
 Short rule: initPlayerLocal.sqf is client startup only, while bn_koth_fnc_teams_transferRepresentation is the server-owned handoff path for moving a player to a new representation unit.
+
+7. Equipment Side Metadata
+
+Generated `sourceAffiliations[]` is factual S.O.G. provenance only. KOTH
+gameplay availability is human-authored as `allowedSides[]`; visual faction
+identity is separately human-authored as `appearanceSide`; progression fields
+such as `minLevel` remain independent. Never derive one of these policy fields
+from another, and never author policy on a structural weapon variant instead
+of its canonical logical root.
+
+Unclassified combat equipment may temporarily remain uncontrolled. Visual
+equipment (uniforms, vests, backpacks, headgear, and facewear) must have a
+valid matching `appearanceSide` before it can enter an authoritative loadout.

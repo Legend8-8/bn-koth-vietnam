@@ -281,6 +281,27 @@ For the Arsenal rework, also verify:
 - client and server RPT files remain free of Arsenal script errors throughout
   the complete flow.
 
+Equipment-side policy changes must additionally verify:
+
+- WEST-only, EAST-only, and both-sides `allowedSides[]` decisions;
+- opposing uniforms, vests, backpacks, headgear, and facewear are rejected;
+- missing appearance metadata fails closed while missing combat metadata
+  remains temporarily uncontrolled;
+- structural weapon variants inherit the canonical root policy;
+- direct slot mutation, saved-kit application, starter validation, respawn,
+  and deployment restore cannot bypass the authoritative decision;
+- client filtering agrees with the server but cannot grant entitlement.
+
+After mission functions and config initialize, the focused pure-policy checks
+can be run in an appropriate in-engine test context with:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_equipmentSidePolicy.sqf"
+```
+
+An empty returned array is a pass. This focused check does not replace hosted
+and dedicated two-side testing or client/server RPT review.
+
 14. Definition of Tested
 
 A feature may be considered tested when:

@@ -713,7 +713,7 @@ switch (_op) do {
                         if (!_factual || {((_class find "vn_") != 0)}) then {
                             _resultCode="ERR_WEARABLE_INVALID"; _resultMessage=format ["Saved %1 class '%2' is not a canonical S.O.G. item.",_kind,_class];
                         } else {
-                            private _entitlement=[_uid,"Wearables",_class] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                            private _entitlement=[_uid,"Wearables",_class,true] call bn_koth_fnc_progression_evaluateItemEntitlement;
                             if !(_entitlement getOrDefault ["entitled",false]) then {_resultCode=_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"];_resultMessage=_entitlement getOrDefault ["message",format ["Saved %1 is not entitled.",_kind]];};
                         };
                     };
@@ -915,14 +915,6 @@ switch (_op) do {
 
         if !(isClass (_sourceItemsCfg >> _attachmentClass)) exitWith {
             ["ERR_UNKNOWN_ATTACHMENT", format ["Attachment '%1' is not present in canonical source items.", _attachmentClass], _baseLoadoutId] call _resultFail
-        };
-
-        private _assignedEntitlement = createHashMapFromArray [["entitled",true]];
-        if !(_itemClass isEqualTo "") then {
-            _assignedEntitlement = [_uid,"Wearables",_itemClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
-        };
-        if !(_assignedEntitlement getOrDefault ["entitled",false]) exitWith {
-            [_assignedEntitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"],_assignedEntitlement getOrDefault ["message","Assigned item is not entitled for this player."],_baseLoadoutId] call _resultFail
         };
 
         private _attachmentEntitlement = createHashMapFromArray [["entitled", true]];

@@ -30,6 +30,16 @@ if ((count _catalogue) isEqualTo 0) then {
 
 private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
 if !(_progression isEqualType createHashMap) then {_progression = createHashMap};
+private _uid = getPlayerUID player;
+private _assignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
+if !(_assignments isEqualType createHashMap) then {_assignments = createHashMap};
+private _assignedSide = _assignments getOrDefault [_uid, sideUnknown];
+private _sideToken = switch (_assignedSide) do {
+    case west: {"WEST"};
+    case east: {"EAST"};
+    default {""};
+};
+private _requiresAppearance = _slotLower in ["uniform", "vest", "backpack", "headgear", "facewear"];
 private _intendedLoadout = uiNamespace getVariable ["BN_KOTH_menuIntendedLoadout", []];
 private _appliedClass = "";
 private _loadoutIndex = switch (_slotLower) do {case "uniform": {3}; case "vest": {4}; case "backpack": {5}; case "headgear": {6}; case "facewear": {7}; default {8};};
@@ -84,7 +94,7 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
     private _entitlement = if (_class isEqualTo "") then {
         createHashMapFromArray [["entitled", true], ["code", "ENTITLED_CLEAR"]]
     } else {
-        [_progression, _metadata, _class] call bn_koth_fnc_progression_evaluateItemEntitlementRules
+        [_progression, _metadata, _class, _sideToken, _requiresAppearance] call bn_koth_fnc_progression_evaluateItemEntitlementRules
     };
     private _entitled = _entitlement getOrDefault ["entitled", false];
     private _code = _entitlement getOrDefault ["code", "LOCKED_STATE"];
@@ -95,6 +105,11 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
             private _missing = _entitlement getOrDefault ["missingPerks", []];
             if ((count _missing) > 0) then {format ["REQUIRES PERK: %1", toUpper (_missing joinString ", ")]} else {"REQUIRED PERK MISSING"}
         };
+        case "LOCKED_SIDE": {"NOT AVAILABLE TO YOUR SIDE"};
+        case "LOCKED_APPEARANCE_SIDE": {"OPPOSING FACTION APPEARANCE"};
+        case "LOCKED_APPEARANCE_METADATA": {"APPEARANCE REVIEW REQUIRED"};
+        case "LOCKED_SIDE_METADATA": {"SIDE POLICY REVIEW REQUIRED"};
+        case "LOCKED_SIDE_STATE": {"SIDE ASSIGNMENT REQUIRED"};
         default {if (_entitled) then {""} else {"ENTITLEMENT UNAVAILABLE"}};
     };
     _x params ["_bg", "_area", "_pic", "_name", "_status", "_overlay", "_lock", "_primary", "_secondary"];

@@ -114,6 +114,22 @@ private _loadedCount = 0;
                     _loadout set [_index, if (_templateSlot isEqualType [] && {(count _templateSlot) >= 7}) then {["", "", "", "", [], [], ""]} else {[]}];
                 };
             } else {
+                private _weaponMetadata = [_weaponClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
+                private _weaponSidePolicy = [
+                    _sideToken,
+                    _weaponMetadata,
+                    false
+                ] call bn_koth_fnc_progression_evaluateEquipmentSidePolicyRules;
+                if !(_weaponSidePolicy getOrDefault ["allowed", false]) then {
+                    _failure = format [
+                        "%1 weapon '%2' is not allowed for %3 (%4)",
+                        _label,
+                        _weaponClass,
+                        _sideToken,
+                        _weaponSidePolicy getOrDefault ["code", "LOCKED_SIDE"]
+                    ];
+                };
+
                 private _weaponFactCfg = _sourceWeaponsCfg >> _weaponClass;
                 private _magazineClass = if (isClass _weaponFactCfg) then {toLower (getText (_weaponFactCfg >> "baseMagazine"))} else {""};
                 private _compatibleMagazines = if (isClass _weaponFactCfg) then {(getArray (_weaponFactCfg >> "compatibleMagazines")) apply {toLower _x}} else {[]};
@@ -145,6 +161,23 @@ private _loadedCount = 0;
             _x params ["_kind", "_index"];
             private _className = toLower (getText (_cfg >> _kind));
             if !([_className, _kind] call _validateWearable) then {_failure = format ["configured %1 '%2' is invalid", _kind, _className];} else {
+                if !(_className isEqualTo "") then {
+                    private _metadata = ["Wearables", _className] call bn_koth_fnc_loadouts_getItemMetadata;
+                    private _sidePolicy = [
+                        _sideToken,
+                        _metadata,
+                        true
+                    ] call bn_koth_fnc_progression_evaluateEquipmentSidePolicyRules;
+                    if !(_sidePolicy getOrDefault ["allowed", false]) then {
+                        _failure = format [
+                            "configured %1 '%2' violates %3 appearance policy (%4)",
+                            _kind,
+                            _className,
+                            _sideToken,
+                            _sidePolicy getOrDefault ["code", "LOCKED_APPEARANCE_SIDE"]
+                        ];
+                    };
+                };
                 switch (_kind) do {
                     case "uniform"; case "vest"; case "backpack": {_loadout set [_index, if (_className isEqualTo "") then {[]} else {[_className, []]}];};
                     default {_loadout set [_index, _className];};

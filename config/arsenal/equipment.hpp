@@ -100,8 +100,9 @@ class CfgBnKothArsenal
         // Generated S.O.G. sourceAffiliations are factual evidence only and
         // must never be used as KOTH faction entitlement.
         //
-        // Schema for KOTH progression/balance metadata entries:
-        //   nativeSide = "WEST" | "EAST";
+        // Schema for human-authored KOTH equipment policy/progression entries:
+        //   allowedSides[] = {"WEST", "EAST"}; // gameplay availability
+        //   appearanceSide = "WEST" | "EAST" | ""; // visual identity
         //   minLevel = <number>;
         //   licenseKills = <number>;
         //   purchasePrice = <number>;   // optional until economy is implemented
@@ -117,17 +118,39 @@ class CfgBnKothArsenal
                 // First progression seed from the agreed design example.
                 class vn_l1a1_01
                 {
-                    nativeSide = "WEST";
+                    allowedSides[] = {"WEST"};
                     minLevel = 20;
                     licenseKills = 50;
                     requiredPerks[] = {};
                 };
             };
 
-            // Human-authored future KOTH balance namespaces only. They remain
-            // deliberately empty until individual balance decisions are made.
             class Attachments {};
-            class Wearables {};
+            class Wearables
+            {
+                // Starter appearance seeds. Unclassified visual equipment is
+                // intentionally rejected until a human assigns appearanceSide.
+                class vn_b_uniform_aus_01_01
+                {
+                    allowedSides[] = {"WEST"};
+                    appearanceSide = "WEST";
+                };
+                class vn_b_vest_sog_04
+                {
+                    allowedSides[] = {"WEST"};
+                    appearanceSide = "WEST";
+                };
+                class vn_o_uniform_nva_army_03_03
+                {
+                    allowedSides[] = {"EAST"};
+                    appearanceSide = "EAST";
+                };
+                class vn_o_vest_01
+                {
+                    allowedSides[] = {"EAST"};
+                    appearanceSide = "EAST";
+                };
+            };
             class Consumables {};
         };
 
