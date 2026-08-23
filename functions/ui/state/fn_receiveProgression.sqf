@@ -44,6 +44,19 @@ if !(_localProgression isEqualType createHashMap) then {
 
 missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", _localProgression];
 
+private _rewardAmount = _progression getOrDefault ["amount", 0];
+private _rewardReason = _progression getOrDefault ["reason", ""];
+if (_rewardAmount > 0 && {!(_rewardReason isEqualTo "")}) then {
+    private _reasonLabel = switch (toLower _rewardReason) do {
+        case "kill": {"KILL"};
+        case "control": {"OBJECTIVE"};
+        case "priority": {"PRIORITY"};
+        default {toUpper _rewardReason};
+    };
+
+    systemChat format ["[XP] %1 +%2 XP", _reasonLabel, _rewardAmount];
+};
+
 disableSerialization;
 private _menuDisplay = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
 if (!isNull _menuDisplay) then {

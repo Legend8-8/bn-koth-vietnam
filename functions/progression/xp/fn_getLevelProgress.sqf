@@ -2,7 +2,7 @@
     File: fn_getLevelProgress.sqf
     Author: Legend
     Description: Builds display-only progress within the current level from
-        authoritative XP/level presentation state and configured XP curve.
+        authoritative XP/level presentation state and the shared configured curve.
     Execution: Any
     Parameters:
         0: Cumulative XP <NUMBER>
@@ -18,44 +18,25 @@ params [
 ];
 
 private _progressionCfg = missionConfigFile >> "CfgBnKothScoring" >> "progression";
-
-private _baseXp = if (isNumber (_progressionCfg >> "xpLevelBase")) then {
-    getNumber (_progressionCfg >> "xpLevelBase")
-} else {
-    100
-};
-
-private _levelStep = if (isNumber (_progressionCfg >> "xpLevelStep")) then {
-    getNumber (_progressionCfg >> "xpLevelStep")
-} else {
-    50
-};
-
 private _maxLevel = if (isNumber (_progressionCfg >> "maxLevel")) then {
     getNumber (_progressionCfg >> "maxLevel")
 } else {
     270
 };
-
-_baseXp = _baseXp max 1;
-_levelStep = _levelStep max 0;
-_maxLevel = _maxLevel max 1;
+_maxLevel = floor (_maxLevel max 1);
 
 private _safeXp = _xp max 0;
-private _safeLevel = (_level max 1) min _maxLevel;
-
+private _safeLevel = (floor (_level max 1)) min _maxLevel;
 private _xpIntoLevel = 0;
 private _xpRequired = 0;
 private _ratio = 1;
 
 if (_safeLevel < _maxLevel) then {
-    private _completedLevels = (_safeLevel - 1) max 0;
-    private _spentBeforeLevel = (_completedLevels * _baseXp)
-        + ((_levelStep * _completedLevels * ((_completedLevels - 1) max 0)) / 2);
+    private _currentThreshold = [_safeLevel] call bn_koth_fnc_progression_xp_getXpThresholdForLevel;
+    private _nextThreshold = [_safeLevel + 1] call bn_koth_fnc_progression_xp_getXpThresholdForLevel;
 
-    _xpIntoLevel = (_safeXp - _spentBeforeLevel) max 0;
-    _xpRequired = _baseXp + ((_safeLevel - 1) * _levelStep);
-    _xpIntoLevel = _xpIntoLevel min _xpRequired;
+    _xpRequired = (_nextThreshold - _currentThreshold) max 1;
+    _xpIntoLevel = ((_safeXp - _currentThreshold) max 0) min _xpRequired;
     _ratio = (_xpIntoLevel / _xpRequired) max 0 min 1;
 };
 
