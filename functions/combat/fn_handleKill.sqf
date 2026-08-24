@@ -58,9 +58,12 @@ private _validPvp = _hasIdentifiedKiller && {!_suicide} && {!_teamkill};
 // weapon progression, unlocks, rewards, or persisted statistics.
 private _method = "other";
 private _weaponDisplay = "";
+private _killerInVehicle = false;
 if (_hasIdentifiedKiller) then {
     private _killerVeh = vehicle _effKiller;
-    _method = if (_killerVeh isEqualTo _effKiller) then {
+    _killerInVehicle = !(_killerVeh isEqualTo _effKiller);
+
+    _method = if (!_killerInVehicle) then {
         "direct"
     } else {
         if (_killerVeh isKindOf "Air") then {
@@ -72,10 +75,17 @@ if (_hasIdentifiedKiller) then {
         };
     };
 
-    private _weaponClass = currentWeapon _effKiller;
-    if !(_weaponClass isEqualTo "") then {
-        _weaponDisplay = getText (configFile >> "CfgWeapons" >> _weaponClass >> "displayName");
-        if (_weaponDisplay isEqualTo "") then { _weaponDisplay = _weaponClass };
+    if (_killerInVehicle) then {
+        // Kill feed shows the mount, not the specific weapon/turret fired -
+        // register the vehicle itself as the credited weapon.
+        _weaponDisplay = getText (configFile >> "CfgVehicles" >> typeOf _killerVeh >> "displayName");
+        if (_weaponDisplay isEqualTo "") then { _weaponDisplay = typeOf _killerVeh };
+    } else {
+        private _weaponClass = currentWeapon _effKiller;
+        if !(_weaponClass isEqualTo "") then {
+            _weaponDisplay = getText (configFile >> "CfgWeapons" >> _weaponClass >> "displayName");
+            if (_weaponDisplay isEqualTo "") then { _weaponDisplay = _weaponClass };
+        };
     };
 };
 
@@ -101,12 +111,13 @@ _kill set ["teamkill", _teamkill];
 _kill set ["validPvp", _validPvp];
 _kill set ["method", _method];
 _kill set ["weapon", _weaponDisplay];
+_kill set ["killerInVehicle", _killerInVehicle];
 _kill set ["distanceText", _distText];
 _kill set ["roundActive", _roundState isEqualTo "ACTIVE"];
 
 [format [
-    "combat_handleKill: victim=%1(%2) killer=%3(%4) suicide=%5 teamkill=%6 validPvp=%7 method=%8 weapon=%9 dist=%10 round=%11",
-    _victimUid, _victimSide, _killerUid, _killerSide, _suicide, _teamkill, _validPvp, _method, _weaponDisplay, _distText, _roundState
+    "combat_handleKill: victim=%1(%2) killer=%3(%4) suicide=%5 teamkill=%6 validPvp=%7 method=%8 weapon=%9 killerInVehicle=%10 dist=%11 round=%12",
+    _victimUid, _victimSide, _killerUid, _killerSide, _suicide, _teamkill, _validPvp, _method, _weaponDisplay, _killerInVehicle, _distText, _roundState
 ], "INFO"] call bn_koth_fnc_common_log;
 
 // Future progression/reward/stat consumers may use the authoritative identity
