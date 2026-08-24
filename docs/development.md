@@ -54,6 +54,13 @@ starting/reward values are under `CfgBnKothScoring.economy`. Server functions
 own cash mutation. Clients may display targeted cash state and submit future
 purchase intent, but must never set or award cash.
 
+Canonical weapon ownership and rental state are server-owned under
+`functions/progression/acquisition/`. Purchase and rent validate the player,
+canonical metadata, side, level, perks, configured price, and cash before one
+combined state commit. Neither operation equips a weapon. Rentals currently
+last for the server session. Store UI, licences, final prices, and persistence
+remain separate future work.
+
 Unclassified combat equipment may temporarily remain uncontrolled. Visual
 equipment (uniforms, vests, backpacks, headgear, and facewear) must have a
 valid matching `appearanceSide` before it can enter an authoritative loadout.

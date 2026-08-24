@@ -212,14 +212,19 @@ Contains player progression systems:
 - `cash/` owns server-authoritative session cash initialization, reads, awards,
   and atomic spending. It consumes the same validated kill/control/Priority
   reward events as XP and creates no independent eligibility loop;
+- `acquisition/` owns canonical weapon purchase and server-session rental
+  transactions. It calculates the combined cash/entitlement transition once,
+  commits it once, and publishes only the affected player's targeted state;
 - progression entitlement evaluation consumes authoritative level/rule data;
 - future persistent unlocks, perks, licences and reward multipliers belong to
   progression/persistence boundaries rather than client UI.
 
 Current progression state is stored in the server-owned
 `BN_KOTH_playerProgression` map keyed by UID. It is session-scoped for now and
-is not yet database-backed. Cash initializes once per UID registration and
-survives respawn, side changes and round transitions for the server session.
+is not yet database-backed. Cash, permanent weapon ownership, and weapon
+rentals initialize once per UID registration and survive respawn, side changes
+and round transitions for the server session. Rentals currently expire only
+with that session; no wall-clock or round reset owns rental expiry.
 Cumulative XP is the stable progression value;
 level is derived from the config-owned curve so future persistence can load XP
 without duplicating balance rules into the database layer. Clients receive only

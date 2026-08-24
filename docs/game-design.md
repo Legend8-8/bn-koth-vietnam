@@ -82,15 +82,19 @@ The current implementation awards XP for:
 - validated opposing player kills.
 
 The same validated events provisionally award config-owned cash amounts. Cash
-is initialized once when a player first enters server progression state. No
-Store, purchase, rental, licence, stock, or persistence behavior is implied by
-this foundation; current values are placeholders for economy playtesting.
+is initialized once when a player first enters server progression state.
+Canonical weapons with explicit `purchasePrice` or `rentalPrice` metadata may
+be permanently purchased or rented through server-authoritative APIs. Cash and
+entitlement change in one transaction, and acquisition never auto-equips the
+weapon. Rentals last for the current server session. Store UI, final prices,
+licences, stock, and persistence are not implemented yet.
 
 The current level cap is configurable and defaults to 270. The Arsenal now
 supports human-authored level and perk requirements for canonical weapons,
 attachments, wearable/assigned items, and cargo additions. The server repeats
-all entitlement checks before accepting equipment intent. Vehicles, equipment
-ownership, prices, rentals, and stock are not implemented by this work.
+all entitlement checks before accepting equipment intent. Canonical weapon
+ownership/rental is implemented as session state; vehicles, final equipment
+prices, stock, licences, and database persistence remain unfinished.
 
 Future progression may include:
 

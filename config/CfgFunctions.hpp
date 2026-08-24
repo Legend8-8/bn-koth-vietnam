@@ -100,6 +100,11 @@ class CfgFunctions
             class progression_cash_getCash {file = "functions\progression\cash\fn_getCash.sqf";};
             class progression_cash_addCash {file = "functions\progression\cash\fn_addCash.sqf";};
             class progression_cash_spendCash {file = "functions\progression\cash\fn_spendCash.sqf";};
+            class progression_acquisition_initPlayer {file = "functions\progression\acquisition\fn_initPlayer.sqf";};
+            class progression_acquisition_evaluateRules {file = "functions\progression\acquisition\fn_evaluateRules.sqf";};
+            class progression_acquisition_acquireWeapon {file = "functions\progression\acquisition\fn_acquireWeapon.sqf";};
+            class progression_purchaseWeapon {file = "functions\progression\acquisition\fn_purchaseWeapon.sqf";};
+            class progression_rentWeapon {file = "functions\progression\acquisition\fn_rentWeapon.sqf";};
             class progression_publishUpdate {file = "functions\progression\fn_publishUpdate.sqf";};
             class progression_buildPresentationState {file = "functions\progression\fn_buildPresentationState.sqf";};
             class progression_evaluateEquipmentSidePolicyRules {file = "functions\progression\fn_evaluateEquipmentSidePolicyRules.sqf";};

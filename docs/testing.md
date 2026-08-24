@@ -315,6 +315,19 @@ events, starting cash only once across respawn/side/round changes, targeted
 client updates, atomic insufficient-funds rejection, and clean server/client
 RPT output.
 
+Weapon acquisition transaction rules and server-session initialization can be
+checked after mission functions initialize with:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\acquisition\test_weaponAcquisition.sqf"
+```
+
+An empty array is a pass. Dedicated testing must still verify the public
+purchase/rent APIs with explicitly priced test metadata, one targeted update
+per committed transaction, no charge on repeated requests, canonical
+structural-variant inheritance, no equipment application, rental survival
+across respawn/side/round transitions, and clean server/client RPT output.
+
 14. Definition of Tested
 
 A feature may be considered tested when:

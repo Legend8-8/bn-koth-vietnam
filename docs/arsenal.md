@@ -70,7 +70,7 @@ No other gameplay system may implement a competing version.
 
 ### `functions/progression/`
 
-Future owner of:
+Owner of:
 
 - XP;
 - player level;
@@ -85,6 +85,14 @@ Future owner of:
 Loadouts may ask progression whether a player is entitled to equipment.
 
 Loadouts must not calculate or independently store progression state.
+
+Current canonical weapon acquisition state is stored per UID in the
+server-owned progression record as `ownedWeapons[]` and `rentedWeapons[]`.
+Both contain canonical logical classnames only. Purchase and rent validate the
+existing side, level, and perk gates before applying an explicitly configured
+price. The combined cash/entitlement transition is committed once and does not
+equip the weapon. Ownership and rentals are session-scoped until persistence
+exists; rentals currently last for that whole server session.
 
 ---
 
@@ -643,16 +651,10 @@ OWNED?
     NO  → valid rental required
 ```
 
-Exact rental lifetime remains a later gameplay decision.
-
-Examples include:
-
-- life;
-- round;
-- session;
-- fixed duration.
-
-That decision belongs to progression/economy design, not the loadout validator.
+The current rental lifetime is the server session. Rental state survives
+respawn, side changes and round transitions, and is not reset by the round
+lifecycle. A future persistence/economy design may deliberately replace that
+policy, but expiry must continue to have one authoritative owner.
 
 ---
 
@@ -1445,20 +1447,18 @@ Current foundation includes:
 
 The foundation currently does not implement:
 
-- XP;
-- player levels;
 - ranks;
 - weapon kill persistence;
 - license activation;
-- ownership;
-- currency;
-- purchasing;
-- rental;
 - persistence/database integration;
-- saved player loadouts;
-- final custom Arsenal UI;
-- complete non-weapon equipment-slot validation;
-- progression entitlement checks during loadout validation.
+- Store UI;
+- final weapon prices;
+- stock behavior.
+
+Session XP, derived levels, cash, canonical weapon ownership, and
+server-session weapon rentals are implemented. Acquisition is active only when
+human-authored `purchasePrice` or `rentalPrice` metadata exists. Purchase/rent
+do not equip equipment and do not bypass side, level, or perk requirements.
 
 Do not pretend these systems exist by adding temporary shortcuts to loadout code.
 

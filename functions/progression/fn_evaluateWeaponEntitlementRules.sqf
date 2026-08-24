@@ -157,6 +157,8 @@ if (_isOwned) exitWith {
             ["licenseComplete", _licenseComplete],
             ["owned", true],
             ["rented", _isRented],
+            ["canPurchase", _purchasePrice >= 0],
+            ["canRent", _rentalPrice >= 0],
             ["accessType", "OWNED"]
         ]] call _finish
 };
@@ -172,6 +174,8 @@ if (_isRented) exitWith {
             ["licenseComplete", _licenseComplete],
             ["owned", false],
             ["rented", true],
+            ["canPurchase", _purchasePrice >= 0],
+            ["canRent", _rentalPrice >= 0],
             ["accessType", "RENTED"]
         ]] call _finish
 };
