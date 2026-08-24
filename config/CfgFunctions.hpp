@@ -13,8 +13,13 @@ class CfgFunctions
 
         class combat
         {
+            class combat_evaluateWeaponAttribution {file = "functions\combat\fn_evaluateWeaponAttribution.sqf";};
+            class combat_evaluateKillAttributionEvidence {file = "functions\combat\fn_evaluateKillAttributionEvidence.sqf";};
+            class combat_finalizeAttributionDiagnostic {file = "functions\combat\fn_finalizeAttributionDiagnostic.sqf";};
             class combat_handleKill {file = "functions\combat\fn_handleKill.sqf";};
+            class combat_initAttributionDiagnostics {file = "functions\combat\fn_initAttributionDiagnostics.sqf";};
             class combat_publishKillFeed {file = "functions\combat\fn_publishKillFeed.sqf";};
+            class combat_recordAttributionHit {file = "functions\combat\fn_recordAttributionHit.sqf";};
         };
 
         class curator

@@ -26,6 +26,10 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
     if (!isServer) exitWith {};
     if (isNull _killed) exitWith {};
 
+    // Diagnostic-only and intentionally before player filtering so dedicated
+    // test targets (including AI) produce attribution evidence.
+    [_killed, _killer, _instigator] call bn_koth_fnc_combat_finalizeAttributionDiagnostic;
+
     private _ownerId = owner _killed;
     private _isPlayerEntity = isPlayer _killed;
     private _uidFromEntity = getPlayerUID _killed;
@@ -123,6 +127,8 @@ missionNamespace setVariable ["BN_KOTH_respawnHandlersInitialized", true];
 
 [format ["Respawn mission EHs registered: EntityKilled=%1 EntityRespawned=%2", _entityKilledEhId, _entityRespawnedEhId], "INFO"] call bn_koth_fnc_common_log;
 };
+
+[] call bn_koth_fnc_combat_initAttributionDiagnostics;
 
 private _existingEntityCreatedId = missionNamespace getVariable ["BN_KOTH_safeZoneEntityCreatedEhId", -1];
 if (_existingEntityCreatedId < 0) then {

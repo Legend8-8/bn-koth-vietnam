@@ -328,7 +328,39 @@ per committed transaction, no charge on repeated requests, canonical
 structural-variant inheritance, no equipment application, rental survival
 across respawn/side/round transitions, and clean server/client RPT output.
 
-14. Definition of Tested
+14. Combat Attribution Probe
+
+The pure factual candidate checks can be run after mission initialization:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\combat\test_weaponAttribution.sqf"
+```
+
+An empty array is a pass.
+
+For a hosted or dedicated diagnostic session, execute on the server before
+shots are fired:
+
+```sqf
+missionNamespace setVariable ["BN_KOTH_combatAttributionDiagnostics", true];
+[] call bn_koth_fnc_combat_initAttributionDiagnostics;
+```
+
+Search the server RPT for `[BN_KOTH][ATTRIBUTION]`. The expected event sequence
+is `ENABLED`, `PROJECTILE`, `HIT`, `KILL`, and `PROJECTILE_DELETED`. The probe
+is disabled by default, bounded per victim, and never awards progression.
+Run the dedicated matrix with: M16; M16 then pistol switch before impact; two
+carried roots sharing ammo; a structural/camo variant; pistol; grenade;
+handheld launcher; delayed explosive; vehicle MG; attack-helicopter cannon and
+rocket; multiple attackers; and shooter death/disconnect before impact. Record
+the `KILL.result`, `reason`, canonical candidates, hit-to-kill timing, and
+projectile lifetime for every case. Any missing server projectile/hit callback,
+multiple canonical candidates, non-infantry source, or non-infantry ammo
+category must remain `UNKNOWN`/`AMBIGUOUS`. `EntityKilled` supplies the lethal
+fact; projectile callbacks are expected to observe the victim before final
+damage/death state becomes visible.
+
+15. Definition of Tested
 
 A feature may be considered tested when:
 

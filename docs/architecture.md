@@ -19,6 +19,14 @@ The project must remain predictable enough that a developer can identify the loc
 9. Multiplayer locality must be stated in each public function header.
 10. New systems must be documented before they become large.
 
+Combat attribution remains server-owned and fail-closed. The temporary,
+disabled-by-default `CfgBnKothCombat.attributionDiagnostics` probe observes
+server-visible projectile creation and projectile hit events, resolves only
+generated factual ammo compatibility plus the canonical `variantOf` graph,
+and emits RPT diagnostics. It does not award XP, cash, mastery, licences, or
+other progression. Client-reported weapon classnames and `currentWeapon` are
+not authoritative attribution facts.
+
 3. Function Prefix
 
 All KOTH mission functions use:
