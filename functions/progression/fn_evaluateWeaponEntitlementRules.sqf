@@ -56,6 +56,9 @@ if !(_allowedSides isEqualType []) then {_allowedSides = []};
 private _licenseKillsRequired = (_metadata getOrDefault ["licenseKills", 0]) max 0;
 private _requiredPerks = _metadata getOrDefault ["requiredPerks", []];
 if !(_requiredPerks isEqualType []) then {_requiredPerks = []};
+private _purchasePrice = _metadata getOrDefault ["purchasePrice", -1];
+private _rentalPrice = _metadata getOrDefault ["rentalPrice", -1];
+private _acquisitionConfigured = (_purchasePrice >= 0) || {_rentalPrice >= 0};
 
 private _sidePolicy = [
     _sideToken,
@@ -126,6 +129,23 @@ if ((count _missingPerks) > 0) exitWith {
         ]] call _finish
 };
 
+if (!_acquisitionConfigured) exitWith {
+    [true, true, "ENTITLED", "Weapon acquisition is not configured and does not gate entitlement.",
+        createHashMapFromArray [
+            ["allowedSides", _allowedSides],
+            ["playerLevel", _playerLevel],
+            ["minLevel", _minLevel],
+            ["weaponKills", _kills],
+            ["licenseKills", _licenseKillsRequired],
+            ["licenseComplete", _licenseComplete],
+            ["owned", _isOwned],
+            ["rented", _isRented],
+            ["canPurchase", false],
+            ["canRent", false],
+            ["accessType", "UNCONTROLLED"]
+        ]] call _finish
+};
+
 if (_isOwned) exitWith {
     [true, true, "ENTITLED", "Permanent weapon entitlement is valid.",
         createHashMapFromArray [
@@ -167,7 +187,7 @@ if (_isRented) exitWith {
         ["licenseComplete", _licenseComplete],
         ["owned", false],
         ["rented", false],
-        ["canPurchase", true],
-        ["canRent", true],
+        ["canPurchase", _purchasePrice >= 0],
+        ["canRent", _rentalPrice >= 0],
         ["accessType", "NONE"]
     ]] call _finish

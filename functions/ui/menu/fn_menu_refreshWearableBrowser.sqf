@@ -50,11 +50,36 @@ if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) > _loadoutInd
     };
 };
 
+private _entries = [];
+{
+    private _entry = _x;
+    private _metadata = _entry getOrDefault ["metadata", createHashMap];
+    private _class = _entry getOrDefault ["itemClass", ""];
+    private _entitlement = if (_class isEqualTo "") then {
+        createHashMapFromArray [["entitled", true], ["code", "ENTITLED_CLEAR"]]
+    } else {
+        [_progression, _metadata, _class, _sideToken, _requiresAppearance] call bn_koth_fnc_progression_evaluateItemEntitlementRules
+    };
+    private _code = _entitlement getOrDefault ["code", "LOCKED_STATE"];
+
+    // Appearance-sensitive Arsenal pages expose only reviewed equipment for
+    // the player's faction. The server remains the authority for any intent.
+    if (
+        _requiresAppearance &&
+        {_code in ["LOCKED_SIDE", "LOCKED_APPEARANCE_SIDE", "LOCKED_APPEARANCE_METADATA"]}
+    ) then {continue;};
+
+    private _presentedEntry = createHashMap;
+    {_presentedEntry set [_x, _entry get _x];} forEach (keys _entry);
+    _presentedEntry set ["entitlement", _entitlement];
+    _entries pushBack _presentedEntry;
+} forEach _catalogue;
+
 private _pageSize = count _cardIdcs;
-private _pageCount = (ceil ((count _catalogue) / _pageSize)) max 1;
+private _pageCount = (ceil ((count _entries) / _pageSize)) max 1;
 private _page = uiNamespace getVariable ["BN_KOTH_menuBrowserPage", 0];
 if (uiNamespace getVariable ["BN_KOTH_menuBrowserSnapPending", false]) then {
-    private _appliedIndex = _catalogue findIf {(_x getOrDefault ["itemClass", ""]) isEqualTo _appliedClass};
+    private _appliedIndex = _entries findIf {(_x getOrDefault ["itemClass", ""]) isEqualTo _appliedClass};
     if (_appliedIndex >= 0) then {_page = floor (_appliedIndex / _pageSize)};
     uiNamespace setVariable ["BN_KOTH_menuBrowserSnapPending", false];
 };
@@ -87,15 +112,11 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
 
 {
     private _entryIndex = _forEachIndex + (_page * _pageSize);
-    if (_entryIndex >= (count _catalogue)) then {continue;};
-    private _entry = _catalogue select _entryIndex;
+    if (_entryIndex >= (count _entries)) then {continue;};
+    private _entry = _entries select _entryIndex;
     private _metadata = _entry getOrDefault ["metadata", createHashMap];
     private _class = _entry getOrDefault ["itemClass", ""];
-    private _entitlement = if (_class isEqualTo "") then {
-        createHashMapFromArray [["entitled", true], ["code", "ENTITLED_CLEAR"]]
-    } else {
-        [_progression, _metadata, _class, _sideToken, _requiresAppearance] call bn_koth_fnc_progression_evaluateItemEntitlementRules
-    };
+    private _entitlement = _entry getOrDefault ["entitlement", createHashMap];
     private _entitled = _entitlement getOrDefault ["entitled", false];
     private _code = _entitlement getOrDefault ["code", "LOCKED_STATE"];
     private _isApplied = _class isEqualTo _appliedClass;
