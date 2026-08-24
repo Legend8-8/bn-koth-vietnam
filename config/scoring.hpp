@@ -20,6 +20,15 @@ class CfgBnKothScoring
 		maxLevel = 270;
 	};
 
+	class economy
+	{
+		// Provisional session-economy values. Rebalance after economy playtesting.
+		startingCash = 1000;
+		cashPerKill = 50;
+		cashPerControlTick = 10;
+		cashPerPriorityTick = 20;
+	};
+
 	prepareDuration = 10;
 	endingDuration = 8;
 	resetDuration = 5;

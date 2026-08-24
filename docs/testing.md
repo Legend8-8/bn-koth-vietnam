@@ -302,6 +302,19 @@ call compile preprocessFileLineNumbers "functions\progression\test_equipmentSide
 An empty returned array is a pass. This focused check does not replace hosted
 and dedicated two-side testing or client/server RPT review.
 
+Session cash API checks can be run on a hosted or dedicated server after
+mission functions initialize:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\cash\test_cash.sqf"
+```
+
+An empty array is a pass. Hosted and dedicated testing must additionally verify
+one cash award per validated kill/control/Priority event, no reward for rejected
+events, starting cash only once across respawn/side/round changes, targeted
+client updates, atomic insufficient-funds rejection, and clean server/client
+RPT output.
+
 14. Definition of Tested
 
 A feature may be considered tested when:

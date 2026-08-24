@@ -103,6 +103,7 @@ if !(_playerProgression isEqualType createHashMap) then {
 
 private _myXp = (_playerProgression getOrDefault ["xp", 0]) max 0;
 private _myLevel = (_playerProgression getOrDefault ["level", 1]) max 1;
+private _myCash = (_playerProgression getOrDefault ["cash", 0]) max 0;
 private _levelProgress = [_myXp, _myLevel] call bn_koth_fnc_progression_xp_getLevelProgress;
 
 _myLevel = _levelProgress getOrDefault ["level", 1];
@@ -350,6 +351,7 @@ private _headerView = createHashMapFromArray [
     ["playerLevel", _myLevel],
     ["playerMaxLevel", _myMaxLevel],
     ["playerXp", _myXp],
+    ["playerCash", _myCash],
     ["playerXpIntoLevel", _myXpIntoLevel],
     ["playerXpRequired", _myXpRequired],
     ["playerXpRatio", _myXpRatio],

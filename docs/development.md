@@ -48,6 +48,12 @@ such as `minLevel` remain independent. Never derive one of these policy fields
 from another, and never author policy on a structural weapon variant instead
 of its canonical logical root.
 
+Progression and economy balance values belong in mission config. XP reward and
+curve values are under `CfgBnKothScoring.progression`; provisional session cash
+starting/reward values are under `CfgBnKothScoring.economy`. Server functions
+own cash mutation. Clients may display targeted cash state and submit future
+purchase intent, but must never set or award cash.
+
 Unclassified combat equipment may temporarily remain uncontrolled. Visual
 equipment (uniforms, vests, backpacks, headgear, and facewear) must have a
 valid matching `appearanceSide` before it can enter an authoritative loadout.

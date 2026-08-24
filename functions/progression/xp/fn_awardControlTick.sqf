@@ -2,14 +2,15 @@
     File: fn_awardControlTick.sqf
     Author: Tylervip
     Edited: Legend
-    Description: Awards objective XP from the zone-owned eligibility snapshot.
+    Description: Awards configured objective XP and cash from the zone-owned
+        eligibility snapshot.
         Zone owns AO and Priority eligibility. Progression consumes that
         authoritative result and only decides reward amounts.
     Execution: Server
     Parameters:
         0: Validated controlling side <SIDE>
     Returns:
-        Number of XP awards issued <NUMBER>
+        Number of eligible reward entries processed <NUMBER>
     Public: No
 */
 
@@ -23,7 +24,14 @@ if !((missionNamespace getVariable ["BN_KOTH_zoneController", sideUnknown]) isEq
 
 private _controlXpAmount = missionNamespace getVariable ["BN_KOTH_xpPerControlTick", 10];
 private _priorityXpAmount = missionNamespace getVariable ["BN_KOTH_xpPerPriorityTick", 25];
-if (_controlXpAmount <= 0 && {_priorityXpAmount <= 0}) exitWith {0};
+private _controlCashAmount = missionNamespace getVariable ["BN_KOTH_cashPerControlTick", 0];
+private _priorityCashAmount = missionNamespace getVariable ["BN_KOTH_cashPerPriorityTick", 0];
+if (
+    _controlXpAmount <= 0 &&
+    {_priorityXpAmount <= 0} &&
+    {_controlCashAmount <= 0} &&
+    {_priorityCashAmount <= 0}
+) exitWith {0};
 
 private _snapshot = missionNamespace getVariable ["BN_KOTH_zoneEligibleSnapshot", createHashMap];
 if !(_snapshot isEqualType createHashMap) exitWith {0};
@@ -39,20 +47,30 @@ if (_controllerIndex < 0) exitWith {0};
 
 private _rewarded = 0;
 
-if (_controlXpAmount > 0) then {
+if (_controlXpAmount > 0 || {_controlCashAmount > 0}) then {
     {
         if !(_x isEqualTo "") then {
-            [_x, _controlXpAmount, "control"] call bn_koth_fnc_progression_xp_addXp;
+            if (_controlXpAmount > 0) then {
+                [_x, _controlXpAmount, "control"] call bn_koth_fnc_progression_xp_addXp;
+            };
+            if (_controlCashAmount > 0) then {
+                [_x, _controlCashAmount, "control"] call bn_koth_fnc_progression_cash_addCash;
+            };
             _rewarded = _rewarded + 1;
         };
     } forEach (_eligibleBySide select _controllerIndex);
 };
 
-if (_priorityXpAmount > 0) then {
+if (_priorityXpAmount > 0 || {_priorityCashAmount > 0}) then {
     {
         {
             if !(_x isEqualTo "") then {
-                [_x, _priorityXpAmount, "priority"] call bn_koth_fnc_progression_xp_addXp;
+                if (_priorityXpAmount > 0) then {
+                    [_x, _priorityXpAmount, "priority"] call bn_koth_fnc_progression_xp_addXp;
+                };
+                if (_priorityCashAmount > 0) then {
+                    [_x, _priorityCashAmount, "priority"] call bn_koth_fnc_progression_cash_addCash;
+                };
                 _rewarded = _rewarded + 1;
             };
         } forEach _x;

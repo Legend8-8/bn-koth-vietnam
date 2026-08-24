@@ -183,6 +183,7 @@ if !(_progression isEqualType createHashMap) then {
 
 private _level = (_progression getOrDefault ["level", 1]) max 1;
 private _xp = (_progression getOrDefault ["xp", 0]) max 0;
+private _cash = (_progression getOrDefault ["cash", 0]) max 0;
 
 private _levelProgress = [_xp, _level] call bn_koth_fnc_progression_xp_getLevelProgress;
 _level = _levelProgress getOrDefault ["level", 1];
@@ -194,9 +195,9 @@ private _xpRatio = _levelProgress getOrDefault ["ratio", 1];
 _ctrlHeaderLevel ctrlSetText format ["LEVEL %1", _level];
 
 if (_level >= _maxLevel) then {
-    _ctrlHeaderXp ctrlSetText format ["MAX LEVEL  |  %1 XP", _xp];
+    _ctrlHeaderXp ctrlSetText format ["MAX LEVEL  |  %1 XP  |  $%2", _xp, round _cash];
 } else {
-    _ctrlHeaderXp ctrlSetText format ["%1 / %2 XP", round _xpIntoLevel, round _xpRequired];
+    _ctrlHeaderXp ctrlSetText format ["%1 / %2 XP  |  $%3", round _xpIntoLevel, round _xpRequired, round _cash];
 };
 
 private _trackPos = ctrlPosition _ctrlHeaderXpTrack;

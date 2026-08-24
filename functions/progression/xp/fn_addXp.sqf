@@ -56,22 +56,7 @@ private _result = createHashMapFromArray [
     ["reason", _reason]
 ];
 
-private _clientPayload = createHashMapFromArray [
-    ["uid", _uid],
-    ["xp", _newXp],
-    ["level", _newLevel],
-    ["amount", _amount],
-    ["reason", _reason]
-];
-
-private _ownerId = _playerRecord getOrDefault ["ownerId", -1];
-if (_ownerId > 2) then {
-    [_clientPayload] remoteExecCall ["bn_koth_fnc_ui_receiveProgression", _ownerId];
-} else {
-    if (_ownerId isEqualTo 2 && {hasInterface}) then {
-        [_clientPayload] call bn_koth_fnc_ui_receiveProgression;
-    };
-};
+[_uid, "xp", _amount, _reason] call bn_koth_fnc_progression_publishUpdate;
 
 [format [
     "XP award UID=%1 reason=%2 amount=%3 total=%4 level=%5",

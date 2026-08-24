@@ -57,6 +57,7 @@ private _playerName = toUpper (_viewModel getOrDefault ["playerName", profileNam
 private _playerLevel = (_viewModel getOrDefault ["playerLevel", 1]) max 1;
 private _playerMaxLevel = (_viewModel getOrDefault ["playerMaxLevel", 270]) max 1;
 private _playerXp = (_viewModel getOrDefault ["playerXp", 0]) max 0;
+private _playerCash = (_viewModel getOrDefault ["playerCash", 0]) max 0;
 private _playerXpIntoLevel = (_viewModel getOrDefault ["playerXpIntoLevel", 0]) max 0;
 private _playerXpRequired = (_viewModel getOrDefault ["playerXpRequired", 0]) max 0;
 private _playerXpRatio = (_viewModel getOrDefault ["playerXpRatio", 1]) max 0 min 1;
@@ -67,9 +68,9 @@ private _playerXpRatio = (_viewModel getOrDefault ["playerXpRatio", 1]) max 0 mi
 
 private _xpCtrl = _display displayCtrl BN_KOTH_IDC_HEADER_XP;
 if (_playerLevel >= _playerMaxLevel) then {
-    _xpCtrl ctrlSetText format ["MAX | %1 XP", _playerXp];
+    _xpCtrl ctrlSetText format ["MAX | %1 XP | $%2", _playerXp, round _playerCash];
 } else {
-    _xpCtrl ctrlSetText format ["%1 / %2 XP", round _playerXpIntoLevel, round _playerXpRequired];
+    _xpCtrl ctrlSetText format ["%1 / %2 XP | $%3", round _playerXpIntoLevel, round _playerXpRequired, round _playerCash];
 };
 
 disableSerialization;

@@ -20,6 +20,7 @@ params [
 
 private _xp = (_progression getOrDefault ["xp", 0]) max 0;
 private _level = (_progression getOrDefault ["level", 1]) max 1;
+private _cash = (_progression getOrDefault ["cash", 0]) max 0;
 private _weaponKills = _progression getOrDefault ["weaponKills", createHashMap];
 private _ownedWeapons = _progression getOrDefault ["ownedWeapons", []];
 private _rentedWeapons = _progression getOrDefault ["rentedWeapons", []];
@@ -34,6 +35,7 @@ createHashMapFromArray [
     ["uid", _uid],
     ["xp", _xp],
     ["level", _level],
+    ["cash", _cash],
     ["weaponKills", _weaponKills],
     ["ownedWeapons", _ownedWeapons],
     ["rentedWeapons", _rentedWeapons],

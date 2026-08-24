@@ -61,6 +61,8 @@ _record set ["deployed", false];
 _records set [_uid, _record];
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
+[_uid] call bn_koth_fnc_progression_cash_initPlayer;
+
 private _assignedLobby = [_uid] call bn_koth_fnc_teams_assignLobbyRepresentation;
 if (!_assignedLobby) exitWith {
     [format ["registerPlayer deferred: lobby representation handoff not ready for UID=%1", _uid], "INFO"] call bn_koth_fnc_common_log;

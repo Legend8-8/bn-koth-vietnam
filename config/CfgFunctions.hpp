@@ -95,6 +95,12 @@ class CfgFunctions
             class progression_xp_addXp {file = "functions\progression\xp\fn_addXp.sqf";};
             class progression_xp_awardControlTick {file = "functions\progression\xp\fn_awardControlTick.sqf";};
             class progression_xp_awardKill {file = "functions\progression\xp\fn_awardKill.sqf";};
+            class progression_cash_initServer {file = "functions\progression\cash\fn_initServer.sqf";};
+            class progression_cash_initPlayer {file = "functions\progression\cash\fn_initPlayer.sqf";};
+            class progression_cash_getCash {file = "functions\progression\cash\fn_getCash.sqf";};
+            class progression_cash_addCash {file = "functions\progression\cash\fn_addCash.sqf";};
+            class progression_cash_spendCash {file = "functions\progression\cash\fn_spendCash.sqf";};
+            class progression_publishUpdate {file = "functions\progression\fn_publishUpdate.sqf";};
             class progression_buildPresentationState {file = "functions\progression\fn_buildPresentationState.sqf";};
             class progression_evaluateEquipmentSidePolicyRules {file = "functions\progression\fn_evaluateEquipmentSidePolicyRules.sqf";};
             class progression_evaluateWeaponEntitlement {file = "functions\progression\fn_evaluateWeaponEntitlement.sqf";};

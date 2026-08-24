@@ -70,9 +70,10 @@ of authoritative gameplay where applicable but are not displayed in that panel.
 
 5. Player Progression
 
-The first progression implementation is round-scoped and log-only. XP and
-levels reset when the round resets; they are not persisted across reconnects or
-server restarts, and they are not shown in the HUD yet.
+The current progression implementation is session-scoped and not yet
+database-backed. XP, derived level, and cash are server-owned by player UID.
+They survive respawn, side changes and round transitions, but not a server
+restart.
 
 The current implementation awards XP for:
 
@@ -80,15 +81,20 @@ The current implementation awards XP for:
 - validated participation inside the active Priority zone during a scoring interval;
 - validated opposing player kills.
 
+The same validated events provisionally award config-owned cash amounts. Cash
+is initialized once when a player first enters server progression state. No
+Store, purchase, rental, licence, stock, or persistence behavior is implied by
+this foundation; current values are placeholders for economy playtesting.
+
 The current level cap is configurable and defaults to 270. The Arsenal now
 supports human-authored level and perk requirements for canonical weapons,
 attachments, wearable/assigned items, and cargo additions. The server repeats
-all entitlement checks before accepting equipment intent. Vehicles, currency,
+all entitlement checks before accepting equipment intent. Vehicles, equipment
 ownership, prices, rentals, and stock are not implemented by this work.
 
 Future progression may include:
 
-- currency;
+- persistent currency and economy sinks;
 - equipment unlocks;
 - vehicle unlocks;
 - player statistics.

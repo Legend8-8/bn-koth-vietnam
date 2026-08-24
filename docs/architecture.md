@@ -209,17 +209,22 @@ Contains player progression systems:
 
 - `xp/` owns server-authoritative XP awards, level calculation, level progress,
   and Priority-zone, control, and combat reward hooks;
-- `cash/` remains reserved for the future cash/economy system;
+- `cash/` owns server-authoritative session cash initialization, reads, awards,
+  and atomic spending. It consumes the same validated kill/control/Priority
+  reward events as XP and creates no independent eligibility loop;
 - progression entitlement evaluation consumes authoritative level/rule data;
 - future persistent unlocks, perks, licences and reward multipliers belong to
   progression/persistence boundaries rather than client UI.
 
 Current progression state is stored in the server-owned
 `BN_KOTH_playerProgression` map keyed by UID. It is session-scoped for now and
-is not yet database-backed. Cumulative XP is the stable progression value;
+is not yet database-backed. Cash initializes once per UID registration and
+survives respawn, side changes and round transitions for the server session.
+Cumulative XP is the stable progression value;
 level is derived from the config-owned curve so future persistence can load XP
 without duplicating balance rules into the database layer. Clients receive only
-presentation state required for UI.
+their own presentation state, including cash, through the existing initial
+snapshot and targeted progression-update path.
 
 Round-only competitive statistics do not belong to progression. They are owned
 by `functions/roundStats/` and reset on the next `ACTIVE` round without changing
