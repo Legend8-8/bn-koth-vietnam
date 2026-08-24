@@ -87,14 +87,17 @@ Canonical weapons with explicit `purchasePrice` or `rentalPrice` metadata may
 be permanently purchased or rented through server-authoritative APIs. Cash and
 entitlement change in one transaction, and acquisition never auto-equips the
 weapon. Rentals last for the current server session. Store UI, final prices,
-licences, stock, and persistence are not implemented yet.
+stock and persistence are not implemented yet. Weapon-specific session mastery
+and the cross-side licence gate are implemented; only uniquely attributed
+canonical infantry-weapon PvP kills progress mastery.
 
 The current level cap is configurable and defaults to 270. The Arsenal now
 supports human-authored level and perk requirements for canonical weapons,
 attachments, wearable/assigned items, and cargo additions. The server repeats
 all entitlement checks before accepting equipment intent. Canonical weapon
 ownership/rental is implemented as session state; vehicles, final equipment
-prices, stock, licences, and database persistence remain unfinished.
+prices, stock, wider licence content/population, and database persistence
+remain unfinished.
 
 Future progression may include:
 

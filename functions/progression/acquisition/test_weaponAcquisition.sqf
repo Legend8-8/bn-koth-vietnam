@@ -24,6 +24,7 @@ private _baseProgression = createHashMapFromArray [
 private _metadata = createHashMapFromArray [
     ["success", true], ["configured", true], ["canonicalClass", "vn_test_weapon"],
     ["allowedSides", ["WEST"]], ["minLevel", 5], ["licenseKills", 0],
+    ["crossSideAllowed", false],
     ["requiredPerks", ["test_perk"]], ["purchasePrice", 400], ["rentalPrice", 100]
 ];
 
@@ -47,7 +48,20 @@ private _repeatPurchase = ["PURCHASE", _uid, "vn_test_weapon_variant", _ownedPro
 
 private _wrongSide = [_uid, "EAST", _baseProgression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
 private _wrongSidePurchase = ["PURCHASE", _uid, "vn_test_weapon", _baseProgression, _metadata, _wrongSide] call bn_koth_fnc_progression_acquisition_evaluateRules;
-["Wrong side fails before spend", (_wrongSidePurchase getOrDefault ["code", ""]) isEqualTo "LOCKED_SIDE" && {(_baseProgression get "cash") isEqualTo 1000}] call _check;
+["Cross-side-disabled purchase fails before spend", (_wrongSidePurchase getOrDefault ["code", ""]) isEqualTo "CROSS_SIDE_NOT_ALLOWED" && {(_baseProgression get "cash") isEqualTo 1000}] call _check;
+
+private _crossMetadata = createHashMapFromArray ((keys _metadata) apply {[_x, _metadata get _x]});
+_crossMetadata set ["crossSideAllowed", true];
+_crossMetadata set ["licenseKills", 5];
+private _crossProgression = createHashMapFromArray ((keys _baseProgression) apply {[_x, _baseProgression get _x]});
+_crossProgression set ["weaponKills", createHashMapFromArray [["vn_test_weapon", 4]]];
+private _crossEntitlement = [_uid, "EAST", _crossProgression, _crossMetadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
+private _crossPurchase = ["PURCHASE", _uid, "vn_test_weapon", _crossProgression, _crossMetadata, _crossEntitlement] call bn_koth_fnc_progression_acquisition_evaluateRules;
+["Incomplete cross-side licence fails before spend", (_crossPurchase getOrDefault ["code", ""]) isEqualTo "LOCKED_LICENSE" && {(_crossProgression get "cash") isEqualTo 1000}] call _check;
+(_crossProgression get "weaponKills") set ["vn_test_weapon", 5];
+_crossEntitlement = [_uid, "EAST", _crossProgression, _crossMetadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
+_crossPurchase = ["PURCHASE", _uid, "vn_test_weapon", _crossProgression, _crossMetadata, _crossEntitlement] call bn_koth_fnc_progression_acquisition_evaluateRules;
+["Completed cross-side licence permits funded purchase", (_crossPurchase getOrDefault ["code", ""]) isEqualTo "WEAPON_PURCHASED"] call _check;
 
 private _lowProgression = createHashMapFromArray [
     ["level", 1], ["cash", 1000], ["ownedWeapons", []], ["rentedWeapons", []],

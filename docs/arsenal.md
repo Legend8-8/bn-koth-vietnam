@@ -376,6 +376,13 @@ class vn_l1a1_01
 
 > Which KOTH sides may use or acquire this logical item?
 
+For canonical weapons only, `crossSideAllowed = 1` deliberately permits the
+opposite side to pursue a weapon-specific licence. `allowedSides[]` continues
+to mean native/default access. Cross-side access requires level first, then
+canonical `weaponKills >= licenseKills`, then perks and any configured
+acquisition. Ownership and rental do not bypass those gates. Structural
+variants inherit the canonical rule.
+
 An empty or absent `allowedSides[]` temporarily leaves combat equipment
 uncontrolled while balance metadata is authored. It must never be populated
 from `sourceAffiliations[]` automatically. Structural weapon variants inherit
@@ -530,7 +537,7 @@ This allows battlefield scavenging and weapon familiarity to matter without bypa
 
 ---
 
-## 11. Licence Progress Is Independent From Side Policy
+## 11. Licence Progress Is Independent From Native Side Policy
 
 A weapon license represents mastery.
 
@@ -538,8 +545,10 @@ Conceptually:
 
 > The player has demonstrated the configured mastery requirement for this weapon.
 
-A licence does **not** mean the player owns the weapon, and it does not widen
-`allowedSides[]`. Side availability is a separate human-authored KOTH decision.
+A licence does **not** mean the player owns the weapon, and it does not mutate
+`allowedSides[]`. Cross-side eligibility is a separate weapon-only route that
+exists only when the canonical weapon explicitly declares
+`crossSideAllowed = 1`.
 
 Example:
 
@@ -558,15 +567,16 @@ L1A1 kills: 50
 Ownership: no
 ```
 
-Result:
+Native-side result:
 
 ```text
 Licence: yes
-Side permission: WEST only
+Native/default side: WEST
 Permanent ownership: no
 ```
 
-Any later rental remains subject to both `allowedSides[]` and economy rules.
+On EAST, this focused seed may proceed only after Level 20 and 50 canonical
+L1A1 mastery kills, then remains subject to acquisition/economy rules.
 
 ---
 
@@ -598,13 +608,16 @@ Ownership: complete
 → permanent access
 ```
 
-On a side absent from `allowedSides[]`:
+On a side absent from `allowedSides[]` with no explicit cross-side path:
 
 ```text
 Level requirement: complete
 Ownership: complete
-→ side access denied regardless of ownership or licence
+→ CROSS_SIDE_NOT_ALLOWED regardless of ownership
 ```
+
+When `crossSideAllowed = 1`, ownership still cannot bypass level, perks, or an
+incomplete cross-side mastery requirement.
 
 Money must not bypass the mastery requirement.
 
@@ -637,7 +650,7 @@ A rental does not become ownership.
 
 A rental does not bypass minimum level.
 
-Rental never widens `allowedSides[]`.
+Rental never mutates `allowedSides[]` and never creates a cross-side path.
 
 Conceptually:
 
@@ -694,8 +707,8 @@ Ownership: yes
 Result:
 
 ```text
-allowed side: permanent access
-other side: denied by allowedSides
+native side: permanent access
+cross side: LOCKED_LICENSE (10/50), even though owned
 license progress: 10/50
 ```
 
@@ -713,8 +726,8 @@ Result:
 
 ```text
 license: complete
-allowed side: rental required
-other side: denied by allowedSides
+native side: rental or purchase required
+cross side: licence complete, then rental or purchase required
 permanent ownership: no
 ```
 
@@ -733,8 +746,8 @@ Result:
 ```text
 license: complete
 ownership: complete
-allowed side: permanent access
-other side: denied unless explicitly included in allowedSides
+native side: permanent access
+cross side: permanent access only because crossSideAllowed is explicit and the licence is complete
 rental required: no
 ```
 
@@ -744,24 +757,26 @@ Weapon is fully completed.
 
 ## 16. Authoritative Entitlement Logic
 
-The future server-side entitlement sequence should conceptually be:
+The server-side weapon entitlement sequence is:
 
 ```text
 1. Does the item exist?
         ↓
 2. Is the weapon/magazine/attachment combination factually valid?
         ↓
-3. Does human-authored allowedSides include the current KOTH side (or leave
-   combat equipment temporarily uncontrolled)?
+3. Is the current side native/default through allowedSides, or is an explicit
+   crossSideAllowed path configured?
         ↓
-4. Has the player reached the minimum level and other progression requirements?
+4. Has the player reached minLevel?
         ↓
-5. Is ownership/rental valid where required?
+5. For cross-side access, has canonical weapon mastery reached licenseKills?
         ↓
-6. VALID
+6. Have required perks passed?
+        ↓
+7. Where acquisition is configured, is ownership/rental valid?
+        ↓
+8. VALID
 ```
-
-The exact API between `functions/loadouts/` and `functions/progression/` must be deliberately designed when progression is implemented.
 
 Loadouts must ask progression for authoritative entitlement.
 

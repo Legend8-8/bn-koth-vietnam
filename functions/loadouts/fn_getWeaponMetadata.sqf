@@ -68,6 +68,7 @@ private _metadataCfg = _arsenalCfg >> "Metadata" >> "Weapons" >> _canonicalClass
 private _configured = isClass _metadataCfg;
 
 private _allowedSides = [];
+private _crossSideAllowed = false;
 private _minLevel = 1;
 private _licenseKills = 0;
 private _purchasePrice = -1;
@@ -77,6 +78,10 @@ private _requiredPerks = [];
 if (_configured) then {
     if (isArray (_metadataCfg >> "allowedSides")) then {
         _allowedSides = (getArray (_metadataCfg >> "allowedSides")) apply {toUpper _x};
+    };
+
+    if (isNumber (_metadataCfg >> "crossSideAllowed")) then {
+        _crossSideAllowed = (getNumber (_metadataCfg >> "crossSideAllowed")) > 0;
     };
 
     if (isNumber (_metadataCfg >> "minLevel")) then {
@@ -107,6 +112,7 @@ createHashMapFromArray [
     ["canonicalClass", _canonicalClass],
     ["configured", _configured],
     ["allowedSides", _allowedSides],
+    ["crossSideAllowed", _crossSideAllowed],
     ["minLevel", _minLevel],
     ["licenseKills", _licenseKills],
     ["purchasePrice", _purchasePrice],

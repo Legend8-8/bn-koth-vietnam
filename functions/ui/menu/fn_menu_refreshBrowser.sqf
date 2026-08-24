@@ -182,7 +182,10 @@ private _entries = [];
     // The Arsenal is the assigned faction's equipment surface. Omit only an
     // explicit side-policy rejection; same-side progression locks remain in
     // the entry list for normal locked/acquisition presentation.
-    if ((_entitlement getOrDefault ["code", ""]) isEqualTo "LOCKED_SIDE") then {continue;};
+    if (
+        ((_entitlement getOrDefault ["code", ""]) isEqualTo "LOCKED_SIDE")
+        || {_entitlement getOrDefault ["crossSide", false]}
+    ) then {continue;};
 
     _entries pushBack (createHashMapFromArray [
         ["weaponClass", _weaponClass],

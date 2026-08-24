@@ -18,11 +18,12 @@ The server calculates gameplay truth.
 
 Clients display information and send requests.
 
-Optional combat-attribution diagnostics register only on the server.
-Projectile facts and bounded victim hit records remain server-local and are
-not broadcast. Dedicated testing must prove that remotely fired projectiles
-are visible to the server's `ProjectileCreated`, projectile `HitPart`, and
-projectile `HitExplosion` handlers before this path may support mastery.
+Combat-attribution collection registers only on the server. Projectile facts
+and bounded victim hit records remain server-local and are not broadcast;
+optional diagnostics only control RPT verbosity. `EntityKilled` owns lethality,
+`combat_handleKill` owns valid PvP, and progression mastery consumes only the
+attached unique `ATTRIBUTED` canonical infantry root. Clients have no mastery
+mutation or weapon-attribution request endpoint.
 
 A client must not be trusted to determine:
 

@@ -1,8 +1,8 @@
 /*
     File: fn_finalizeAttributionDiagnostic.sqf
     Author: Legend
-    Description: Emits a fail-closed server RPT result for a recent uniquely
-        correlated projectile hit. It does not alter kill or progression state.
+    Description: Finalizes fail-closed server attribution from recent bounded
+        hit evidence. Optional RPT diagnostics do not affect the result.
     Execution: Server
     Parameters:
         0: Victim <OBJECT>
@@ -15,7 +15,7 @@
 params ["_victim", ["_killer", objNull], ["_instigator", objNull]];
 
 private _result = createHashMapFromArray [
-    ["result", "UNKNOWN"], ["reason", "DIAGNOSTICS_DISABLED"],
+    ["result", "UNKNOWN"], ["reason", "ATTRIBUTION_COLLECTION_UNAVAILABLE"],
     ["victim", str _victim], ["killer", str _killer], ["instigator", str _instigator],
     ["ammo", ""], ["projectile", ""], ["candidateWeapons", []], ["canonicalCandidates", []]
 ];
@@ -34,7 +34,9 @@ _victim setVariable ["BN_KOTH_combatAttributionHits", nil, false];
 
 if (isNull _effectiveKiller) exitWith {
     _result set ["reason", "KILLER_OR_INSTIGATOR_MISSING"];
-    diag_log format ["[BN_KOTH][ATTRIBUTION] KILL %1", _result];
+    if (missionNamespace getVariable ["BN_KOTH_combatAttributionDiagnosticsEnabled", false]) then {
+        diag_log format ["[BN_KOTH][ATTRIBUTION] KILL %1", _result];
+    };
     _result
 };
 
@@ -43,5 +45,7 @@ private _correlation = [_events, _effectiveKiller, _now, _lethalWindow] call bn_
     _result set [_x, _correlation get _x];
 } forEach (keys _correlation);
 
-diag_log format ["[BN_KOTH][ATTRIBUTION] KILL %1", _result];
+if (missionNamespace getVariable ["BN_KOTH_combatAttributionDiagnosticsEnabled", false]) then {
+    diag_log format ["[BN_KOTH][ATTRIBUTION] KILL %1", _result];
+};
 _result

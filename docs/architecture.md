@@ -19,13 +19,14 @@ The project must remain predictable enough that a developer can identify the loc
 9. Multiplayer locality must be stated in each public function header.
 10. New systems must be documented before they become large.
 
-Combat attribution remains server-owned and fail-closed. The temporary,
-disabled-by-default `CfgBnKothCombat.attributionDiagnostics` probe observes
-server-visible projectile creation and projectile hit events, resolves only
-generated factual ammo compatibility plus the canonical `variantOf` graph,
-and emits RPT diagnostics. It does not award XP, cash, mastery, licences, or
-other progression. Client-reported weapon classnames and `currentWeapon` are
-not authoritative attribution facts.
+Combat attribution remains server-owned and fail-closed. Bounded event-driven
+collection observes server-visible projectile creation and hit events and
+resolves only generated factual ammo compatibility plus the canonical
+`variantOf` graph. Verbose `CfgBnKothCombat.attributionDiagnostics` RPT output
+is optional. Only one `ATTRIBUTED` canonical infantry root attached to the
+canonical valid-PvP kill record may award weapon mastery; `UNKNOWN`,
+`AMBIGUOUS`, explosive, and non-infantry evidence awards none. Client-reported
+weapon classnames and `currentWeapon` are never authoritative attribution.
 
 3. Function Prefix
 
@@ -223,15 +224,17 @@ Contains player progression systems:
 - `acquisition/` owns canonical weapon purchase and server-session rental
   transactions. It calculates the combined cash/entitlement transition once,
   commits it once, and publishes only the affected player's targeted state;
+- `mastery/` owns the canonical lowercase `weaponKills` map and awards exactly
+  once from fail-closed server attribution on a valid active-round PvP kill;
 - progression entitlement evaluation consumes authoritative level/rule data;
-- future persistent unlocks, perks, licences and reward multipliers belong to
-  progression/persistence boundaries rather than client UI.
+- future persistent unlocks, perks, licence storage and reward multipliers
+  belong to progression/persistence boundaries rather than client UI.
 
 Current progression state is stored in the server-owned
 `BN_KOTH_playerProgression` map keyed by UID. It is session-scoped for now and
 is not yet database-backed. Cash, permanent weapon ownership, and weapon
-rentals initialize once per UID registration and survive respawn, side changes
-and round transitions for the server session. Rentals currently expire only
+rentals, and weapon mastery initialize once per UID registration and survive
+respawn, side changes and round transitions for the server session. Rentals currently expire only
 with that session; no wall-clock or round reset owns rental expiry.
 Cumulative XP is the stable progression value;
 level is derived from the config-owned curve so future persistence can load XP

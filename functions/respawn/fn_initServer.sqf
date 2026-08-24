@@ -26,9 +26,9 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
     if (!isServer) exitWith {};
     if (isNull _killed) exitWith {};
 
-    // Diagnostic-only and intentionally before player filtering so dedicated
-    // test targets (including AI) produce attribution evidence.
-    [_killed, _killer, _instigator] call bn_koth_fnc_combat_finalizeAttributionDiagnostic;
+    // Finalize bounded server evidence before player filtering. Only the
+    // canonical player-kill path below can consume it for progression.
+    private _weaponAttribution = [_killed, _killer, _instigator] call bn_koth_fnc_combat_finalizeAttributionDiagnostic;
 
     private _ownerId = owner _killed;
     private _isPlayerEntity = isPlayer _killed;
@@ -56,7 +56,7 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
         [_killed] call bn_koth_fnc_respawn_cleanupSafeZoneEntity;
     };
 
-    private _killRecord = [_killed, _killer, _instigator] call bn_koth_fnc_combat_handleKill;
+    private _killRecord = [_killed, _killer, _instigator, _weaponAttribution] call bn_koth_fnc_combat_handleKill;
 
     if (_killRecord isEqualType createHashMap && {count _killRecord > 0}) then {
         [_killRecord] call bn_koth_fnc_roundStats_recordKill;
@@ -65,6 +65,7 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
     if (_isPlayerEntity && {!alive _killed}) then {
         if (_killRecord isEqualType createHashMap && {count _killRecord > 0}) then {
             [_killRecord] call bn_koth_fnc_progression_xp_awardKill;
+            [_killRecord] call bn_koth_fnc_progression_mastery_awardKill;
         };
         [_killed] spawn bn_koth_fnc_respawn_cleanupDeadBody;
     };

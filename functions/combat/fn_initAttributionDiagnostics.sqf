@@ -1,12 +1,12 @@
 /*
     File: fn_initAttributionDiagnostics.sqf
     Author: Legend
-    Description: Registers disabled-by-default server diagnostics on created
-        projectile objects. Exact projectile HitPart/HitExplosion events are
-        recorded locally and bounded. No progression is awarded or mutated.
+    Description: Registers server attribution collection on created projectile
+        objects. Exact hit evidence is server-local and bounded; verbose RPT
+        diagnostics remain disabled by default.
     Execution: Server
     Parameters: None
-    Returns: Whether diagnostics are enabled <BOOL>
+    Returns: Whether server attribution collection is initialized <BOOL>
     Public: No
 */
 
@@ -15,9 +15,8 @@ if (!isServer) exitWith {false};
 private _combatCfg = missionConfigFile >> "CfgBnKothCombat";
 private _configured = isNumber (_combatCfg >> "attributionDiagnostics")
     && {getNumber (_combatCfg >> "attributionDiagnostics") > 0};
-private _enabled = missionNamespace getVariable ["BN_KOTH_combatAttributionDiagnostics", _configured];
-
-if (!_enabled) exitWith {false};
+private _diagnosticsEnabled = missionNamespace getVariable ["BN_KOTH_combatAttributionDiagnostics", _configured];
+missionNamespace setVariable ["BN_KOTH_combatAttributionDiagnosticsEnabled", _diagnosticsEnabled];
 if (missionNamespace getVariable ["BN_KOTH_combatAttributionDiagnosticsInitialized", false]) exitWith {true};
 
 private _maxHits = if (isNumber (_combatCfg >> "attributionMaxHitsPerVictim")) then {
@@ -57,11 +56,13 @@ private _projectileCreatedId = addMissionEventHandler ["ProjectileCreated", {
     ];
     _projectile setVariable ["BN_KOTH_combatAttributionFacts", _facts, false];
 
-    diag_log format ["[BN_KOTH][ATTRIBUTION] PROJECTILE %1", createHashMapFromArray [
-        ["projectile", _projectileId], ["ammo", _ammo], ["source", str _source],
-        ["instigator", str _instigator], ["sourceKind", _sourceKind],
-        ["inventoryWeapons", _inventoryWeapons], ["evaluation", _evaluation]
-    ]];
+    if (missionNamespace getVariable ["BN_KOTH_combatAttributionDiagnosticsEnabled", false]) then {
+        diag_log format ["[BN_KOTH][ATTRIBUTION] PROJECTILE %1", createHashMapFromArray [
+            ["projectile", _projectileId], ["ammo", _ammo], ["source", str _source],
+            ["instigator", str _instigator], ["sourceKind", _sourceKind],
+            ["inventoryWeapons", _inventoryWeapons], ["evaluation", _evaluation]
+        ]];
+    };
 
     _projectile addEventHandler ["HitPart", {
         params ["_projectile", "_hitEntity", "_projectileOwner", "_pos", "_velocity", "_normal", "_components", "_radius", "_surfaceType", "_instigator"];
@@ -75,10 +76,14 @@ private _projectileCreatedId = addMissionEventHandler ["ProjectileCreated", {
         params ["_projectile"];
         private _facts = _projectile getVariable ["BN_KOTH_combatAttributionFacts", createHashMap];
         private _createdAt = _facts getOrDefault ["createdAt", -1];
-        diag_log format ["[BN_KOTH][ATTRIBUTION] PROJECTILE_DELETED projectile=%1 lifetime=%2", _facts getOrDefault ["projectileId", str _projectile], if (_createdAt < 0) then {-1} else {diag_tickTime - _createdAt}];
+        if (missionNamespace getVariable ["BN_KOTH_combatAttributionDiagnosticsEnabled", false]) then {
+            diag_log format ["[BN_KOTH][ATTRIBUTION] PROJECTILE_DELETED projectile=%1 lifetime=%2", _facts getOrDefault ["projectileId", str _projectile], if (_createdAt < 0) then {-1} else {diag_tickTime - _createdAt}];
+        };
     }];
 }];
 
 missionNamespace setVariable ["BN_KOTH_combatAttributionProjectileCreatedEhId", _projectileCreatedId];
-diag_log format ["[BN_KOTH][ATTRIBUTION] ENABLED projectileCreatedEh=%1", _projectileCreatedId];
+if (_diagnosticsEnabled) then {
+    diag_log format ["[BN_KOTH][ATTRIBUTION] ENABLED projectileCreatedEh=%1", _projectileCreatedId];
+};
 true

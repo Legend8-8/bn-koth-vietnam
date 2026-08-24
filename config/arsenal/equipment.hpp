@@ -102,6 +102,7 @@ class CfgBnKothArsenal
         //
         // Schema for human-authored KOTH equipment policy/progression entries:
         //   allowedSides[] = {"WEST", "EAST"}; // gameplay availability
+        //   crossSideAllowed = 1; // explicit weapon-only licence path
         //   appearanceSide = "WEST" | "EAST" | ""; // visual identity
         //   minLevel = <number>;
         //   licenseKills = <number>;
@@ -131,6 +132,7 @@ class CfgBnKothArsenal
                 class vn_l1a1_01
                 {
                     allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
                     minLevel = 20;
                     licenseKills = 50;
                     requiredPerks[] = {};

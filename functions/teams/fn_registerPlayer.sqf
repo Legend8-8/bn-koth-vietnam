@@ -63,6 +63,7 @@ missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
 [_uid] call bn_koth_fnc_progression_cash_initPlayer;
 [_uid] call bn_koth_fnc_progression_acquisition_initPlayer;
+[_uid] call bn_koth_fnc_progression_mastery_initPlayer;
 
 private _assignedLobby = [_uid] call bn_koth_fnc_teams_assignLobbyRepresentation;
 if (!_assignedLobby) exitWith {

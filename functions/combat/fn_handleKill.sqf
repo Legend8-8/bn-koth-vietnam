@@ -6,18 +6,20 @@
         sides, suicide/teamkill/valid-PvP, and round state. Method and weapon
         fields are currently display-grade kill-feed attribution only and
         must not be used for weapon progression or other authoritative
-        progression decisions until dedicated combat attribution exists.
+        progression decisions. The separate weaponAttribution field contains
+        the fail-closed server evidence used by weapon mastery.
     Execution: Server
     Parameters:
         0: Dead unit <OBJECT>
         1: Engine-reported killer <OBJECT>
         2: Engine-reported instigator <OBJECT> (optional, e.g. a vehicle's gunner)
+        3: Fail-closed weapon attribution result <HASHMAP>
     Returns:
         Canonical kill record, or an empty HashMap if the kill was ignored <HASHMAP>
     Public: Yes
 */
 
-params ["_killed", "_killer", ["_instigator", objNull]];
+params ["_killed", "_killer", ["_instigator", objNull], ["_weaponAttribution", createHashMap, [createHashMap]]];
 
 if (!isServer) exitWith {createHashMap};
 if (isNull _killed) exitWith {createHashMap};
@@ -103,16 +105,16 @@ _kill set ["method", _method];
 _kill set ["weapon", _weaponDisplay];
 _kill set ["distanceText", _distText];
 _kill set ["roundActive", _roundState isEqualTo "ACTIVE"];
+_kill set ["weaponAttribution", _weaponAttribution];
 
 [format [
     "combat_handleKill: victim=%1(%2) killer=%3(%4) suicide=%5 teamkill=%6 validPvp=%7 method=%8 weapon=%9 dist=%10 round=%11",
     _victimUid, _victimSide, _killerUid, _killerSide, _suicide, _teamkill, _validPvp, _method, _weaponDisplay, _distText, _roundState
 ], "INFO"] call bn_koth_fnc_common_log;
 
-// Future progression/reward/stat consumers may use the authoritative identity
-// fields in this record, but must not use the current method/weapon fields for
-// weapon-specific progression until a dedicated combat attribution layer
-// provides authoritative source/weapon/ammo attribution.
+// Progression/reward/stat consumers may use the authoritative identity fields.
+// Weapon mastery must use weaponAttribution only, never the display-grade
+// method/weapon fields above.
 
 [_kill] call bn_koth_fnc_combat_publishKillFeed;
 

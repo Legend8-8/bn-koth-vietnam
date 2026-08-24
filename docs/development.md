@@ -48,6 +48,11 @@ such as `minLevel` remain independent. Never derive one of these policy fields
 from another, and never author policy on a structural weapon variant instead
 of its canonical logical root.
 
+For weapons only, `crossSideAllowed = 1` explicitly opens a cross-side licence
+path. `allowedSides[]` remains native/default availability and factual
+`sourceAffiliations[]` never enables the path. `licenseKills` is evaluated
+against the server-owned canonical `weaponKills` map after level passes.
+
 Progression and economy balance values belong in mission config. XP reward and
 curve values are under `CfgBnKothScoring.progression`; provisional session cash
 starting/reward values are under `CfgBnKothScoring.economy`. Server functions
@@ -58,8 +63,9 @@ Canonical weapon ownership and rental state are server-owned under
 `functions/progression/acquisition/`. Purchase and rent validate the player,
 canonical metadata, side, level, perks, configured price, and cash before one
 combined state commit. Neither operation equips a weapon. Rentals currently
-last for the server session. Store UI, licences, final prices, and persistence
-remain separate future work.
+last for the server session. Store UI, final prices, and persistence remain
+separate future work. Cross-side licences are server-authoritative: level,
+mastery, and perks pass before purchase/rent, and ownership never bypasses them.
 
 Unclassified combat equipment may temporarily remain uncontrolled. Visual
 equipment (uniforms, vests, backpacks, headgear, and facewear) must have a

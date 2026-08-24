@@ -49,11 +49,13 @@ if ((count _hits) > _maxHits) then {
 };
 _victim setVariable ["BN_KOTH_combatAttributionHits", _hits, false];
 
-diag_log format ["[BN_KOTH][ATTRIBUTION] HIT %1", createHashMapFromArray [
-    ["victim", str _victim], ["instigator", str _instigator],
-    ["ammo", _hit get "ammo"], ["projectile", _projectileId],
-    ["hitKind", _hit get "hitKind"], ["observedAt", _hit get "observedAt"],
-    ["victimAlive", _hit get "victimAliveAtObservation"],
-    ["victimDamage", _hit get "victimDamageAtObservation"],
-    ["correlation", _hit get "correlation"]
-]];
+if (missionNamespace getVariable ["BN_KOTH_combatAttributionDiagnosticsEnabled", false]) then {
+    diag_log format ["[BN_KOTH][ATTRIBUTION] HIT %1", createHashMapFromArray [
+        ["victim", str _victim], ["instigator", str _instigator],
+        ["ammo", _hit get "ammo"], ["projectile", _projectileId],
+        ["hitKind", _hit get "hitKind"], ["observedAt", _hit get "observedAt"],
+        ["victimAlive", _hit get "victimAliveAtObservation"],
+        ["victimDamage", _hit get "victimDamageAtObservation"],
+        ["correlation", _hit get "correlation"]
+    ]];
+};

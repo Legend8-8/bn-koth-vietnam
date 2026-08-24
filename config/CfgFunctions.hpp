@@ -100,6 +100,8 @@ class CfgFunctions
             class progression_xp_addXp {file = "functions\progression\xp\fn_addXp.sqf";};
             class progression_xp_awardControlTick {file = "functions\progression\xp\fn_awardControlTick.sqf";};
             class progression_xp_awardKill {file = "functions\progression\xp\fn_awardKill.sqf";};
+            class progression_mastery_initPlayer {file = "functions\progression\mastery\fn_initPlayer.sqf";};
+            class progression_mastery_awardKill {file = "functions\progression\mastery\fn_awardKill.sqf";};
             class progression_cash_initServer {file = "functions\progression\cash\fn_initServer.sqf";};
             class progression_cash_initPlayer {file = "functions\progression\cash\fn_initPlayer.sqf";};
             class progression_cash_getCash {file = "functions\progression\cash\fn_getCash.sqf";};

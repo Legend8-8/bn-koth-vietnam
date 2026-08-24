@@ -328,6 +328,22 @@ per committed transaction, no charge on repeated requests, canonical
 structural-variant inheritance, no equipment application, rental survival
 across respawn/side/round transitions, and clean server/client RPT output.
 
+Weapon entitlement/licence and mastery checks can be run after mission
+functions initialize:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_weaponEntitlementRules.sqf"
+call compile preprocessFileLineNumbers "functions\progression\mastery\test_weaponMastery.sqf"
+call compile preprocessFileLineNumbers "functions\progression\test_progressionMetadata.sqf"
+```
+
+Each must return `[]`. Dedicated testing must verify that one uniquely
+attributed valid PvP kill increments the canonical root once, structural
+variants share that root, ambiguous/non-infantry/explosive evidence awards
+nothing, and mastery survives respawn, side changes, and round transitions.
+Cross-side acquisition must fail before cash mutation until explicit
+permission, level, mastery licence, and perks all pass.
+
 14. Combat Attribution Probe
 
 The pure factual candidate checks can be run after mission initialization:
@@ -348,7 +364,9 @@ missionNamespace setVariable ["BN_KOTH_combatAttributionDiagnostics", true];
 
 Search the server RPT for `[BN_KOTH][ATTRIBUTION]`. The expected event sequence
 is `ENABLED`, `PROJECTILE`, `HIT`, `KILL`, and `PROJECTILE_DELETED`. The probe
-is disabled by default, bounded per victim, and never awards progression.
+uses disabled-by-default verbose logging. Collection remains server-only,
+event-driven, and bounded per victim; only the separate mastery owner may
+consume a finalized unique result attached to a valid PvP kill.
 Run the dedicated matrix with: M16; M16 then pistol switch before impact; two
 carried roots sharing ammo; a structural/camo variant; pistol; grenade;
 handheld launcher; delayed explosive; vehicle MG; attack-helicopter cannon and
