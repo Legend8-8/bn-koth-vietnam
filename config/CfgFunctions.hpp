@@ -207,6 +207,7 @@ class CfgFunctions
             class ui_sendStateToClient {file = "functions\ui\state\fn_sendStateToClient.sqf";};
             class ui_receiveState {file = "functions\ui\state\fn_receiveState.sqf";};
             class ui_receiveProgression {file = "functions\ui\state\fn_receiveProgression.sqf";};
+            class ui_formatCash {file = "functions\ui\state\fn_formatCash.sqf";};
             class ui_toggleDebugDisplay {file = "functions\ui\debug\fn_toggleDebugDisplay.sqf";};
             class ui_debugDisplayLoop {file = "functions\ui\debug\fn_debugDisplayLoop.sqf";};
             class ui_selectControlledUnit {file = "functions\ui\state\fn_selectControlledUnit.sqf";};

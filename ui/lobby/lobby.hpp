@@ -498,7 +498,7 @@ class HeaderPlayers: BN_KOTH_Lobby_Subtitle
             style = 0;
             x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.912;
             y = BN_KOTH_UI_Y + safeZoneH * 0.029;
-            w = BN_KOTH_UI_W * 0.075;
+            w = BN_KOTH_UI_W * 0.045;
             h = safeZoneH * 0.020;
             sizeEx = "0.018 * safeZoneH";
             colorText[] = {0.89, 0.70, 0.24, 1};
@@ -515,6 +515,19 @@ class HeaderPlayers: BN_KOTH_Lobby_Subtitle
             h = safeZoneH * 0.016;
             sizeEx = "0.013 * safeZoneH";
             colorText[] = {0.74, 0.72, 0.66, 0.96};
+        };
+
+        class HeaderCash: BN_KOTH_Lobby_SectionLabel
+        {
+            idc = BN_KOTH_IDC_HEADER_CASH;
+            text = "$0";
+            style = 1;
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.957;
+            y = BN_KOTH_UI_Y + safeZoneH * 0.029;
+            w = BN_KOTH_UI_W * 0.030;
+            h = safeZoneH * 0.016;
+            sizeEx = "0.016 * safeZoneH";
+            colorText[] = {0.82, 0.79, 0.54, 1};
         };
 
         class HeaderInfoIcon: BN_KOTH_Lobby_SectionLabel

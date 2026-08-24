@@ -64,6 +64,7 @@ if !(_rewardAmount isEqualTo 0 || {_rewardReason isEqualTo ""}) then {
 };
 
 disableSerialization;
+[] call bn_koth_fnc_ui_refreshLobby;
 private _menuDisplay = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
 if (!isNull _menuDisplay) then {
     [] call bn_koth_fnc_menu_refresh;

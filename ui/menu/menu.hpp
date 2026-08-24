@@ -222,10 +222,23 @@ class BN_KOTH_RscMenu
             text = "0 / 100 XP";
             x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.735;
             y = BN_KOTH_MENU_Y + safeZoneH * 0.039;
-            w = BN_KOTH_MENU_W * 0.225;
+            w = BN_KOTH_MENU_W * 0.135;
             h = safeZoneH * 0.020;
             sizeEx = "0.016 * safeZoneH";
             colorText[] = {0.72, 0.70, 0.64, 0.98};
+        };
+
+        class HeaderCash: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_HEADER_CASH;
+            text = "$0";
+            style = 1;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.870;
+            y = BN_KOTH_MENU_Y + safeZoneH * 0.039;
+            w = BN_KOTH_MENU_W * 0.090;
+            h = safeZoneH * 0.020;
+            sizeEx = "0.016 * safeZoneH";
+            colorText[] = {0.78, 0.76, 0.52, 0.98};
         };
 
         class OperatorTitle: BN_KOTH_Menu_Label

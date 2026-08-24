@@ -62,6 +62,7 @@ private _ctrlServer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_SERVER;
 private _ctrlHeaderPlayer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_PLAYER;
 private _ctrlHeaderLevel = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_LEVEL;
 private _ctrlHeaderXp = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_XP;
+private _ctrlHeaderCash = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_CASH;
 private _ctrlHeaderXpTrack = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_TRACK;
 private _ctrlHeaderXpFill = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_FILL;
 private _ctrlBrowserWorkspace = _display displayCtrl BN_KOTH_IDC_MENU_BG_BROWSER_WORKSPACE;
@@ -195,10 +196,11 @@ private _xpRatio = _levelProgress getOrDefault ["ratio", 1];
 _ctrlHeaderLevel ctrlSetText format ["LEVEL %1", _level];
 
 if (_level >= _maxLevel) then {
-    _ctrlHeaderXp ctrlSetText format ["MAX LEVEL  |  %1 XP  |  $%2", _xp, round _cash];
+    _ctrlHeaderXp ctrlSetText format ["MAX LEVEL  |  %1 XP", _xp];
 } else {
-    _ctrlHeaderXp ctrlSetText format ["%1 / %2 XP  |  $%3", round _xpIntoLevel, round _xpRequired, round _cash];
+    _ctrlHeaderXp ctrlSetText format ["%1 / %2 XP", round _xpIntoLevel, round _xpRequired];
 };
+_ctrlHeaderCash ctrlSetText ([_cash] call bn_koth_fnc_ui_formatCash);
 
 private _trackPos = ctrlPosition _ctrlHeaderXpTrack;
 _ctrlHeaderXpFill ctrlSetPosition [

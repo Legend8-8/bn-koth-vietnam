@@ -68,10 +68,11 @@ private _playerXpRatio = (_viewModel getOrDefault ["playerXpRatio", 1]) max 0 mi
 
 private _xpCtrl = _display displayCtrl BN_KOTH_IDC_HEADER_XP;
 if (_playerLevel >= _playerMaxLevel) then {
-    _xpCtrl ctrlSetText format ["MAX | %1 XP | $%2", _playerXp, round _playerCash];
+    _xpCtrl ctrlSetText format ["MAX | %1 XP", _playerXp];
 } else {
-    _xpCtrl ctrlSetText format ["%1 / %2 XP | $%3", round _playerXpIntoLevel, round _playerXpRequired, round _playerCash];
+    _xpCtrl ctrlSetText format ["%1 / %2 XP", round _playerXpIntoLevel, round _playerXpRequired];
 };
+(_display displayCtrl BN_KOTH_IDC_HEADER_CASH) ctrlSetText ([_playerCash] call bn_koth_fnc_ui_formatCash);
 
 disableSerialization;
 private _xpTrack = _display displayCtrl BN_KOTH_IDC_BG_HEADER_XP_TRACK;
