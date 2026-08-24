@@ -261,7 +261,7 @@ private _loadoutPages = [
 [_ctrlNavStats, _activePage isEqualTo "STATS"] call _setNavState;
 [_ctrlNavProgression, _activePage isEqualTo "PROGRESSION"] call _setNavState;
 
-private _mainViewControls = [
+private _loadoutContentControls = [
     _ctrlLoadoutBgPrimary,
     _ctrlLoadoutBgHandgun,
     _ctrlLoadoutBgLauncher,
@@ -307,11 +307,14 @@ private _mainViewControls = [
     _ctrlBinocularButton,
     _ctrlEquipmentButton,
     _ctrlCargoButton,
-    _ctrlSectionTitle,
-    _ctrlNotice,
-    _ctrlFooter,
     _ctrlKitManage,
     _ctrlKitSaveCurrent
+];
+
+private _mainViewControls = _loadoutContentControls + [
+    _ctrlSectionTitle,
+    _ctrlNotice,
+    _ctrlFooter
 ];
 
 private _selectorViewControls = [
@@ -424,42 +427,12 @@ private _showConfigureView = {
 private _showComingSoon = {
     params ["_pageName"];
     call _showMainView;
+    { _x ctrlShow false; } forEach _loadoutContentControls;
 
     _ctrlSectionTitle ctrlSetText _pageName;
     _ctrlNotice ctrlSetText "FEATURE COMING SOON";
     _ctrlFooter ctrlSetText "This section is planned but not implemented in this slice.";
 
-    {
-        (_x select 0) ctrlSetText format ["%1: --", _x select 1];
-    } forEach [
-        [_ctrlPrimary, "PRIMARY"],
-        [_ctrlHandgun, "HANDGUN"],
-        [_ctrlLauncher, "LAUNCHER"],
-        [_ctrlUniform, "UNIFORM"],
-        [_ctrlVest, "VEST"],
-        [_ctrlHeadgear, "HEADGEAR"],
-        [_ctrlBackpack, "BACKPACK"],
-        [_ctrlFacewear, "FACEWEAR"],
-        [_ctrlBinocular, "BINOCULAR"],
-        [_ctrlEquipment, "EQUIPMENT"]
-    ];
-
-    {
-        _x ctrlSetText "";
-        _x ctrlEnable false;
-    } forEach [
-        _ctrlPrimaryButton,
-        _ctrlHandgunButton,
-        _ctrlLauncherButton,
-        _ctrlUniformButton,
-        _ctrlVestButton,
-        _ctrlBackpackButton,
-        _ctrlHeadgearButton,
-        _ctrlFacewearButton,
-        _ctrlBinocularButton,
-        _ctrlEquipmentButton,
-        _ctrlCargoButton
-    ];
 };
 
 if !(_activePage isEqualTo "LOADOUT_ATTACHMENTS") then {
