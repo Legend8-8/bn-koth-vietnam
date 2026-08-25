@@ -315,6 +315,12 @@ events, starting cash only once across respawn/side/round changes, targeted
 client updates, atomic insufficient-funds rejection, and clean server/client
 RPT output.
 
+Canonical weapon price authoring must additionally verify that every priced
+entry is a canonical root, no structural variant owns a manual price, rental is
+20% of purchase, Level 1 starter roots remain unpriced until starter ownership
+has an authoritative owner, and Store purchase/rent results agree with the
+server-owned cash and acquisition state.
+
 Weapon acquisition transaction rules and server-session initialization can be
 checked after mission functions initialize with:
 
@@ -399,3 +405,21 @@ canonical-only deterministic ordering, global WEST/EAST/BOTH visibility,
 level/mastery/perk locks, unconfigured-price safety, buy/rent outcomes,
 rental-to-owned upgrade, requester-only results, targeted progression repaint,
 and tab transitions without stale controls.
+
+17. Vehicle Progression Metadata Checks
+
+After mission functions and S.O.G. configuration initialize, run:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\vehicles\test_progressionMetadata.sqf"
+```
+
+An empty array is a pass. The focused check verifies valid explicit Store
+categories, roles, sides, finite non-negative levels/prices, resolvable and
+acyclic canonical links, policy-free structural entries, deterministic Store
+projection, side/level eligibility and absence of weapon mastery policy.
+
+Hosted and dedicated testing must also confirm that existing managed free and
+command vehicles still spawn and recycle exactly as before. No purchase/rent
+or paid vehicle spawn should be expected yet: the current slice has no public
+request endpoint and mutates no cash, ownership or vehicle state.

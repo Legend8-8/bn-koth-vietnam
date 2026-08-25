@@ -87,8 +87,9 @@ Canonical weapons with explicit `purchasePrice` or `rentalPrice` metadata may
 be permanently purchased or rented through server-authoritative APIs. Cash and
 entitlement change in one transaction, and acquisition never auto-equips the
 weapon. Rentals last for the current server session. Store V1 exposes
-configured canonical-weapon acquisition; final prices, stock and persistence
-are not implemented yet. Weapon-specific session mastery
+configured canonical-weapon acquisition. Canonical weapons now have provisional
+playtest prices with rental set to 20% of purchase; final price balance, stock,
+and persistence are not implemented yet. Weapon-specific session mastery
 and the cross-side mastery gate are implemented; only uniquely attributed
 canonical infantry-weapon PvP kills progress mastery.
 
@@ -178,16 +179,17 @@ entitlement presentation.
 
 8. Vehicles
 
-The first version may use a limited selection of pre-placed vehicles.
+The current mission uses a server-managed limited free-vehicle selection.
+Human-authored metadata now defines provisional level, side, price, Store
+category and role policy for the four vehicle products currently referenced by
+the mission. This metadata does not change the free lifecycle and is not yet an
+acquisition system.
 
-Future vehicle systems may include:
-
-- faction-specific vehicle shops;
-- level requirements;
-- vehicle costs;
-- active vehicle limits;
-- abandoned vehicle cleanup;
-- transport rewards.
+The future global Store may include ground, sea, rotary-wing and fixed-wing
+vehicle categories. Vehicle unlocks are broad account milestones and do not
+use weapon mastery. Purchase/rental balance is provisional. Authoritative
+requisition, active purchased-vehicle limits, persistence, final prices and
+transport rewards remain future work.
 
 Helicopter transport should be an important part of the Vietnam setting.
 
@@ -245,5 +247,6 @@ is global weapon discovery and may show WEST, EAST and BOTH canonical roots.
 Cross-side access still requires the configured passive mastery path.
 Configured purchases and server-session rentals are server-authoritative,
 never auto-equip, and repaint from the targeted player progression update.
-Final pricing, stock, persistence and non-weapon Store categories remain later
-release work.
+Final pricing, stock and persistence remain later release work. Vehicle
+metadata prepares non-weapon Store grouping, but Store V1 still implements
+canonical weapon products only.

@@ -64,9 +64,20 @@ Canonical weapon ownership and rental state are server-owned under
 canonical metadata, side, level, perks, configured price, and cash before one
 combined state commit. Neither operation equips a weapon. Rentals currently
 last for the server session. Store V1 exposes those existing transactions for
-canonical weapons; final prices and persistence remain separate future work.
+canonical weapons. Provisional playtest prices are human-authored only on
+canonical roots; structural variants inherit them. Rental is currently 20% of
+purchase price. Final price balancing and persistence remain future work.
 Cross-side mastery is server-authoritative: level,
 mastery, and perks pass before purchase/rent, and ownership never bypasses them.
+
+Vehicle progression metadata is separately human-authored under
+`CfgBnKothVehicles >> Metadata >> Vehicles`. Its explicit `storeCategory`
+(`GROUND`, `SEA`, `ROTARY`, or `FIXED_WING`) and `vehicleRole` fields prepare
+future Store grouping without classname heuristics. Vehicle progression does
+not use weapon mastery. Levels and prices are provisional; persistence and an
+authoritative vehicle requisition/acquisition transaction remain future work.
+The existing managed free-vehicle system is unchanged and does not treat these
+prices as a spawn requirement.
 
 Unclassified combat equipment may temporarily remain uncontrolled. Visual
 equipment (uniforms, vests, backpacks, headgear, and facewear) must have a

@@ -189,6 +189,8 @@ class CfgFunctions
             class vehicles_cleanupManagedVehicles {file = "functions\vehicles\fn_cleanupManagedVehicles.sqf";};
             class vehicles_monitorManagedVehicles {file = "functions\vehicles\fn_monitorManagedVehicles.sqf";};
             class vehicles_requestSpawn {file = "functions\vehicles\fn_requestSpawn.sqf";};
+            class vehicles_getProgressionMetadata {file = "functions\vehicles\fn_getProgressionMetadata.sqf";};
+            class vehicles_evaluateProgressionRules {file = "functions\vehicles\fn_evaluateProgressionRules.sqf";};
             class vehicles_mobileRespawn_init {file = "functions\vehicles\mobile_respawn\fn_init.sqf";};
             class vehicles_mobileRespawn_monitor {file = "functions\vehicles\mobile_respawn\fn_serverRespawnLoop.sqf";};
             class vehicles_mobileRespawn_initTeleport {file = "functions\vehicles\mobile_respawn\fn_initTeleport.sqf";};

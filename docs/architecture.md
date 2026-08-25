@@ -417,3 +417,18 @@ operation/classname intent. A narrow server endpoint derives the caller from
 the structured result only to that requester, and relies on the existing
 targeted progression update for cash/ownership/rental repaint. Store
 transactions never auto-equip a weapon.
+
+14. Vehicle Progression Boundary
+
+`CfgBnKothVehicles >> Metadata >> Vehicles` owns human-authored vehicle
+progression and provisional economy policy. Canonical roots own side, level,
+price, Store category and role fields; an explicitly authored structural
+variant may contain only `variantOf` and inherits the root policy. Runtime must
+not infer relationships or Store grouping from classnames.
+
+`functions/vehicles/` owns config lookup and the pure side/level/perk
+eligibility interpretation. No authoritative vehicle acquisition endpoint
+currently exists. The managed free-vehicle and command-vehicle lifecycles
+remain separate server-owned systems and do not consume this metadata yet.
+A later requisition slice must validate eligibility, cash and acquisition on
+the server before server-owned creation; clients may submit intent only.

@@ -676,6 +676,20 @@ respawn, side changes and round transitions, and is not reset by the round
 lifecycle. A future persistence/economy design may deliberately replace that
 policy, but expiry must continue to have one authoritative owner.
 
+Provisional weapon pricing is authored on canonical logical roots only. It uses
+readable purchase bands based on progression tier and broad combat role, with
+specialist, support, precision, and strategic weapons priced above ordinary
+weapons at comparable levels. Rental is currently exactly 20% of purchase
+price. These are playtest values for the current provisional cash cadence, not
+final economy balance.
+
+The configured Level 1 starter roots (`vn_m1903`, `vn_m1911`, `vn_k98k`, and
+`vn_pm`) remain acquisition-uncontrolled. Deployment applies their configured
+starter loadouts directly and the current acquisition initializer does not seed
+starter ownership, so pricing them would make those guaranteed baseline kits
+fail later entitlement checks. `vn_fkb1_pm` also remains unpriced with its wider
+metadata pending manual review.
+
 ---
 
 ## 15. Example Player States
@@ -1661,5 +1675,18 @@ produce invented values.
 entitlement and cash checks, commits through
 `functions/progression/acquisition/`, and returns only to the requester. The
 existing targeted progression update refreshes Store cash and ownership/rental
-state. Acquisition does not auto-equip. Persistence, stock, final prices and
+state. Acquisition does not auto-equip. Persistence, stock, final price balance and
 non-weapon Store categories remain outside V1.
+
+Vehicle progression preparation is owned separately by
+`CfgBnKothVehicles >> Metadata >> Vehicles`. Canonical vehicle roots explicitly
+declare `allowedSides[]`, `minLevel`, provisional purchase/rental prices,
+`storeCategory`, and `vehicleRole`; structural relationships may be declared
+only with `variantOf` and inherit root policy. The current taxonomy is
+`GROUND`, `SEA`, `ROTARY`, and `FIXED_WING`, with a separate role such as
+`TRANSPORT`, `LOGISTICS`, `COMMAND`, or `COMBAT`.
+
+This metadata does not add vehicles to Store V1 and does not alter the managed
+free-vehicle system. Vehicles do not use weapon mastery. A future server-owned
+vehicle acquisition/requisition transaction must be implemented before the
+client can buy, rent, or spawn a paid vehicle; persistence remains later work.
