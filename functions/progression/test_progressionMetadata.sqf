@@ -19,11 +19,17 @@ private _check = {
     [format ["Starter %1 is configured at level 1", _x],
         (_metadata getOrDefault ["configured", false]) &&
         {(_metadata getOrDefault ["minLevel", 0]) isEqualTo 1}] call _check;
+    [format ["Starter %1 remains acquisition-uncontrolled", _x],
+        (_metadata getOrDefault ["purchasePrice", 0]) < 0 &&
+        {(_metadata getOrDefault ["rentalPrice", 0]) < 0}] call _check;
 } forEach ["vn_m1903", "vn_m1911", "vn_k98k", "vn_pm"];
 
 private _l1a1Metadata = ["vn_l1a1_01"] call bn_koth_fnc_loadouts_getWeaponMetadata;
 ["L1A1 remains level 20", (_l1a1Metadata getOrDefault ["minLevel", 0]) isEqualTo 20] call _check;
-["L1A1 explicitly permits cross-side licensing",
+["L1A1 has provisional purchase and rental prices",
+    (_l1a1Metadata getOrDefault ["purchasePrice", -1]) isEqualTo 1500 &&
+    {(_l1a1Metadata getOrDefault ["rentalPrice", -1]) isEqualTo 300}] call _check;
+["L1A1 explicitly permits cross-side mastery",
     _l1a1Metadata getOrDefault ["crossSideAllowed", false]] call _check;
 
 private _l1a1VariantMetadata = ["vn_l1a1_02"] call bn_koth_fnc_loadouts_getWeaponMetadata;
@@ -31,7 +37,9 @@ private _l1a1VariantMetadata = ["vn_l1a1_02"] call bn_koth_fnc_loadouts_getWeapo
     (_l1a1VariantMetadata getOrDefault ["canonicalClass", ""]) isEqualTo "vn_l1a1_01" &&
     {(_l1a1VariantMetadata getOrDefault ["minLevel", 0]) isEqualTo 20} &&
     {_l1a1VariantMetadata getOrDefault ["crossSideAllowed", false]} &&
-    {(_l1a1VariantMetadata getOrDefault ["masteryKillsRequired", 0]) isEqualTo 50}] call _check;
+    {(_l1a1VariantMetadata getOrDefault ["masteryKillsRequired", 0]) isEqualTo 50} &&
+    {(_l1a1VariantMetadata getOrDefault ["purchasePrice", -1]) isEqualTo 1500} &&
+    {(_l1a1VariantMetadata getOrDefault ["rentalPrice", -1]) isEqualTo 300}] call _check;
 
 private _level19 = createHashMapFromArray [["level", 19], ["perks", []], ["weaponKills", createHashMap]];
 private _entitlement = ["test_uid", "WEST", _level19, _l1a1Metadata, "vn_l1a1_01"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
@@ -39,6 +47,9 @@ private _entitlement = ["test_uid", "WEST", _level19, _l1a1Metadata, "vn_l1a1_01
 
 private _unresolvedMetadata = ["vn_fkb1_pm"] call bn_koth_fnc_loadouts_getWeaponMetadata;
 ["PM flashlight remains unconfigured", !(_unresolvedMetadata getOrDefault ["configured", true])] call _check;
+["PM flashlight remains acquisition-uncontrolled",
+    (_unresolvedMetadata getOrDefault ["purchasePrice", 0]) < 0 &&
+    {(_unresolvedMetadata getOrDefault ["rentalPrice", 0]) < 0}] call _check;
 
 private _svdOpticMetadata = ["Attachments", "vn_o_4x_svd"] call bn_koth_fnc_loadouts_getItemMetadata;
 ["SVD optic uses adjusted level 135",
