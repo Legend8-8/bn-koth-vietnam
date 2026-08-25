@@ -78,6 +78,31 @@ private _projection = [_knownUid, _knownState] call bn_koth_fnc_persistence_proj
 [isNil {_projection get "rentedWeapons"}, "Save projection persisted rentals."] call _assert;
 [isNil {_projection get "roundOnly"}, "Save projection included round state."] call _assert;
 
+private _ownedSerialized = [["vn_m1911", "VN_M1903"]] call bn_koth_fnc_persistence_serializeOwnedWeapons;
+[_ownedSerialized getOrDefault ["success", false] && {(_ownedSerialized getOrDefault ["value", ""]) isEqualTo "vn_m1903,vn_m1911"}, "Owned weapons did not serialize deterministically."] call _assert;
+private _ownedParsed = [_ownedSerialized getOrDefault ["value", ""]] call bn_koth_fnc_persistence_deserializeOwnedWeapons;
+[_ownedParsed getOrDefault ["success", false] && {(_ownedParsed getOrDefault ["value", []]) isEqualTo ["vn_m1903", "vn_m1911"]}, "Owned weapons did not round-trip."] call _assert;
+[!((["vn_m1903,,vn_m1911"] call bn_koth_fnc_persistence_deserializeOwnedWeapons) getOrDefault ["success", true]), "Malformed owned-weapon text was accepted."] call _assert;
+
+private _killsSerialized = [createHashMapFromArray [["vn_m1911", 2], ["vn_m1903", 7]]] call bn_koth_fnc_persistence_serializeWeaponKills;
+[_killsSerialized getOrDefault ["success", false] && {(_killsSerialized getOrDefault ["value", ""]) isEqualTo "vn_m1903=7,vn_m1911=2"}, "Weapon kills did not serialize deterministically."] call _assert;
+private _killsParsed = [_killsSerialized getOrDefault ["value", ""]] call bn_koth_fnc_persistence_deserializeWeaponKills;
+private _roundTripKills = _killsParsed getOrDefault ["value", createHashMap];
+[_killsParsed getOrDefault ["success", false] && {(_roundTripKills getOrDefault ["vn_m1903", -1]) isEqualTo 7} && {(_roundTripKills getOrDefault ["vn_m1911", -1]) isEqualTo 2}, "Weapon kills did not round-trip."] call _assert;
+[!((["vn_m1903=-1"] call bn_koth_fnc_persistence_deserializeWeaponKills) getOrDefault ["success", true]), "Malformed weapon-kill text was accepted."] call _assert;
+
+missionNamespace setVariable ["BN_KOTH_persistenceBackend", "EXTDB3"];
+private _invalidNumericSave = ["76561198000000000", createHashMapFromArray [
+    ["schemaVersion", 1], ["xp", "bad"], ["cash", 1000], ["ownedWeapons", []], ["weaponKills", createHashMap]
+]] call bn_koth_fnc_persistence_backendSavePlayer;
+[!(_invalidNumericSave getOrDefault ["success", true]) && {(_invalidNumericSave getOrDefault ["code", ""]) isEqualTo "INVALID_PERSISTENT_NUMERIC_FIELDS"}, "Malformed persistent numeric fields reached extDB3."] call _assert;
+missionNamespace setVariable ["BN_KOTH_persistenceBackend", "MEMORY"];
+
+private _extdbValid = ["[1,[[""76561198000000000"",1,12,34,""vn_m1903"",""vn_m1903=7""]]]"] call bn_koth_fnc_persistence_parseExtdbResponse;
+[_extdbValid getOrDefault ["success", false] && {(count (_extdbValid getOrDefault ["rows", []])) isEqualTo 1}, "Valid extDB3 response was rejected."] call _assert;
+[!((["[0,""Error MariaDBQueryException Exception""]"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "extDB3 error response was accepted."] call _assert;
+[!((["not an array"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "Malformed extDB3 response was accepted."] call _assert;
+
 private _legacy = [_knownUid, createHashMapFromArray [["uid", _knownUid], ["xp", 5]]] call bn_koth_fnc_persistence_normalizePlayerState;
 [(_legacy getOrDefault ["code", ""]) isEqualTo "NORMALIZED_LEGACY", "Missing schemaVersion was not handled as legacy."] call _assert;
 private _future = [_knownUid, createHashMapFromArray [["schemaVersion", 2], ["uid", _knownUid]]] call bn_koth_fnc_persistence_normalizePlayerState;
@@ -85,6 +110,15 @@ private _future = [_knownUid, createHashMapFromArray [["schemaVersion", 2], ["ui
 private _malformed = [_knownUid, createHashMapFromArray [["schemaVersion", 1], ["uid", _knownUid], ["xp", "bad"], ["cash", -4], ["ownedWeapons", "bad"], ["weaponKills", []]]] call bn_koth_fnc_persistence_normalizePlayerState;
 private _malformedState = _malformed getOrDefault ["state", createHashMap];
 [_malformed getOrDefault ["success", false] && {(_malformedState getOrDefault ["xp", -1]) isEqualTo 0} && {(_malformedState getOrDefault ["cash", -1]) isEqualTo 1000}, "Malformed fields did not normalize safely."] call _assert;
+
+private _loadedMarkers = missionNamespace getVariable ["BN_KOTH_persistenceLoadedUids", createHashMap];
+_loadedMarkers set ["PERSIST_FALLBACK", "SESSION_FALLBACK"];
+missionNamespace setVariable ["BN_KOTH_persistenceLoadedUids", _loadedMarkers];
+private _progressionByUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
+_progressionByUid set ["PERSIST_FALLBACK", ["PERSIST_FALLBACK"] call bn_koth_fnc_persistence_createDefaultState];
+missionNamespace setVariable ["BN_KOTH_playerProgression", _progressionByUid];
+private _blockedFallbackSave = ["PERSIST_FALLBACK", "test"] call bn_koth_fnc_persistence_savePlayer;
+[!(_blockedFallbackSave getOrDefault ["success", true]) && {(_blockedFallbackSave getOrDefault ["code", ""]) isEqualTo "SESSION_FALLBACK_WRITE_BLOCKED"}, "Session fallback was allowed to overwrite durable state."] call _assert;
 
 [_knownUid, "test"] call bn_koth_fnc_persistence_markDirty;
 [!(isNil {(missionNamespace getVariable ["BN_KOTH_persistenceDirtyPlayers", createHashMap]) get _knownUid}), "Mutation did not mark persistence dirty."] call _assert;

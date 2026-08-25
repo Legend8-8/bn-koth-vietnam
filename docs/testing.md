@@ -271,6 +271,15 @@ server RPT error; it must never be reported as successful. Dedicated testing mus
 confirm disconnect and mission-end flush markers without any persistence RemoteExec
 entry or per-frame activity.
 
+Pure extDB3 adapter checks in the same test cover deterministic owned-weapon and
+weapon-kill serialization, malformed codec input, valid/error/malformed extDB3
+response parsing, and persistent projection exclusions. `MEMORY` is used only to
+exercise the service contract without a database. Before deployment, follow the
+live matrix in `docs/deployment-extdb3.md`: verify first-time insert, valid reload,
+mutation/disconnect UPSERT, reconnect, full server restart, unavailable database,
+and malformed/future-row fail-closed behavior. Inspect both the server RPT and
+extDB3 log; a session fallback is not proof of durability.
+
 Test the directly affected system and any system that depends on it.
 
 For the Arsenal rework, also verify:

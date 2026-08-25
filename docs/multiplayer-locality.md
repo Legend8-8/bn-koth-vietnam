@@ -257,8 +257,9 @@ Suggested initial intervals:
 Clients have no persistence endpoint. They cannot load, save, or submit XP, cash,
 ownership, or mastery values. Registration supplies only a server-observed Steam
 UID to `functions/persistence/`; the existing targeted progression snapshot is the
-sole client presentation path. Future extDB3 calls remain server-local behind the
-backend adapter.
+sole client presentation path. extDB3 calls remain server-local behind the backend
+adapter. No persistence function is remotely exposed and no database result is
+accepted from a client.
 
 All players do not need to calculate the same authoritative zone result independently.
 

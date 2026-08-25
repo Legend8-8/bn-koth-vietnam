@@ -129,6 +129,13 @@ class CfgFunctions
             class persistence_createDefaultState {file = "functions\persistence\fn_createDefaultState.sqf";};
             class persistence_normalizePlayerState {file = "functions\persistence\fn_normalizePlayerState.sqf";};
             class persistence_projectPlayerState {file = "functions\persistence\fn_projectPlayerState.sqf";};
+            class persistence_serializeOwnedWeapons {file = "functions\persistence\fn_serializeOwnedWeapons.sqf";};
+            class persistence_deserializeOwnedWeapons {file = "functions\persistence\fn_deserializeOwnedWeapons.sqf";};
+            class persistence_serializeWeaponKills {file = "functions\persistence\fn_serializeWeaponKills.sqf";};
+            class persistence_deserializeWeaponKills {file = "functions\persistence\fn_deserializeWeaponKills.sqf";};
+            class persistence_parseExtdbResponse {file = "functions\persistence\fn_parseExtdbResponse.sqf";};
+            class persistence_extdbCall {file = "functions\persistence\fn_extdbCall.sqf";};
+            class persistence_extdbInitialize {file = "functions\persistence\fn_extdbInitialize.sqf";};
             class persistence_backendLoadPlayer {file = "functions\persistence\fn_backendLoadPlayer.sqf";};
             class persistence_backendSavePlayer {file = "functions\persistence\fn_backendSavePlayer.sqf";};
             class persistence_loadPlayer {file = "functions\persistence\fn_loadPlayer.sqf";};

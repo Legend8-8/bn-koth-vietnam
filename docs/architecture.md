@@ -248,12 +248,13 @@ persistent/session progression values.
 
 Owns the server-only persistence service boundary, schema normalization,
 first-time defaults, dirty/save scheduling, reconnect recovery, and backend
-adapter calls. The current adapter is in-memory and proves the contract without
-claiming restart durability. A future extDB3 adapter belongs behind this boundary;
-gameplay systems must never issue SQL or call extDB3 directly. Unsupported future
-schemas, malformed records, and backend failures are logged explicitly. Configured
-session fallback remains server-authoritative and never treats a failed save as a
-success.
+adapter calls. The production adapter uses extDB3 SQL_CUSTOM prepared statements;
+the in-memory adapter remains for focused contract tests only. Gameplay systems
+never issue SQL or call extDB3 directly. Numbered files under
+`database/migrations/` own the durable schema. Unsupported future schemas,
+malformed records, and backend failures are logged explicitly. Configured session
+fallback remains server-authoritative, is write-blocked from durable storage, and
+never treats a failed save as a success.
 
 "functions/ui/"
 
@@ -382,13 +383,16 @@ Initial required dependencies:
 - Arma 3;
 - S.O.G. Prairie Fire.
 
-The project does not initially depend on:
+The project does not depend on:
 
 - Paradigm;
 - Mike Force;
 - CBA;
-- extDB3;
 - another KOTH mission or framework.
+
+Dedicated production persistence additionally requires the documented extDB3
+and MariaDB/MySQL server deployment. extDB3 remains an adapter dependency, not a
+gameplay or client dependency.
 
 External dependencies must not be introduced without a documented reason and agreement from the project maintainers.
 

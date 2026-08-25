@@ -66,7 +66,7 @@ combined state commit. Neither operation equips a weapon. Rentals currently
 last for the server session. Store V1 exposes those existing transactions for
 canonical weapons. Provisional playtest prices are human-authored only on
 canonical roots; structural variants inherit them. Rental is currently 20% of
-purchase price. Final price balancing and a durable persistence backend remain future work.
+purchase price. Final price balancing remains future work.
 Cross-side mastery is server-authoritative: level,
 mastery, and perks pass before purchase/rent, and ownership never bypasses them.
 
@@ -74,9 +74,11 @@ Persistent player data is accessed only through `functions/persistence/`.
 Gameplay mutations update `BN_KOTH_playerProgression` and mark the UID dirty;
 the service coalesces saves and flushes at disconnect and mission end. Its schema
 persists XP, cash, canonical ownership, and weapon mastery, while deriving level
-and excluding rentals and round statistics. The current `MEMORY` adapter is a
-contract/test backend, not durable storage. extDB3 integration must implement the
-backend adapter rather than leak SQL into progression, teams, or UI code.
+and excluding rentals and round statistics. Production uses the server-only
+`EXTDB3` adapter; `MEMORY` remains a contract-test backend. SQL, SQL_CUSTOM
+protocol strings, serialization, and extension calls stay inside persistence.
+Apply numbered `database/migrations/` files and follow
+`docs/deployment-extdb3.md`; never put database credentials in mission config.
 
 Vehicle progression metadata is separately human-authored under
 `CfgBnKothVehicles >> Metadata >> Vehicles`. Its explicit `storeCategory`

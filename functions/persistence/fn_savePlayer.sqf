@@ -15,6 +15,8 @@ private _fail = {
 
 if (!isServer) exitWith {["NOT_SERVER"] call _fail};
 if (_uid isEqualTo "") exitWith {["INVALID_UID"] call _fail};
+private _loaded = missionNamespace getVariable ["BN_KOTH_persistenceLoadedUids", createHashMap];
+if (_loaded isEqualType createHashMap && {(_loaded getOrDefault [_uid, ""]) isEqualTo "SESSION_FALLBACK"}) exitWith {["SESSION_FALLBACK_WRITE_BLOCKED"] call _fail};
 
 private _byUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
 if !(_byUid isEqualType createHashMap) exitWith {["PROGRESSION_UNAVAILABLE"] call _fail};
