@@ -23,7 +23,11 @@ private _valueCtrlIdc = _control getVariable ["BN_KOTH_escMenuValueIdc", -1];
 if (_valueCtrlIdc >= 0) then {
     private _valueCtrl = _display displayCtrl _valueCtrlIdc;
     if (!isNull _valueCtrl) then {
-        _valueCtrl ctrlSetText format ["%1%%", round (_newValue * 100)];
+        if (_option isEqualTo "player3DIconsEnabled") then {
+            _valueCtrl ctrlSetText (if (_newValue > 0.5) then {"ON"} else {"OFF"});
+        } else {
+            _valueCtrl ctrlSetText format ["%1%%", round (_newValue * 100)];
+        };
     };
 };
 

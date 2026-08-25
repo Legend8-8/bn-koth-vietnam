@@ -152,6 +152,7 @@ class CfgFunctions
         class player3DIcons
         {
             class player3DIcons_initPlayerLocal {file = "functions\playerIcons\player3DIcons\fn_initPlayerLocal.sqf";};
+            class player3DIcons_refresh {file = "functions\playerIcons\player3DIcons\fn_refresh.sqf";};
             class player3DIcons_draw {file = "functions\playerIcons\player3DIcons\fn_draw.sqf";};
         };
 

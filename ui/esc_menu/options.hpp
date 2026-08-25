@@ -15,7 +15,7 @@ class BN_KOTH_RscEscMenuOptions
             x = safeZoneX + safeZoneW * 0.30;
             y = safeZoneY + safeZoneH * 0.24;
             w = safeZoneW * 0.40;
-            h = safeZoneH * 0.48;
+            h = safeZoneH * 0.58;
             colorBackground[] = {0.02, 0.02, 0.02, 0.96};
         };
 
@@ -34,56 +34,129 @@ class BN_KOTH_RscEscMenuOptions
 
     class controls
     {
-        class GroundLabel: BN_KOTH_RscText
+        class OptionsGroup: BN_KOTH_RscControlsGroup
         {
-            idc = BN_KOTH_IDC_ESC_OPTIONS_GROUND_LABEL;
-            text = "Earplug Volume (On Ground)";
-            x = safeZoneX + safeZoneW * 0.31;
-            y = safeZoneY + safeZoneH * 0.34;
-            w = safeZoneW * 0.25;
-            h = safeZoneH * 0.035;
-        };
+            idc = 8724;
+            x = safeZoneX + safeZoneW * 0.305;
+            y = safeZoneY + safeZoneH * 0.35;
+            w = safeZoneW * 0.37;
+            h = safeZoneH * 0.44;
 
-        class GroundValue: BN_KOTH_RscText
-        {
-            idc = BN_KOTH_IDC_ESC_OPTIONS_GROUND_VALUE;
-            text = "50%";
-            x = safeZoneX + safeZoneW * 0.58;
-            y = safeZoneY + safeZoneH * 0.34;
-            w = safeZoneW * 0.11;
-            h = safeZoneH * 0.035;
-            style = 1;
-        };
+            class controls
+            {
+                class GroundLabel: BN_KOTH_RscText
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_GROUND_LABEL;
+                    text = "Earplug Volume (On Ground)";
+                    x = 0;
+                    y = 0;
+                    w = safeZoneW * 0.23;
+                    h = safeZoneH * 0.035;
+                };
 
-        class GroundSlider: BN_KOTH_RscSlider
-        {
-            idc = BN_KOTH_IDC_ESC_OPTIONS_GROUND_SLIDER;
-            x = safeZoneX + safeZoneW * 0.31;
-            y = safeZoneY + safeZoneH * 0.39;
-            w = safeZoneW * 0.38;
-            h = safeZoneH * 0.03;
-        };
+                class GroundValue: BN_KOTH_RscText
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_GROUND_VALUE;
+                    text = "50%";
+                    x = safeZoneW * 0.24;
+                    y = 0;
+                    w = safeZoneW * 0.11;
+                    h = safeZoneH * 0.035;
+                    style = 1;
+                };
 
-        class VehicleLabel: GroundLabel
-        {
-            idc = BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_LABEL;
-            text = "Earplug Volume (In Vehicle)";
-            y = safeZoneY + safeZoneH * 0.48;
-        };
+                class GroundSlider: BN_KOTH_RscSlider
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_GROUND_SLIDER;
+                    x = 0;
+                    y = safeZoneH * 0.05;
+                    w = safeZoneW * 0.38;
+                    h = safeZoneH * 0.03;
+                };
 
-        class VehicleValue: GroundValue
-        {
-            idc = BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_VALUE;
-            y = safeZoneY + safeZoneH * 0.48;
-        };
+                class VehicleLabel: GroundLabel
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_LABEL;
+                    text = "Earplug Volume (In Vehicle)";
+                    y = safeZoneH * 0.14;
+                };
 
-        class VehicleSlider: BN_KOTH_RscSlider
-        {
-            idc = BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_SLIDER;
-            x = safeZoneX + safeZoneW * 0.31;
-            y = safeZoneY + safeZoneH * 0.53;
-            w = safeZoneW * 0.38;
-            h = safeZoneH * 0.03;
+                class VehicleValue: GroundValue
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_VALUE;
+                    y = safeZoneH * 0.14;
+                };
+
+                class VehicleSlider: BN_KOTH_RscSlider
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_SLIDER;
+                    x = 0;
+                    y = safeZoneH * 0.19;
+                    w = safeZoneW * 0.38;
+                    h = safeZoneH * 0.03;
+                };
+
+                class Player3DLabel: BN_KOTH_RscText
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_LABEL;
+                    text = "Player 3D Icons";
+                    x = 0;
+                    y = safeZoneH * 0.28;
+                    w = safeZoneW * 0.22;
+                    h = safeZoneH * 0.035;
+                };
+
+                class Player3DValue: BN_KOTH_RscText
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_VALUE;
+                    text = "ON";
+                    x = 0.23;
+                    y = safeZoneH * 0.28;
+                    w = safeZoneW * 0.08;
+                    h = safeZoneH * 0.035;
+                    style = 1;
+                };
+
+                class Player3DCheckbox: BN_KOTH_RscCheckBox
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_CHECKBOX;
+                    x = 0.31;
+                    y = safeZoneH * 0.287;
+                    w = safeZoneW * 0.02;
+                    h = safeZoneH * 0.02;
+                    checked = 1;
+                };
+
+                class Player3DAlphaLabel: BN_KOTH_RscText
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_ALPHA_LABEL;
+                    text = "Player 3D Icons Alpha";
+                    x = 0;
+                    y = safeZoneH * 0.36;
+                    w = safeZoneW * 0.25;
+                    h = safeZoneH * 0.035;
+                };
+
+                class Player3DAlphaValue: BN_KOTH_RscText
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_ALPHA_VALUE;
+                    text = "100%";
+                    x = safeZoneW * 0.24;
+                    y = safeZoneH * 0.36;
+                    w = safeZoneW * 0.11;
+                    h = safeZoneH * 0.035;
+                    style = 1;
+                };
+
+                class Player3DAlphaSlider: BN_KOTH_RscSlider
+                {
+                    idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_ALPHA_SLIDER;
+                    x = 0;
+                    y = safeZoneH * 0.41;
+                    w = safeZoneW * 0.38;
+                    h = safeZoneH * 0.03;
+                };
+            };
         };
 
         class Reset: BN_KOTH_RscButton
@@ -91,7 +164,7 @@ class BN_KOTH_RscEscMenuOptions
             idc = 3;
             text = "RESET";
             x = safeZoneX + safeZoneW * 0.31;
-            y = safeZoneY + safeZoneH * 0.64;
+            y = safeZoneY + safeZoneH * 0.88;
             w = safeZoneW * 0.12;
             h = safeZoneH * 0.04;
             action = "closeDialog 3;";
@@ -102,7 +175,7 @@ class BN_KOTH_RscEscMenuOptions
             idc = 1;
             text = "OK";
             x = safeZoneX + safeZoneW * 0.57;
-            y = safeZoneY + safeZoneH * 0.64;
+            y = safeZoneY + safeZoneH * 0.88;
             w = safeZoneW * 0.12;
             h = safeZoneH * 0.04;
             action = "closeDialog 1;";
@@ -113,7 +186,7 @@ class BN_KOTH_RscEscMenuOptions
             idc = 2;
             text = "CANCEL";
             x = safeZoneX + safeZoneW * 0.44;
-            y = safeZoneY + safeZoneH * 0.64;
+            y = safeZoneY + safeZoneH * 0.88;
             w = safeZoneW * 0.12;
             h = safeZoneH * 0.04;
             action = "closeDialog 2;";
