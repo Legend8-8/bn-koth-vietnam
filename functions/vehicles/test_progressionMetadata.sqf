@@ -82,11 +82,12 @@ _sortedProjection sort true;
 private _secondProjection = +_projection;
 _secondProjection sort true;
 ["Store category projection is deterministic", _sortedProjection isEqualTo _secondProjection] call _check;
-["Four current vehicle roots are configured", _rootCount isEqualTo 4] call _check;
+["Curated combat vehicle progression set is configured", _rootCount isEqualTo 84] call _check;
 ["No unsupported structural variants are authored", _variantCount isEqualTo 0] call _check;
+["Reserved SEA category has no current progression products", (_projection findIf {(_x find "SEA|") isEqualTo 0}) < 0] call _check;
 
-private _m54 = ["vn_b_wheeled_m54_02_sog"] call bn_koth_fnc_vehicles_getProgressionMetadata;
-private _belowLevel = ["WEST", 9, [], _m54] call bn_koth_fnc_vehicles_evaluateProgressionRules;
+private _btr40 = ["vn_o_wheeled_btr40_mg_01"] call bn_koth_fnc_vehicles_getProgressionMetadata;
+private _belowLevel = ["EAST", 24, [], _btr40] call bn_koth_fnc_vehicles_evaluateProgressionRules;
 ["Below-level vehicle is locked", (_belowLevel getOrDefault ["code", ""]) isEqualTo "LOCKED_LEVEL"] call _check;
 
 private _westOnlyMetadata = createHashMapFromArray [
@@ -103,7 +104,7 @@ private _westOnlyMetadata = createHashMapFromArray [
 private _wrongSide = ["EAST", 270, [], _westOnlyMetadata] call bn_koth_fnc_vehicles_evaluateProgressionRules;
 ["Wrong-side vehicle is locked", (_wrongSide getOrDefault ["code", ""]) isEqualTo "LOCKED_SIDE"] call _check;
 
-private _eligible = ["EAST", 10, [], _m54] call bn_koth_fnc_vehicles_evaluateProgressionRules;
+private _eligible = ["EAST", 25, [], _btr40] call bn_koth_fnc_vehicles_evaluateProgressionRules;
 ["Valid side and level proceeds", (_eligible getOrDefault ["code", ""]) isEqualTo "ELIGIBLE"] call _check;
 
 diag_log format ["[BN_KOTH_TEST] Vehicle progression metadata: %1 failure(s): %2", count _failures, _failures];

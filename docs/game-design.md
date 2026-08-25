@@ -181,13 +181,13 @@ entitlement presentation.
 
 The current mission uses a server-managed limited free-vehicle selection.
 Human-authored metadata now defines provisional level, side, price, Store
-category and role policy for the four vehicle products currently referenced by
-the mission. This metadata does not change the free lifecycle and is not yet an
-acquisition system.
+category and role policy for the one-time imported public EAST/WEST S.O.G.
+factual audit's curated combat-vehicle progression set. This metadata does not
+change the free lifecycle and is not yet an acquisition system.
 
-The future global Store may include ground, sea, rotary-wing and fixed-wing
-vehicle categories. Vehicle unlocks are broad account milestones and do not
-use weapon mastery. Purchase/rental balance is provisional. Authoritative
+The initial product surface uses ground, rotary-wing and fixed-wing categories;
+sea remains reserved for a later curated pass. Vehicle unlocks are broad
+account milestones and do not use weapon mastery. Purchase/rental balance is provisional. Authoritative
 requisition, active purchased-vehicle limits, persistence, final prices and
 transport rewards remain future work.
 

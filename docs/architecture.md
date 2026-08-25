@@ -426,6 +426,14 @@ price, Store category and role fields; an explicitly authored structural
 variant may contain only `variantOf` and inherits the root policy. Runtime must
 not infer relationships or Store grouping from classnames.
 
+The one-time factual source audit is stored in `data/vehicle_inventory.csv`.
+It records public physical EAST/WEST S.O.G. classes and official table facts
+only. It is not runtime configuration and owns no KOTH entitlement or balance
+policy. Because the official tables do not prove vehicle inheritance, the
+current metadata authors only a curated combat-progression surface and
+declares no vehicle `variantOf` relationships. Paint, faction and support-only
+copies remain audit rows, not progression products.
+
 `functions/vehicles/` owns config lookup and the pure side/level/perk
 eligibility interpretation. No authoritative vehicle acquisition endpoint
 currently exists. The managed free-vehicle and command-vehicle lifecycles

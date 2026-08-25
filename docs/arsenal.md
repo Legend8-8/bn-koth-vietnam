@@ -1686,6 +1686,16 @@ only with `variantOf` and inherit root policy. The current taxonomy is
 `GROUND`, `SEA`, `ROTARY`, and `FIXED_WING`, with a separate role such as
 `TRANSPORT`, `LOGISTICS`, `COMMAND`, or `COMBAT`.
 
+The factual audit of public physical classes from the official S.O.G.
+EAST/WEST CfgVehicles tables lives in `data/vehicle_inventory.csv`. The Store
+product surface is intentionally smaller: `config/vehicles.hpp` authors a
+curated set of combat-relevant ground, rotary-wing and fixed-wing loadouts.
+Materially different factual loadout labels may be separate products, while
+paint/faction duplicates and support-only classes are omitted. The source
+exposes no dependable inheritance graph, so no vehicle `variantOf` links are
+authored. Factual table side and faction remain evidence only, while config
+owns deliberate KOTH availability and balance.
+
 This metadata does not add vehicles to Store V1 and does not alter the managed
 free-vehicle system. Vehicles do not use weapon mastery. A future server-owned
 vehicle acquisition/requisition transaction must be implemented before the

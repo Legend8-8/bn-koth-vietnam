@@ -79,6 +79,14 @@ authoritative vehicle requisition/acquisition transaction remain future work.
 The existing managed free-vehicle system is unchanged and does not treat these
 prices as a spawn requirement.
 
+`data/vehicle_inventory.csv` is a one-time factual audit of the official S.O.G.
+EAST/WEST CfgVehicles tables, not a maintained scraper output. Factual side,
+faction, subcategory and vehicle weapons in that file must never be treated as
+KOTH policy. Human-authored side, level, price, Store category and role remain
+in `config/vehicles.hpp`, which intentionally selects only the combat-relevant
+progression products planned for the Store. No vehicle relationship may be
+inferred from a classname or from a similar display name.
+
 Unclassified combat equipment may temporarily remain uncontrolled. Visual
 equipment (uniforms, vests, backpacks, headgear, and facewear) must have a
 valid matching `appearanceSide` before it can enter an authoritative loadout.

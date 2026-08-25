@@ -417,7 +417,8 @@ call compile preprocessFileLineNumbers "functions\vehicles\test_progressionMetad
 An empty array is a pass. The focused check verifies valid explicit Store
 categories, roles, sides, finite non-negative levels/prices, resolvable and
 acyclic canonical links, policy-free structural entries, deterministic Store
-projection, side/level eligibility and absence of weapon mastery policy.
+projection, curated product count, the reserved SEA category boundary,
+side/level eligibility and absence of weapon mastery policy.
 
 Hosted and dedicated testing must also confirm that existing managed free and
 command vehicles still spawn and recycle exactly as before. No purchase/rent
