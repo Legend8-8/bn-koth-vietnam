@@ -48,6 +48,7 @@ _progression set ["xp", _newXp];
 _progression set ["level", _newLevel];
 _progressionByUid set [_uid, _progression];
 missionNamespace setVariable ["BN_KOTH_playerProgression", _progressionByUid];
+[_uid, "xp"] call bn_koth_fnc_persistence_markDirty;
 
 private _result = createHashMapFromArray [
     ["uid", _uid],

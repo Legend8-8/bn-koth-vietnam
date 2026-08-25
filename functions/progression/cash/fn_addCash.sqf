@@ -47,6 +47,7 @@ if !(finite _newCash) exitWith {["INVALID_RESULT"] call _rejected};
 _progression set ["cash", _newCash];
 _progressionByUid set [_uid, _progression];
 missionNamespace setVariable ["BN_KOTH_playerProgression", _progressionByUid];
+[_uid, "cash"] call bn_koth_fnc_persistence_markDirty;
 
 [_uid, "cash", _amount, _reason] call bn_koth_fnc_progression_publishUpdate;
 [format ["Cash award UID=%1 reason=%2 amount=%3 total=%4", _uid, _reason, _amount, _newCash]] call bn_koth_fnc_common_log;

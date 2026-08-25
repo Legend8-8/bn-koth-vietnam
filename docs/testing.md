@@ -261,6 +261,16 @@ Examples:
 - UI changes must not alter authoritative state;
 - persistence changes must not alter live round logic.
 
+Persistence changes must also run
+`call compile preprocessFileLineNumbers "functions\persistence\test_persistence.sqf"`
+on a hosted server and expect `[]`. Verify first-time defaults, known-state load,
+XP-derived level, cash/ownership/mastery normalization, rental and round-state
+exclusion, legacy/future schema handling, repeated-registration idempotence, and
+dirty-state save success/failure. A failed save must remain dirty and produce a
+server RPT error; it must never be reported as successful. Dedicated testing must
+confirm disconnect and mission-end flush markers without any persistence RemoteExec
+entry or per-frame activity.
+
 Test the directly affected system and any system that depends on it.
 
 For the Arsenal rework, also verify:

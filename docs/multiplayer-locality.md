@@ -110,7 +110,7 @@ Examples:
 - validating the player;
 - assigning initial server-side player state;
 - sending the current round state to the joining player;
-- loading future persistent data.
+- loading and normalizing persistent data through the server-only persistence service.
 
 "init.sqf"
 
@@ -251,7 +251,14 @@ Suggested initial intervals:
 - safe-zone ground cleanup: entity events plus one activation-time sweep, never a recurring world scan;
 - score awarding: configurable, such as once every five seconds;
 - HUD refresh: only when values change, or at a controlled client-side interval;
-- database saving: event-based and periodic, not every score tick.
+- persistence saving: mutation-driven dirty state with one coalesced delayed save,
+  plus disconnect/mission-end flushes; never every frame or every score tick.
+
+Clients have no persistence endpoint. They cannot load, save, or submit XP, cash,
+ownership, or mastery values. Registration supplies only a server-observed Steam
+UID to `functions/persistence/`; the existing targeted progression snapshot is the
+sole client presentation path. Future extDB3 calls remain server-local behind the
+backend adapter.
 
 All players do not need to calculate the same authoritative zone result independently.
 

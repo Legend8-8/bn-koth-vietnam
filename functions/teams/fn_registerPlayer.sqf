@@ -61,9 +61,11 @@ _record set ["deployed", false];
 _records set [_uid, _record];
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
-[_uid] call bn_koth_fnc_progression_cash_initPlayer;
-[_uid] call bn_koth_fnc_progression_acquisition_initPlayer;
-[_uid] call bn_koth_fnc_progression_mastery_initPlayer;
+private _loadResult = [_uid] call bn_koth_fnc_persistence_loadPlayer;
+if !(_loadResult getOrDefault ["success", false]) exitWith {
+    [format ["registerPlayer deferred: persistence could not establish state UID=%1 code=%2", _uid, _loadResult getOrDefault ["code", "UNKNOWN"]], "ERROR"] call bn_koth_fnc_common_log;
+    false
+};
 
 private _assignedLobby = [_uid] call bn_koth_fnc_teams_assignLobbyRepresentation;
 if (!_assignedLobby) exitWith {

@@ -67,6 +67,7 @@ _progression set ["ownedWeapons", _result getOrDefault ["nextOwnedWeapons", []]]
 _progression set ["rentedWeapons", _result getOrDefault ["nextRentedWeapons", []]];
 _progressionByUid set [_uid, _progression];
 missionNamespace setVariable ["BN_KOTH_playerProgression", _progressionByUid];
+[_uid, "acquisition"] call bn_koth_fnc_persistence_markDirty;
 
 [_uid, "acquisition", 0, toLower _operation] call bn_koth_fnc_progression_publishUpdate;
 [format ["Weapon acquisition committed UID=%1 operation=%2 canonical=%3 charged=%4 cash=%5", _uid, toUpper _operation, _result getOrDefault ["canonicalClass", ""], _result getOrDefault ["charged", 0], _result getOrDefault ["cash", -1]]] call bn_koth_fnc_common_log;

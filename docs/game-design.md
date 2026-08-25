@@ -70,10 +70,12 @@ of authoritative gameplay where applicable but are not displayed in that panel.
 
 5. Player Progression
 
-The current progression implementation is session-scoped and not yet
-database-backed. XP, derived level, and cash are server-owned by player UID.
-They survive respawn, side changes and round transitions, but not a server
-restart.
+XP, derived level, cash, permanent canonical weapon ownership, and weapon mastery
+are server-owned by player UID. The persistence service now defines their durable
+schema and lifecycle; its current in-memory adapter does not survive a server
+restart. Level is derived from XP. Rentals deliberately remain server-session-only
+and reset on restart. Round statistics remain separate and are never projected
+into persistent player data.
 
 The current implementation awards XP for:
 
@@ -88,8 +90,8 @@ be permanently purchased or rented through server-authoritative APIs. Cash and
 entitlement change in one transaction, and acquisition never auto-equips the
 weapon. Rentals last for the current server session. Store V1 exposes
 configured canonical-weapon acquisition. Canonical weapons now have provisional
-playtest prices with rental set to 20% of purchase; final price balance, stock,
-and persistence are not implemented yet. Weapon-specific session mastery
+playtest prices with rental set to 20% of purchase; final price balance and stock
+are not implemented yet. Weapon-specific mastery
 and the cross-side mastery gate are implemented; only uniquely attributed
 canonical infantry-weapon PvP kills progress mastery.
 
@@ -97,9 +99,9 @@ The current level cap is configurable and defaults to 270. The Arsenal now
 supports human-authored level and perk requirements for canonical weapons,
 attachments, wearable/assigned items, and cargo additions. The server repeats
 all entitlement checks before accepting equipment intent. Canonical weapon
-ownership/rental is implemented as session state; vehicles, final equipment
-prices, stock, wider mastery content/population, and database persistence
-remain unfinished.
+ownership is part of the persistent schema, while rentals remain session state;
+vehicles, final equipment prices, stock, wider mastery content/population, and a
+durable database adapter remain unfinished.
 
 Future progression may include:
 

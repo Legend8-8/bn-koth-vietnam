@@ -19,6 +19,11 @@ if (_uid isEqualTo "") exitWith {};
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 private _record = _records getOrDefault [_uid, createHashMap];
 
+private _saveResult = [_uid, "disconnect"] call bn_koth_fnc_persistence_savePlayer;
+if !(_saveResult getOrDefault ["success", false]) then {
+    [format ["Disconnect persistence save failed UID=%1 code=%2", _uid, _saveResult getOrDefault ["code", "UNKNOWN"]], "ERROR"] call bn_koth_fnc_common_log;
+};
+
 if (_record isEqualType createHashMap) then {
     private _unit = _record getOrDefault ["currentUnit", objNull];
     if (!isNull _unit) then {

@@ -75,6 +75,7 @@ _progression set ["uid", _uid];
 _progression set ["weaponKills", _weaponKills];
 _byUid set [_uid, _progression];
 missionNamespace setVariable ["BN_KOTH_playerProgression", _byUid];
+[_uid, "mastery"] call bn_koth_fnc_persistence_markDirty;
 _processed set [_awardId, _now];
 missionNamespace setVariable ["BN_KOTH_weaponMasteryProcessedKills", _processed];
 

@@ -227,18 +227,16 @@ Contains player progression systems:
 - `mastery/` owns the canonical lowercase `weaponKills` map and awards exactly
   once from fail-closed server attribution on a valid active-round PvP kill;
 - progression entitlement evaluation consumes authoritative level/rule data;
-- future persistent unlocks, perks, mastery storage and reward multipliers
-  belong to progression/persistence boundaries rather than client UI.
+- persistent unlocks and mastery storage cross the progression/persistence
+  boundary; future perks and reward multipliers belong there rather than in UI.
 
-Current progression state is stored in the server-owned
-`BN_KOTH_playerProgression` map keyed by UID. It is session-scoped for now and
-is not yet database-backed. Cash, permanent weapon ownership, and weapon
-rentals, and weapon mastery initialize once per UID registration and survive
-respawn, side changes and round transitions for the server session. Rentals currently expire only
-with that session; no wall-clock or round reset owns rental expiry.
-Cumulative XP is the stable progression value;
-level is derived from the config-owned curve so future persistence can load XP
-without duplicating balance rules into the database layer. Clients receive only
+Current authoritative progression state is stored in the server-owned
+`BN_KOTH_playerProgression` map keyed by UID. Registration establishes it through
+`functions/persistence/`: load by validated UID, normalize the persistent schema,
+or deliberately create a session fallback/first-time state. Persistent fields are
+`schemaVersion`, `uid`, `xp`, `cash`, `ownedWeapons`, and `weaponKills`. Level is
+always derived from XP. `rentedWeapons` remains server-session-only and resets on
+server restart. Clients receive only
 their own presentation state, including cash, through the existing initial
 snapshot and targeted progression-update path.
 
@@ -248,14 +246,14 @@ persistent/session progression values.
 
 "functions/persistence/"
 
-Contains future:
-
-- database loading;
-- database saving;
-- data migration;
-- reconnect recovery.
-
-No other system may communicate directly with the database.
+Owns the server-only persistence service boundary, schema normalization,
+first-time defaults, dirty/save scheduling, reconnect recovery, and backend
+adapter calls. The current adapter is in-memory and proves the contract without
+claiming restart durability. A future extDB3 adapter belongs behind this boundary;
+gameplay systems must never issue SQL or call extDB3 directly. Unsupported future
+schemas, malformed records, and backend failures are logged explicitly. Configured
+session fallback remains server-authoritative and never treats a failed save as a
+success.
 
 "functions/ui/"
 

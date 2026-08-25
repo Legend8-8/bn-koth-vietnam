@@ -123,6 +123,20 @@ class CfgFunctions
             class progression_evaluateItemEntitlementRules {file = "functions\progression\fn_evaluateItemEntitlementRules.sqf";};
         };
 
+        class persistence
+        {
+            class persistence_initServer {file = "functions\persistence\fn_initServer.sqf";};
+            class persistence_createDefaultState {file = "functions\persistence\fn_createDefaultState.sqf";};
+            class persistence_normalizePlayerState {file = "functions\persistence\fn_normalizePlayerState.sqf";};
+            class persistence_projectPlayerState {file = "functions\persistence\fn_projectPlayerState.sqf";};
+            class persistence_backendLoadPlayer {file = "functions\persistence\fn_backendLoadPlayer.sqf";};
+            class persistence_backendSavePlayer {file = "functions\persistence\fn_backendSavePlayer.sqf";};
+            class persistence_loadPlayer {file = "functions\persistence\fn_loadPlayer.sqf";};
+            class persistence_markDirty {file = "functions\persistence\fn_markDirty.sqf";};
+            class persistence_savePlayer {file = "functions\persistence\fn_savePlayer.sqf";};
+            class persistence_saveAllDirty {file = "functions\persistence\fn_saveAllDirty.sqf";};
+        };
+
         class respawn
         {
             class respawn_initServer {file = "functions\respawn\fn_initServer.sqf";};
