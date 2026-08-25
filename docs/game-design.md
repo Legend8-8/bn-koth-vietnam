@@ -86,9 +86,10 @@ is initialized once when a player first enters server progression state.
 Canonical weapons with explicit `purchasePrice` or `rentalPrice` metadata may
 be permanently purchased or rented through server-authoritative APIs. Cash and
 entitlement change in one transaction, and acquisition never auto-equips the
-weapon. Rentals last for the current server session. Store UI, final prices,
-stock and persistence are not implemented yet. Weapon-specific session mastery
-and the cross-side licence gate are implemented; only uniquely attributed
+weapon. Rentals last for the current server session. Store V1 exposes
+configured canonical-weapon acquisition; final prices, stock and persistence
+are not implemented yet. Weapon-specific session mastery
+and the cross-side mastery gate are implemented; only uniquely attributed
 canonical infantry-weapon PvP kills progress mastery.
 
 The current level cap is configurable and defaults to 270. The Arsenal now
@@ -96,7 +97,7 @@ supports human-authored level and perk requirements for canonical weapons,
 attachments, wearable/assigned items, and cargo additions. The server repeats
 all entitlement checks before accepting equipment intent. Canonical weapon
 ownership/rental is implemented as session state; vehicles, final equipment
-prices, stock, wider licence content/population, and database persistence
+prices, stock, wider mastery content/population, and database persistence
 remain unfinished.
 
 Future progression may include:
@@ -160,7 +161,7 @@ Physical inventory access is disabled inside both active safe zones:
 - vehicle cargo is preserved while the vehicle passes through a safe zone and becomes accessible again after leaving;
 - dropped equipment and dead bodies inside a safe zone are removed by the server, with player corpses deleted at the earliest engine-safe respawn transition;
 - the server-validated KOTH loadout path remains available and does not expose physical container access;
-- equipment scavenging in the active AO remains allowed, including equipment above a player's current progression level. Safe-zone restrictions do not change battlefield pickup rules outside the bases.
+- equipment scavenging in the active AO remains allowed, including equipment above a player's current progression level and weapons that are unowned or not yet mastered. This temporary physical possession never grants Arsenal, Store, rental, ownership, or saved-loadout entitlement. Properly attributed pickup-weapon kills may still build mastery. Safe-zone restrictions do not change battlefield pickup rules outside the bases, and progression alone does not require confiscating the physical weapon.
 
 7. Equipment
 
@@ -236,3 +237,13 @@ The first playable version does not include:
 - New locations can be added without duplicating the game mode.
 - Features are introduced in small, testable stages.
 - A feature is not complete until it works on a dedicated server.
+
+12. Store V1
+
+The Arsenal remains the current faction's usable equipment surface. The Store
+is global weapon discovery and may show WEST, EAST and BOTH canonical roots.
+Cross-side access still requires the configured passive mastery path.
+Configured purchases and server-session rentals are server-authoritative,
+never auto-equip, and repaint from the targeted player progression update.
+Final pricing, stock, persistence and non-weapon Store categories remain later
+release work.

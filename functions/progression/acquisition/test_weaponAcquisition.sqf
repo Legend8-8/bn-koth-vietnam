@@ -23,7 +23,7 @@ private _baseProgression = createHashMapFromArray [
 ];
 private _metadata = createHashMapFromArray [
     ["success", true], ["configured", true], ["canonicalClass", "vn_test_weapon"],
-    ["allowedSides", ["WEST"]], ["minLevel", 5], ["licenseKills", 0],
+    ["allowedSides", ["WEST"]], ["minLevel", 5], ["masteryKillsRequired", 0],
     ["crossSideAllowed", false],
     ["requiredPerks", ["test_perk"]], ["purchasePrice", 400], ["rentalPrice", 100]
 ];
@@ -52,16 +52,16 @@ private _wrongSidePurchase = ["PURCHASE", _uid, "vn_test_weapon", _baseProgressi
 
 private _crossMetadata = createHashMapFromArray ((keys _metadata) apply {[_x, _metadata get _x]});
 _crossMetadata set ["crossSideAllowed", true];
-_crossMetadata set ["licenseKills", 5];
+_crossMetadata set ["masteryKillsRequired", 5];
 private _crossProgression = createHashMapFromArray ((keys _baseProgression) apply {[_x, _baseProgression get _x]});
 _crossProgression set ["weaponKills", createHashMapFromArray [["vn_test_weapon", 4]]];
 private _crossEntitlement = [_uid, "EAST", _crossProgression, _crossMetadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
 private _crossPurchase = ["PURCHASE", _uid, "vn_test_weapon", _crossProgression, _crossMetadata, _crossEntitlement] call bn_koth_fnc_progression_acquisition_evaluateRules;
-["Incomplete cross-side licence fails before spend", (_crossPurchase getOrDefault ["code", ""]) isEqualTo "LOCKED_LICENSE" && {(_crossProgression get "cash") isEqualTo 1000}] call _check;
+["Incomplete cross-side mastery fails before spend", (_crossPurchase getOrDefault ["code", ""]) isEqualTo "LOCKED_MASTERY" && {(_crossProgression get "cash") isEqualTo 1000}] call _check;
 (_crossProgression get "weaponKills") set ["vn_test_weapon", 5];
 _crossEntitlement = [_uid, "EAST", _crossProgression, _crossMetadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
 _crossPurchase = ["PURCHASE", _uid, "vn_test_weapon", _crossProgression, _crossMetadata, _crossEntitlement] call bn_koth_fnc_progression_acquisition_evaluateRules;
-["Completed cross-side licence permits funded purchase", (_crossPurchase getOrDefault ["code", ""]) isEqualTo "WEAPON_PURCHASED"] call _check;
+["Completed cross-side mastery permits funded purchase", (_crossPurchase getOrDefault ["code", ""]) isEqualTo "WEAPON_PURCHASED"] call _check;
 
 private _lowProgression = createHashMapFromArray [
     ["level", 1], ["cash", 1000], ["ownedWeapons", []], ["rentedWeapons", []],
@@ -98,6 +98,9 @@ private _rentedProgression = createHashMapFromArray [
 private _rentedEntitlement = [_uid, "WEST", _rentedProgression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
 private _repeatRent = ["RENT", _uid, "vn_test_weapon", _rentedProgression, _metadata, _rentedEntitlement] call bn_koth_fnc_progression_acquisition_evaluateRules;
 ["Repeated rental is idempotent", (_repeatRent getOrDefault ["code", ""]) isEqualTo "ALREADY_RENTED" && {(_repeatRent getOrDefault ["cash", -1]) isEqualTo 900}] call _check;
+
+private _purchaseRented = ["PURCHASE", _uid, "vn_test_weapon", _rentedProgression, _metadata, _rentedEntitlement] call bn_koth_fnc_progression_acquisition_evaluateRules;
+["Purchase upgrades rental to permanent ownership", (_purchaseRented getOrDefault ["code", ""]) isEqualTo "WEAPON_PURCHASED" && {"vn_test_weapon" in (_purchaseRented getOrDefault ["nextOwnedWeapons", []])} && {!("vn_test_weapon" in (_purchaseRented getOrDefault ["nextRentedWeapons", []]))}] call _check;
 
 private _rentOwned = ["RENT", _uid, "vn_test_weapon", _ownedProgression, _metadata, _ownedEntitlement] call bn_koth_fnc_progression_acquisition_evaluateRules;
 ["Owned weapon rental does not charge", (_rentOwned getOrDefault ["code", ""]) isEqualTo "ALREADY_OWNED" && {(_rentOwned getOrDefault ["charged", -1]) isEqualTo 0}] call _check;

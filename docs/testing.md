@@ -166,7 +166,7 @@ Respawn-related changes must verify:
 - safe-zone AI corpses are deleted immediately and player corpses are unlootable immediately, then deleted without breaking UID resolution or respawn;
 - corpses and dropped equipment created in the active AO outside safe zones remain available for normal scavenging;
 - the server-validated KOTH loadout path still works in a safe zone without opening physical inventory;
-- battlefield pickup and scavenging continue to work in the active AO outside safe zones;
+- battlefield pickup and scavenging continue to work in the active AO outside safe zones even below level, unowned, or unmastered; the physical item remains usable while it grants no Arsenal, Store, ownership, rental, or saved-loadout entitlement;
 - safe-zone status survives respawn representation handoff and is cleared outside active safe-zone states;
 - reconnecting does not produce invalid spawn state.
 
@@ -328,7 +328,7 @@ per committed transaction, no charge on repeated requests, canonical
 structural-variant inheritance, no equipment application, rental survival
 across respawn/side/round transitions, and clean server/client RPT output.
 
-Weapon entitlement/licence and mastery checks can be run after mission
+Weapon entitlement and mastery checks can be run after mission
 functions initialize:
 
 ```sqf
@@ -342,7 +342,7 @@ attributed valid PvP kill increments the canonical root once, structural
 variants share that root, ambiguous/non-infantry/explosive evidence awards
 nothing, and mastery survives respawn, side changes, and round transitions.
 Cross-side acquisition must fail before cash mutation until explicit
-permission, level, mastery licence, and perks all pass.
+permission, level, mastery, and perks all pass.
 
 14. Combat Attribution Probe
 
@@ -389,3 +389,13 @@ A feature may be considered tested when:
 - client and server RPT files were reviewed;
 - no repeated script errors remain;
 - documentation reflects the implemented behaviour.
+
+16. Store V1 Checks
+
+Run `functions/ui/menu/test_storeV1.sqf` in a client debug context and
+`functions/progression/acquisition/test_weaponAcquisition.sqf` on the server;
+both return `[]` on success. Hosted and dedicated tests must also verify
+canonical-only deterministic ordering, global WEST/EAST/BOTH visibility,
+level/mastery/perk locks, unconfigured-price safety, buy/rent outcomes,
+rental-to-owned upgrade, requester-only results, targeted progression repaint,
+and tab transitions without stale controls.

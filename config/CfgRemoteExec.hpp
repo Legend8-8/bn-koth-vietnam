@@ -23,6 +23,12 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_progression_requestWeaponAcquisition
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
         class bn_koth_fnc_loadouts_receiveValidatedLoadout
         {
             allowedTargets = 1;
@@ -42,6 +48,12 @@ class CfgRemoteExec
         };
 
         class bn_koth_fnc_ui_receiveProgression
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_ui_receiveWeaponAcquisitionResult
         {
             allowedTargets = 1;
             jip = 0;

@@ -31,7 +31,7 @@ private _l1a1VariantMetadata = ["vn_l1a1_02"] call bn_koth_fnc_loadouts_getWeapo
     (_l1a1VariantMetadata getOrDefault ["canonicalClass", ""]) isEqualTo "vn_l1a1_01" &&
     {(_l1a1VariantMetadata getOrDefault ["minLevel", 0]) isEqualTo 20} &&
     {_l1a1VariantMetadata getOrDefault ["crossSideAllowed", false]} &&
-    {(_l1a1VariantMetadata getOrDefault ["licenseKills", 0]) isEqualTo 50}] call _check;
+    {(_l1a1VariantMetadata getOrDefault ["masteryKillsRequired", 0]) isEqualTo 50}] call _check;
 
 private _level19 = createHashMapFromArray [["level", 19], ["perks", []], ["weaponKills", createHashMap]];
 private _entitlement = ["test_uid", "WEST", _level19, _l1a1Metadata, "vn_l1a1_01"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;

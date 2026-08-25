@@ -48,9 +48,9 @@ such as `minLevel` remain independent. Never derive one of these policy fields
 from another, and never author policy on a structural weapon variant instead
 of its canonical logical root.
 
-For weapons only, `crossSideAllowed = 1` explicitly opens a cross-side licence
+For weapons only, `crossSideAllowed = 1` explicitly opens a cross-side mastery
 path. `allowedSides[]` remains native/default availability and factual
-`sourceAffiliations[]` never enables the path. `licenseKills` is evaluated
+`sourceAffiliations[]` never enables the path. `masteryKillsRequired` is evaluated
 against the server-owned canonical `weaponKills` map after level passes.
 
 Progression and economy balance values belong in mission config. XP reward and
@@ -63,8 +63,9 @@ Canonical weapon ownership and rental state are server-owned under
 `functions/progression/acquisition/`. Purchase and rent validate the player,
 canonical metadata, side, level, perks, configured price, and cash before one
 combined state commit. Neither operation equips a weapon. Rentals currently
-last for the server session. Store UI, final prices, and persistence remain
-separate future work. Cross-side licences are server-authoritative: level,
+last for the server session. Store V1 exposes those existing transactions for
+canonical weapons; final prices and persistence remain separate future work.
+Cross-side mastery is server-authoritative: level,
 mastery, and perks pass before purchase/rent, and ownership never bypasses them.
 
 Unclassified combat equipment may temporarily remain uncontrolled. Visual

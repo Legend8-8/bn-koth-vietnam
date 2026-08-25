@@ -102,10 +102,10 @@ class CfgBnKothArsenal
         //
         // Schema for human-authored KOTH equipment policy/progression entries:
         //   allowedSides[] = {"WEST", "EAST"}; // gameplay availability
-        //   crossSideAllowed = 1; // explicit weapon-only licence path
+        //   crossSideAllowed = 1; // explicit weapon-only mastery path
         //   appearanceSide = "WEST" | "EAST" | ""; // visual identity
         //   minLevel = <number>;
-        //   licenseKills = <number>;
+        //   masteryKillsRequired = <number>;
         //   purchasePrice = <number>;   // optional until economy is implemented
         //   rentalPrice = <number>;     // optional until economy is implemented
         //   requiredPerks[] = {...};    // optional; progression owns perk state
@@ -134,7 +134,7 @@ class CfgBnKothArsenal
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 20;
-                    licenseKills = 50;
+                    masteryKillsRequired = 50;
                     requiredPerks[] = {};
                 };
                 class vn_l2a1_01 {allowedSides[] = {"WEST"}; minLevel = 65;};

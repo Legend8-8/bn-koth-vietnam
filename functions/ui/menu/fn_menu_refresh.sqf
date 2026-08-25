@@ -356,6 +356,19 @@ private _cargoBrowserControls = [
 
 private _kitManagerControls = [_ctrlKitName, _ctrlKitSave, _ctrlKitRename];
 
+// Store V1 deliberately reuses these fixed controls, but owns their
+// visibility, geometry, text, and actions while STORE is active.
+private _storeViewControls = [
+    _ctrlPrimaryPreview,
+    _ctrlPrimaryTitle,
+    _ctrlPrimaryCurrent,
+    _ctrlPrimaryList,
+    _ctrlPrimaryDetail,
+    _ctrlPrimaryBack,
+    _ctrlPrimaryApply,
+    _ctrlBrowserBack
+];
+
 {
     _browserCardControls append [
         _display displayCtrl _x,
@@ -435,6 +448,19 @@ private _showComingSoon = {
 
 };
 
+private _showStoreView = {
+    _ctrlBrowserWorkspace ctrlShow true;
+    { _x ctrlShow false; } forEach _mainViewControls;
+    { _x ctrlShow false; } forEach _selectorViewControls;
+    { _x ctrlShow false; } forEach _browserViewControls;
+    { _x ctrlShow false; } forEach _browserCardControls;
+    { _x ctrlShow false; } forEach _configureViewControls;
+    { _x ctrlShow false; } forEach _cargoBrowserControls;
+    { _x ctrlShow false; } forEach _kitManagerControls;
+    { _x ctrlShow false; } forEach _navControls;
+    { _x ctrlShow true; } forEach _storeViewControls;
+};
+
 if !(_activePage isEqualTo "LOADOUT_ATTACHMENTS") then {
     uiNamespace setVariable ["BN_KOTH_menuAttachmentSlotFilter", ""];
 };
@@ -455,6 +481,11 @@ private _showKitManagerView = {
 private _showCargoBrowserView = {
     call _showBrowserView;
     { _x ctrlShow true; } forEach _cargoBrowserControls;
+};
+
+if (_activePage isEqualTo "STORE") exitWith {
+    call _showStoreView;
+    [_display] call bn_koth_fnc_menu_refreshStore;
 };
 
 if !(_activePage in _loadoutPages) exitWith {

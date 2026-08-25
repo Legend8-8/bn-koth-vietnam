@@ -227,7 +227,7 @@ Contains player progression systems:
 - `mastery/` owns the canonical lowercase `weaponKills` map and awards exactly
   once from fail-closed server attribution on a valid active-round PvP kill;
 - progression entitlement evaluation consumes authoritative level/rule data;
-- future persistent unlocks, perks, licence storage and reward multipliers
+- future persistent unlocks, perks, mastery storage and reward multipliers
   belong to progression/persistence boundaries rather than client UI.
 
 Current progression state is stored in the server-owned
@@ -407,3 +407,13 @@ A feature is complete only when:
 - no unrelated system behaviour is duplicated;
 - it has been tested on a dedicated server;
 - relevant documentation has been updated.
+
+13. Store Transaction Boundary
+
+The deployed Store is a global canonical-weapon discovery and acquisition
+client. It reads targeted progression state for presentation and submits only
+operation/classname intent. A narrow server endpoint derives the caller from
+`remoteExecutedOwner`, delegates to the existing acquisition owner, returns
+the structured result only to that requester, and relies on the existing
+targeted progression update for cash/ownership/rental repaint. Store
+transactions never auto-equip a weapon.

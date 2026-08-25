@@ -112,6 +112,7 @@ class CfgFunctions
             class progression_acquisition_acquireWeapon {file = "functions\progression\acquisition\fn_acquireWeapon.sqf";};
             class progression_purchaseWeapon {file = "functions\progression\acquisition\fn_purchaseWeapon.sqf";};
             class progression_rentWeapon {file = "functions\progression\acquisition\fn_rentWeapon.sqf";};
+            class progression_requestWeaponAcquisition {file = "functions\progression\acquisition\fn_requestWeapon.sqf";};
             class progression_publishUpdate {file = "functions\progression\fn_publishUpdate.sqf";};
             class progression_buildPresentationState {file = "functions\progression\fn_buildPresentationState.sqf";};
             class progression_evaluateEquipmentSidePolicyRules {file = "functions\progression\fn_evaluateEquipmentSidePolicyRules.sqf";};
@@ -219,6 +220,7 @@ class CfgFunctions
             class ui_sendStateToClient {file = "functions\ui\state\fn_sendStateToClient.sqf";};
             class ui_receiveState {file = "functions\ui\state\fn_receiveState.sqf";};
             class ui_receiveProgression {file = "functions\ui\state\fn_receiveProgression.sqf";};
+            class ui_receiveWeaponAcquisitionResult {file = "functions\ui\state\fn_receiveWeaponAcquisitionResult.sqf";};
             class ui_formatCash {file = "functions\ui\state\fn_formatCash.sqf";};
             class ui_toggleDebugDisplay {file = "functions\ui\debug\fn_toggleDebugDisplay.sqf";};
             class ui_debugDisplayLoop {file = "functions\ui\debug\fn_debugDisplayLoop.sqf";};
@@ -254,6 +256,9 @@ class CfgFunctions
             class menu_stopPlayerPreview {file = "functions\ui\menu\fn_menu_stopPlayerPreview.sqf";};
             class menu_refresh {file = "functions\ui\menu\fn_menu_refresh.sqf";};
             class menu_refreshLoadout {file = "functions\ui\menu\fn_menu_refreshLoadout.sqf";};
+            class menu_refreshStore {file = "functions\ui\menu\fn_menu_refreshStore.sqf";};
+            class menu_buildStoreWeaponEntries {file = "functions\ui\menu\fn_menu_buildStoreWeaponEntries.sqf";};
+            class menu_projectStoreWeaponState {file = "functions\ui\menu\fn_menu_projectStoreWeaponState.sqf";};
             class menu_refreshBrowser {file = "functions\ui\menu\fn_menu_refreshBrowser.sqf";};
             class menu_refreshConfigure {file = "functions\ui\menu\fn_menu_refreshConfigure.sqf";};
             class menu_refreshConfigureAttachments {file = "functions\ui\menu\fn_menu_refreshConfigureAttachments.sqf";};

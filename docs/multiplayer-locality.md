@@ -279,3 +279,11 @@ Before merging a multiplayer feature, answer:
 6. What happens if the player disconnects midway?
 7. Is the same work unnecessarily running on every client?
 8. Does the server remain authoritative?
+
+13. Store Weapon Requests
+
+The client sends only `PURCHASE`/`RENT` plus a canonical weapon classname. The
+server resolves the player and UID from `remoteExecutedOwner`, invokes the
+existing server-only acquisition API, targets the result to that owner, and
+publishes changed cash/ownership/rental state through the existing player-only
+progression update. Store requests never broadcast and never equip equipment.

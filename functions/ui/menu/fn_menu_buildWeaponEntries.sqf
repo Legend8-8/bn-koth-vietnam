@@ -165,7 +165,7 @@ private _sortable = [];
         ["playerLevel", _entitlement getOrDefault ["playerLevel", _localProgression getOrDefault ["level", 1]]],
         ["minLevel", _entitlement getOrDefault ["minLevel", _metadata getOrDefault ["minLevel", 1]]],
         ["weaponKills", _entitlement getOrDefault ["weaponKills", 0]],
-        ["licenseKills", _entitlement getOrDefault ["licenseKills", _metadata getOrDefault ["licenseKills", 0]]],
+        ["masteryKillsRequired", _entitlement getOrDefault ["masteryKillsRequired", _metadata getOrDefault ["masteryKillsRequired", 0]]],
         ["missingPerks", _entitlement getOrDefault ["missingPerks", []]],
         ["accessType", _entitlement getOrDefault ["accessType", "NONE"]],
         ["equipped", _weaponClass isEqualTo _currentWeaponClass]

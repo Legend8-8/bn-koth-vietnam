@@ -57,7 +57,7 @@ private _allowedSides = _metadata getOrDefault ["allowedSides", []];
 if !(_allowedSides isEqualType []) then {_allowedSides = []};
 private _crossSideAllowed = _metadata getOrDefault ["crossSideAllowed", false];
 if !(_crossSideAllowed isEqualType false) then {_crossSideAllowed = false};
-private _licenseKillsRequired = (_metadata getOrDefault ["licenseKills", 0]) max 0;
+private _masteryKillsRequired = (_metadata getOrDefault ["masteryKillsRequired", 0]) max 0;
 private _requiredPerks = _metadata getOrDefault ["requiredPerks", []];
 if !(_requiredPerks isEqualType []) then {_requiredPerks = []};
 private _purchasePrice = _metadata getOrDefault ["purchasePrice", -1];
@@ -83,7 +83,7 @@ if (!_crossSide && {!(_sidePolicy getOrDefault ["allowed", false])}) exitWith {
 };
 
 if (_crossSide && {!_crossSideAllowed}) exitWith {
-    [false, false, "CROSS_SIDE_NOT_ALLOWED", "Weapon has no KOTH cross-side licence path.",
+    [false, false, "CROSS_SIDE_NOT_ALLOWED", "Weapon has no KOTH cross-side mastery path.",
         createHashMapFromArray [
             ["allowedSides", _allowedSides], ["crossSide", true],
             ["crossSideAllowed", false], ["accessType", "NONE"]
@@ -103,7 +103,7 @@ if (_playerLevel < _minLevel) exitWith {
             ["crossSideAllowed", _crossSideAllowed],
             ["playerLevel", _playerLevel],
             ["minLevel", _minLevel],
-            ["licenseKills", _licenseKillsRequired],
+            ["masteryKillsRequired", _masteryKillsRequired],
             ["accessType", "NONE"]
         ]] call _finish
 };
@@ -124,7 +124,7 @@ private _normalizedPerks = _playerPerks apply {toLower _x};
 private _isOwned = _canonicalClass in _normalizedOwned;
 private _isRented = _canonicalClass in _normalizedRented;
 private _kills = (_weaponKills getOrDefault [_canonicalClass, 0]) max 0;
-private _licenseComplete = _kills >= _licenseKillsRequired;
+private _masteryComplete = _kills >= _masteryKillsRequired;
 
 private _missingPerks = [];
 {
@@ -132,14 +132,14 @@ private _missingPerks = [];
     if !(_perk in _normalizedPerks) then {_missingPerks pushBack _x;};
 } forEach _requiredPerks;
 
-if (_crossSide && {!_licenseComplete}) exitWith {
-    [false, false, "LOCKED_LICENSE", format ["Requires %1 canonical weapon mastery kills.", _licenseKillsRequired],
+if (_crossSide && {!_masteryComplete}) exitWith {
+    [false, false, "LOCKED_MASTERY", format ["Requires %1 canonical weapon mastery kills.", _masteryKillsRequired],
         createHashMapFromArray [
             ["allowedSides", _allowedSides], ["crossSide", true],
             ["crossSideAllowed", true], ["playerLevel", _playerLevel],
             ["minLevel", _minLevel], ["masteryKills", _kills],
-            ["weaponKills", _kills], ["licenseKillsRequired", _licenseKillsRequired],
-            ["licenseKills", _licenseKillsRequired], ["licenseComplete", false],
+            ["weaponKills", _kills], ["masteryKillsRequired", _masteryKillsRequired],
+            ["masteryComplete", false],
             ["accessType", "NONE"]
         ]] call _finish
 };
@@ -150,8 +150,8 @@ if ((count _missingPerks) > 0) exitWith {
             ["allowedSides", _allowedSides], ["crossSide", _crossSide],
             ["crossSideAllowed", _crossSideAllowed], ["playerLevel", _playerLevel],
             ["minLevel", _minLevel], ["masteryKills", _kills],
-            ["weaponKills", _kills], ["licenseKillsRequired", _licenseKillsRequired],
-            ["licenseKills", _licenseKillsRequired], ["licenseComplete", _licenseComplete],
+            ["weaponKills", _kills], ["masteryKillsRequired", _masteryKillsRequired],
+            ["masteryComplete", _masteryComplete],
             ["missingPerks", _missingPerks], ["accessType", "NONE"]
         ]] call _finish
 };
@@ -164,9 +164,8 @@ if (!_acquisitionConfigured) exitWith {
             ["minLevel", _minLevel],
             ["masteryKills", _kills],
             ["weaponKills", _kills],
-            ["licenseKillsRequired", _licenseKillsRequired],
-            ["licenseKills", _licenseKillsRequired],
-            ["licenseComplete", _licenseComplete],
+            ["masteryKillsRequired", _masteryKillsRequired],
+            ["masteryComplete", _masteryComplete],
             ["owned", _isOwned],
             ["rented", _isRented],
             ["canPurchase", false],
@@ -183,9 +182,8 @@ if (_isOwned) exitWith {
             ["minLevel", _minLevel],
             ["masteryKills", _kills],
             ["weaponKills", _kills],
-            ["licenseKillsRequired", _licenseKillsRequired],
-            ["licenseKills", _licenseKillsRequired],
-            ["licenseComplete", _licenseComplete],
+            ["masteryKillsRequired", _masteryKillsRequired],
+            ["masteryComplete", _masteryComplete],
             ["owned", true],
             ["rented", _isRented],
             ["canPurchase", _purchasePrice >= 0],
@@ -202,9 +200,8 @@ if (_isRented) exitWith {
             ["minLevel", _minLevel],
             ["masteryKills", _kills],
             ["weaponKills", _kills],
-            ["licenseKillsRequired", _licenseKillsRequired],
-            ["licenseKills", _licenseKillsRequired],
-            ["licenseComplete", _licenseComplete],
+            ["masteryKillsRequired", _masteryKillsRequired],
+            ["masteryComplete", _masteryComplete],
             ["owned", false],
             ["rented", true],
             ["canPurchase", _purchasePrice >= 0],
@@ -221,9 +218,8 @@ if (_isRented) exitWith {
         ["minLevel", _minLevel],
         ["masteryKills", _kills],
         ["weaponKills", _kills],
-        ["licenseKillsRequired", _licenseKillsRequired],
-        ["licenseKills", _licenseKillsRequired],
-        ["licenseComplete", _licenseComplete],
+        ["masteryKillsRequired", _masteryKillsRequired],
+        ["masteryComplete", _masteryComplete],
         ["owned", false],
         ["rented", false],
         ["canPurchase", _purchasePrice >= 0],

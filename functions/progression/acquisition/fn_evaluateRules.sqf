@@ -61,7 +61,7 @@ if !(_metadata getOrDefault ["success", false]) exitWith {
 };
 
 private _entitlementCode = _entitlement getOrDefault ["code", "ERR_ENTITLEMENT"];
-if (_entitlementCode in ["LOCKED_SIDE", "CROSS_SIDE_NOT_ALLOWED", "LOCKED_LEVEL", "LOCKED_LICENSE", "LOCKED_PERK"]) exitWith {
+if (_entitlementCode in ["LOCKED_SIDE", "CROSS_SIDE_NOT_ALLOWED", "LOCKED_LEVEL", "LOCKED_MASTERY", "LOCKED_PERK"]) exitWith {
     [false, _entitlementCode, _entitlement getOrDefault ["message", "Weapon entitlement is locked."]] call _finish
 };
 if !(_entitlement getOrDefault ["success", false]) exitWith {

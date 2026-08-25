@@ -77,7 +77,7 @@ Owner of:
 - rank;
 - currency;
 - weapon kill/mastery progress;
-- weapon licenses;
+- weapon mastery;
 - permanent ownership;
 - rental entitlement;
 - progression statistics.
@@ -105,7 +105,7 @@ This includes:
 - XP and level;
 - currency;
 - weapon kill progress;
-- licenses;
+- mastery;
 - ownership;
 - rental state if persisted;
 - saved loadouts.
@@ -122,7 +122,7 @@ The UI may display:
 
 - equipment;
 - level requirements;
-- kill/license progress;
+- mastery progress;
 - ownership;
 - rental/purchase options;
 - rejection reasons;
@@ -169,7 +169,7 @@ Examples include:
 - allowed KOTH sides;
 - visual appearance side;
 - minimum level;
-- license kill requirement;
+- mastery kill requirement;
 - purchase price;
 - rental price;
 - starter/free status;
@@ -192,8 +192,8 @@ Examples:
 
 - current level;
 - weapon kills;
-- license progress;
-- license completion;
+- mastery progress;
+- mastery completion;
 - ownership;
 - rental entitlement;
 - currency.
@@ -377,9 +377,9 @@ class vn_l1a1_01
 > Which KOTH sides may use or acquire this logical item?
 
 For canonical weapons only, `crossSideAllowed = 1` deliberately permits the
-opposite side to pursue a weapon-specific licence. `allowedSides[]` continues
+opposite side to pursue weapon-specific mastery. `allowedSides[]` continues
 to mean native/default access. Cross-side access requires level first, then
-canonical `weaponKills >= licenseKills`, then perks and any configured
+canonical `weaponKills >= masteryKillsRequired`, then perks and any configured
 acquisition. Ownership and rental do not bypass those gates. Structural
 variants inherit the canonical rule.
 
@@ -405,7 +405,7 @@ These fields remain separate concepts:
 - `sourceAffiliations[]`: generated factual S.O.G. provenance;
 - `allowedSides[]`: human-authored KOTH gameplay availability;
 - `appearanceSide`: human-authored KOTH visual identity;
-- `minLevel`, licences, ownership, and prices: progression/economy policy.
+- `minLevel`, mastery, ownership, and prices: progression/economy policy.
 
 ---
 
@@ -421,8 +421,8 @@ Not:
 
 - money;
 - ownership;
-- license progress;
-- completed license;
+- mastery progress;
+- completed mastery;
 - kills;
 - battlefield pickups;
 - rentals;
@@ -438,7 +438,9 @@ must be true before the KOTH arsenal/store system grants access.
 
 ### Battlefield pickups
 
-A player may physically pick up and use equipment found during normal gameplay even when below its progression level.
+A player may physically pick up and use equipment found during normal gameplay
+even when below its progression level, unowned, or not yet mastered. This is
+temporary physical possession only.
 
 That does not unlock the weapon.
 
@@ -446,7 +448,12 @@ That does not grant ownership.
 
 That does not grant arsenal access.
 
-It may, however, contribute to weapon kill/license progress.
+That does not grant Store access, rental entitlement, or saved-kit/loadout
+restoration. Pickup history is never proof of entitlement, and progression
+policy does not plan to confiscate battlefield weapons solely because their
+level, mastery, or ownership requirements are incomplete.
+
+Properly attributed kills may, however, contribute to canonical weapon mastery.
 
 Active base safe zones are a deliberate physical-inventory exception, not a progression exception. Players cannot exchange equipment through player, corpse, ground, static-container or vehicle inventories while either the player or container is inside a safe zone. Dropped equipment and corpses there are cleaned up by the server. Once outside the safe zones, the battlefield pickup rule above remains unchanged.
 
@@ -469,7 +476,7 @@ At Level 19:
 arsenal access: locked
 purchase: locked
 rental: locked
-license activation: locked
+mastery permission: locked
 ```
 
 At Level 20:
@@ -480,7 +487,7 @@ weapon becomes eligible
 
 The system then evaluates:
 
-- license;
+- mastery;
 - ownership;
 - rental;
 - faction.
@@ -493,7 +500,7 @@ They do not automatically award equipment.
 
 ---
 
-## 10. Weapon Kills and License Progress
+## 10. Weapon Kills and Mastery Progress
 
 Each progression-controlled weapon may have a weapon-specific kill requirement.
 
@@ -502,7 +509,7 @@ Example:
 ```text
 L1A1
 Minimum Level: 20
-License Requirement: 50 L1A1 kills
+Mastery Requirement: 50 L1A1 kills
 ```
 
 Kill progress may accumulate before the minimum level.
@@ -523,29 +530,29 @@ L1A1 Kills: 50/50
 
 The progress is retained.
 
-The license is still not active because Level 20 has not been reached.
+Mastery progress is complete, but level eligibility has not been reached.
 
 At Level 20:
 
 ```text
 level requirement complete
 kill requirement complete
-→ license activates
+→ cross-side mastery permission becomes usable
 ```
 
 This allows battlefield scavenging and weapon familiarity to matter without bypassing level progression.
 
 ---
 
-## 11. Licence Progress Is Independent From Native Side Policy
+## 11. Mastery Progress Is Independent From Native Side Policy
 
-A weapon license represents mastery.
+Weapon mastery represents cross-side permission.
 
 Conceptually:
 
 > The player has demonstrated the configured mastery requirement for this weapon.
 
-A licence does **not** mean the player owns the weapon, and it does not mutate
+Mastery does **not** mean the player owns the weapon, and it does not mutate
 `allowedSides[]`. Cross-side eligibility is a separate weapon-only route that
 exists only when the canonical weapon explicitly declares
 `crossSideAllowed = 1`.
@@ -556,7 +563,7 @@ Example:
 L1A1
 Allowed sides: WEST
 Minimum level: 20
-License kills: 50
+Mastery kills required: 50
 ```
 
 Player:
@@ -570,7 +577,7 @@ Ownership: no
 Native-side result:
 
 ```text
-Licence: yes
+Mastery: complete
 Native/default side: WEST
 Permanent ownership: no
 ```
@@ -623,14 +630,14 @@ Money must not bypass the mastery requirement.
 
 ---
 
-## 13. Owned + Licensed = Progression Completion
+## 13. Owned + Mastered = Progression Completion
 
-When a player has both permanent ownership and the weapon license:
+When a player has both permanent ownership and complete weapon mastery:
 
 ```text
 Level requirement: complete
 Ownership: yes
-License: yes
+Mastery: complete
 ```
 
 the weapon has completed those progression requirements on every side listed in
@@ -689,7 +696,7 @@ Result:
 purchase: denied
 rental: denied
 arsenal selection: denied
-license activation: denied
+mastery permission: denied
 ```
 
 Kill progress remains saved.
@@ -708,8 +715,8 @@ Result:
 
 ```text
 native side: permanent access
-cross side: LOCKED_LICENSE (10/50), even though owned
-license progress: 10/50
+cross side: LOCKED_MASTERY (10/50), even though owned
+mastery progress: 10/50
 ```
 
 ---
@@ -725,9 +732,9 @@ Ownership: no
 Result:
 
 ```text
-license: complete
+mastery: complete
 native side: rental or purchase required
-cross side: licence complete, then rental or purchase required
+cross side: mastery complete, then rental or purchase required
 permanent ownership: no
 ```
 
@@ -744,10 +751,10 @@ Ownership: yes
 Result:
 
 ```text
-license: complete
+mastery: complete
 ownership: complete
 native side: permanent access
-cross side: permanent access only because crossSideAllowed is explicit and the licence is complete
+cross side: permanent access only because crossSideAllowed is explicit and mastery is complete
 rental required: no
 ```
 
@@ -769,7 +776,7 @@ The server-side weapon entitlement sequence is:
         ↓
 4. Has the player reached minLevel?
         ↓
-5. For cross-side access, has canonical weapon mastery reached licenseKills?
+5. For cross-side access, has canonical weapon mastery reached masteryKillsRequired?
         ↓
 6. Have required perks passed?
         ↓
@@ -1294,7 +1301,7 @@ Changing things such as:
 ```text
 L1A1 allowed sides
 L1A1 minimum level
-L1A1 license kill requirement
+L1A1 mastery kill requirement
 L1A1 purchase price
 L1A1 rental price
 starter/free status
@@ -1321,7 +1328,7 @@ class vn_l1a1_01
 {
     allowedSides[] = {"WEST"};
     minLevel = 20;
-    licenseKills = 50;
+    masteryKillsRequired = 50;
     purchasePrice = 100000;
     rentalPrice = 2000;
 };
@@ -1464,9 +1471,9 @@ The foundation currently does not implement:
 
 - ranks;
 - weapon kill persistence;
-- license activation;
+- mastery completion;
 - persistence/database integration;
-- Store UI;
+- non-weapon Store categories;
 - final weapon prices;
 - stock behavior.
 
@@ -1642,3 +1649,17 @@ required by the design reference. A future implementation may use a locally
 owned, presentation-only mannequin in a fixed decorated scene. It must never
 equip or mutate the gameplay player, and simultaneous clients must not share or
 compete over preview state.
+
+Store V1 uses the existing deployed-menu shell and owns only the centre panel.
+It lists global canonical S.O.G. weapon roots deterministically; structural
+variants are never separate products. Human-authored `allowedSides[]`,
+`crossSideAllowed`, level, passive canonical mastery, perks and prices
+drive presentation. Missing prices show acquisition not configured and never
+produce invented values.
+
+`BUY` and `RENT` submit intent only. The server derives the caller, repeats
+entitlement and cash checks, commits through
+`functions/progression/acquisition/`, and returns only to the requester. The
+existing targeted progression update refreshes Store cash and ownership/rental
+state. Acquisition does not auto-equip. Persistence, stock, final prices and
+non-weapon Store categories remain outside V1.

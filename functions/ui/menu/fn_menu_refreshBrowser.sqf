@@ -361,7 +361,7 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
                     } else {
                         switch (_entitlementCode) do {
                             case "REQUIRES_ACQUISITION": {"ACQUISITION REQUIRED"};
-                            case "LOCKED_SIDE_LICENSE": {"CROSS-FACTION LICENSE REQUIRED"};
+                            case "LOCKED_MASTERY": {"CROSS-FACTION MASTERY REQUIRED"};
                             case "LOCKED_PERK": {"REQUIRED PERK MISSING"};
                             default {"PRESENTATION STATE UNAVAILABLE"};
                         }

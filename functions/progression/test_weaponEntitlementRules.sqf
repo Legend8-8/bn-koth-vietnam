@@ -28,7 +28,7 @@ private _metadata = createHashMapFromArray [
     ["allowedSides", ["WEST"]],
     ["crossSideAllowed", false],
     ["minLevel", 1],
-    ["licenseKills", 0],
+    ["masteryKillsRequired", 0],
     ["requiredPerks", []],
     ["purchasePrice", -1],
     ["rentalPrice", -1]
@@ -53,41 +53,49 @@ _result = ["test_uid", "EAST", _progression, _metadata, "vn_test_weapon"] call b
 ["Cross-side disabled is explicit", (_result getOrDefault ["code", ""]) isEqualTo "CROSS_SIDE_NOT_ALLOWED"] call _check;
 
 _metadata set ["crossSideAllowed", true];
-_metadata set ["licenseKills", 5];
+_metadata set ["masteryKillsRequired", 5];
 _metadata set ["minLevel", 1];
+_metadata set ["purchasePrice", 100];
+_metadata set ["rentalPrice", 25];
 private _mastery = createHashMapFromArray [["vn_test_weapon", 0]];
 _progression set ["weaponKills", _mastery];
+_progression set ["ownedWeapons", ["vn_test_weapon"]];
 private _nativeResult = ["test_uid", "WEST", _progression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
-["Native side does not require licence", _nativeResult getOrDefault ["entitled", false]] call _check;
+["Native-side ownership works without mastery", (_nativeResult getOrDefault ["entitled", false]) && {(_nativeResult getOrDefault ["accessType", ""]) isEqualTo "OWNED"}] call _check;
 _metadata set ["minLevel", 20];
 _mastery set ["vn_test_weapon", 5];
 _result = ["test_uid", "EAST", _progression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
-["Completed mastery cannot bypass level", (_result getOrDefault ["code", ""]) isEqualTo "LOCKED_LEVEL"] call _check;
+["Mastery plus ownership cannot bypass level", (_result getOrDefault ["code", ""]) isEqualTo "LOCKED_LEVEL"] call _check;
+["Below-level mastery progress is preserved", (_mastery getOrDefault ["vn_test_weapon", 0]) isEqualTo 5] call _check;
 
 _metadata set ["minLevel", 1];
 _mastery set ["vn_test_weapon", 4];
 _result = ["test_uid", "EAST", _progression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
-["Incomplete cross-side mastery locks licence", (_result getOrDefault ["code", ""]) isEqualTo "LOCKED_LICENSE"] call _check;
+["Cross-side ownership without mastery locks", (_result getOrDefault ["code", ""]) isEqualTo "LOCKED_MASTERY"] call _check;
 
 _mastery set ["vn_test_weapon", 5];
 _result = ["test_uid", "EAST", _progression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
-["Completed cross-side licence continues entitlement", _result getOrDefault ["entitled", false]] call _check;
+["Cross-side mastered plus owned succeeds", (_result getOrDefault ["entitled", false]) && {(_result getOrDefault ["accessType", ""]) isEqualTo "OWNED"}] call _check;
 ["Cross-side result reports mastery", (_result getOrDefault ["masteryKills", -1]) isEqualTo 5] call _check;
 
-_progression set ["ownedWeapons", ["vn_test_weapon"]];
 _mastery set ["vn_test_weapon", 0];
 _result = ["test_uid", "EAST", _progression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
-["Ownership does not bypass licence", (_result getOrDefault ["code", ""]) isEqualTo "LOCKED_LICENSE"] call _check;
+["Ownership does not bypass mastery", (_result getOrDefault ["code", ""]) isEqualTo "LOCKED_MASTERY"] call _check;
 _progression set ["ownedWeapons", []];
 _progression set ["rentedWeapons", ["vn_test_weapon"]];
 _result = ["test_uid", "EAST", _progression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
-["Rental does not bypass licence", (_result getOrDefault ["code", ""]) isEqualTo "LOCKED_LICENSE"] call _check;
+["Rental does not bypass mastery", (_result getOrDefault ["code", ""]) isEqualTo "LOCKED_MASTERY"] call _check;
+
+_mastery set ["vn_test_weapon", 5];
+_result = ["test_uid", "EAST", _progression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
+["Cross-side mastered plus rented succeeds", (_result getOrDefault ["entitled", false]) && {(_result getOrDefault ["accessType", ""]) isEqualTo "RENTED"}] call _check;
 
 _progression set ["rentedWeapons", []];
+_progression set ["ownedWeapons", ["vn_test_weapon"]];
 _metadata set ["allowedSides", ["WEST", "EAST"]];
 _metadata set ["crossSideAllowed", false];
 _result = ["test_uid", "EAST", _progression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
-["BOTH-side weapon needs no licence", _result getOrDefault ["entitled", false]] call _check;
+["BOTH-side owned weapon needs no mastery", (_result getOrDefault ["entitled", false]) && {(_result getOrDefault ["accessType", ""]) isEqualTo "OWNED"}] call _check;
 
 diag_log format ["[BN_KOTH_TEST] Weapon entitlement rules: %1 failure(s): %2", count _failures, _failures];
 _failures

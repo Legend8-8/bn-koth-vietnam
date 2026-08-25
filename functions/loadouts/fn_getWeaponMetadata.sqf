@@ -70,7 +70,7 @@ private _configured = isClass _metadataCfg;
 private _allowedSides = [];
 private _crossSideAllowed = false;
 private _minLevel = 1;
-private _licenseKills = 0;
+private _masteryKillsRequired = 0;
 private _purchasePrice = -1;
 private _rentalPrice = -1;
 private _requiredPerks = [];
@@ -88,8 +88,8 @@ if (_configured) then {
         _minLevel = (getNumber (_metadataCfg >> "minLevel")) max 1;
     };
 
-    if (isNumber (_metadataCfg >> "licenseKills")) then {
-        _licenseKills = (getNumber (_metadataCfg >> "licenseKills")) max 0;
+    if (isNumber (_metadataCfg >> "masteryKillsRequired")) then {
+        _masteryKillsRequired = (getNumber (_metadataCfg >> "masteryKillsRequired")) max 0;
     };
 
     if (isNumber (_metadataCfg >> "purchasePrice")) then {
@@ -114,7 +114,7 @@ createHashMapFromArray [
     ["allowedSides", _allowedSides],
     ["crossSideAllowed", _crossSideAllowed],
     ["minLevel", _minLevel],
-    ["licenseKills", _licenseKills],
+    ["masteryKillsRequired", _masteryKillsRequired],
     ["purchasePrice", _purchasePrice],
     ["rentalPrice", _rentalPrice],
     ["requiredPerks", _requiredPerks]
