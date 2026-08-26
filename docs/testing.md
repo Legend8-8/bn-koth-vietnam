@@ -303,9 +303,16 @@ For the Arsenal rework, also verify:
 Equipment-side policy changes must additionally verify:
 
 - WEST-only, EAST-only, and both-sides `allowedSides[]` decisions;
-- opposing uniforms, vests, backpacks, headgear, and facewear are rejected;
+- opposing uniforms, vests, and backpacks are rejected in both directions;
+- headgear with `appearanceSide=BOTH` is usable by WEST and EAST alike,
+  subject to `minLevel` only;
 - missing appearance metadata fails closed while missing combat metadata
   remains temporarily uncontrolled;
+- level gates appearance entitlement regardless of side/appearance being
+  otherwise correct, and no Mastery/ownership/rental signal is ever consulted
+  or reported for appearance items;
+- `sourceAffiliations[]` never grants or revokes entitlement in either
+  direction;
 - structural weapon variants inherit the canonical root policy;
 - direct slot mutation, saved-kit application, starter validation, respawn,
   and deployment restore cannot bypass the authoritative decision;

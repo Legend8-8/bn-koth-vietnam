@@ -391,21 +391,28 @@ the canonical root weapon metadata and never receive separate side policy.
 Visual equipment additionally requires:
 
 ```cpp
-appearanceSide = "WEST"; // or "EAST"
+appearanceSide = "WEST"; // or "EAST", or "BOTH" (headgear-only, provisional)
 ```
 
 `appearanceSide` identifies which KOTH faction the item visually represents.
 Uniforms, vests, backpacks, headgear, and facewear fail closed when this field
 is absent or invalid; opposing appearance equipment is rejected even if its
-`allowedSides[]` value is broader. No battlefield-loot exception currently
-exists.
+`allowedSides[]` value is broader. `BOTH` is a deliberate, narrow exception:
+it is currently authored for headgear only, never inferred, and never used
+for uniforms/vests/backpacks, which always stay strictly WEST-only or
+EAST-only. Appearance entitlement never consults Mastery, ownership, or
+rental; it is `level >= minLevel` plus this side check only. No
+battlefield-loot exception currently exists.
 
 These fields remain separate concepts:
 
 - `sourceAffiliations[]`: generated factual S.O.G. provenance;
 - `allowedSides[]`: human-authored KOTH gameplay availability;
-- `appearanceSide`: human-authored KOTH visual identity;
-- `minLevel`, mastery, ownership, and prices: progression/economy policy.
+- `appearanceSide`: human-authored KOTH visual identity (`WEST`/`EAST`, or
+  `BOTH` for headgear only);
+- `minLevel`, mastery, ownership, and prices: progression/economy policy
+  (appearance items use `minLevel` only; Mastery/ownership/rental are
+  weapon-only concepts and never apply to appearance).
 
 ---
 
