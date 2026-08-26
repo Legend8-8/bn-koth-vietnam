@@ -83,6 +83,12 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_build_initPlayerLocal
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_playerMapMarkers_setVoiceState
         {
             allowedTargets = 0;
@@ -110,6 +116,18 @@ class CfgRemoteExec
         class bn_koth_fnc_vehicles_mobileRespawn_executeTeleport
         {
             allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_build_serverPlace
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_build_serverRemove
+        {
+            allowedTargets = 2;
             jip = 0;
         };
     };

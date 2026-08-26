@@ -141,6 +141,20 @@ class CfgFunctions
             class loadouts_receiveValidatedLoadout {file = "functions\loadouts\fn_receiveValidatedLoadout.sqf";};
         };
 
+        class build
+        {
+            class build_initPlayerLocal {file = "functions\build\fn_initPlayerLocal.sqf";};
+            class build_getCatalog {file = "functions\build\fn_getCatalog.sqf";};
+            class build_openWheel {file = "functions\build\fn_openWheel.sqf";};
+            class build_onSelect {file = "functions\build\fn_onSelect.sqf";};
+            class build_startPlacement {file = "functions\build\fn_startPlacement.sqf";};
+            class build_cancelPlacement {file = "functions\build\fn_cancelPlacement.sqf";};
+            class build_requestPlace {file = "functions\build\fn_requestPlace.sqf";};
+            class build_serverPlace {file = "functions\build\fn_serverPlace.sqf";};
+            class build_serverRemove {file = "functions\build\fn_serverRemove.sqf";};
+            class build_canBuild {file = "functions\build\fn_canBuild.sqf";};
+        };
+
         class playerMapMarkers
         {
             class playerMapMarkers_initPlayerLocal {file = "functions\playerIcons\playerMapMarkers\fn_initPlayerLocal.sqf";};
