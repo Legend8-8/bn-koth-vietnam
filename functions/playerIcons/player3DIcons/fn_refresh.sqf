@@ -42,19 +42,6 @@ private _sameGroupColor = missionNamespace getVariable ["BN_KOTH_player3DIconsSa
 private _friendlyTexture = missionNamespace getVariable ["BN_KOTH_player3DIconsTexture", "\A3\ui_f\data\map\markers\military\triangle_CA.paa"];
 private _height = missionNamespace getVariable ["BN_KOTH_player3DIconsHeight", 2.2];
 private _drawEntries = [];
-private _debugLocalSelf = missionNamespace getVariable ["BN_KOTH_player3DIconsDebugLocalSelf", false];
-
-if (_debugLocalSelf && {!isNull player} && {alive player}) then {
-    private _playerHeadPos = player modelToWorldVisual (player selectionPosition "neck");
-    _drawEntries pushBack [
-        _playerHeadPos,
-        180,
-        "",
-        _friendlyTexture,
-        [1, 1, 1, 1],
-        false
-    ];
-};
 
 private _eligiblePlayers = allPlayers select {
     private _unit = _x;
@@ -68,6 +55,7 @@ private _eligiblePlayers = allPlayers select {
     private _isActiveState = (_playerStates getOrDefault [_uid, "LOBBY"]) isEqualTo "ACTIVE";
 
     !isNull _unit
+    && {_unit != player}
     && {_uid isNotEqualTo ""}
     && {alive _unit}
     && {[_assignedSide] call bn_koth_fnc_teams_validateSide}

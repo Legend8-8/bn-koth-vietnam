@@ -33,7 +33,6 @@ missionNamespace setVariable ["BN_KOTH_player3DIconsEastColor", getArray (_confi
 missionNamespace setVariable ["BN_KOTH_player3DIconsSameGroupColor", getArray (_config >> "sameGroupColor")];
 missionNamespace setVariable ["BN_KOTH_player3DIconsEnemyMarkKey", getText (_config >> "temporaryEnemyMarkKey")];
 missionNamespace setVariable ["BN_KOTH_player3DIconsEnemyMarkDuration", (getNumber (_config >> "temporaryEnemyMarkDuration")) max 0];
-missionNamespace setVariable ["BN_KOTH_player3DIconsDebugLocalSelf", (getNumber (_config >> "debugLocalSelf")) > 0];
 uiNamespace setVariable ["BN_KOTH_player3DIconsDrawData", []];
 
 if !(missionNamespace getVariable ["BN_KOTH_player3DIconsRefreshLoopAdded", false]) then {
