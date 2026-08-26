@@ -1643,10 +1643,17 @@ grant equipment or bypass progression.
 
 The Loadout overview exposes `MANAGE LOADOUTS` and `SAVE CURRENT KIT` in its
 centre footer. The manager supports up to twelve locally named kits, including
-load, rename, and delete. The former fixed `slot1` profile record is migrated
-once as `MIGRATED KIT`; the old profile key is then removed. Kit names and ids
-are presentation metadata only. The server never resolves equipment from a
-client kit id and validates the complete submitted loadout independently.
+load, explicit edit, rename, and delete. LOAD gives feedback only after the
+server-validated loadout has been applied. EDIT submits the same untrusted
+loadout through that validation path and establishes a local edit target only
+after success. The normal Arsenal flow then edits the authoritative intended
+loadout; `SAVE CHANGES` explicitly overwrites that same local record without a
+new name or duplicate. `CANCEL EDIT`, successful ordinary LOAD, successful save,
+and menu close clear the edit target. Navigation, including Store entry, never
+autosaves it. The former fixed `slot1` profile record is migrated once as
+`MIGRATED KIT`; the old profile key is then removed. Kit names and ids are
+presentation metadata only. The server never resolves equipment from a client
+kit id and validates the complete submitted loadout independently.
 
 State-changing Arsenal requests also include the network id of the actual
 mapboard whose local action opened the menu. The server treats that id only as
@@ -1664,19 +1671,46 @@ owned, presentation-only mannequin in a fixed decorated scene. It must never
 equip or mutate the gameplay player, and simultaneous clients must not share or
 compete over preview state.
 
-Store V1 uses the existing deployed-menu shell and owns only the centre panel.
-It lists global canonical S.O.G. weapon roots deterministically; structural
+The Store uses the existing deployed-menu shell and owns only the wide centre
+workspace. The operator column is hidden only while Store is active so the
+catalogue can use the full main width; normal Loadout and Arsenal views restore
+that column through the shared menu lifecycle owner. Its root exposes Infantry,
+Ground Vehicles, Rotary Wing,
+and Fixed Wing; Infantry then separates Primary, Sidearms, and Launchers. SEA
+is hidden while the curated progression surface has no SEA products. Weapon
+lists contain global canonical S.O.G. roots deterministically; structural
 variants are never separate products. Human-authored `allowedSides[]`,
 `crossSideAllowed`, level, passive canonical mastery, perks and prices
 drive presentation. Missing prices show acquisition not configured and never
 produce invented values.
 
+Product categories use the shared four-card, two-column visual language with
+bounded pagination rather than a long scrolling list. Store keeps its own
+discovery/acquisition projection while sharing controls with Arsenal. Its
+expanded geometry is applied only while Store is active; the shared menu mode
+owner restores canonical title, subtitle, BACK, selector action, pagination,
+workspace, card and operator geometry before every non-Store renderer. Locked,
+wrong-side, unaffordable, owned and rented products remain discoverable.
+Cross-side products that permit mastery show current/required progress even
+while level-locked; truly prohibited products say `FACTION RESTRICTED`.
+Selecting a card explains combined level, mastery, perk and acquisition state
+with real line-separated text in the right detail panel. Category data is
+cached on entry and invalidated by authoritative progression/acquisition
+updates, with no polling or per-frame config scan.
+
 `BUY` and `RENT` submit intent only. The server derives the caller, repeats
 entitlement and cash checks, commits through
 `functions/progression/acquisition/`, and returns only to the requester. The
 existing targeted progression update refreshes Store cash and ownership/rental
-state. Acquisition does not auto-equip. Persistence, stock, final price balance and
-non-weapon Store categories remain outside V1.
+state. Acquisition does not auto-equip. Persistence, stock, and final price
+balance remain outside this presentation slice.
+
+An owned or rented weapon exposes `EQUIP IN ARSENAL`. This is navigation only:
+it opens the existing Primary, Handgun or Launcher Arsenal browser, snaps to and
+highlights the acquired canonical weapon, and leaves configuration/application
+to the existing validated loadout path. Store never mutates a loadout. Arsenal
+remains the currently usable surface: cross-side discovery products stay absent
+until the shared authoritative entitlement result says they are entitled.
 
 Vehicle progression preparation is owned separately by
 `CfgBnKothVehicles >> Metadata >> Vehicles`. Canonical vehicle roots explicitly
@@ -1696,7 +1730,10 @@ exposes no dependable inheritance graph, so no vehicle `variantOf` links are
 authored. Factual table side and faction remain evidence only, while config
 owns deliberate KOTH availability and balance.
 
-This metadata does not add vehicles to Store V1 and does not alter the managed
-free-vehicle system. Vehicles do not use weapon mastery. A future server-owned
-vehicle acquisition/requisition transaction must be implemented before the
-client can buy, rent, or spawn a paid vehicle; persistence remains later work.
+Only those curated metadata entries are discoverable in the vehicle Store
+categories. Their engine `CfgVehicles` picture and display name are presented
+with side, level, role, and provisional price policy. Vehicle action controls
+remain disabled because no authoritative acquisition/requisition transaction
+exists. Displaying a vehicle, including an M577 classname, grants no spawn,
+ownership, or managed command/teleport capability and does not alter the managed
+free-vehicle system. Vehicles do not use weapon mastery.

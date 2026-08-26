@@ -282,6 +282,9 @@ class CfgFunctions
             class menu_refreshStore {file = "functions\ui\menu\fn_menu_refreshStore.sqf";};
             class menu_buildStoreWeaponEntries {file = "functions\ui\menu\fn_menu_buildStoreWeaponEntries.sqf";};
             class menu_projectStoreWeaponState {file = "functions\ui\menu\fn_menu_projectStoreWeaponState.sqf";};
+            class menu_buildStoreVehicleEntries {file = "functions\ui\menu\fn_menu_buildStoreVehicleEntries.sqf";};
+            class menu_projectStoreVehicleState {file = "functions\ui\menu\fn_menu_projectStoreVehicleState.sqf";};
+            class menu_layoutItemCards {file = "functions\ui\menu\fn_menu_layoutItemCards.sqf";};
             class menu_refreshBrowser {file = "functions\ui\menu\fn_menu_refreshBrowser.sqf";};
             class menu_refreshConfigure {file = "functions\ui\menu\fn_menu_refreshConfigure.sqf";};
             class menu_refreshConfigureAttachments {file = "functions\ui\menu\fn_menu_refreshConfigureAttachments.sqf";};

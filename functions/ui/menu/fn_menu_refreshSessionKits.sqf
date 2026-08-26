@@ -94,11 +94,17 @@ _next buttonSetAction "private _p=uiNamespace getVariable ['BN_KOTH_menuKitPage'
     {(_display displayCtrl _x) ctrlShow true} forEach [_bg, _area, _name, _status, _primary, _secondary];
     (_display displayCtrl _area) ctrlSetBackgroundColor [0.025, 0.025, 0.022, 0.92];
     (_display displayCtrl _name) ctrlSetText (toUpper _kitName);
-    (_display displayCtrl _status) ctrlSetText (if (_kitId isEqualTo _selectedId) then {"SELECTED FOR RENAME / DELETE"} else {"STORED LOCALLY - VALIDATED WHEN LOADED"});
+    (_display displayCtrl _status) ctrlSetText (if (_kitId isEqualTo _selectedId) then {"SELECTED - LOAD, EDIT, RENAME OR DELETE"} else {"STORED LOCALLY - VALIDATED WHEN LOADED"});
     (_display displayCtrl _primary) ctrlSetText "LOAD";
     (_display displayCtrl _primary) ctrlEnable true;
-    (_display displayCtrl _primary) buttonSetAction format ["%1 call bn_koth_fnc_menu_loadSessionKit;", str [_kitId]];
-    (_display displayCtrl _secondary) ctrlSetText (if (_kitId isEqualTo _selectedId) then {"SELECTED"} else {"MANAGE"});
-    (_display displayCtrl _secondary) ctrlEnable !(_kitId isEqualTo _selectedId);
-    (_display displayCtrl _secondary) buttonSetAction format ["uiNamespace setVariable ['BN_KOTH_menuKitSelectedId',%1]; ['LOADOUT_KITS'] call bn_koth_fnc_menu_refresh;", str _kitId];
+    (_display displayCtrl _primary) buttonSetAction format ["%1 call bn_koth_fnc_menu_loadSessionKit;", str [_kitId, "LOAD"]];
+    private _isSelected = _kitId isEqualTo _selectedId;
+    (_display displayCtrl _secondary) ctrlSetText (if (_isSelected) then {"EDIT"} else {"MANAGE"});
+    (_display displayCtrl _secondary) ctrlEnable true;
+    private _secondaryAction = if (_isSelected) then {
+        format ["%1 call bn_koth_fnc_menu_loadSessionKit;", str [_kitId, "EDIT"]]
+    } else {
+        format ["uiNamespace setVariable ['BN_KOTH_menuKitSelectedId',%1]; ['LOADOUT_KITS'] call bn_koth_fnc_menu_refresh;", str _kitId]
+    };
+    (_display displayCtrl _secondary) buttonSetAction _secondaryAction;
 } forEach _cards;

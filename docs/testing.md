@@ -420,10 +420,25 @@ A feature may be considered tested when:
 Run `functions/ui/menu/test_storeV1.sqf` in a client debug context and
 `functions/progression/acquisition/test_weaponAcquisition.sqf` on the server;
 both return `[]` on success. Hosted and dedicated tests must also verify
-canonical-only deterministic ordering, global WEST/EAST/BOTH visibility,
-level/mastery/perk locks, unconfigured-price safety, buy/rent outcomes,
-rental-to-owned upgrade, requester-only results, targeted progression repaint,
-and tab transitions without stale controls.
+root-to-category and category-to-product navigation, canonical-only deterministic
+weapon ordering, global WEST/EAST/BOTH weapon visibility, level/mastery/perk
+locks, unconfigured-price safety, buy/rent outcomes, rental-to-owned upgrade,
+requester-only results, targeted progression repaint, the exact curated vehicle
+surface (37 Ground, 29 Rotary Wing, 18 Fixed Wing, no SEA), real config pictures,
+disabled vehicle requisition actions, four-card pagination, Store-only operator
+panel collapse/restoration, Primary/Handgun/Launcher Arsenal handoff with target
+page snap/highlight, and tab transitions without stale controls.
+
+Also cycle Store -> Loadout -> Arsenal -> Configure -> Saved Loadouts several
+times and verify canonical title/subtitle/BACK/action/pagination geometry is
+restored without cumulative drift. Cross-side mastery-capable cards must expose
+current/required progress even below level; prohibited products must say
+`FACTION RESTRICTED`; unusable cross-side discovery products must remain absent
+from Arsenal. Saved-loadout LOAD feedback must follow successful authoritative
+application. EDIT must establish context only after the same validation path
+succeeds; SAVE CHANGES must update the selected local record without creating a
+duplicate, while CANCEL EDIT or closing the menu must leave the stored record
+unchanged.
 
 17. Vehicle Progression Metadata Checks
 

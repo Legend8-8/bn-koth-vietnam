@@ -77,5 +77,8 @@ private _keyMap = createHashMapFromArray [
 
 private _menuDisplay = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
 if (!isNull _menuDisplay) then {
+    if ((uiNamespace getVariable ["BN_KOTH_menuActivePage", ""]) isEqualTo "STORE") then {
+        uiNamespace setVariable ["BN_KOTH_menuStoreEntriesRoute", ""];
+    };
     [] call bn_koth_fnc_menu_refresh;
 };

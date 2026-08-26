@@ -179,12 +179,15 @@ private _entries = [];
         }
     };
 
-    // The Arsenal is the assigned faction's equipment surface. Omit only an
-    // explicit side-policy rejection; same-side progression locks remain in
-    // the entry list for normal locked/acquisition presentation.
+    // The Arsenal is the currently usable equipment surface. Cross-faction
+    // discovery remains in Store until shared entitlement says it is usable.
+    // Same-side progression locks remain visible as normal Arsenal cards.
+    private _crossSideUnusable =
+        (_entitlement getOrDefault ["crossSide", false])
+        && {!(_entitlement getOrDefault ["entitled", false])};
     if (
         ((_entitlement getOrDefault ["code", ""]) isEqualTo "LOCKED_SIDE")
-        || {_entitlement getOrDefault ["crossSide", false]}
+        || {_crossSideUnusable}
     ) then {continue;};
 
     _entries pushBack (createHashMapFromArray [
@@ -203,8 +206,15 @@ _pageCount = _pageCount max 1;
 
 private _page = uiNamespace getVariable ["BN_KOTH_menuBrowserPage", 0];
 if (uiNamespace getVariable ["BN_KOTH_menuBrowserSnapPending", false]) then {
-    private _appliedIndex = _entries findIf {(_x getOrDefault ["weaponClass", ""]) isEqualTo _intendedWeaponClass};
-    if (_appliedIndex >= 0) then {_page = floor (_appliedIndex / _pageSize)};
+    private _targetClass = toLower (uiNamespace getVariable ["BN_KOTH_menuBrowserTargetClass", ""]);
+    private _targetIndex = if !(_targetClass isEqualTo "") then {
+        _entries findIf {(_x getOrDefault ["weaponClass", ""]) isEqualTo _targetClass}
+    } else {
+        _entries findIf {(_x getOrDefault ["weaponClass", ""]) isEqualTo _intendedWeaponClass}
+    };
+    if (_targetIndex >= 0) then {_page = floor (_targetIndex / _pageSize)};
+    uiNamespace setVariable ["BN_KOTH_menuBrowserHighlightClass", if (_targetIndex >= 0) then {_targetClass} else {""}];
+    uiNamespace setVariable ["BN_KOTH_menuBrowserTargetClass", ""];
     uiNamespace setVariable ["BN_KOTH_menuBrowserSnapPending", false];
 };
 if !(_page isEqualType 0) then {_page = 0};
@@ -389,6 +399,9 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
         _x ctrlShow true;
     } forEach [_background, _imageArea, _image, _nameCtrl, _statusCtrl];
 
+    private _highlightClass = uiNamespace getVariable ["BN_KOTH_menuBrowserHighlightClass", ""];
+    private _backgroundColor = if (_entryWeaponClass isEqualTo _highlightClass) then {[0.20, 0.15, 0.08, 0.96]} else {[0.08, 0.08, 0.07, 0.92]};
+    _background ctrlSetBackgroundColor _backgroundColor;
     _imageArea ctrlSetBackgroundColor [0.025, 0.025, 0.022, 0.92];
     _image ctrlSetText (_entry getOrDefault ["picture", ""]);
     _nameCtrl ctrlSetText (_entry getOrDefault ["displayName", "UNKNOWN"]);

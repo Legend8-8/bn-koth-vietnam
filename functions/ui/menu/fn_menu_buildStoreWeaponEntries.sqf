@@ -55,6 +55,17 @@ private _sortable = [];
     if (_displayName isEqualTo "") then {_displayName = getText (_sourceCfg >> "displayName")};
     if (_displayName isEqualTo "") then {_displayName = toUpper _weaponClass};
 
+    private _storeCategory = switch (_weaponType) do {
+        case "handgun": {"SIDEARMS"};
+        case "launcher": {"LAUNCHERS"};
+        default {"PRIMARY"};
+    };
+    private _arsenalSlot = switch (_weaponType) do {
+        case "handgun": {"handgun"};
+        case "launcher": {"launcher"};
+        default {"primary"};
+    };
+
     private _entitlement = if !(_sideToken isEqualTo "") then {
         [_uid, _sideToken, _progression, _metadata, _weaponClass] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules
     } else {
@@ -69,6 +80,8 @@ private _sortable = [];
         ["displayName", _displayName],
         ["picture", getText (_weaponCfg >> "picture")],
         ["weaponType", _weaponType],
+        ["storeCategory", _storeCategory],
+        ["arsenalSlot", _arsenalSlot],
         ["metadata", _metadata],
         ["entitlement", _entitlement],
         ["owned", _weaponClass in _ownedWeapons],

@@ -1,8 +1,9 @@
 /*
     File: fn_menu_refreshStore.sqf
     Author: Legend
-    Description: Renders the global canonical weapon Store from cached
-        presentation state. Transactions are submitted to the server owner.
+    Description: Renders the paged Store discovery catalogue in the shared
+        item-card visual language. Weapon transactions retain their existing
+        server-owned path; vehicles remain presentation-only.
     Execution: Client
     Parameters:
         0: Menu display <DISPLAY>
@@ -12,143 +13,323 @@
 
 #include "..\..\..\ui\menu\idcs.hpp"
 
-disableSerialization;
 params [["_display", displayNull, [displayNull]]];
 if (isNull _display) exitWith {};
 
-private _title = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_TITLE;
-private _subtitle = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_CURRENT;
-private _list = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_LIST;
+private _cards = call bn_koth_fnc_menu_getItemCardControls;
+private _title = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_TITLE;
+private _subtitle = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_SUBTITLE;
+private _back = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_BACK;
+private _previous = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_PREVIOUS;
+private _next = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_NEXT;
+private _pageLabel = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL;
+private _preview = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_PREVIEW;
 private _detail = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_DETAIL;
-private _picture = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_PREVIEW;
-private _buy = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_BACK;
-private _rent = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_APPLY;
-private _storeBack = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_BACK;
-private _workspace = _display displayCtrl BN_KOTH_IDC_MENU_BG_BROWSER_WORKSPACE;
+private _primaryAction = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_BACK;
+private _secondaryAction = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_APPLY;
 
-private _workspacePosition = ctrlPosition _workspace;
-private _workspaceX = _workspacePosition select 0;
-private _workspaceY = _workspacePosition select 1;
-private _workspaceW = _workspacePosition select 2;
-private _workspaceH = _workspacePosition select 3;
-private _padX = safeZoneW * 0.014;
-private _columnGap = safeZoneW * 0.012;
-private _listW = _workspaceW * 0.43;
-private _detailX = _workspaceX + _workspaceW * 0.47;
-private _detailW = _workspaceX + _workspaceW - _padX - _detailX;
+private _menuX = safeZoneX + safeZoneW * 0.02;
+private _menuY = safeZoneY + safeZoneH * 0.03;
+private _menuW = safeZoneW * 0.96;
+private _menuH = safeZoneH * 0.94;
+private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
+private _mainH = _menuH * 0.78;
+private _padX = safeZoneW * 0.012;
+private _catalogueW = _menuW * 0.61;
+private _detailX = _menuX + _menuW * 0.64;
+private _detailW = _menuX + _menuW - _padX - _detailX;
 
-_title ctrlSetPosition [_workspaceX + _padX, _workspaceY + safeZoneH * 0.016, _listW, safeZoneH * 0.04];
-_subtitle ctrlSetPosition [_workspaceX + _padX, _workspaceY + safeZoneH * 0.054, _listW, safeZoneH * 0.03];
-_list ctrlSetPosition [_workspaceX + _padX, _workspaceY + safeZoneH * 0.092, _listW, _workspaceH - safeZoneH * 0.118];
-_picture ctrlSetPosition [_detailX, _workspaceY + safeZoneH * 0.088, _detailW, safeZoneH * 0.24];
-_detail ctrlSetPosition [_detailX, _workspaceY + safeZoneH * 0.342, _detailW, safeZoneH * 0.30];
-_buy ctrlSetPosition [_detailX, _workspaceY + _workspaceH - safeZoneH * 0.060, (_detailW - _columnGap) * 0.5, safeZoneH * 0.040];
-_rent ctrlSetPosition [_detailX + (_detailW + _columnGap) * 0.5, _workspaceY + _workspaceH - safeZoneH * 0.060, (_detailW - _columnGap) * 0.5, safeZoneH * 0.040];
-{
-    _x ctrlCommit 0;
-} forEach [_title, _subtitle, _list, _picture, _detail, _buy, _rent];
+_title ctrlSetPosition [_menuX + _padX, _mainY + safeZoneH * 0.016, _catalogueW, safeZoneH * 0.040];
+_subtitle ctrlSetPosition [_menuX + _padX, _mainY + safeZoneH * 0.054, _catalogueW, safeZoneH * 0.026];
+_back ctrlSetPosition [_detailX, _mainY + safeZoneH * 0.016, _detailW, safeZoneH * 0.040];
+_preview ctrlSetPosition [_detailX, _mainY + safeZoneH * 0.088, _detailW, safeZoneH * 0.285];
+_detail ctrlSetPosition [_detailX, _mainY + safeZoneH * 0.388, _detailW, safeZoneH * 0.260];
+private _actionGap = safeZoneW * 0.008;
+private _actionW = (_detailW - _actionGap) * 0.5;
+_primaryAction ctrlSetPosition [_detailX, _mainY + _mainH - safeZoneH * 0.060, _actionW, safeZoneH * 0.040];
+_secondaryAction ctrlSetPosition [_detailX + _actionW + _actionGap, _mainY + _mainH - safeZoneH * 0.060, _actionW, safeZoneH * 0.040];
+_previous ctrlSetPosition [_menuX + _catalogueW * 0.37, _mainY + _mainH - safeZoneH * 0.060, safeZoneW * 0.040, safeZoneH * 0.040];
+_pageLabel ctrlSetPosition [_menuX + _catalogueW * 0.45, _mainY + _mainH - safeZoneH * 0.060, safeZoneW * 0.090, safeZoneH * 0.040];
+_next ctrlSetPosition [_menuX + _catalogueW * 0.62, _mainY + _mainH - safeZoneH * 0.060, safeZoneW * 0.040, safeZoneH * 0.040];
+{_x ctrlCommit 0} forEach [_title, _subtitle, _back, _preview, _detail, _primaryAction, _secondaryAction, _previous, _pageLabel, _next];
+[_display, _menuX + _padX, _mainY + safeZoneH * 0.092, _catalogueW, _mainH - safeZoneH * 0.170] call bn_koth_fnc_menu_layoutItemCards;
 
-_title ctrlSetText "STORE";
-_subtitle ctrlSetText "GLOBAL CANONICAL WEAPONS";
-_storeBack ctrlSetText "BACK";
-_storeBack buttonSetAction "['LOADOUT'] call bn_koth_fnc_menu_refresh;";
-_buy ctrlSetText "BUY";
-_rent ctrlSetText "RENT";
-_buy buttonSetAction "";
-_rent buttonSetAction "";
-_buy ctrlSetEventHandler ["ButtonClick", ""];
-_rent ctrlSetEventHandler ["ButtonClick", ""];
-_buy ctrlEnable false;
-_rent ctrlEnable false;
-_list ctrlSetEventHandler ["LBSelChanged", ""];
-private _entries = [] call bn_koth_fnc_menu_buildStoreWeaponEntries;
+private _route = toUpper (uiNamespace getVariable ["BN_KOTH_menuStoreRoute", "ROOT"]);
+private _validRoutes = ["ROOT", "INFANTRY", "INFANTRY_PRIMARY", "INFANTRY_SIDEARMS", "INFANTRY_LAUNCHERS", "GROUND", "ROTARY", "FIXED_WING"];
+if !(_route in _validRoutes) then {_route = "ROOT"};
+uiNamespace setVariable ["BN_KOTH_menuStoreRoute", _route];
+
+private _makeCategory = {
+    params ["_routeId", "_displayName", "_description"];
+    createHashMapFromArray [
+        ["kind", "CATEGORY"], ["key", format ["C|%1", _routeId]], ["route", _routeId],
+        ["displayName", _displayName], ["description", _description], ["picture", ""]
+    ]
+};
+
+private _entryKind = "CATEGORY";
+private _breadcrumb = "STORE";
+private _routeSubtitle = "SELECT A CATEGORY";
+private _entries = [];
+private _cachedRoute = uiNamespace getVariable ["BN_KOTH_menuStoreEntriesRoute", ""];
+private _cachedEntries = uiNamespace getVariable ["BN_KOTH_menuStoreEntries", []];
+if !(_cachedEntries isEqualType []) then {_cachedEntries = []};
+
+switch (_route) do {
+    case "ROOT": {
+        _entries = [
+            ["INFANTRY", "INFANTRY", "Canonical infantry weapons grouped by operational role."] call _makeCategory,
+            ["GROUND", "GROUND VEHICLES", "Curated ground combat and transport progression products."] call _makeCategory,
+            ["ROTARY", "ROTARY WING", "Curated S.O.G. helicopter progression products."] call _makeCategory,
+            ["FIXED_WING", "FIXED WING", "Curated S.O.G. aircraft progression products."] call _makeCategory
+        ];
+    };
+    case "INFANTRY": {
+        _breadcrumb = "STORE > INFANTRY";
+        _entries = [
+            ["INFANTRY_PRIMARY", "PRIMARY", "Rifles, SMGs, shotguns, marksman and support weapons."] call _makeCategory,
+            ["INFANTRY_SIDEARMS", "SIDEARMS", "Canonical infantry handguns."] call _makeCategory,
+            ["INFANTRY_LAUNCHERS", "LAUNCHERS", "Canonical shoulder-fired launcher weapons."] call _makeCategory
+        ];
+    };
+    case "INFANTRY_PRIMARY";
+    case "INFANTRY_SIDEARMS";
+    case "INFANTRY_LAUNCHERS": {
+        _entryKind = "WEAPON";
+        private _category = _route select [9];
+        _breadcrumb = format ["STORE > INFANTRY > %1", _category];
+        _routeSubtitle = "DISCOVER, PURCHASE OR RENT CANONICAL WEAPONS";
+        _entries = if (_cachedRoute isEqualTo _route) then {_cachedEntries} else {
+            ([] call bn_koth_fnc_menu_buildStoreWeaponEntries) select {(_x getOrDefault ["storeCategory", ""]) isEqualTo _category}
+        };
+    };
+    default {
+        _entryKind = "VEHICLE";
+        private _label = switch (_route) do {case "GROUND": {"GROUND VEHICLES"}; case "ROTARY": {"ROTARY WING"}; default {"FIXED WING"}};
+        _breadcrumb = format ["STORE > %1", _label];
+        _routeSubtitle = "CURATED VEHICLE PROGRESSION CATALOGUE";
+        _entries = if (_cachedRoute isEqualTo _route) then {_cachedEntries} else {
+            ([] call bn_koth_fnc_menu_buildStoreVehicleEntries) select {(_x getOrDefault ["storeCategory", ""]) isEqualTo _route}
+        };
+    };
+};
+
 uiNamespace setVariable ["BN_KOTH_menuStoreEntries", _entries];
+uiNamespace setVariable ["BN_KOTH_menuStoreEntriesRoute", _route];
+_title ctrlSetText _breadcrumb;
+_subtitle ctrlSetText _routeSubtitle;
+
+private _backRoute = switch (_route) do {
+    case "ROOT": {"LOADOUT"};
+    case "INFANTRY": {"ROOT"};
+    case "INFANTRY_PRIMARY";
+    case "INFANTRY_SIDEARMS";
+    case "INFANTRY_LAUNCHERS": {"INFANTRY"};
+    default {"ROOT"};
+};
+if (_backRoute isEqualTo "LOADOUT") then {
+    _back buttonSetAction "uiNamespace setVariable ['BN_KOTH_menuStoreRoute','ROOT']; uiNamespace setVariable ['BN_KOTH_menuStoreSelectedKey','']; ['LOADOUT'] call bn_koth_fnc_menu_refresh;";
+} else {
+    _back buttonSetAction format ["uiNamespace setVariable ['BN_KOTH_menuStoreRoute',%1]; uiNamespace setVariable ['BN_KOTH_menuStoreSelectedKey','']; uiNamespace setVariable ['BN_KOTH_menuStorePage',0]; [] call bn_koth_fnc_menu_refresh;", str _backRoute];
+};
+
+private _pageSize = count _cards;
+private _pageCount = (ceil ((count _entries) / _pageSize)) max 1;
+private _page = uiNamespace getVariable ["BN_KOTH_menuStorePage", 0];
+if !(_page isEqualType 0) then {_page = 0};
+_page = (_page max 0) min (_pageCount - 1);
+uiNamespace setVariable ["BN_KOTH_menuStorePage", _page];
+_pageLabel ctrlSetText format ["PAGE %1 / %2", _page + 1, _pageCount];
+_previous ctrlEnable (_page > 0);
+_next ctrlEnable (_page < (_pageCount - 1));
+_previous buttonSetAction "private _p=uiNamespace getVariable ['BN_KOTH_menuStorePage',0]; uiNamespace setVariable ['BN_KOTH_menuStorePage',(_p-1) max 0]; uiNamespace setVariable ['BN_KOTH_menuStoreSelectedKey','']; [] call bn_koth_fnc_menu_refresh;";
+_next buttonSetAction "private _p=uiNamespace getVariable ['BN_KOTH_menuStorePage',0]; uiNamespace setVariable ['BN_KOTH_menuStorePage',_p+1]; uiNamespace setVariable ['BN_KOTH_menuStoreSelectedKey','']; [] call bn_koth_fnc_menu_refresh;";
 
 private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
 if !(_progression isEqualType createHashMap) then {_progression = createHashMap};
 private _cash = (_progression getOrDefault ["cash", 0]) max 0;
+private _selectedKey = uiNamespace getVariable ["BN_KOTH_menuStoreSelectedKey", ""];
+private _pageStart = _page * _pageSize;
+private _pageEntries = _entries select [_pageStart, _pageSize];
+private _selectedOnPage = _pageEntries findIf {
+    private _entry = _x;
+    private _key = switch (_entryKind) do {
+        case "CATEGORY": {_entry getOrDefault ["key", ""]};
+        case "WEAPON": {format ["W|%1", _entry getOrDefault ["weaponClass", ""]]};
+        default {format ["V|%1", _entry getOrDefault ["vehicleClass", ""]]};
+    };
+    _key isEqualTo _selectedKey
+};
+if (_selectedOnPage < 0 && {(count _pageEntries) > 0}) then {
+    private _first = _pageEntries select 0;
+    _selectedKey = switch (_entryKind) do {
+        case "CATEGORY": {_first getOrDefault ["key", ""]};
+        case "WEAPON": {format ["W|%1", _first getOrDefault ["weaponClass", ""]]};
+        default {format ["V|%1", _first getOrDefault ["vehicleClass", ""]]};
+    };
+    _selectedOnPage = 0;
+    uiNamespace setVariable ["BN_KOTH_menuStoreSelectedKey", _selectedKey];
+};
 
-private _selectedClass = uiNamespace getVariable ["BN_KOTH_menuStoreSelectedClass", ""];
-lbClear _list;
-private _selectedIndex = -1;
+{
+    private _controlIdcs = _x;
+    _controlIdcs params ["_bgIdc", "_imageAreaIdc", "_imageIdc", "_nameIdc", "_statusIdc", "_overlayIdc", "_lockIdc", "_primaryIdc", "_secondaryIdc"];
+    {
+        private _ctrl = _display displayCtrl _x;
+        _ctrl ctrlShow false;
+        if (_x in [_primaryIdc, _secondaryIdc]) then {_ctrl buttonSetAction ""; _ctrl ctrlEnable false};
+    } forEach _controlIdcs;
+} forEach _cards;
+
 {
     private _entry = _x;
-    private _rowState = [_entry, _cash] call bn_koth_fnc_menu_projectStoreWeaponState;
-    private _row = _list lbAdd format [
-        "%1  |  %2",
-        _entry getOrDefault ["displayName", "UNKNOWN"],
-        _rowState getOrDefault ["stateLabel", "UNAVAILABLE"]
-    ];
-    private _entryPicture = _entry getOrDefault ["picture", ""];
-    if !(_entryPicture isEqualTo "") then {_list lbSetPicture [_row, _entryPicture]};
-    _list lbSetData [_row, _entry getOrDefault ["weaponClass", ""]];
-    if ((_entry getOrDefault ["weaponClass", ""]) isEqualTo _selectedClass) then {_selectedIndex = _row};
-} forEach _entries;
-
-if ((count _entries) isEqualTo 0) exitWith {
-    _picture ctrlSetText "";
-    _detail ctrlSetText "GLOBAL WEAPON CATALOGUE UNAVAILABLE";
-    _buy ctrlShow false;
-    _rent ctrlShow false;
-};
-if (_selectedIndex < 0) then {_selectedIndex = 0};
-_list lbSetCurSel _selectedIndex;
-
-private _selected = _entries select _selectedIndex;
-private _weaponClass = _selected getOrDefault ["weaponClass", ""];
-uiNamespace setVariable ["BN_KOTH_menuStoreSelectedClass", _weaponClass];
-_picture ctrlSetText (_selected getOrDefault ["picture", ""]);
-
-private _metadata = _selected getOrDefault ["metadata", createHashMap];
-private _entitlement = _selected getOrDefault ["entitlement", createHashMap];
-private _state = [_selected, _cash] call bn_koth_fnc_menu_projectStoreWeaponState;
-private _allowedSides = _metadata getOrDefault ["allowedSides", []];
-private _sideLabel = if ((count _allowedSides) > 0) then {_allowedSides joinString " / "} else {"UNCONFIGURED"};
-private _purchasePrice = _state getOrDefault ["purchasePrice", -1];
-private _rentalPrice = _state getOrDefault ["rentalPrice", -1];
-private _purchaseText = if (_purchasePrice >= 0) then {[_purchasePrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
-private _rentalText = if (_rentalPrice >= 0) then {[_rentalPrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
-private _masteryKills = _selected getOrDefault ["masteryKills", _entitlement getOrDefault ["masteryKills", 0]];
-private _masteryKillsRequired = _metadata getOrDefault ["masteryKillsRequired", 0];
-private _masteryText = if (_entitlement getOrDefault ["crossSide", false]) then {
-    if (_masteryKills >= _masteryKillsRequired) then {
-        format ["MASTERY COMPLETE (%1 / %2)", _masteryKills, _masteryKillsRequired]
+    private _controls = _cards select _forEachIndex;
+    _controls params ["_bgIdc", "_imageAreaIdc", "_imageIdc", "_nameIdc", "_statusIdc", "_overlayIdc", "_lockIdc", "_primaryIdc", "_secondaryIdc"];
+    private _key = switch (_entryKind) do {
+        case "CATEGORY": {_entry getOrDefault ["key", ""]};
+        case "WEAPON": {format ["W|%1", _entry getOrDefault ["weaponClass", ""]]};
+        default {format ["V|%1", _entry getOrDefault ["vehicleClass", ""]]};
+    };
+    private _state = switch (_entryKind) do {
+        case "CATEGORY": {createHashMapFromArray [["stateLabel", _entry getOrDefault ["description", "OPEN CATEGORY"]]]};
+        case "WEAPON": {[_entry, _cash] call bn_koth_fnc_menu_projectStoreWeaponState};
+        default {[_entry] call bn_koth_fnc_menu_projectStoreVehicleState};
+    };
+    private _bg = _display displayCtrl _bgIdc;
+    private _imageArea = _display displayCtrl _imageAreaIdc;
+    private _image = _display displayCtrl _imageIdc;
+    private _name = _display displayCtrl _nameIdc;
+    private _status = _display displayCtrl _statusIdc;
+    private _overlay = _display displayCtrl _overlayIdc;
+    private _lock = _display displayCtrl _lockIdc;
+    private _select = _display displayCtrl _primaryIdc;
+    private _unused = _display displayCtrl _secondaryIdc;
+    {_x ctrlShow true} forEach [_bg, _imageArea, _image, _name, _status, _select];
+    private _selectedColor = if (_key isEqualTo _selectedKey) then {[0.20,0.15,0.08,0.96]} else {[0.08,0.08,0.07,0.92]};
+    _bg ctrlSetBackgroundColor _selectedColor;
+    _imageArea ctrlSetBackgroundColor [0.025,0.025,0.022,0.92];
+    _image ctrlSetText (_entry getOrDefault ["picture", ""]);
+    _name ctrlSetText (_entry getOrDefault ["displayName", "UNKNOWN"]);
+    _status ctrlSetText (_state getOrDefault ["stateLabel", "UNAVAILABLE"]);
+    private _blocking = _state getOrDefault ["blocking", false];
+    private _statusColor = if (_blocking) then {[0.94, 0.80, 0.34, 1]} else {[0.84, 0.82, 0.78, 0.92]};
+    private _statusFontHeight = (if (_blocking) then {0.020} else {0.017}) * safeZoneH;
+    _status ctrlSetTextColor _statusColor;
+    _status ctrlSetFontHeight _statusFontHeight;
+    _overlay ctrlShow false;
+    _lock ctrlShow false;
+    _unused ctrlShow false;
+    if (_entryKind isEqualTo "CATEGORY") then {
+        private _nextRoute = _entry getOrDefault ["route", "ROOT"];
+        _select ctrlSetText "OPEN";
+        _select ctrlEnable true;
+        _select buttonSetAction format ["uiNamespace setVariable ['BN_KOTH_menuStoreRoute',%1]; uiNamespace setVariable ['BN_KOTH_menuStoreSelectedKey','']; uiNamespace setVariable ['BN_KOTH_menuStorePage',0]; [] call bn_koth_fnc_menu_refresh;", str _nextRoute];
     } else {
-        format ["MASTERY: %1 / %2", _masteryKills, _masteryKillsRequired]
-    }
-} else {
-    "MASTERY: NOT REQUIRED"
+        private _selectText = if (_key isEqualTo _selectedKey) then {"SELECTED"} else {"SELECT"};
+        _select ctrlSetText _selectText;
+        _select ctrlEnable !(_key isEqualTo _selectedKey);
+        _select buttonSetAction format ["uiNamespace setVariable ['BN_KOTH_menuStoreSelectedKey',%1]; [] call bn_koth_fnc_menu_refresh;", str _key];
+    };
+} forEach _pageEntries;
+
+_primaryAction ctrlShow false;
+_secondaryAction ctrlShow false;
+_primaryAction buttonSetAction "";
+_secondaryAction buttonSetAction "";
+_preview ctrlSetText "";
+
+if ((count _pageEntries) isEqualTo 0) exitWith {
+    _detail ctrlSetText "NO PRODUCTS ARE CONFIGURED FOR THIS CATEGORY";
 };
-private _missingPerks = _entitlement getOrDefault ["missingPerks", []];
-private _perkText = if ((count _missingPerks) > 0) then {format ["MISSING PERKS: %1", _missingPerks joinString ", "]} else {"PERKS: READY"};
 
-_detail ctrlSetText format [
-    "%1\nTYPE: %2   KOTH AVAILABILITY: %3\nLEVEL: %4 / %5\n%6\n%7\nOWNERSHIP: %8\nBUY: %9   RENT: %10\nSTATUS: %11",
-    _selected getOrDefault ["displayName", toUpper _weaponClass],
-    toUpper (_selected getOrDefault ["weaponType", "weapon"]),
-    _sideLabel,
-    _progression getOrDefault ["level", 1],
-    _metadata getOrDefault ["minLevel", 1],
-    _masteryText,
-    _perkText,
-    if (_state getOrDefault ["owned", false]) then {"OWNED"} else {if (_state getOrDefault ["rented", false]) then {"RENTED"} else {"NONE"}},
-    _purchaseText,
-    _rentalText,
-    _state getOrDefault ["stateLabel", "UNAVAILABLE"]
-];
-
-private _canBuy = _state getOrDefault ["canBuy", false];
-private _canRent = _state getOrDefault ["canRent", false];
-_buy ctrlShow (_purchasePrice >= 0 && {!(_state getOrDefault ["owned", false])});
-_rent ctrlShow (_rentalPrice >= 0 && {!(_state getOrDefault ["owned", false])} && {!(_state getOrDefault ["rented", false])});
-_buy ctrlEnable (_canBuy && {_state getOrDefault ["canAffordPurchase", false]});
-_rent ctrlEnable (_canRent && {_state getOrDefault ["canAffordRental", false]});
-_buy ctrlSetText (if (_state getOrDefault ["owned", false]) then {"OWNED"} else {format ["BUY %1", _purchaseText]});
-_rent ctrlSetText (if (_state getOrDefault ["rented", false]) then {"RENTED"} else {format ["RENT %1", _rentalText]});
-_buy buttonSetAction format ["['PURCHASE', %1] call bn_koth_fnc_progression_requestWeaponAcquisition;", str _weaponClass];
-_rent buttonSetAction format ["['RENT', %1] call bn_koth_fnc_progression_requestWeaponAcquisition;", str _weaponClass];
-
-_list ctrlSetEventHandler [
-    "LBSelChanged",
-    "params ['_control', '_index']; if (_index >= 0) then {uiNamespace setVariable ['BN_KOTH_menuStoreSelectedClass', _control lbData _index]; [] call bn_koth_fnc_menu_refresh;}"
-];
+private _selected = _pageEntries select _selectedOnPage;
+_preview ctrlSetText (_selected getOrDefault ["picture", ""]);
+switch (_entryKind) do {
+    case "CATEGORY": {
+        _detail ctrlSetText ([_selected getOrDefault ["displayName", "CATEGORY"], "", _selected getOrDefault ["description", ""]] joinString endl);
+    };
+    case "WEAPON": {
+        private _weaponClass = _selected getOrDefault ["weaponClass", ""];
+        private _metadata = _selected getOrDefault ["metadata", createHashMap];
+        private _entitlement = _selected getOrDefault ["entitlement", createHashMap];
+        private _state = [_selected, _cash] call bn_koth_fnc_menu_projectStoreWeaponState;
+        private _purchasePrice = _state getOrDefault ["purchasePrice", -1];
+        private _rentalPrice = _state getOrDefault ["rentalPrice", -1];
+        private _purchaseText = if (_purchasePrice >= 0) then {[_purchasePrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
+        private _rentalText = if (_rentalPrice >= 0) then {[_rentalPrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
+        private _missingPerks = _entitlement getOrDefault ["missingPerks", []];
+        private _crossSide = _state getOrDefault ["crossSide", false];
+        private _crossSideAllowed = _state getOrDefault ["crossSideAllowed", false];
+        private _sideText = if (!_crossSide) then {
+            "NATIVE FACTION"
+        } else {
+            if (_crossSideAllowed) then {"CROSS-FACTION MASTERY"} else {"FACTION RESTRICTED"}
+        };
+        private _masteryText = if (_crossSide && {_crossSideAllowed}) then {
+            format ["%1 / %2 KILLS", _state getOrDefault ["masteryKills", 0], _state getOrDefault ["masteryRequired", 0]]
+        } else {
+            if (_crossSide) then {"N/A - FACTION RESTRICTED"} else {"N/A - NATIVE FACTION"}
+        };
+        private _ownershipText = if (_state getOrDefault ["owned", false]) then {"OWNED"} else {if (_state getOrDefault ["rented", false]) then {"RENTED"} else {"NOT ACQUIRED"}};
+        private _detailLines = [
+            _selected getOrDefault ["displayName", toUpper _weaponClass],
+            "",
+            format ["TYPE / CATEGORY: %1 / %2", toUpper (_selected getOrDefault ["weaponType", "weapon"]), _selected getOrDefault ["storeCategory", "INFANTRY"]],
+            format ["LEVEL: %1 / %2", _progression getOrDefault ["level", 1], _metadata getOrDefault ["minLevel", 1]],
+            format ["MASTERY: %1", _masteryText],
+            format ["SIDE: %1", _sideText]
+        ];
+        _detailLines append [
+            "",
+            "ACQUISITION",
+            format ["PURCHASE %1", _purchaseText],
+            format ["RENTAL %1", _rentalText],
+            format ["OWNERSHIP %1", _ownershipText],
+            "",
+            format ["PERKS: %1", if ((count _missingPerks) > 0) then {_missingPerks joinString ", "} else {"READY"}],
+            "",
+            "STATUS",
+            _state getOrDefault ["stateLabel", "UNAVAILABLE"]
+        ];
+        _detail ctrlSetText (_detailLines joinString endl);
+        private _owned = _state getOrDefault ["owned",false];
+        private _rented = _state getOrDefault ["rented",false];
+        private _canEquipInArsenal = (_owned || {_rented}) && {_entitlement getOrDefault ["entitled", false]};
+        if (_canEquipInArsenal) then {
+            private _slot = _selected getOrDefault ["arsenalSlot", "primary"];
+            _primaryAction ctrlShow true;
+            _primaryAction ctrlEnable true;
+            _primaryAction ctrlSetText "EQUIP IN ARSENAL";
+            _primaryAction buttonSetAction format ["uiNamespace setVariable ['BN_KOTH_menuBrowserSlot',%1]; uiNamespace setVariable ['BN_KOTH_menuBrowserTargetClass',%2]; uiNamespace setVariable ['BN_KOTH_menuBrowserSnapPending',true]; uiNamespace setVariable ['BN_KOTH_menuBrowserPage',0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;", str _slot, str _weaponClass];
+        } else {
+            _primaryAction ctrlShow ((_purchasePrice >= 0) && {!_owned});
+            _secondaryAction ctrlShow ((_rentalPrice >= 0) && {!_owned} && {!_rented});
+            _primaryAction ctrlEnable ((_state getOrDefault ["canBuy",false]) && {_state getOrDefault ["canAffordPurchase",false]});
+            _secondaryAction ctrlEnable ((_state getOrDefault ["canRent",false]) && {_state getOrDefault ["canAffordRental",false]});
+            _primaryAction ctrlSetText format ["BUY %1",_purchaseText];
+            _secondaryAction ctrlSetText format ["RENT %1",_rentalText];
+            _primaryAction buttonSetAction format ["['PURCHASE',%1] call bn_koth_fnc_progression_requestWeaponAcquisition;",str _weaponClass];
+            _secondaryAction buttonSetAction format ["['RENT',%1] call bn_koth_fnc_progression_requestWeaponAcquisition;",str _weaponClass];
+        };
+    };
+    default {
+        private _metadata = _selected getOrDefault ["metadata",createHashMap];
+        private _state = [_selected] call bn_koth_fnc_menu_projectStoreVehicleState;
+        private _allowedSides = _metadata getOrDefault ["allowedSides",[]];
+        private _purchasePrice = _state getOrDefault ["purchasePrice",-1];
+        private _rentalPrice = _state getOrDefault ["rentalPrice",-1];
+        private _vehicleDetail = format [
+            "%1|CATEGORY: %2|ROLE: %3|KOTH AVAILABILITY: %4|LEVEL: %5 / %6|BUY: %7   RENT: %8|STATUS: %9",
+            _selected getOrDefault ["displayName","VEHICLE"], _metadata getOrDefault ["storeCategory",""], _metadata getOrDefault ["vehicleRole",""],
+            if ((count _allowedSides)>0) then {_allowedSides joinString " / "} else {"UNCONFIGURED"},
+            _progression getOrDefault ["level",1], _metadata getOrDefault ["minLevel",1],
+            if (_purchasePrice>=0) then {[_purchasePrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"},
+            if (_rentalPrice>=0) then {[_rentalPrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"},
+            _state getOrDefault ["stateLabel","UNAVAILABLE"]
+        ];
+        _detail ctrlSetText ((_vehicleDetail splitString "|") joinString endl);
+        _primaryAction ctrlShow true;
+        _primaryAction ctrlEnable false;
+        _primaryAction ctrlSetText "VEHICLE REQUISITION COMING SOON";
+    };
+};

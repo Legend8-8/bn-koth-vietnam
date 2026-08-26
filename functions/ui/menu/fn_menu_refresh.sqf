@@ -65,10 +65,14 @@ private _ctrlHeaderXp = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_XP;
 private _ctrlHeaderCash = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_CASH;
 private _ctrlHeaderXpTrack = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_TRACK;
 private _ctrlHeaderXpFill = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_FILL;
+private _ctrlBgLeft = _display displayCtrl BN_KOTH_IDC_MENU_BG_LEFT;
 private _ctrlBrowserWorkspace = _display displayCtrl BN_KOTH_IDC_MENU_BG_BROWSER_WORKSPACE;
+private _ctrlOperatorTitle = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_TITLE;
 private _ctrlOperatorName = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_NAME;
 private _ctrlOperatorTeam = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_TEAM;
+private _ctrlOperatorRoleLabel = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_ROLE_LABEL;
 private _ctrlOperatorRole = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_ROLE_VALUE;
+private _ctrlPlayerPreview = _display displayCtrl BN_KOTH_IDC_MENU_PLAYER_PREVIEW;
 private _ctrlSectionTitle = _display displayCtrl BN_KOTH_IDC_MENU_SECTION_TITLE;
 private _ctrlNotice = _display displayCtrl BN_KOTH_IDC_MENU_NOTICE;
 private _ctrlFooter = _display displayCtrl BN_KOTH_IDC_MENU_FOOTER_TEXT;
@@ -360,14 +364,76 @@ private _kitManagerControls = [_ctrlKitName, _ctrlKitSave, _ctrlKitRename];
 // visibility, geometry, text, and actions while STORE is active.
 private _storeViewControls = [
     _ctrlPrimaryPreview,
-    _ctrlPrimaryTitle,
-    _ctrlPrimaryCurrent,
-    _ctrlPrimaryList,
     _ctrlPrimaryDetail,
     _ctrlPrimaryBack,
     _ctrlPrimaryApply,
-    _ctrlBrowserBack
+    _ctrlBrowserTitle,
+    _ctrlBrowserSubtitle,
+    _ctrlBrowserBack,
+    _ctrlBrowserPagePrevious,
+    _ctrlBrowserPageNext,
+    _ctrlBrowserPageLabel
 ];
+
+private _operatorControls = [
+    _ctrlBgLeft,
+    _ctrlOperatorTitle,
+    _ctrlOperatorName,
+    _ctrlOperatorTeam,
+    _ctrlOperatorRoleLabel,
+    _ctrlOperatorRole,
+    _ctrlPlayerPreview
+];
+
+private _setDefaultWorkspaceGeometry = {
+    private _menuX = safeZoneX + safeZoneW * 0.02;
+    private _menuY = safeZoneY + safeZoneH * 0.03;
+    private _menuW = safeZoneW * 0.96;
+    private _menuH = safeZoneH * 0.94;
+    private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
+    private _mainH = _menuH * 0.78;
+    private _gap = safeZoneW * 0.01;
+    private _leftW = _menuW * 0.34;
+    private _centerW = _menuW * 0.28;
+    private _centerX = _menuX + _leftW + _gap;
+    private _browserX = _menuX + _leftW + _gap;
+    private _browserW = _menuW - _leftW - _gap;
+
+    _ctrlBrowserWorkspace ctrlSetPosition [_browserX, _mainY, _browserW, _mainH];
+    _ctrlBrowserTitle ctrlSetPosition [_browserX + safeZoneW * 0.014, _mainY + safeZoneH * 0.016, _browserW * 0.40, safeZoneH * 0.035];
+    _ctrlBrowserSubtitle ctrlSetPosition [_browserX + safeZoneW * 0.014, _mainY + safeZoneH * 0.052, _browserW * 0.40, safeZoneH * 0.024];
+    _ctrlBrowserBack ctrlSetPosition [_browserX + _browserW - safeZoneW * 0.128, _mainY + safeZoneH * 0.020, safeZoneW * 0.110, safeZoneH * 0.038];
+    _ctrlPrimaryPreview ctrlSetPosition [_menuX + _leftW * 0.08, _mainY + safeZoneH * 0.215, _leftW * 0.84, safeZoneH * 0.30];
+    _ctrlPrimaryDetail ctrlSetPosition [_centerX + safeZoneW * 0.012, _mainY + safeZoneH * 0.404, _centerW * 0.92, safeZoneH * 0.085];
+    _ctrlPrimaryBack ctrlSetPosition [_centerX + safeZoneW * 0.012, _mainY + _mainH - safeZoneH * 0.095, _centerW * 0.44, safeZoneH * 0.04];
+    _ctrlPrimaryApply ctrlSetPosition [_centerX + _centerW * 0.48, _mainY + _mainH - safeZoneH * 0.095, _centerW * 0.44, safeZoneH * 0.04];
+    _ctrlBrowserPagePrevious ctrlSetPosition [_browserX + _browserW * 0.38, _mainY + _mainH - safeZoneH * 0.060, safeZoneW * 0.038, safeZoneH * 0.034];
+    _ctrlBrowserPageNext ctrlSetPosition [_browserX + _browserW * 0.58, _mainY + _mainH - safeZoneH * 0.060, safeZoneW * 0.038, safeZoneH * 0.034];
+    _ctrlBrowserPageLabel ctrlSetPosition [_browserX + _browserW * 0.43, _mainY + _mainH - safeZoneH * 0.056, _browserW * 0.15, safeZoneH * 0.028];
+    {
+        _x ctrlCommit 0;
+    } forEach [
+        _ctrlBrowserWorkspace,
+        _ctrlBrowserTitle,
+        _ctrlBrowserSubtitle,
+        _ctrlBrowserBack,
+        _ctrlPrimaryPreview,
+        _ctrlPrimaryDetail,
+        _ctrlPrimaryBack,
+        _ctrlPrimaryApply,
+        _ctrlBrowserPagePrevious,
+        _ctrlBrowserPageNext,
+        _ctrlBrowserPageLabel
+    ];
+
+    _ctrlBrowserBack buttonSetAction "['LOADOUT'] call bn_koth_fnc_menu_refresh;";
+    _ctrlPrimaryBack buttonSetAction "if (((uiNamespace getVariable ['BN_KOTH_menuActivePage', '']) isEqualTo 'LOADOUT_EQUIPMENT') && {(uiNamespace getVariable ['BN_KOTH_menuAssignedStage', 1]) isEqualTo 2}) then {uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; ['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;} else {['LOADOUT'] call bn_koth_fnc_menu_refresh;};";
+    _ctrlPrimaryApply buttonSetAction "[] call bn_koth_fnc_menu_applyPrimary;";
+    _ctrlBrowserPagePrevious buttonSetAction "";
+    _ctrlBrowserPageNext buttonSetAction "";
+
+    [_display, _browserX + safeZoneW * 0.010, _mainY + safeZoneH * 0.105, _browserW - safeZoneW * 0.020, _mainH - safeZoneH * 0.170] call bn_koth_fnc_menu_layoutItemCards;
+};
 
 {
     _browserCardControls append [
@@ -397,6 +463,8 @@ private _navControls = [
 ];
 
 private _showMainView = {
+    call _setDefaultWorkspaceGeometry;
+    {_x ctrlShow true} forEach _operatorControls;
     _ctrlBrowserWorkspace ctrlShow false;
     { _x ctrlShow true; } forEach _mainViewControls;
     { _x ctrlShow false; } forEach _selectorViewControls;
@@ -409,6 +477,8 @@ private _showMainView = {
 };
 
 private _showSelectorView = {
+    call _setDefaultWorkspaceGeometry;
+    {_x ctrlShow true} forEach _operatorControls;
     _ctrlBrowserWorkspace ctrlShow false;
     { _x ctrlShow false; } forEach _mainViewControls;
     { _x ctrlShow true; } forEach _selectorViewControls;
@@ -421,6 +491,8 @@ private _showSelectorView = {
 };
 
 private _showBrowserView = {
+    call _setDefaultWorkspaceGeometry;
+    {_x ctrlShow true} forEach _operatorControls;
     _ctrlBrowserWorkspace ctrlShow true;
     { _x ctrlShow false; } forEach _mainViewControls;
     { _x ctrlShow false; } forEach _selectorViewControls;
@@ -449,6 +521,15 @@ private _showComingSoon = {
 };
 
 private _showStoreView = {
+    private _menuX = safeZoneX + safeZoneW * 0.02;
+    private _menuY = safeZoneY + safeZoneH * 0.03;
+    private _menuW = safeZoneW * 0.96;
+    private _menuH = safeZoneH * 0.94;
+    private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
+    private _mainH = _menuH * 0.78;
+    _ctrlBrowserWorkspace ctrlSetPosition [_menuX, _mainY, _menuW, _mainH];
+    _ctrlBrowserWorkspace ctrlCommit 0;
+    {_x ctrlShow false} forEach _operatorControls;
     _ctrlBrowserWorkspace ctrlShow true;
     { _x ctrlShow false; } forEach _mainViewControls;
     { _x ctrlShow false; } forEach _selectorViewControls;
