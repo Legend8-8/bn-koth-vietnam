@@ -425,7 +425,7 @@ weapon ordering, global WEST/EAST/BOTH weapon visibility, level/mastery/perk
 locks, unconfigured-price safety, buy/rent outcomes, rental-to-owned upgrade,
 requester-only results, targeted progression repaint, the exact curated vehicle
 surface (37 Ground, 29 Rotary Wing, 18 Fixed Wing, no SEA), real config pictures,
-disabled vehicle requisition actions, four-card pagination, Store-only operator
+disabled vehicle actions while locked, four-card pagination, Store-only operator
 panel collapse/restoration, Primary/Handgun/Launcher Arsenal handoff with target
 page snap/highlight, and tab transitions without stale controls.
 
@@ -454,7 +454,74 @@ acyclic canonical links, policy-free structural entries, deterministic Store
 projection, curated product count, the reserved SEA category boundary,
 side/level eligibility and absence of weapon mastery policy.
 
-Hosted and dedicated testing must also confirm that existing managed free and
-command vehicles still spawn and recycle exactly as before. No purchase/rent
-or paid vehicle spawn should be expected yet: the current slice has no public
-request endpoint and mutates no cash, ownership or vehicle state.
+Hosted and dedicated testing must confirm that existing managed free and
+command vehicles still spawn and recycle exactly as before. For paid rentals,
+run:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\vehicles\test_rental.sqf"
+```
+
+An empty array is a pass. Then verify: RENT is the complete transaction (a
+successful RENT immediately spawns the active vehicle in the same request,
+with no separate requisition/pending step); cash is deducted exactly once and
+only after the vehicle exists; a blocked spawn (occupied pads and no safe
+fallback) leaves no vehicle, no active record and no charge, and the player
+remains `AVAILABLE TO RENT`; destroyed/cleaned vehicles restore nothing and
+begin cooldown; cargo is empty while mounted armament remains; owner/group/
+public access is enforced; occupied pads cannot collide; disconnect does not
+instantly delete occupied vehicles; and restart clears all rental state.
+
+18. Development Progression Debug Script
+
+`functions/progression/test_setProgression.sqf` is a standalone, non-registered
+developer script for quickly staging Store/vehicle test states (level, cash,
+optionally one canonical weapon's mastery kill count) on a hosted or dedicated
+server. It grants no client-callable endpoint. Edit the `_targetPlayer`,
+`_targetLevel`, `_targetCash`, and optional `_debugWeaponClass`/
+`_debugMasteryKills` values at the top of the file, then paste the file's
+contents into the server-side debug console (select "Server" execution) and
+run it, or execute:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_setProgression.sqf"
+```
+
+The target player must already be registered (joined and assigned a side).
+The script derives XP from the existing level curve, adds/reduces XP and cash
+through the existing authoritative progression APIs, marks persistence dirty
+normally, and publishes the normal targeted progression update. Result UID,
+XP, level and cash print to RPT and `systemChat`.
+
+19. Arsenal Direct Weapon Acquisition
+
+Native-side Arsenal browser cards now show `BUY $X`/`RENT $Y` in place of
+`APPLY`/`CONFIGURE` while entitlement is `REQUIRES_ACQUISITION` (side, level,
+mastery and perks already satisfied, ownership/rental still missing), and
+submit through the exact same `bn_koth_fnc_progression_requestWeaponAcquisition`
+endpoint Store uses. Verify:
+
+- a below-level native weapon shows `LOCKED · LEVEL N` with no BUY/RENT;
+- a level-eligible unacquired native weapon shows `AVAILABLE TO ACQUIRE` with
+  BUY/RENT enabled only up to the player's current cash;
+- BUY/RENT from Arsenal succeeds without a Store round-trip, and the card
+  becomes `OWNED`/`RENTED` with normal `APPLY`/`CONFIGURE` actions, staying on
+  the same browser slot/page;
+- an insufficient-cash attempt is rejected server-side with the existing
+  notification, and the card state is unchanged;
+- a cross-faction weapon with incomplete mastery never appears in the Arsenal
+  browser at all, while it remains discoverable/acquirable in Store;
+- once that cross-faction weapon is fully entitled (owned/rented, mastery
+  complete, perks satisfied), it appears in Arsenal like a native weapon;
+- Store weapon BUY/RENT continues to work unchanged from Store.
+
+20. Vehicle Rental RPT Audit Trail
+
+`functions/vehicles/fn_rentVehicle.sqf` logs every RENT outcome to RPT. A
+successful RENT logs UID, canonical class, pad id (or `FALLBACK`), spawn
+position, `netId` and cash charged; a failed RENT logs UID, requested class,
+code and exact reason, with no charge. Verify the Store card only ever shows
+`AVAILABLE TO RENT` (or `LOCKED`/`INSUFFICIENT CASH`/`COOLDOWN`) before a
+successful RENT, and `VEHICLE ACTIVE` only after a logged `RENTED` success with
+a real `netId`. There is no `REQUISITION` action, no `RENTAL READY` state, and
+no pending-rental state anywhere in the client or server rental payloads.

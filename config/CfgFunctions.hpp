@@ -212,6 +212,14 @@ class CfgFunctions
             class vehicles_requestSpawn {file = "functions\vehicles\fn_requestSpawn.sqf";};
             class vehicles_getProgressionMetadata {file = "functions\vehicles\fn_getProgressionMetadata.sqf";};
             class vehicles_evaluateProgressionRules {file = "functions\vehicles\fn_evaluateProgressionRules.sqf";};
+            class vehicles_getRentalState {file = "functions\vehicles\fn_getRentalState.sqf";};
+            class vehicles_requestRental {file = "functions\vehicles\fn_requestRental.sqf";};
+            class vehicles_rentVehicle {file = "functions\vehicles\fn_rentVehicle.sqf";};
+            class vehicles_setRentalAccess {file = "functions\vehicles\fn_setRentalAccess.sqf";};
+            class vehicles_endRentalLife {file = "functions\vehicles\fn_endRentalLife.sqf";};
+            class vehicles_receiveRentalResult {file = "functions\vehicles\fn_receiveRentalResult.sqf";};
+            class vehicles_forceOutRentalVehicle {file = "functions\vehicles\fn_forceOutRentalVehicle.sqf";};
+            class vehicles_addRentalOwnerActions {file = "functions\vehicles\fn_addRentalOwnerActions.sqf";};
             class vehicles_mobileRespawn_init {file = "functions\vehicles\mobile_respawn\fn_init.sqf";};
             class vehicles_mobileRespawn_monitor {file = "functions\vehicles\mobile_respawn\fn_serverRespawnLoop.sqf";};
             class vehicles_mobileRespawn_initTeleport {file = "functions\vehicles\mobile_respawn\fn_initTeleport.sqf";};

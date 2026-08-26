@@ -25,6 +25,17 @@ class CfgBnKothVehicles
     // Anti-spam delay between server-authoritative command-teleport requests.
     commandTeleportRequestCooldownSeconds = 10;
 
+    // One-life paid vehicle rental policy: RENT is one immediate authoritative
+    // spawn transaction; there is no separate requisition step.
+    rentalCooldownSeconds = 90;
+    rentedWreckCleanupSeconds = 180;
+    rentedAbandonmentSeconds = 600;
+    rentedOwnerDisconnectCleanupSeconds = 600;
+    paidSpawnClearanceMeters = 12;
+    paidFallbackSpawnRadiusMeters = 50;
+    paidSpawnMinimumSurfaceNormalZ = 0.85;
+    vehicleRentalRequestCooldownSeconds = 0.5;
+
     // Default vehicle classes per category.
     groundVehicleClass = "vn_b_wheeled_m54_02_sog";
     airVehicleClass = "vn_b_air_ch47_02_01";

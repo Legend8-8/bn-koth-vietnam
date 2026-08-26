@@ -51,6 +51,24 @@ missionNamespace setVariable ["BN_KOTH_vehicleRespawnCooldownSeaSeconds", _coold
 
 missionNamespace setVariable ["BN_KOTH_vehicleManagedSlots", createHashMap];
 missionNamespace setVariable ["BN_KOTH_vehicleManagedSlotIds", []];
+missionNamespace setVariable ["BN_KOTH_vehicleActiveRentals", createHashMap];
+missionNamespace setVariable ["BN_KOTH_vehicleRentalCooldowns", createHashMap];
+missionNamespace setVariable ["BN_KOTH_vehiclePaidPadReservations", createHashMap];
+
+private _paidPads = [];
+{
+    private _name = toLower (vehicleVarName _x);
+    if (_name find "_paid_" < 0 || {_name find "_spawnpoint" < 0}) then {continue};
+    private _category = if (_name find "_paid_ground_" >= 0) then {"GROUND"} else {
+        if (_name find "_paid_air_" >= 0) then {"AIR"} else {if (_name find "_paid_sea_" >= 0) then {"SEA"} else {""}}
+    };
+    private _sideToken = if (_name find "_west_" >= 0) then {"WEST"} else {if (_name find "_east_" >= 0) then {"EAST"} else {""}};
+    private _location = _name select [0, _name find "_"];
+    if !(_category isEqualTo "" || {_sideToken isEqualTo ""}) then {
+        _paidPads pushBack (createHashMapFromArray [["id",_name],["object",_x],["position",getPosATL _x],["direction",getDir _x],["category",_category],["side",_sideToken],["location",_location]]);
+    };
+} forEach (allMissionObjects "Land_vn_helipadsquare_f");
+missionNamespace setVariable ["BN_KOTH_vehiclePaidPads", _paidPads];
 missionNamespace setVariable ["BN_KOTH_vehicleSystemInitialized", true];
 
 if !(missionNamespace getVariable ["BN_KOTH_vehicleMonitorRunning", false]) then {
@@ -70,3 +88,4 @@ if !(missionNamespace getVariable ["BN_KOTH_vehicleMonitorRunning", false]) then
     _cooldownAir,
     _cooldownSea
 ], "INFO"] call bn_koth_fnc_common_log;
+[format ["Paid vehicle rental pads cached: %1", count _paidPads], "INFO"] call bn_koth_fnc_common_log;

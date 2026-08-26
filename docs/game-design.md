@@ -182,15 +182,18 @@ entitlement presentation.
 8. Vehicles
 
 The current mission uses a server-managed limited free-vehicle selection.
-Human-authored metadata now defines provisional level, side, price, Store
+Human-authored metadata defines provisional level, side, rental price, Store
 category and role policy for the one-time imported public EAST/WEST S.O.G.
-factual audit's curated combat-vehicle progression set. This metadata does not
-change the free lifecycle and is not yet an acquisition system.
+factual audit's curated combat-vehicle progression set. Curated vehicles are
+rent-only: one RENT press is the complete transaction, spawning the vehicle and
+charging cash together, and destruction or authoritative cleanup ends that life
+without refund. There is no permanent vehicle ownership or server-session
+unlimited vehicle unlock. The free lifecycle remains separate.
 
 The initial product surface uses ground, rotary-wing and fixed-wing categories;
 sea remains reserved for a later curated pass. Vehicle unlocks are broad
-account milestones and do not use weapon mastery. Purchase/rental balance is provisional. Authoritative
-requisition, active purchased-vehicle limits, persistence, final prices and
+account milestones and do not use weapon mastery. Purchase/rental balance is
+provisional. Active purchased-vehicle limits, persistence, final prices and
 transport rewards remain future work.
 
 Helicopter transport should be an important part of the Vietnam setting.

@@ -295,3 +295,14 @@ server resolves the player and UID from `remoteExecutedOwner`, invokes the
 existing server-only acquisition API, targets the result to that owner, and
 publishes changed cash/ownership/rental state through the existing player-only
 progression update. Store requests never broadcast and never equip equipment.
+
+14. Vehicle Rental Requests
+
+Clients submit only RENT or owner access-mode intent. The server derives the
+UID from `remoteExecutedOwner`, validates current side/level/perks, cash and
+active-rental state, selects/reserves a cached authored paid pad, creates the
+vehicle server-local, and only then deducts cash — all as one transaction with
+no separate requisition step. The active rental map is server-only; only the
+requesting client receives their projected state. Get-in authorization is
+checked from server-owned UID/access data. A narrowly allowlisted
+server-to-owner endpoint performs locality-sensitive ejection.

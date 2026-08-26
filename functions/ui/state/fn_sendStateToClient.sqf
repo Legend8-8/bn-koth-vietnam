@@ -44,6 +44,7 @@ private _payload = createHashMapFromArray [
     ["roundState", missionNamespace getVariable ["BN_KOTH_roundState", "WAITING"]],
     ["liveLeaders", missionNamespace getVariable ["BN_KOTH_liveLeaders", createHashMap]],
     ["playerProgression", _playerProgressionPayload],
+    ["vehicleRentalState", [_targetUid] call bn_koth_fnc_vehicles_getRentalState],
     ["playerStates", missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap]],
     ["playerTeamAssignments", missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap]],
     ["playerNames", missionNamespace getVariable ["BN_KOTH_playerNames", createHashMap]],

@@ -84,10 +84,10 @@ Vehicle progression metadata is separately human-authored under
 `CfgBnKothVehicles >> Metadata >> Vehicles`. Its explicit `storeCategory`
 (`GROUND`, `SEA`, `ROTARY`, or `FIXED_WING`) and `vehicleRole` fields prepare
 future Store grouping without classname heuristics. Vehicle progression does
-not use weapon mastery. Levels and prices are provisional; persistence and an
-authoritative vehicle requisition/acquisition transaction remain future work.
-The existing managed free-vehicle system is unchanged and does not treat these
-prices as a spawn requirement.
+not use weapon mastery. Levels and prices are provisional; an authoritative
+one-life RENT transaction exists (see `functions/vehicles/fn_rentVehicle.sqf`),
+but persistence does not. The existing managed free-vehicle system is
+unchanged and does not treat these prices as a spawn requirement.
 
 `data/vehicle_inventory.csv` is a one-time factual audit of the official S.O.G.
 EAST/WEST CfgVehicles tables, not a maintained scraper output. Factual side,

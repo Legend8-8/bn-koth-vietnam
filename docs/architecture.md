@@ -436,9 +436,12 @@ current metadata authors only a curated combat-progression surface and
 declares no vehicle `variantOf` relationships. Paint, faction and support-only
 copies remain audit rows, not progression products.
 
-`functions/vehicles/` owns config lookup and the pure side/level/perk
-eligibility interpretation. No authoritative vehicle acquisition endpoint
-currently exists. The managed free-vehicle and command-vehicle lifecycles
-remain separate server-owned systems and do not consume this metadata yet.
-A later requisition slice must validate eligibility, cash and acquisition on
-the server before server-owned creation; clients may submit intent only.
+`functions/vehicles/` owns config lookup, pure side/level/perk eligibility and
+the authoritative one-life rental lifecycle. RENT is the complete transaction:
+it validates eligibility and affordability, reserves an authored paid pad,
+creates and sanitizes the exact curated vehicle, registers UID-owned access
+state, and only then charges cash exactly once. One UID may hold at most one
+active rented vehicle at a time; there is no pending/requisition stage. Rental
+state never persists. The managed free-vehicle and command-vehicle lifecycles
+remain separate, and a
+rented M577 receives no managed command capability.

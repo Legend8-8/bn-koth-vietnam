@@ -29,6 +29,30 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_vehicles_requestRental
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_vehicles_receiveRentalResult
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_vehicles_forceOutRentalVehicle
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_vehicles_addRentalOwnerActions
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_loadouts_receiveValidatedLoadout
         {
             allowedTargets = 1;

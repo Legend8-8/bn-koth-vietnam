@@ -313,23 +313,25 @@ switch (_entryKind) do {
         };
     };
     default {
+        private _vehicleClass = _selected getOrDefault ["vehicleClass",""];
         private _metadata = _selected getOrDefault ["metadata",createHashMap];
         private _state = [_selected] call bn_koth_fnc_menu_projectStoreVehicleState;
         private _allowedSides = _metadata getOrDefault ["allowedSides",[]];
-        private _purchasePrice = _state getOrDefault ["purchasePrice",-1];
         private _rentalPrice = _state getOrDefault ["rentalPrice",-1];
-        private _vehicleDetail = format [
-            "%1|CATEGORY: %2|ROLE: %3|KOTH AVAILABILITY: %4|LEVEL: %5 / %6|BUY: %7   RENT: %8|STATUS: %9",
-            _selected getOrDefault ["displayName","VEHICLE"], _metadata getOrDefault ["storeCategory",""], _metadata getOrDefault ["vehicleRole",""],
-            if ((count _allowedSides)>0) then {_allowedSides joinString " / "} else {"UNCONFIGURED"},
-            _progression getOrDefault ["level",1], _metadata getOrDefault ["minLevel",1],
-            if (_purchasePrice>=0) then {[_purchasePrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"},
-            if (_rentalPrice>=0) then {[_rentalPrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"},
-            _state getOrDefault ["stateLabel","UNAVAILABLE"]
-        ];
-        _detail ctrlSetText ((_vehicleDetail splitString "|") joinString endl);
-        _primaryAction ctrlShow true;
-        _primaryAction ctrlEnable false;
-        _primaryAction ctrlSetText "VEHICLE REQUISITION COMING SOON";
+        private _rentalText=if (_rentalPrice>=0) then {[_rentalPrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
+        _detail ctrlSetText ([
+            _selected getOrDefault ["displayName","VEHICLE"],"",
+            format ["CATEGORY: %1",_metadata getOrDefault ["storeCategory",""]],
+            format ["ROLE: %1",_metadata getOrDefault ["vehicleRole",""]],
+            format ["KOTH AVAILABILITY: %1",if ((count _allowedSides)>0) then {_allowedSides joinString " / "} else {"UNCONFIGURED"}],
+            format ["LEVEL: %1 / %2",_progression getOrDefault ["level",1],_metadata getOrDefault ["minLevel",1]],"",
+            "RENTAL",_rentalText,"","ACCESS","ONE VEHICLE LIFE","","STATUS",_state getOrDefault ["stateLabel","UNAVAILABLE"]
+        ] joinString endl);
+        if (_state getOrDefault ["canRent",false]) then {
+            _primaryAction ctrlShow true;_primaryAction ctrlEnable (_cash>=_rentalPrice);_primaryAction ctrlSetText format ["RENT %1",_rentalText];
+            _primaryAction buttonSetAction format ["['RENT',%1,''] call bn_koth_fnc_vehicles_requestRental;",str _vehicleClass];
+        } else {
+            if (_state getOrDefault ["active",false]) then {_primaryAction ctrlShow true;_primaryAction ctrlEnable false;_primaryAction ctrlSetText "VEHICLE ACTIVE"};
+        };
     };
 };
