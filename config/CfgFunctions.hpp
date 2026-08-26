@@ -184,17 +184,18 @@ class CfgFunctions
             class loadouts_receiveValidatedLoadout {file = "functions\loadouts\fn_receiveValidatedLoadout.sqf";};
         };
 
-        class playerMapIcons
+        class playerMapMarkers
         {
-            class playerMapIcons_initPlayerLocal {file = "functions\playerIcons\playerMapIcons\fn_initPlayerLocal.sqf";};
-            class playerMapIcons_initMicOverlay {file = "functions\playerIcons\playerMapIcons\fn_initMicOverlay.sqf";};
-            class playerMapIcons_refresh {file = "functions\playerIcons\playerMapIcons\fn_refresh.sqf";};
-            class playerMapIcons_setVoiceState {file = "functions\playerIcons\playerMapIcons\fn_setVoiceState.sqf";};
+            class playerMapMarkers_initPlayerLocal {file = "functions\playerIcons\playerMapMarkers\fn_initPlayerLocal.sqf";};
+            class playerMapMarkers_initMicOverlay {file = "functions\playerIcons\playerMapMarkers\fn_initMicOverlay.sqf";};
+            class playerMapMarkers_refresh {file = "functions\playerIcons\playerMapMarkers\fn_refresh.sqf";};
+            class playerMapMarkers_setVoiceState {file = "functions\playerIcons\playerMapMarkers\fn_setVoiceState.sqf";};
         };
 
         class player3DIcons
         {
             class player3DIcons_initPlayerLocal {file = "functions\playerIcons\player3DIcons\fn_initPlayerLocal.sqf";};
+            class player3DIcons_refresh {file = "functions\playerIcons\player3DIcons\fn_refresh.sqf";};
             class player3DIcons_draw {file = "functions\playerIcons\player3DIcons\fn_draw.sqf";};
         };
 

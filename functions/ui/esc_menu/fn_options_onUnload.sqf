@@ -18,7 +18,7 @@ switch (_exitCode) do {
         private _pending = _display getVariable ["BN_KOTH_escMenuPendingOptions", createHashMap];
         {
             [_x, _pending getOrDefault [_x, 0], false] call bn_koth_fnc_escMenu_options_setValue;
-        } forEach ["earplugVolumeGround", "earplugVolumeVehicle"];
+        } forEach ["earplugVolumeGround", "earplugVolumeVehicle", "player3DIconsEnabled", "player3DIconsAlpha"];
 
         saveProfileNamespace;
         [] call bn_koth_fnc_escMenu_earplugs_onVehicleChanged;

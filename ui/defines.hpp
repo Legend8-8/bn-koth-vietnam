@@ -182,6 +182,89 @@ class BN_KOTH_RscListNBox
     };
 };
 
+class BN_KOTH_RscCheckBox
+{
+    access = 0;
+    type = 77;
+    idc = -1;
+    style = 0;
+    checked = 0;
+    x = 0;
+    y = 0;
+    w = 0.025;
+    h = 0.025;
+    soundEnter[] = {"", 0.09, 1};
+    soundPush[] = {"", 0.09, 1};
+    soundClick[] = {"", 0.09, 1};
+    soundEscape[] = {"", 0.09, 1};
+    color[] = {1, 1, 1, 0.7};
+    colorFocused[] = {1, 1, 1, 1};
+    colorHover[] = {1, 1, 1, 1};
+    colorPressed[] = {1, 1, 1, 1};
+    colorDisabled[] = {1, 1, 1, 0.25};
+    colorBackground[] = {0.08, 0.08, 0.08, 0.85};
+    colorBackgroundFocused[] = {0.12, 0.12, 0.12, 1};
+    colorBackgroundHover[] = {0.12, 0.12, 0.12, 1};
+    colorBackgroundPressed[] = {0.16, 0.16, 0.16, 1};
+    colorBackgroundDisabled[] = {0.08, 0.08, 0.08, 0.5};
+    textureChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
+    textureUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
+    textureFocusedChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
+    textureFocusedUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
+    textureHoverChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
+    textureHoverUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
+    texturePressedChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
+    texturePressedUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
+    textureDisabledChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
+    textureDisabledUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
+    shadow = 0;
+};
+
+class BN_KOTH_RscScrollBar
+{
+    color[] = {1, 1, 1, 0.6};
+    colorActive[] = {1, 1, 1, 1};
+    colorDisabled[] = {1, 1, 1, 0.3};
+    thumb = "#(argb,8,8,3)color(1,1,1,1)";
+    arrowEmpty = "#(argb,8,8,3)color(1,1,1,1)";
+    arrowFull = "#(argb,8,8,3)color(1,1,1,1)";
+    border = "#(argb,8,8,3)color(1,1,1,1)";
+    shadow = 0;
+    width = 0.021;
+    height = 0;
+    autoScrollEnabled = 1;
+    autoScrollSpeed = -1;
+    autoScrollDelay = 5;
+    autoScrollRewind = 0;
+};
+
+class BN_KOTH_RscControlsGroup
+{
+    access = 0;
+    type = 15;
+    idc = -1;
+    style = 16;
+    x = 0;
+    y = 0;
+    w = 1;
+    h = 1;
+    shadow = 0;
+    colorBackground[] = {0, 0, 0, 0};
+    scrolling = 1;
+    scrollSpeed = 0.05;
+    class VScrollBar: BN_KOTH_RscScrollBar
+    {
+        width = 0.021;
+        height = 0;
+        scrollSpeed = 0.05;
+    };
+    class HScrollBar: BN_KOTH_RscScrollBar
+    {
+        width = 0;
+        height = 0;
+    };
+};
+
 class BN_KOTH_RscSlider
 {
     type = 3;

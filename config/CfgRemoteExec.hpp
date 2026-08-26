@@ -101,7 +101,7 @@ class CfgRemoteExec
             jip = 0;
         };
 
-        class bn_koth_fnc_playerMapIcons_initPlayerLocal
+        class bn_koth_fnc_playerMapMarkers_initPlayerLocal
         {
             allowedTargets = 1;
             jip = 0;
@@ -119,7 +119,7 @@ class CfgRemoteExec
             jip = 0;
         };
 
-        class bn_koth_fnc_playerMapIcons_setVoiceState
+        class bn_koth_fnc_playerMapMarkers_setVoiceState
         {
             allowedTargets = 0;
             jip = 0;
