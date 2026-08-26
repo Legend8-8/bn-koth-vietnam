@@ -283,35 +283,7 @@ class CfgBnKothArsenal
             };
             class Wearables
             {
-                // Starter appearance seeds. Unclassified visual equipment is
-                // intentionally rejected until a human assigns appearanceSide.
-                // No headgear/backpack/facewear item is curated here yet; see
-                // docs/arsenal.md for the appearanceSide=BOTH headgear policy
-                // to apply once specific classes are curated.
-                class vn_b_uniform_aus_01_01
-                {
-                    allowedSides[] = {"WEST"};
-                    appearanceSide = "WEST";
-                    minLevel = 1;
-                };
-                class vn_b_vest_sog_04
-                {
-                    allowedSides[] = {"WEST"};
-                    appearanceSide = "WEST";
-                    minLevel = 1;
-                };
-                class vn_o_uniform_nva_army_03_03
-                {
-                    allowedSides[] = {"EAST"};
-                    appearanceSide = "EAST";
-                    minLevel = 1;
-                };
-                class vn_o_vest_01
-                {
-                    allowedSides[] = {"EAST"};
-                    appearanceSide = "EAST";
-                    minLevel = 1;
-                };
+                #include "wearables.hpp"
             };
             class Consumables {};
         };

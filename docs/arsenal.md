@@ -414,6 +414,24 @@ These fields remain separate concepts:
   (appearance items use `minLevel` only; Mastery/ownership/rental are
   weapon-only concepts and never apply to appearance).
 
+The frozen one-time wearable import uses the official S.O.G. wiki's
+`CfgWeapons_Equipment` table and records its facts in
+`data/wearable_inventory.csv`. The separate static policy projection is
+included by `Metadata >> Wearables` from `config/arsenal/wearables.hpp`.
+Uniforms and vests are curated only where the official `Used by` links provide
+a unique WEST/EAST evidence path; ambiguous records stay in
+`reports/generated/wearable_inventory_review.csv`. Headgear is provisionally
+available to both sides, still subject to its authored `minLevel`.
+
+The official structured wiki/config tables inspected did not expose backpack
+inventory rows. The missing factual backpack source is therefore the static
+`data/source/sog_bag_base_classes.txt` capture from a live Arma `Bag_Base`
+debug-console enumeration. Only supplied `vn_b_*`/`vn_o_*` wearable models are
+curated; preloaded `_pl`, static-weapon, parachute, civilian, and unsupported
+side records are excluded into the review report. Facewear remains out of
+scope. The importer is a one-time frozen-content path, not runtime discovery
+and not Nickel Steel/VNX support.
+
 ---
 
 # PART B — PROGRESSION MODEL
