@@ -34,10 +34,11 @@ private _message = switch (_code) do {
 [_message] call bn_koth_fnc_ui_notify;
 
 // Store entries cache progression-derived ownership/rental presentation. One
-// authoritative result invalidates that category cache before repainting.
+// authoritative result invalidates that category cache before repainting,
+// regardless of whether Store or Arsenal requested the acquisition.
 uiNamespace setVariable ["BN_KOTH_menuStoreEntriesRoute", ""];
 
 private _display = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
-if (!isNull _display && {(uiNamespace getVariable ["BN_KOTH_menuActivePage", ""]) isEqualTo "STORE"}) then {
+if (!isNull _display) then {
     [] call bn_koth_fnc_menu_refresh;
 };

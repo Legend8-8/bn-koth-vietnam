@@ -1712,6 +1712,17 @@ to the existing validated loadout path. Store never mutates a loadout. Arsenal
 remains the currently usable surface: cross-side discovery products stay absent
 until the shared authoritative entitlement result says they are entitled.
 
+Native-side weapons may also be bought or rented directly from their existing
+Arsenal browser card once level/side/mastery/perk entitlement is otherwise
+satisfied (`REQUIRES_ACQUISITION`); the card shows `AVAILABLE TO ACQUIRE` with
+`BUY $X`/`RENT $Y` actions that submit through the exact same
+`bn_koth_fnc_progression_requestWeaponAcquisition` endpoint Store uses. Store
+remains the only discovery surface for cross-faction weapons and vehicles, and
+the only route for a cross-faction weapon until it is fully entitled there.
+Once a cross-faction weapon becomes entitled (side, level, mastery, perks all
+satisfied and owned/rented), it appears in Arsenal like any native weapon under
+the existing filtering; Arsenal never lists a locked cross-faction weapon.
+
 Vehicle progression preparation is owned separately by
 `CfgBnKothVehicles >> Metadata >> Vehicles`. Canonical vehicle roots explicitly
 declare `allowedSides[]`, `minLevel`, provisional purchase/rental prices,
@@ -1731,9 +1742,12 @@ authored. Factual table side and faction remain evidence only, while config
 owns deliberate KOTH availability and balance.
 
 Only those curated metadata entries are discoverable in the vehicle Store
-categories. Their engine `CfgVehicles` picture and display name are presented
-with side, level, role, and provisional price policy. Vehicle action controls
-remain disabled because no authoritative acquisition/requisition transaction
-exists. Displaying a vehicle, including an M577 classname, grants no spawn,
-ownership, or managed command/teleport capability and does not alter the managed
-free-vehicle system. Vehicles do not use weapon mastery.
+categories. Vehicles are RENT-only and the displayed price buys one vehicle
+life. RENT is one immediate authoritative transaction: successful server-side
+spawn and cash deduction happen together, so a single RENT press either ends
+with a live active vehicle or with nothing charged. An active life ends on
+destruction or authoritative cleanup, with no refund or entitlement
+restoration. There is no BUY action, permanent vehicle ownership, persisted
+rental, or session-wide unlimited unlock. M577 rental grants only the normal
+vehicle object and never
+managed command/teleport capability. Vehicles do not use weapon mastery.
