@@ -286,6 +286,15 @@ For the Arsenal rework, also verify:
 
 - opening at the correct team mapboard reconciles the overview from the
   server-observed physical player loadout;
+- an unentitled battlefield pickup remains physically usable, but Arsenal
+  reconciliation does not retain it in the reusable intended-loadout baseline;
+- after that reconciliation, changing an unrelated wearable/cargo slot does not
+  reapply the picked-up weapon;
+- replacing the unentitled pickup with an entitled weapon remains possible;
+- saving a physical snapshot never grants entitlement: loading that local kit
+  without current authoritative entitlement is rejected;
+- death/respawn, reconnect, and server restart do not convert picked-up weapons
+  into ownership or rental state;
 - each browser opens on the currently applied item when one exists, without
   repeatedly overriding manual pagination;
 - locked weapons, attachments, wearables, assigned items, and positive cargo

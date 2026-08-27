@@ -38,6 +38,12 @@ private _result = ["test_uid", "WEST", _progression, _metadata, "vn_test_weapon"
 ["No acquisition prices permits entitlement", _result getOrDefault ["entitled", false]] call _check;
 ["No acquisition prices is uncontrolled", (_result getOrDefault ["accessType", ""]) isEqualTo "UNCONTROLLED"] call _check;
 
+_progression set ["currentWeapons", ["vn_test_weapon"]];
+_progression set ["pickedUpWeapons", ["vn_test_weapon"]];
+_progression set ["physicalLoadout", [["vn_test_weapon"]]];
+_result = ["test_uid", "WEST", _progression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
+["Physical possession fields do not alter entitlement", _result getOrDefault ["entitled", false]] call _check;
+
 _metadata set ["purchasePrice", 100];
 _result = ["test_uid", "WEST", _progression, _metadata, "vn_test_weapon"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
 ["Configured price requires acquisition", (_result getOrDefault ["code", ""]) isEqualTo "REQUIRES_ACQUISITION"] call _check;

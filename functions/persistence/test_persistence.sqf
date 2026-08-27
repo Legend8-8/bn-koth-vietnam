@@ -73,10 +73,20 @@ _knownState set ["cash", 9999];
 private _again = [_knownUid] call bn_koth_fnc_persistence_loadPlayer;
 [((_again getOrDefault ["state", createHashMap]) getOrDefault ["cash", -1]) isEqualTo 9999, "Repeated registration overwrote active loaded state."] call _assert;
 
+_knownState set ["currentWeapons", ["vn_pickup_test"]];
+_knownState set ["currentLoadout", [["vn_pickup_test"]]];
+_knownState set ["pickedUpWeapons", ["vn_pickup_test"]];
+_knownState set ["transientArsenalState", createHashMapFromArray [["weapon", "vn_pickup_test"]]];
 private _projection = [_knownUid, _knownState] call bn_koth_fnc_persistence_projectPlayerState;
 [isNil {_projection get "level"}, "Save projection persisted derived level."] call _assert;
 [isNil {_projection get "rentedWeapons"}, "Save projection persisted rentals."] call _assert;
 [isNil {_projection get "roundOnly"}, "Save projection included round state."] call _assert;
+[isNil {_projection get "currentWeapons"}, "Save projection persisted current physical weapons."] call _assert;
+[isNil {_projection get "currentLoadout"}, "Save projection persisted current physical loadout."] call _assert;
+[isNil {_projection get "pickedUpWeapons"}, "Save projection persisted battlefield pickup state."] call _assert;
+[isNil {_projection get "transientArsenalState"}, "Save projection persisted transient Arsenal state."] call _assert;
+[(_projection getOrDefault ["ownedWeapons", []]) isEqualTo ["vn_m1903"], "Save projection omitted persistent ownership."] call _assert;
+[((_projection getOrDefault ["weaponKills", createHashMap]) getOrDefault ["vn_m1903", -1]) isEqualTo 7, "Save projection omitted persistent weapon mastery."] call _assert;
 
 private _ownedSerialized = [["vn_m1911", "VN_M1903"]] call bn_koth_fnc_persistence_serializeOwnedWeapons;
 [_ownedSerialized getOrDefault ["success", false] && {(_ownedSerialized getOrDefault ["value", ""]) isEqualTo "vn_m1903,vn_m1911"}, "Owned weapons did not serialize deterministically."] call _assert;

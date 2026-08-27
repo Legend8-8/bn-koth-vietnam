@@ -494,14 +494,79 @@ switch (_op) do {
     case "snapshot": {
         // Reconcile from the server-observed physical unit state. This keeps
         // partial Arsenal mutations from rebuilding a stale intended kit after
-        // the player has dropped equipment outside the menu.
+        // the player has dropped equipment outside the menu. Battlefield
+        // possession is not entitlement: an unentitled carried composition is
+        // left physically untouched, but must not enter the reusable mutation
+        // baseline where a later unrelated change could reapply it.
         private _physicalLoadout = getUnitLoadout _player;
         if !(_physicalLoadout isEqualType [] && {(count _physicalLoadout) >= 10}) exitWith {
             ["ERR_PHYSICAL_LOADOUT_SHAPE", "Server could not read the player's current physical loadout.", _baseLoadoutId] call _resultFail
         };
+
+        {
+            _x params ["_slotIndex", "_slotToken", "_slotLabel"];
+            private _extractResult = [
+                _physicalLoadout select _slotIndex,
+                _slotToken,
+                _slotLabel
+            ] call _extractWeaponComposition;
+            private _retainComposition = _extractResult getOrDefault ["success", false];
+
+            if (_retainComposition) then {
+                private _composition = _extractResult getOrDefault ["composition", createHashMap];
+                if !(_composition getOrDefault ["isEmpty", false]) then {
+                    private _compositionResult = [
+                        createHashMapFromArray [
+                            ["weaponClass", _composition getOrDefault ["baseWeaponClass", ""]],
+                            ["magazines", _composition getOrDefault ["magazines", []]],
+                            ["attachments", _composition getOrDefault ["attachments", []]]
+                        ],
+                        _compatibilityCfg,
+                        _slotToken,
+                        _slotLabel
+                    ] call bn_koth_fnc_loadouts_validateWeaponComposition;
+
+                    _retainComposition = _compositionResult getOrDefault ["success", false];
+                    if (_retainComposition) then {
+                        private _validatedWeapon = _compositionResult getOrDefault ["validatedWeapon", createHashMap];
+                        private _weaponClass = _validatedWeapon getOrDefault ["weaponClass", ""];
+                        if (_weaponClass isEqualTo "") then {
+                            _weaponClass = _validatedWeapon getOrDefault ["baseWeaponClass", ""];
+                        };
+
+                        private _weaponEntitlement = [
+                            _uid,
+                            _weaponClass
+                        ] call bn_koth_fnc_progression_evaluateWeaponEntitlement;
+                        _retainComposition = _weaponEntitlement getOrDefault ["entitled", false];
+
+                        if (_retainComposition) then {
+                            {
+                                private _attachmentEntitlement = [
+                                    _uid,
+                                    _x
+                                ] call bn_koth_fnc_progression_evaluateAttachmentEntitlement;
+                                if !(_attachmentEntitlement getOrDefault ["entitled", false]) exitWith {
+                                    _retainComposition = false;
+                                };
+                            } forEach (_validatedWeapon getOrDefault ["attachments", []]);
+                        };
+                    };
+                };
+            };
+
+            if (!_retainComposition) then {
+                _physicalLoadout set [_slotIndex, []];
+            };
+        } forEach [
+            [0, "PRIMARY", "Primary"],
+            [1, "LAUNCHER", "Launcher"],
+            [2, "HANDGUN", "Handgun"]
+        ];
+
         _mutatedLoadout = +_physicalLoadout;
         _shouldApply = false;
-        _resultMessage = "Authoritative loadout state reconciled from the physical player unit.";
+        _resultMessage = "Authoritative loadout state reconciled without treating battlefield possession as entitlement.";
     };
 
     case "load_local_kit": {

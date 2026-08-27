@@ -1657,6 +1657,13 @@ Clients do not submit inventory contents. This prevents later partial mutations
 from restoring equipment that the player physically dropped between Arsenal
 sessions while preserving the server as the state owner.
 
+Battlefield pickup remains ordinary temporary Arma inventory state. It never
+adds canonical ownership, a session rental, or any other progression
+entitlement. Reconciliation retains only currently entitled weapon
+compositions in the reusable intended-loadout mutation baseline. An unentitled
+picked-up weapon remains physically usable until normal gameplay removes or
+replaces it, but an unrelated Arsenal mutation cannot reapply it.
+
 Saved kits are stored only in the local client's `profileNamespace`. Saving and
 deleting do not mutate server gameplay state. A locally stored kit is never an
 authority source: LOAD submits the complete stored array as untrusted intent,
@@ -1665,6 +1672,13 @@ validation, progression entitlement checks, assigned-slot rules, cargo class
 and quantity checks, and container capacity checks before the single owned
 application path may equip it. Editing local profile data therefore cannot
 grant equipment or bypass progression.
+
+Persistent progression contains only `schemaVersion`, `uid`, `xp`, `cash`,
+`ownedWeapons`, and canonical `weaponKills`. It deliberately excludes current
+inventory/loadout, picked-up equipment, rentals, and transient Arsenal state.
+Valid fail-closed canonical combat attribution may still award mastery for a
+picked-up infantry weapon because mastery follows server-observed kill evidence,
+not ownership or rental state.
 
 The Loadout overview exposes `MANAGE LOADOUTS` and `SAVE CURRENT KIT` in its
 centre footer. The manager supports up to twelve locally named kits, including
