@@ -28,6 +28,20 @@ private _drawData = uiNamespace getVariable ["BN_KOTH_player3DIconsDrawData", []
             continue;
         };
 
+        private _lineOfSightBlocked = !((lineIntersectsSurfaces [
+            eyePos player,
+            AGLToASL _drawPosition,
+            player,
+            objNull,
+            true,
+            1,
+            "GEOM",
+            "NONE"
+        ]) isEqualTo []);
+        if (_lineOfSightBlocked) then {
+            continue;
+        };
+
         private _drawColor = +_color;
         if (_drawColor isEqualType []) then {
             private _existingAlpha = (_drawColor param [3, 1]) max 0 min 1;
