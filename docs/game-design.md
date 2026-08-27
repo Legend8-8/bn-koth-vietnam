@@ -70,9 +70,12 @@ of authoritative gameplay where applicable but are not displayed in that panel.
 
 5. Player Progression
 
-The first progression implementation is round-scoped and log-only. XP and
-levels reset when the round resets; they are not persisted across reconnects or
-server restarts, and they are not shown in the HUD yet.
+XP, derived level, cash, permanent canonical weapon ownership, and weapon mastery
+are server-owned by player UID. The persistence service now defines their durable
+schema and lifecycle; its current in-memory adapter does not survive a server
+restart. Level is derived from XP. Rentals deliberately remain server-session-only
+and reset on restart. Round statistics remain separate and are never projected
+into persistent player data.
 
 The current implementation awards XP for:
 
@@ -80,15 +83,38 @@ The current implementation awards XP for:
 - validated participation inside the active Priority zone during a scoring interval;
 - validated opposing player kills.
 
+The same validated events provisionally award config-owned cash amounts. Cash
+is initialized once when a player first enters server progression state.
+Canonical weapons with explicit `purchasePrice` or `rentalPrice` metadata may
+be permanently purchased or rented through server-authoritative APIs. Cash and
+entitlement change in one transaction, and acquisition never auto-equips the
+weapon. Rentals last for the current server session. Store V1 exposes
+configured canonical-weapon acquisition. Canonical weapons now have provisional
+playtest prices with rental set to 20% of purchase; final price balance and stock
+are not implemented yet. Weapon-specific mastery
+and the cross-side mastery gate are implemented; only uniquely attributed
+canonical infantry-weapon PvP kills progress mastery.
+
 The current level cap is configurable and defaults to 270. The Arsenal now
 supports human-authored level and perk requirements for canonical weapons,
 attachments, wearable/assigned items, and cargo additions. The server repeats
-all entitlement checks before accepting equipment intent. Vehicles, currency,
-ownership, prices, rentals, and stock are not implemented by this work.
+all entitlement checks before accepting equipment intent. Canonical weapon
+ownership is part of the persistent schema, while rentals remain session state;
+vehicles, final equipment prices, stock, wider mastery content/population, and a
+durable database adapter remain unfinished.
+
+Military rank is icon-only presentation derived from account level, not another
+progression currency or authoritative engine rank. The config-driven 1-270
+ladder reuses built-in Arma 3 insignia shapes and config-owned bronze, silver,
+and gold tints. No military rank name or abbreviation is shown. During the
+configurable recruit period before the first insignia threshold, `LEVEL N`
+remains visible but no rank icon appears. The same derived icon is used in the
+lobby local-player card, WEST/EAST roster rows, shared deployed-menu header,
+and pause-menu panel. Rank is neither persisted nor applied to engine units.
 
 Future progression may include:
 
-- currency;
+- persistent currency and economy sinks;
 - equipment unlocks;
 - vehicle unlocks;
 - player statistics.
@@ -147,7 +173,7 @@ Physical inventory access is disabled inside both active safe zones:
 - vehicle cargo is preserved while the vehicle passes through a safe zone and becomes accessible again after leaving;
 - dropped equipment and dead bodies inside a safe zone are removed by the server, with player corpses deleted at the earliest engine-safe respawn transition;
 - the server-validated KOTH loadout path remains available and does not expose physical container access;
-- equipment scavenging in the active AO remains allowed, including equipment above a player's current progression level. Safe-zone restrictions do not change battlefield pickup rules outside the bases.
+- equipment scavenging in the active AO remains allowed, including equipment above a player's current progression level and weapons that are unowned or not yet mastered. This temporary physical possession never grants Arsenal, Store, rental, ownership, or saved-loadout entitlement. Properly attributed pickup-weapon kills may still build mastery. Safe-zone restrictions do not change battlefield pickup rules outside the bases, and progression alone does not require confiscating the physical weapon.
 
 7. Equipment
 
@@ -164,16 +190,20 @@ entitlement presentation.
 
 8. Vehicles
 
-The first version may use a limited selection of pre-placed vehicles.
+The current mission uses a server-managed limited free-vehicle selection.
+Human-authored metadata defines provisional level, side, rental price, Store
+category and role policy for the one-time imported public EAST/WEST S.O.G.
+factual audit's curated combat-vehicle progression set. Curated vehicles are
+rent-only: one RENT press is the complete transaction, spawning the vehicle and
+charging cash together, and destruction or authoritative cleanup ends that life
+without refund. There is no permanent vehicle ownership or server-session
+unlimited vehicle unlock. The free lifecycle remains separate.
 
-Future vehicle systems may include:
-
-- faction-specific vehicle shops;
-- level requirements;
-- vehicle costs;
-- active vehicle limits;
-- abandoned vehicle cleanup;
-- transport rewards.
+The initial product surface uses ground, rotary-wing and fixed-wing categories;
+sea remains reserved for a later curated pass. Vehicle unlocks are broad
+account milestones and do not use weapon mastery. Purchase/rental balance is
+provisional. Active purchased-vehicle limits, persistence, final prices and
+transport rewards remain future work.
 
 Helicopter transport should be an important part of the Vietnam setting.
 
@@ -223,3 +253,14 @@ The first playable version does not include:
 - New locations can be added without duplicating the game mode.
 - Features are introduced in small, testable stages.
 - A feature is not complete until it works on a dedicated server.
+
+12. Store V1
+
+The Arsenal remains the current faction's usable equipment surface. The Store
+is global weapon discovery and may show WEST, EAST and BOTH canonical roots.
+Cross-side access still requires the configured passive mastery path.
+Configured purchases and server-session rentals are server-authoritative,
+never auto-equip, and repaint from the targeted player progression update.
+Final pricing, stock and persistence remain later release work. Vehicle
+metadata prepares non-weapon Store grouping, but Store V1 still implements
+canonical weapon products only.

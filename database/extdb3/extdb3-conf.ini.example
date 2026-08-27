@@ -1,0 +1,9 @@
+; Merge this connection section into the server-local @extDB3/extdb3-conf.ini.
+; Never commit real credentials.
+
+[BN_KOTH]
+IP = 127.0.0.1
+Port = 3306
+Username = replace_me
+Password = replace_me
+Database = replace_me

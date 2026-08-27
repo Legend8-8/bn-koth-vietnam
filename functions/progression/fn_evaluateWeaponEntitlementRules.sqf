@@ -39,7 +39,9 @@ private _finish = {
         ["requestedClass", _requestedClass],
         ["canonicalClass", _canonicalClass],
         ["sideToken", _sideToken],
-        ["configured", _configured]
+        ["configured", _configured],
+        ["crossSide", _crossSide],
+        ["crossSideAllowed", _crossSideAllowed]
     ];
 
     {
@@ -49,25 +51,59 @@ private _finish = {
     _result
 };
 
-if (!_configured) exitWith {
-    [true, true, "ENTITLED_UNCONTROLLED", "Weapon has no KOTH progression metadata.",
-        createHashMapFromArray [["accessType", "UNCONTROLLED"]]] call _finish
-};
-
 private _playerLevel = (_progression getOrDefault ["level", 1]) max 1;
 private _minLevel = (_metadata getOrDefault ["minLevel", 1]) max 1;
-private _nativeSide = toUpper (_metadata getOrDefault ["nativeSide", ""]);
-private _licenseKillsRequired = (_metadata getOrDefault ["licenseKills", 0]) max 0;
+private _allowedSides = _metadata getOrDefault ["allowedSides", []];
+if !(_allowedSides isEqualType []) then {_allowedSides = []};
+private _crossSideAllowed = _metadata getOrDefault ["crossSideAllowed", false];
+if !(_crossSideAllowed isEqualType false) then {_crossSideAllowed = false};
+private _masteryKillsRequired = (_metadata getOrDefault ["masteryKillsRequired", 0]) max 0;
 private _requiredPerks = _metadata getOrDefault ["requiredPerks", []];
 if !(_requiredPerks isEqualType []) then {_requiredPerks = []};
+private _purchasePrice = _metadata getOrDefault ["purchasePrice", -1];
+private _rentalPrice = _metadata getOrDefault ["rentalPrice", -1];
+private _acquisitionConfigured = (_purchasePrice >= 0) || {_rentalPrice >= 0};
+
+private _sidePolicy = [
+    _sideToken,
+    _metadata,
+    false
+] call bn_koth_fnc_progression_evaluateEquipmentSidePolicyRules;
+private _sideCode = _sidePolicy getOrDefault ["code", "LOCKED_SIDE"];
+private _crossSide = _sideCode isEqualTo "LOCKED_SIDE";
+
+if (!_crossSide && {!(_sidePolicy getOrDefault ["allowed", false])}) exitWith {
+    [false, false,
+        _sideCode,
+        _sidePolicy getOrDefault ["message", "Weapon is not available to this KOTH side."],
+        createHashMapFromArray [
+            ["allowedSides", _allowedSides],
+            ["accessType", "NONE"]
+        ]] call _finish
+};
+
+if (_crossSide && {!_crossSideAllowed}) exitWith {
+    [false, false, "CROSS_SIDE_NOT_ALLOWED", "Weapon has no KOTH cross-side mastery path.",
+        createHashMapFromArray [
+            ["allowedSides", _allowedSides], ["crossSide", true],
+            ["crossSideAllowed", false], ["accessType", "NONE"]
+        ]] call _finish
+};
+
+if (!_configured) exitWith {
+    [true, true, "ENTITLED_UNCONTROLLED", "Weapon has no KOTH progression metadata.",
+        createHashMapFromArray [["allowedSides", _allowedSides], ["accessType", "UNCONTROLLED"]]] call _finish
+};
 
 if (_playerLevel < _minLevel) exitWith {
     [false, false, "LOCKED_LEVEL", format ["Requires level %1.", _minLevel],
         createHashMapFromArray [
-            ["nativeSide", _nativeSide],
+            ["allowedSides", _allowedSides],
+            ["crossSide", _crossSide],
+            ["crossSideAllowed", _crossSideAllowed],
             ["playerLevel", _playerLevel],
             ["minLevel", _minLevel],
-            ["licenseKills", _licenseKillsRequired],
+            ["masteryKillsRequired", _masteryKillsRequired],
             ["accessType", "NONE"]
         ]] call _finish
 };
@@ -88,7 +124,7 @@ private _normalizedPerks = _playerPerks apply {toLower _x};
 private _isOwned = _canonicalClass in _normalizedOwned;
 private _isRented = _canonicalClass in _normalizedRented;
 private _kills = (_weaponKills getOrDefault [_canonicalClass, 0]) max 0;
-private _licenseComplete = _kills >= _licenseKillsRequired;
+private _masteryComplete = _kills >= _masteryKillsRequired;
 
 private _missingPerks = [];
 {
@@ -96,46 +132,62 @@ private _missingPerks = [];
     if !(_perk in _normalizedPerks) then {_missingPerks pushBack _x;};
 } forEach _requiredPerks;
 
-if ((count _missingPerks) > 0) exitWith {
-    [false, false, "LOCKED_PERK", "Required perk entitlement is incomplete.",
+if (_crossSide && {!_masteryComplete}) exitWith {
+    [false, false, "LOCKED_MASTERY", format ["Requires %1 canonical weapon mastery kills.", _masteryKillsRequired],
         createHashMapFromArray [
-            ["nativeSide", _nativeSide],
-            ["playerLevel", _playerLevel],
-            ["minLevel", _minLevel],
-            ["weaponKills", _kills],
-            ["licenseKills", _licenseKillsRequired],
-            ["missingPerks", _missingPerks],
+            ["allowedSides", _allowedSides], ["crossSide", true],
+            ["crossSideAllowed", true], ["playerLevel", _playerLevel],
+            ["minLevel", _minLevel], ["masteryKills", _kills],
+            ["weaponKills", _kills], ["masteryKillsRequired", _masteryKillsRequired],
+            ["masteryComplete", false],
             ["accessType", "NONE"]
         ]] call _finish
 };
 
-private _isNativeSide = _nativeSide isEqualTo "" || {_sideToken isEqualTo _nativeSide};
-
-if (!_isNativeSide && {!_licenseComplete}) exitWith {
-    [false, false, "LOCKED_SIDE_LICENSE",
-        format ["Cross-faction access requires %1 weapon kills.", _licenseKillsRequired],
+if ((count _missingPerks) > 0) exitWith {
+    [false, false, "LOCKED_PERK", "Required perk entitlement is incomplete.",
         createHashMapFromArray [
-            ["nativeSide", _nativeSide],
+            ["allowedSides", _allowedSides], ["crossSide", _crossSide],
+            ["crossSideAllowed", _crossSideAllowed], ["playerLevel", _playerLevel],
+            ["minLevel", _minLevel], ["masteryKills", _kills],
+            ["weaponKills", _kills], ["masteryKillsRequired", _masteryKillsRequired],
+            ["masteryComplete", _masteryComplete],
+            ["missingPerks", _missingPerks], ["accessType", "NONE"]
+        ]] call _finish
+};
+
+if (!_acquisitionConfigured) exitWith {
+    [true, true, "ENTITLED", "Weapon acquisition is not configured and does not gate entitlement.",
+        createHashMapFromArray [
+            ["allowedSides", _allowedSides],
             ["playerLevel", _playerLevel],
             ["minLevel", _minLevel],
+            ["masteryKills", _kills],
             ["weaponKills", _kills],
-            ["licenseKills", _licenseKillsRequired],
-            ["licenseComplete", false],
-            ["accessType", "NONE"]
+            ["masteryKillsRequired", _masteryKillsRequired],
+            ["masteryComplete", _masteryComplete],
+            ["owned", _isOwned],
+            ["rented", _isRented],
+            ["canPurchase", false],
+            ["canRent", false],
+            ["accessType", "UNCONTROLLED"]
         ]] call _finish
 };
 
 if (_isOwned) exitWith {
     [true, true, "ENTITLED", "Permanent weapon entitlement is valid.",
         createHashMapFromArray [
-            ["nativeSide", _nativeSide],
+            ["allowedSides", _allowedSides],
             ["playerLevel", _playerLevel],
             ["minLevel", _minLevel],
+            ["masteryKills", _kills],
             ["weaponKills", _kills],
-            ["licenseKills", _licenseKillsRequired],
-            ["licenseComplete", _licenseComplete],
+            ["masteryKillsRequired", _masteryKillsRequired],
+            ["masteryComplete", _masteryComplete],
             ["owned", true],
             ["rented", _isRented],
+            ["canPurchase", _purchasePrice >= 0],
+            ["canRent", _rentalPrice >= 0],
             ["accessType", "OWNED"]
         ]] call _finish
 };
@@ -143,36 +195,34 @@ if (_isOwned) exitWith {
 if (_isRented) exitWith {
     [true, true, "ENTITLED", "Temporary weapon rental entitlement is valid.",
         createHashMapFromArray [
-            ["nativeSide", _nativeSide],
+            ["allowedSides", _allowedSides],
             ["playerLevel", _playerLevel],
             ["minLevel", _minLevel],
+            ["masteryKills", _kills],
             ["weaponKills", _kills],
-            ["licenseKills", _licenseKillsRequired],
-            ["licenseComplete", _licenseComplete],
+            ["masteryKillsRequired", _masteryKillsRequired],
+            ["masteryComplete", _masteryComplete],
             ["owned", false],
             ["rented", true],
+            ["canPurchase", _purchasePrice >= 0],
+            ["canRent", _rentalPrice >= 0],
             ["accessType", "RENTED"]
         ]] call _finish
 };
 
-private _canRent = _isNativeSide || {_licenseComplete};
-
 [true, false, "REQUIRES_ACQUISITION",
-    if (_isNativeSide) then {
-        "Weapon is level-eligible but requires ownership or rental."
-    } else {
-        "Cross-faction weapon is licensed but requires ownership or rental."
-    },
+    "Weapon is side- and level-eligible but requires ownership or rental.",
     createHashMapFromArray [
-        ["nativeSide", _nativeSide],
+        ["allowedSides", _allowedSides],
         ["playerLevel", _playerLevel],
         ["minLevel", _minLevel],
+        ["masteryKills", _kills],
         ["weaponKills", _kills],
-        ["licenseKills", _licenseKillsRequired],
-        ["licenseComplete", _licenseComplete],
+        ["masteryKillsRequired", _masteryKillsRequired],
+        ["masteryComplete", _masteryComplete],
         ["owned", false],
         ["rented", false],
-        ["canPurchase", true],
-        ["canRent", _canRent],
+        ["canPurchase", _purchasePrice >= 0],
+        ["canRent", _rentalPrice >= 0],
         ["accessType", "NONE"]
     ]] call _finish

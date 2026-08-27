@@ -70,14 +70,14 @@ No other gameplay system may implement a competing version.
 
 ### `functions/progression/`
 
-Future owner of:
+Owner of:
 
 - XP;
 - player level;
 - rank;
 - currency;
 - weapon kill/mastery progress;
-- weapon licenses;
+- weapon mastery;
 - permanent ownership;
 - rental entitlement;
 - progression statistics.
@@ -85,6 +85,14 @@ Future owner of:
 Loadouts may ask progression whether a player is entitled to equipment.
 
 Loadouts must not calculate or independently store progression state.
+
+Current canonical weapon acquisition state is stored per UID in the
+server-owned progression record as `ownedWeapons[]` and `rentedWeapons[]`.
+Both contain canonical logical classnames only. Purchase and rent validate the
+existing side, level, and perk gates before applying an explicitly configured
+price. The combined cash/entitlement transition is committed once and does not
+equip the weapon. Ownership and rentals are session-scoped until persistence
+exists; rentals currently last for that whole server session.
 
 ---
 
@@ -97,7 +105,7 @@ This includes:
 - XP and level;
 - currency;
 - weapon kill progress;
-- licenses;
+- mastery;
 - ownership;
 - rental state if persisted;
 - saved loadouts.
@@ -114,7 +122,7 @@ The UI may display:
 
 - equipment;
 - level requirements;
-- kill/license progress;
+- mastery progress;
 - ownership;
 - rental/purchase options;
 - rejection reasons;
@@ -156,11 +164,12 @@ This answers:
 
 > How do we want this equipment to behave in KOTH?
 
-Future examples include:
+Examples include:
 
-- native faction;
+- allowed KOTH sides;
+- visual appearance side;
 - minimum level;
-- license kill requirement;
+- mastery kill requirement;
 - purchase price;
 - rental price;
 - starter/free status;
@@ -183,8 +192,8 @@ Examples:
 
 - current level;
 - weapon kills;
-- license progress;
-- license completion;
+- mastery progress;
+- mastery completion;
 - ownership;
 - rental entitlement;
 - currency.
@@ -351,28 +360,77 @@ KOTH faction behaviour is human-authored.
 
 ---
 
-## 7. Native Faction Model
+## 7. KOTH Side Policy
 
-Weapons may later receive a human-authored KOTH native faction.
-
-Conceptually:
+KOTH side policy is human-authored and deliberately independent from factual
+S.O.G. provenance and progression balance:
 
 ```cpp
 class vn_l1a1_01
 {
-    nativeSide = "WEST";
+    allowedSides[] = {"WEST"};
 };
 ```
 
-The exact final schema may evolve, but the concept is important.
+`allowedSides[]` answers:
 
-`nativeSide` answers:
+> Which KOTH sides may use or acquire this logical item?
 
-> Which faction naturally receives normal access to this weapon?
+For canonical weapons only, `crossSideAllowed = 1` deliberately permits the
+opposite side to pursue weapon-specific mastery. `allowedSides[]` continues
+to mean native/default access. Cross-side access requires level first, then
+canonical `weaponKills >= masteryKillsRequired`, then perks and any configured
+acquisition. Ownership and rental do not bypass those gates. Structural
+variants inherit the canonical rule.
 
-It does not permanently prohibit cross-faction use.
+An empty or absent `allowedSides[]` temporarily leaves combat equipment
+uncontrolled while balance metadata is authored. It must never be populated
+from `sourceAffiliations[]` automatically. Structural weapon variants inherit
+the canonical root weapon metadata and never receive separate side policy.
 
-Cross-faction access is governed by the weapon license system described below.
+Visual equipment additionally requires:
+
+```cpp
+appearanceSide = "WEST"; // or "EAST", or "BOTH" (headgear-only, provisional)
+```
+
+`appearanceSide` identifies which KOTH faction the item visually represents.
+Uniforms, vests, backpacks, headgear, and facewear fail closed when this field
+is absent or invalid; opposing appearance equipment is rejected even if its
+`allowedSides[]` value is broader. `BOTH` is a deliberate, narrow exception:
+it is currently authored for headgear only, never inferred, and never used
+for uniforms/vests/backpacks, which always stay strictly WEST-only or
+EAST-only. Appearance entitlement never consults Mastery, ownership, or
+rental; it is `level >= minLevel` plus this side check only. No
+battlefield-loot exception currently exists.
+
+These fields remain separate concepts:
+
+- `sourceAffiliations[]`: generated factual S.O.G. provenance;
+- `allowedSides[]`: human-authored KOTH gameplay availability;
+- `appearanceSide`: human-authored KOTH visual identity (`WEST`/`EAST`, or
+  `BOTH` for headgear only);
+- `minLevel`, mastery, ownership, and prices: progression/economy policy
+  (appearance items use `minLevel` only; Mastery/ownership/rental are
+  weapon-only concepts and never apply to appearance).
+
+The frozen one-time wearable import uses the official S.O.G. wiki's
+`CfgWeapons_Equipment` table and records its facts in
+`data/wearable_inventory.csv`. The separate static policy projection is
+included by `Metadata >> Wearables` from `config/arsenal/wearables.hpp`.
+Uniforms and vests are curated only where the official `Used by` links provide
+a unique WEST/EAST evidence path; ambiguous records stay in
+`reports/generated/wearable_inventory_review.csv`. Headgear is provisionally
+available to both sides, still subject to its authored `minLevel`.
+
+The official structured wiki/config tables inspected did not expose backpack
+inventory rows. The missing factual backpack source is therefore the static
+`data/source/sog_bag_base_classes.txt` capture from a live Arma `Bag_Base`
+debug-console enumeration. Only supplied `vn_b_*`/`vn_o_*` wearable models are
+curated; preloaded `_pl`, static-weapon, parachute, civilian, and unsupported
+side records are excluded into the review report. Facewear remains out of
+scope. The importer is a one-time frozen-content path, not runtime discovery
+and not Nickel Steel/VNX support.
 
 ---
 
@@ -388,8 +446,8 @@ Not:
 
 - money;
 - ownership;
-- license progress;
-- completed license;
+- mastery progress;
+- completed mastery;
 - kills;
 - battlefield pickups;
 - rentals;
@@ -405,7 +463,9 @@ must be true before the KOTH arsenal/store system grants access.
 
 ### Battlefield pickups
 
-A player may physically pick up and use equipment found during normal gameplay even when below its progression level.
+A player may physically pick up and use equipment found during normal gameplay
+even when below its progression level, unowned, or not yet mastered. This is
+temporary physical possession only.
 
 That does not unlock the weapon.
 
@@ -413,7 +473,12 @@ That does not grant ownership.
 
 That does not grant arsenal access.
 
-It may, however, contribute to weapon kill/license progress.
+That does not grant Store access, rental entitlement, or saved-kit/loadout
+restoration. Pickup history is never proof of entitlement, and progression
+policy does not plan to confiscate battlefield weapons solely because their
+level, mastery, or ownership requirements are incomplete.
+
+Properly attributed kills may, however, contribute to canonical weapon mastery.
 
 Active base safe zones are a deliberate physical-inventory exception, not a progression exception. Players cannot exchange equipment through player, corpse, ground, static-container or vehicle inventories while either the player or container is inside a safe zone. Dropped equipment and corpses there are cleaned up by the server. Once outside the safe zones, the battlefield pickup rule above remains unchanged.
 
@@ -436,7 +501,7 @@ At Level 19:
 arsenal access: locked
 purchase: locked
 rental: locked
-license activation: locked
+mastery permission: locked
 ```
 
 At Level 20:
@@ -447,7 +512,7 @@ weapon becomes eligible
 
 The system then evaluates:
 
-- license;
+- mastery;
 - ownership;
 - rental;
 - faction.
@@ -460,7 +525,7 @@ They do not automatically award equipment.
 
 ---
 
-## 10. Weapon Kills and License Progress
+## 10. Weapon Kills and Mastery Progress
 
 Each progression-controlled weapon may have a weapon-specific kill requirement.
 
@@ -469,7 +534,7 @@ Example:
 ```text
 L1A1
 Minimum Level: 20
-License Requirement: 50 L1A1 kills
+Mastery Requirement: 50 L1A1 kills
 ```
 
 Kill progress may accumulate before the minimum level.
@@ -490,37 +555,40 @@ L1A1 Kills: 50/50
 
 The progress is retained.
 
-The license is still not active because Level 20 has not been reached.
+Mastery progress is complete, but level eligibility has not been reached.
 
 At Level 20:
 
 ```text
 level requirement complete
 kill requirement complete
-→ license activates
+→ cross-side mastery permission becomes usable
 ```
 
 This allows battlefield scavenging and weapon familiarity to matter without bypassing level progression.
 
 ---
 
-## 11. License = Cross-Faction Permission
+## 11. Mastery Progress Is Independent From Native Side Policy
 
-A weapon license represents mastery.
+Weapon mastery represents cross-side permission.
 
 Conceptually:
 
-> The player has demonstrated enough experience with this weapon to use it outside its native faction.
+> The player has demonstrated the configured mastery requirement for this weapon.
 
-A license does **not** mean the player owns the weapon.
+Mastery does **not** mean the player owns the weapon, and it does not mutate
+`allowedSides[]`. Cross-side eligibility is a separate weapon-only route that
+exists only when the canonical weapon explicitly declares
+`crossSideAllowed = 1`.
 
 Example:
 
 ```text
 L1A1
-Native faction: WEST
+Allowed sides: WEST
 Minimum level: 20
-License kills: 50
+Mastery kills required: 50
 ```
 
 Player:
@@ -531,15 +599,16 @@ L1A1 kills: 50
 Ownership: no
 ```
 
-Result:
+Native-side result:
 
 ```text
-License: yes
-Cross-faction permission: yes
+Mastery: complete
+Native/default side: WEST
 Permanent ownership: no
 ```
 
-The player may therefore rent the weapon on either faction, subject to economy/rental rules.
+On EAST, this focused seed may proceed only after Level 20 and 50 canonical
+L1A1 mastery kills, then remains subject to acquisition/economy rules.
 
 ---
 
@@ -553,7 +622,7 @@ It does not answer:
 
 > Has this player mastered the weapon?
 
-Purchasing therefore does not automatically grant a cross-faction license.
+Purchasing therefore does not alter `allowedSides[]`.
 
 Example:
 
@@ -563,7 +632,7 @@ L1A1 kills: 10/50
 L1A1 ownership: yes
 ```
 
-On the native faction:
+On an allowed side:
 
 ```text
 Level requirement: complete
@@ -571,30 +640,33 @@ Ownership: complete
 → permanent access
 ```
 
-On the opposing faction:
+On a side absent from `allowedSides[]` with no explicit cross-side path:
 
 ```text
 Level requirement: complete
 Ownership: complete
-License: incomplete
-→ cross-faction access denied
+→ CROSS_SIDE_NOT_ALLOWED regardless of ownership
 ```
+
+When `crossSideAllowed = 1`, ownership still cannot bypass level, perks, or an
+incomplete cross-side mastery requirement.
 
 Money must not bypass the mastery requirement.
 
 ---
 
-## 13. Owned + Licensed = Fully Completed Weapon
+## 13. Owned + Mastered = Progression Completion
 
-When a player has both permanent ownership and the weapon license:
+When a player has both permanent ownership and complete weapon mastery:
 
 ```text
 Level requirement: complete
 Ownership: yes
-License: yes
+Mastery: complete
 ```
 
-the weapon becomes permanently usable on both its native and opposing faction.
+the weapon has completed those progression requirements on every side listed in
+its `allowedSides[]` metadata.
 
 No rental is required.
 
@@ -610,30 +682,38 @@ A rental does not become ownership.
 
 A rental does not bypass minimum level.
 
-Cross-faction rental additionally requires the weapon license.
+Rental never mutates `allowedSides[]` and never creates a cross-side path.
 
 Conceptually:
 
 ```text
 LEVEL GATE
     ↓
-FACTION / LICENSE GATE
+ALLOWED-SIDE GATE
     ↓
 OWNED?
     YES → permanent access
     NO  → valid rental required
 ```
 
-Exact rental lifetime remains a later gameplay decision.
+The current rental lifetime is the server session. Rental state survives
+respawn, side changes and round transitions, and is not reset by the round
+lifecycle. A future persistence/economy design may deliberately replace that
+policy, but expiry must continue to have one authoritative owner.
 
-Examples include:
+Provisional weapon pricing is authored on canonical logical roots only. It uses
+readable purchase bands based on progression tier and broad combat role, with
+specialist, support, precision, and strategic weapons priced above ordinary
+weapons at comparable levels. Rental is currently exactly 20% of purchase
+price. These are playtest values for the current provisional cash cadence, not
+final economy balance.
 
-- life;
-- round;
-- session;
-- fixed duration.
-
-That decision belongs to progression/economy design, not the loadout validator.
+The configured Level 1 starter roots (`vn_m1903`, `vn_m1911`, `vn_k98k`, and
+`vn_pm`) remain acquisition-uncontrolled. Deployment applies their configured
+starter loadouts directly and the current acquisition initializer does not seed
+starter ownership, so pricing them would make those guaranteed baseline kits
+fail later entitlement checks. `vn_fkb1_pm` also remains unpriced with its wider
+metadata pending manual review.
 
 ---
 
@@ -655,7 +735,7 @@ Result:
 purchase: denied
 rental: denied
 arsenal selection: denied
-license activation: denied
+mastery permission: denied
 ```
 
 Kill progress remains saved.
@@ -673,9 +753,9 @@ Ownership: yes
 Result:
 
 ```text
-native faction: permanent access
-opposing faction: denied
-license progress: 10/50
+native side: permanent access
+cross side: LOCKED_MASTERY (10/50), even though owned
+mastery progress: 10/50
 ```
 
 ---
@@ -691,9 +771,9 @@ Ownership: no
 Result:
 
 ```text
-license: complete
-native faction: rental required
-opposing faction: rental allowed
+mastery: complete
+native side: rental or purchase required
+cross side: mastery complete, then rental or purchase required
 permanent ownership: no
 ```
 
@@ -710,10 +790,10 @@ Ownership: yes
 Result:
 
 ```text
-license: complete
+mastery: complete
 ownership: complete
-native faction: permanent access
-opposing faction: permanent access
+native side: permanent access
+cross side: permanent access only because crossSideAllowed is explicit and mastery is complete
 rental required: no
 ```
 
@@ -723,29 +803,26 @@ Weapon is fully completed.
 
 ## 16. Authoritative Entitlement Logic
 
-The future server-side entitlement sequence should conceptually be:
+The server-side weapon entitlement sequence is:
 
 ```text
 1. Does the item exist?
         ↓
 2. Is the weapon/magazine/attachment combination factually valid?
         ↓
-3. Has the player reached the minimum level?
+3. Is the current side native/default through allowedSides, or is an explicit
+   crossSideAllowed path configured?
         ↓
-4. Is the current side the weapon's native faction?
-
-   YES:
-       owned or otherwise valid native access?
-
-   NO:
-       license complete?
-           NO → reject
-           YES → owned or valid rental?
+4. Has the player reached minLevel?
         ↓
-5. VALID
+5. For cross-side access, has canonical weapon mastery reached masteryKillsRequired?
+        ↓
+6. Have required perks passed?
+        ↓
+7. Where acquisition is configured, is ownership/rental valid?
+        ↓
+8. VALID
 ```
-
-The exact API between `functions/loadouts/` and `functions/progression/` must be deliberately designed when progression is implemented.
 
 Loadouts must ask progression for authoritative entitlement.
 
@@ -778,13 +855,33 @@ Do not infer starter equipment from:
 
 Starter equipment must remain usable even when progression/persistence systems are unavailable.
 
+Each starter class owns the human-authored equipment choice: primary, launcher
+and handgun weapons and attachments; uniform, vest, backpack, headgear, facewear
+and binocular classes; spare-magazine counts and target containers; generic starter
+cargo; and the six assigned-item slots in Arma order (map, GPS/terminal, radio,
+compass, watch, NVG). Empty optional classnames explicitly clear that slot.
+
+Runtime derives each configured weapon's loaded and spare magazine classname
+from the generated canonical S.O.G. `baseMagazine` fact; starter config does not
+duplicate that factual choice. Magazines and attachments are then validated
+against generated compatibility. Runtime initialization resolves structural variants,
+derives loaded and spare magazine capacity from `CfgMagazines`, constructs the
+physical Unit Loadout Array shapes, and rejects an invalid definition with a
+specific server log. Changing a starter equipment choice must therefore be a
+config edit; weapon facts and loadout mechanics remain outside the balance
+definition.
+
 ---
 
 ## 18. Server Loadout Initialization
 
 `fn_initServer.sqf` owns server initialization of configured loadout definitions.
 
-Configured template loadouts are resolved once at server initialization and stored in server-owned state.
+Configured template loadouts are resolved once at server initialization, then
+their explicitly configured starter choices are validated and mechanically
+built into complete loadouts stored in server-owned state. The template supplies
+an engine-valid baseline shape; it is not the balance owner for configured
+starter equipment.
 
 Do not recreate template units or rediscover starter loadouts per request.
 
@@ -1241,9 +1338,9 @@ Do not permanently patch generated output by hand.
 Changing things such as:
 
 ```text
-L1A1 native faction
+L1A1 allowed sides
 L1A1 minimum level
-L1A1 license kill requirement
+L1A1 mastery kill requirement
 L1A1 purchase price
 L1A1 rental price
 starter/free status
@@ -1268,9 +1365,9 @@ The exact final schema remains to be implemented, but maintenance should eventua
 ```cpp
 class vn_l1a1_01
 {
-    nativeSide = "WEST";
+    allowedSides[] = {"WEST"};
     minLevel = 20;
-    licenseKills = 50;
+    masteryKillsRequired = 50;
     purchasePrice = 100000;
     rentalPrice = 2000;
 };
@@ -1320,7 +1417,7 @@ should not require:
 
 The same principle applies to:
 
-- native faction;
+- allowed sides;
 - kill requirement;
 - price;
 - rental cost.
@@ -1411,20 +1508,18 @@ Current foundation includes:
 
 The foundation currently does not implement:
 
-- XP;
-- player levels;
 - ranks;
 - weapon kill persistence;
-- license activation;
-- ownership;
-- currency;
-- purchasing;
-- rental;
+- mastery completion;
 - persistence/database integration;
-- saved player loadouts;
-- final custom Arsenal UI;
-- complete non-weapon equipment-slot validation;
-- progression entitlement checks during loadout validation.
+- non-weapon Store categories;
+- final weapon prices;
+- stock behavior.
+
+Session XP, derived levels, cash, canonical weapon ownership, and
+server-session weapon rentals are implemented. Acquisition is active only when
+human-authored `purchasePrice` or `rentalPrice` metadata exists. Purchase/rent
+do not equip equipment and do not bypass side, level, or perk requirements.
 
 Do not pretend these systems exist by adding temporary shortcuts to loadout code.
 
@@ -1562,6 +1657,13 @@ Clients do not submit inventory contents. This prevents later partial mutations
 from restoring equipment that the player physically dropped between Arsenal
 sessions while preserving the server as the state owner.
 
+Battlefield pickup remains ordinary temporary Arma inventory state. It never
+adds canonical ownership, a session rental, or any other progression
+entitlement. Reconciliation retains only currently entitled weapon
+compositions in the reusable intended-loadout mutation baseline. An unentitled
+picked-up weapon remains physically usable until normal gameplay removes or
+replaces it, but an unrelated Arsenal mutation cannot reapply it.
+
 Saved kits are stored only in the local client's `profileNamespace`. Saving and
 deleting do not mutate server gameplay state. A locally stored kit is never an
 authority source: LOAD submits the complete stored array as untrusted intent,
@@ -1571,12 +1673,26 @@ and quantity checks, and container capacity checks before the single owned
 application path may equip it. Editing local profile data therefore cannot
 grant equipment or bypass progression.
 
+Persistent progression contains only `schemaVersion`, `uid`, `xp`, `cash`,
+`ownedWeapons`, and canonical `weaponKills`. It deliberately excludes current
+inventory/loadout, picked-up equipment, rentals, and transient Arsenal state.
+Valid fail-closed canonical combat attribution may still award mastery for a
+picked-up infantry weapon because mastery follows server-observed kill evidence,
+not ownership or rental state.
+
 The Loadout overview exposes `MANAGE LOADOUTS` and `SAVE CURRENT KIT` in its
 centre footer. The manager supports up to twelve locally named kits, including
-load, rename, and delete. The former fixed `slot1` profile record is migrated
-once as `MIGRATED KIT`; the old profile key is then removed. Kit names and ids
-are presentation metadata only. The server never resolves equipment from a
-client kit id and validates the complete submitted loadout independently.
+load, explicit edit, rename, and delete. LOAD gives feedback only after the
+server-validated loadout has been applied. EDIT submits the same untrusted
+loadout through that validation path and establishes a local edit target only
+after success. The normal Arsenal flow then edits the authoritative intended
+loadout; `SAVE CHANGES` explicitly overwrites that same local record without a
+new name or duplicate. `CANCEL EDIT`, successful ordinary LOAD, successful save,
+and menu close clear the edit target. Navigation, including Store entry, never
+autosaves it. The former fixed `slot1` profile record is migrated once as
+`MIGRATED KIT`; the old profile key is then removed. Kit names and ids are
+presentation metadata only. The server never resolves equipment from a client
+kit id and validates the complete submitted loadout independently.
 
 State-changing Arsenal requests also include the network id of the actual
 mapboard whose local action opened the menu. The server treats that id only as
@@ -1593,3 +1709,84 @@ required by the design reference. A future implementation may use a locally
 owned, presentation-only mannequin in a fixed decorated scene. It must never
 equip or mutate the gameplay player, and simultaneous clients must not share or
 compete over preview state.
+
+The Store uses the existing deployed-menu shell and owns only the wide centre
+workspace. The operator column is hidden only while Store is active so the
+catalogue can use the full main width; normal Loadout and Arsenal views restore
+that column through the shared menu lifecycle owner. Its root exposes Infantry,
+Ground Vehicles, Rotary Wing,
+and Fixed Wing; Infantry then separates Primary, Sidearms, and Launchers. SEA
+is hidden while the curated progression surface has no SEA products. Weapon
+lists contain global canonical S.O.G. roots deterministically; structural
+variants are never separate products. Human-authored `allowedSides[]`,
+`crossSideAllowed`, level, passive canonical mastery, perks and prices
+drive presentation. Missing prices show acquisition not configured and never
+produce invented values.
+
+Product categories use the shared four-card, two-column visual language with
+bounded pagination rather than a long scrolling list. Store keeps its own
+discovery/acquisition projection while sharing controls with Arsenal. Its
+expanded geometry is applied only while Store is active; the shared menu mode
+owner restores canonical title, subtitle, BACK, selector action, pagination,
+workspace, card and operator geometry before every non-Store renderer. Locked,
+wrong-side, unaffordable, owned and rented products remain discoverable.
+Cross-side products that permit mastery show current/required progress even
+while level-locked; truly prohibited products say `FACTION RESTRICTED`.
+Selecting a card explains combined level, mastery, perk and acquisition state
+with real line-separated text in the right detail panel. Category data is
+cached on entry and invalidated by authoritative progression/acquisition
+updates, with no polling or per-frame config scan.
+
+`BUY` and `RENT` submit intent only. The server derives the caller, repeats
+entitlement and cash checks, commits through
+`functions/progression/acquisition/`, and returns only to the requester. The
+existing targeted progression update refreshes Store cash and ownership/rental
+state. Acquisition does not auto-equip. Persistence, stock, and final price
+balance remain outside this presentation slice.
+
+An owned or rented weapon exposes `EQUIP IN ARSENAL`. This is navigation only:
+it opens the existing Primary, Handgun or Launcher Arsenal browser, snaps to and
+highlights the acquired canonical weapon, and leaves configuration/application
+to the existing validated loadout path. Store never mutates a loadout. Arsenal
+remains the currently usable surface: cross-side discovery products stay absent
+until the shared authoritative entitlement result says they are entitled.
+
+Native-side weapons may also be bought or rented directly from their existing
+Arsenal browser card once level/side/mastery/perk entitlement is otherwise
+satisfied (`REQUIRES_ACQUISITION`); the card shows `AVAILABLE TO ACQUIRE` with
+`BUY $X`/`RENT $Y` actions that submit through the exact same
+`bn_koth_fnc_progression_requestWeaponAcquisition` endpoint Store uses. Store
+remains the only discovery surface for cross-faction weapons and vehicles, and
+the only route for a cross-faction weapon until it is fully entitled there.
+Once a cross-faction weapon becomes entitled (side, level, mastery, perks all
+satisfied and owned/rented), it appears in Arsenal like any native weapon under
+the existing filtering; Arsenal never lists a locked cross-faction weapon.
+
+Vehicle progression preparation is owned separately by
+`CfgBnKothVehicles >> Metadata >> Vehicles`. Canonical vehicle roots explicitly
+declare `allowedSides[]`, `minLevel`, provisional purchase/rental prices,
+`storeCategory`, and `vehicleRole`; structural relationships may be declared
+only with `variantOf` and inherit root policy. The current taxonomy is
+`GROUND`, `SEA`, `ROTARY`, and `FIXED_WING`, with a separate role such as
+`TRANSPORT`, `LOGISTICS`, `COMMAND`, or `COMBAT`.
+
+The factual audit of public physical classes from the official S.O.G.
+EAST/WEST CfgVehicles tables lives in `data/vehicle_inventory.csv`. The Store
+product surface is intentionally smaller: `config/vehicles.hpp` authors a
+curated set of combat-relevant ground, rotary-wing and fixed-wing loadouts.
+Materially different factual loadout labels may be separate products, while
+paint/faction duplicates and support-only classes are omitted. The source
+exposes no dependable inheritance graph, so no vehicle `variantOf` links are
+authored. Factual table side and faction remain evidence only, while config
+owns deliberate KOTH availability and balance.
+
+Only those curated metadata entries are discoverable in the vehicle Store
+categories. Vehicles are RENT-only and the displayed price buys one vehicle
+life. RENT is one immediate authoritative transaction: successful server-side
+spawn and cash deduction happen together, so a single RENT press either ends
+with a live active vehicle or with nothing charged. An active life ends on
+destruction or authoritative cleanup, with no refund or entitlement
+restoration. There is no BUY action, permanent vehicle ownership, persisted
+rental, or session-wide unlimited unlock. M577 rental grants only the normal
+vehicle object and never
+managed command/teleport capability. Vehicles do not use weapon mastery.

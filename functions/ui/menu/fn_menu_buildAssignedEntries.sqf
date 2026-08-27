@@ -21,6 +21,11 @@ params [
 private _entries = [];
 private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
 if !(_progression isEqualType createHashMap) then {_progression = createHashMap};
+private _uid = if (!isNull player) then {getPlayerUID player} else {""};
+private _assignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
+if !(_assignments isEqualType createHashMap) then {_assignments = createHashMap};
+private _assignedSide = _assignments getOrDefault [_uid, sideUnknown];
+private _sideToken = if (_assignedSide isEqualTo west) then {"WEST"} else {if (_assignedSide isEqualTo east) then {"EAST"} else {""}};
 private _sourceItemsCfg = _compatibilityCfg >> "SourceItems";
 if !(isClass _sourceItemsCfg) exitWith {_entries};
 
@@ -75,7 +80,7 @@ for "_i" from 0 to 5 do {
                 _displayName = [_class] call _resolveItemName;
             };
             private _metadata = ["Wearables", _class] call bn_koth_fnc_loadouts_getItemMetadata;
-            private _entitlement = [_progression, _metadata, _class] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+            private _entitlement = [_progression, _metadata, _class, _sideToken, false] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
             _slotArray pushBack [_displayName, _class, _metadata, _entitlement];
             _slotCandidates set [_i, _slotArray];
         };

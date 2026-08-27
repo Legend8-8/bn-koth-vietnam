@@ -18,8 +18,14 @@ params [
     ["_progression", createHashMap, [createHashMap]]
 ];
 
-private _xp = (_progression getOrDefault ["xp", 0]) max 0;
-private _level = (_progression getOrDefault ["level", 1]) max 1;
+// max() does not reliably sanitize NaN in this engine, so non-finite authoritative
+// fields must be rejected explicitly with finite() rather than merely clamped.
+private _rawXp = _progression getOrDefault ["xp", 0];
+private _xp = if (_rawXp isEqualType 0 && {finite _rawXp}) then {_rawXp max 0} else {0};
+private _rawLevel = _progression getOrDefault ["level", 1];
+private _level = if (_rawLevel isEqualType 0 && {finite _rawLevel}) then {_rawLevel max 1} else {1};
+private _rawCash = _progression getOrDefault ["cash", 0];
+private _cash = if (_rawCash isEqualType 0 && {finite _rawCash}) then {_rawCash max 0} else {0};
 private _weaponKills = _progression getOrDefault ["weaponKills", createHashMap];
 private _ownedWeapons = _progression getOrDefault ["ownedWeapons", []];
 private _rentedWeapons = _progression getOrDefault ["rentedWeapons", []];
@@ -34,6 +40,7 @@ createHashMapFromArray [
     ["uid", _uid],
     ["xp", _xp],
     ["level", _level],
+    ["cash", _cash],
     ["weaponKills", _weaponKills],
     ["ownedWeapons", _ownedWeapons],
     ["rentedWeapons", _rentedWeapons],

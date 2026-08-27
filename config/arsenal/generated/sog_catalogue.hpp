@@ -150,6 +150,7 @@
             displayName = "ISh-54 (Sidearm)";
             weaponType = "handgun";
             family = "izh54";
+            variantOf = "vn_izh54";
             baseMagazine = "vn_izh54_mag";
             baseMagazineConfidence = "family";
             compatibleMagazines[] = {"vn_izh54_mag", "vn_izh54_so_mag"};
@@ -161,6 +162,7 @@
             displayName = "ISh-54 (Sawn-off)";
             weaponType = "shotgun";
             family = "izh54";
+            variantOf = "vn_izh54";
             baseMagazine = "vn_izh54_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_izh54_mag", "vn_izh54_so_mag"};
@@ -223,7 +225,7 @@
             weaponType = "marksman";
             family = "k98k";
             variantOf = "vn_k98k_mrk";
-            variantTraits[] = {"bayonet", "camo"};
+            variantTraits[] = {"camo"};
             derivedRequirements[] = {"vn_b_camo_k98k", "vn_k98k_mrk"};
             baseMagazine = "vn_k98k_mag";
             baseMagazineConfidence = "high";
@@ -439,6 +441,7 @@
             displayName = "L2A3 (Folded)";
             weaponType = "smg";
             family = "l2a3";
+            variantOf = "vn_l2a3";
             baseMagazine = "vn_f1_smg_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_f1_smg_mag", "vn_f1_smg_t_mag"};
@@ -460,6 +463,7 @@
             displayName = "L34A1 (Folded)";
             weaponType = "smg";
             family = "l34a1";
+            variantOf = "vn_l34a1";
             baseMagazine = "vn_f1_smg_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_f1_smg_mag", "vn_f1_smg_t_mag"};
@@ -470,6 +474,7 @@
             displayName = "L34A1 (XM148)";
             weaponType = "smg";
             family = "l34a1";
+            variantOf = "vn_l34a1";
             baseMagazine = "vn_f1_smg_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag", "vn_f1_smg_mag", "vn_f1_smg_t_mag"};
@@ -551,6 +556,7 @@
             displayName = "M14 (Camo)";
             weaponType = "rifle";
             family = "m14";
+            variantOf = "vn_m14";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m14_10_mag", "vn_m14_10_t_mag", "vn_m14_mag", "vn_m14_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -562,7 +568,7 @@
             weaponType = "rifle";
             family = "m14";
             variantOf = "vn_m14";
-            variantTraits[] = {"bayonet", "suppressed"};
+            variantTraits[] = {"camo", "suppressed"};
             derivedRequirements[] = {"vn_b_camo_m14", "vn_m14", "vn_s_m14"};
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m14_10_mag", "vn_m14_10_t_mag", "vn_m14_mag", "vn_m14_t_mag"};
@@ -598,7 +604,7 @@
             weaponType = "rifle";
             family = "m14a1";
             variantOf = "vn_m14a1";
-            variantTraits[] = {"bayonet", "camo", "suppressed"};
+            variantTraits[] = {"camo", "suppressed"};
             derivedRequirements[] = {"vn_b_camo_m14a1", "vn_m14a1", "vn_s_m14"};
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m14_10_mag", "vn_m14_10_t_mag", "vn_m14_mag", "vn_m14_t_mag"};
@@ -623,6 +629,7 @@
             displayName = "M14A1 (Shorty)";
             weaponType = "rifle";
             family = "m14a1";
+            variantOf = "vn_m14a1";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m14_10_mag", "vn_m14_10_t_mag", "vn_m14_mag", "vn_m14_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -684,6 +691,7 @@
             displayName = "M16A1 (Camo)";
             weaponType = "rifle";
             family = "m16";
+            variantOf = "vn_m16";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -694,6 +702,7 @@
             displayName = "M16A1 (M203)";
             weaponType = "launcher";
             family = "m16";
+            variantOf = "vn_m16";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag", "vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -704,6 +713,7 @@
             displayName = "M16A1 (M203 Camo)";
             weaponType = "launcher";
             family = "m16";
+            variantOf = "vn_m16";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag", "vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -741,6 +751,7 @@
             displayName = "M16A1 (XM148)";
             weaponType = "launcher";
             family = "m16_muzzle";
+            variantOf = "vn_m16";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
         };
@@ -879,6 +890,7 @@
             displayName = "M16A1 (XM148)";
             weaponType = "rifle";
             family = "m16";
+            variantOf = "vn_m16";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag", "vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -989,6 +1001,7 @@
             displayName = "M1903 (Rifle Grenade)";
             weaponType = "rifle";
             family = "m1903";
+            variantOf = "vn_m1903";
             baseMagazine = "vn_m1903_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_22mm_cs_mag", "vn_22mm_lume_mag", "vn_22mm_m17_frag_mag", "vn_22mm_m19_wp_mag", "vn_22mm_m1a2_frag_mag", "vn_22mm_m22_smoke_mag", "vn_22mm_m9_heat_mag", "vn_m1903_mag", "vn_m1903_t_mag"};
@@ -1109,6 +1122,7 @@
             displayName = "M1 Garand (Rifle Grenade)";
             weaponType = "rifle";
             family = "m1_garand";
+            variantOf = "vn_m1_garand";
             baseMagazine = "vn_m1_garand_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_22mm_cs_mag", "vn_22mm_lume_mag", "vn_22mm_m17_frag_mag", "vn_22mm_m19_wp_mag", "vn_22mm_m1a2_frag_mag", "vn_22mm_m22_smoke_mag", "vn_22mm_m9_heat_mag", "vn_m1_garand_mag", "vn_m1_garand_t_mag"};
@@ -1121,7 +1135,7 @@
             weaponType = "marksman";
             family = "m1_garand";
             variantOf = "vn_m1_garand";
-            variantTraits[] = {"bayonet", "optic"};
+            variantTraits[] = {"camo", "optic"};
             derivedRequirements[] = {"vn_b_camo_m1_garand", "vn_m1_garand", "vn_o_3x_m84"};
             baseMagazine = "vn_m1_garand_mag";
             baseMagazineConfidence = "high";
@@ -1145,6 +1159,7 @@
             displayName = "M1A1 Tommy Gun (shorty)";
             weaponType = "smg";
             family = "m1a1_tommy_so";
+            variantOf = "vn_m1a1_tommy";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m1a1_20_mag", "vn_m1a1_20_t_mag", "vn_m1a1_30_mag", "vn_m1a1_30_t_mag"};
             sourceAffiliations[] = {"EAST", "INDEPENDENT", "WEST"};
@@ -1179,6 +1194,7 @@
             displayName = "M1 Carbine (Rifle Grenade)";
             weaponType = "rifle";
             family = "m1carbine";
+            variantOf = "vn_m1carbine";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_22mm_cs_mag", "vn_22mm_lume_mag", "vn_22mm_m17_frag_mag", "vn_22mm_m19_wp_mag", "vn_22mm_m1a2_frag_mag", "vn_22mm_m22_smoke_mag", "vn_22mm_m9_heat_mag", "vn_carbine_15_mag", "vn_carbine_15_t_mag", "vn_carbine_30_mag", "vn_carbine_30_t_mag"};
             sourceAffiliations[] = {"EAST", "INDEPENDENT", "WEST"};
@@ -1235,6 +1251,8 @@
             displayName = "XM21 Sniper Rifle (NV Optic)";
             weaponType = "marksman";
             family = "m21";
+            variantOf = "vn_m21";
+            derivedRequirements[] = {"vn_m21", "vn_o_anpvs2_m14"};
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m14_10_mag", "vn_m14_10_t_mag", "vn_m14_mag", "vn_m14_t_mag"};
             compatibleAttachments[] = {"vn_o_anpvs2_m14"};
@@ -1260,7 +1278,7 @@
             weaponType = "marksman";
             family = "m21";
             variantOf = "vn_m21";
-            variantTraits[] = {"bayonet", "suppressed"};
+            variantTraits[] = {"camo", "suppressed"};
             derivedRequirements[] = {"vn_b_camo_m14", "vn_m21", "vn_s_m14"};
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m14_10_mag", "vn_m14_10_t_mag", "vn_m14_mag", "vn_m14_t_mag"};
@@ -1297,6 +1315,7 @@
             displayName = "M2 Carbine (Rifle Grenade)";
             weaponType = "rifle";
             family = "m2carbine";
+            variantOf = "vn_m2carbine";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_22mm_cs_mag", "vn_22mm_lume_mag", "vn_22mm_m17_frag_mag", "vn_22mm_m19_wp_mag", "vn_22mm_m1a2_frag_mag", "vn_22mm_m22_smoke_mag", "vn_22mm_m9_heat_mag", "vn_carbine_15_mag", "vn_carbine_15_t_mag", "vn_carbine_30_mag", "vn_carbine_30_t_mag"};
             sourceAffiliations[] = {"INDEPENDENT", "WEST"};
@@ -1347,6 +1366,9 @@
             displayName = "M36 (Camo)";
             weaponType = "rifle";
             family = "m36";
+            variantOf = "vn_m36";
+            variantTraits[] = {"camo"};
+            derivedRequirements[] = {"vn_b_camo_m36", "vn_m36"};
             baseMagazine = "vn_m36_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_m36_mag", "vn_m36_t_mag"};
@@ -1430,6 +1452,7 @@
             displayName = "M40 Sniper Rifle Camo";
             weaponType = "marksman";
             family = "m40a1";
+            variantOf = "vn_m40a1";
             baseMagazine = "vn_m40a1_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_m40a1_mag", "vn_m40a1_t_mag"};
@@ -1484,7 +1507,7 @@
             weaponType = "marksman";
             family = "m40a1";
             variantOf = "vn_m40a1_sniper";
-            variantTraits[] = {"bayonet", "suppressed"};
+            variantTraits[] = {"camo", "suppressed"};
             derivedRequirements[] = {"vn_b_camo_m40a1", "vn_m40a1_sniper", "vn_s_m14"};
             baseMagazine = "vn_m40a1_mag";
             baseMagazineConfidence = "high";
@@ -1508,6 +1531,7 @@
             displayName = "M/45 Submachinegun (Camo)";
             weaponType = "smg";
             family = "m45";
+            variantOf = "vn_m45";
             baseMagazine = "vn_m45_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_m45_mag", "vn_m45_t_mag"};
@@ -1519,6 +1543,7 @@
             displayName = "M/45 Submachinegun (Folded)";
             weaponType = "smg";
             family = "m45";
+            variantOf = "vn_m45";
             baseMagazine = "vn_m45_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_m45_mag", "vn_m45_t_mag"};
@@ -1571,6 +1596,7 @@
             displayName = "M49/56 (Rifle Grenade)";
             weaponType = "rifle";
             family = "m4956";
+            variantOf = "vn_m4956";
             baseMagazine = "vn_m4956_10_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_22mm_cs_mag", "vn_22mm_he_mag", "vn_22mm_lume_mag", "vn_22mm_m19_wp_mag", "vn_22mm_m22_smoke_mag", "vn_22mm_m9_heat_mag", "vn_m4956_10_mag", "vn_m4956_10_t_mag"};
@@ -1607,6 +1633,7 @@
             displayName = "M60 Shorty";
             weaponType = "lmg";
             family = "m60";
+            variantOf = "vn_m60";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m60_100_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -1617,6 +1644,7 @@
             displayName = "M60 Shorty (Camo)";
             weaponType = "lmg";
             family = "m60";
+            variantOf = "vn_m60";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m60_100_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -1715,6 +1743,7 @@
             displayName = "M79 40mm GL (sawn-off)";
             weaponType = "handgun";
             family = "m79";
+            variantOf = "vn_m79";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m576_buck_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -1776,6 +1805,7 @@
             displayName = "MAT-49 (Folded)";
             weaponType = "smg";
             family = "mat49";
+            variantOf = "vn_mat49";
             baseMagazine = "vn_mat49_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_mat49_mag", "vn_mat49_t_mag"};
@@ -2085,6 +2115,7 @@
             displayName = "RPD Shorty (El Cid)";
             weaponType = "lmg";
             family = "rpd";
+            variantOf = "vn_rpd";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_rpd_100_mag", "vn_rpd_125_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -2095,6 +2126,7 @@
             displayName = "RPD Shorty";
             weaponType = "lmg";
             family = "rpd_shorty";
+            variantOf = "vn_rpd";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_rpd_100_mag", "vn_rpd_125_mag"};
         };
@@ -2171,6 +2203,7 @@
             displayName = "SKS Rifle (22mm GL)";
             weaponType = "rifle";
             family = "sks";
+            variantOf = "vn_sks";
             baseMagazine = "vn_sks_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_22mm_cs_mag", "vn_22mm_lume_mag", "vn_22mm_m19_wp_mag", "vn_22mm_m22_smoke_mag", "vn_22mm_m60_frag_mag", "vn_22mm_m60_heat_mag", "vn_sks_mag", "vn_sks_t_mag"};
@@ -2248,9 +2281,9 @@
             displayName = "SVD (Sniper/ camo)";
             weaponType = "marksman";
             family = "svd";
-            variantOf = "vn_svd";
-            variantTraits[] = {"bayonet", "camo", "optic"};
-            derivedRequirements[] = {"vn_b_camo_svd", "vn_o_4x_svd", "vn_svd"};
+            variantOf = "vn_svd_sniper";
+            variantTraits[] = {"camo"};
+            derivedRequirements[] = {"vn_b_camo_svd", "vn_svd_sniper"};
             baseMagazine = "vn_svd_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_svd_mag", "vn_svd_t_mag"};
@@ -2308,6 +2341,7 @@
             displayName = "Type 64 SMG (Folded)";
             weaponType = "smg";
             family = "type64_f_smg";
+            variantOf = "vn_type64_smg";
             baseMagazine = "vn_type64_smg_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_type64_smg_mag", "vn_type64_smg_t_mag"};
@@ -2355,7 +2389,7 @@
             weaponType = "marksman";
             family = "vz54";
             variantOf = "vn_vz54_sniper";
-            variantTraits[] = {"bayonet", "camo"};
+            variantTraits[] = {"camo"};
             derivedRequirements[] = {"vn_b_camo_vz54", "vn_vz54_sniper"};
             baseMagazine = "vn_m38_mag";
             baseMagazineConfidence = "high";
@@ -2379,6 +2413,7 @@
             displayName = "VZ.61 (Sidearm)";
             weaponType = "handgun";
             family = "vz61";
+            variantOf = "vn_vz61";
             baseMagazine = "vn_vz61_mag";
             baseMagazineConfidence = "high";
             compatibleMagazines[] = {"vn_vz61_mag", "vn_vz61_t_mag"};
@@ -2464,6 +2499,7 @@
             displayName = "XM16E1 (XM148)";
             weaponType = "rifle";
             family = "xm16e1";
+            variantOf = "vn_xm16e1";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag", "vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
         };
@@ -2483,6 +2519,7 @@
             displayName = "XM177E2 (Camo)";
             weaponType = "rifle";
             family = "xm177";
+            variantOf = "vn_xm177";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -2493,6 +2530,7 @@
             displayName = "XM177E2 (Foregrip)";
             weaponType = "rifle";
             family = "xm177_fg";
+            variantOf = "vn_xm177";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -2503,6 +2541,7 @@
             displayName = "XM177E2 (M203)";
             weaponType = "launcher";
             family = "xm177";
+            variantOf = "vn_xm177";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag", "vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
         };
@@ -2512,6 +2551,7 @@
             displayName = "XM177E2 (M203/ Camo)";
             weaponType = "launcher";
             family = "xm177";
+            variantOf = "vn_xm177";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag", "vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -2535,6 +2575,7 @@
             displayName = "XM177E2 (XM148)";
             weaponType = "launcher";
             family = "xm177_muzzle";
+            variantOf = "vn_xm177";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
         };
@@ -2557,6 +2598,7 @@
             displayName = "XM177E2 (Short)";
             weaponType = "rifle";
             family = "xm177";
+            variantOf = "vn_xm177";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"INDEPENDENT", "WEST"};
@@ -2580,6 +2622,7 @@
             displayName = "XM177E2 (Stock)";
             weaponType = "rifle";
             family = "xm177";
+            variantOf = "vn_xm177";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -2590,6 +2633,7 @@
             displayName = "XM177E2 (Stock/ Camo)";
             weaponType = "rifle";
             family = "xm177";
+            variantOf = "vn_xm177";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
         };
@@ -2599,6 +2643,7 @@
             displayName = "XM177E2 (XM148)";
             weaponType = "launcher";
             family = "xm177";
+            variantOf = "vn_xm177";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag", "vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -2609,6 +2654,7 @@
             displayName = "XM177E2 (XM148/ Camo)";
             weaponType = "launcher";
             family = "xm177";
+            variantOf = "vn_xm177";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_40mm_m381_he_mag", "vn_40mm_m397_ab_mag", "vn_40mm_m406_he_mag", "vn_40mm_m433_hedp_mag", "vn_40mm_m583_flare_w_mag", "vn_40mm_m651_cs_mag", "vn_40mm_m661_flare_g_mag", "vn_40mm_m662_flare_r_mag", "vn_40mm_m680_smoke_w_mag", "vn_40mm_m682_smoke_r_mag", "vn_40mm_m695_flare_y_mag", "vn_40mm_m715_smoke_g_mag", "vn_40mm_m716_smoke_y_mag", "vn_40mm_m717_smoke_p_mag", "vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -2629,6 +2675,7 @@
             displayName = "XM177E1 (Camo)";
             weaponType = "rifle";
             family = "xm177e1";
+            variantOf = "vn_xm177e1";
             baseMagazineConfidence = "ambiguous";
             compatibleMagazines[] = {"vn_m16_20_mag", "vn_m16_20_t_mag", "vn_m16_30_mag", "vn_m16_30_t_mag", "vn_m16_40_mag", "vn_m16_40_t_mag"};
             sourceAffiliations[] = {"WEST"};
@@ -5569,78 +5616,78 @@
         {
             className = "vn_b_camo_k98k";
             displayName = "Camo wrap [K98K]";
-            itemType = "bayonet";
-            traits[] = {"bayonet", "camo"};
+            itemType = "camo";
+            traits[] = {"camo"};
             compatibleWeapons[] = {"vn_k98k_mrk_camo"};
         };
         class vn_b_camo_m14
         {
             className = "vn_b_camo_m14";
             displayName = "Camo wrap [M14]";
-            itemType = "bayonet";
-            traits[] = {"bayonet", "camo"};
+            itemType = "camo";
+            traits[] = {"camo"};
             compatibleWeapons[] = {"vn_m14_sd", "vn_m21_sd"};
         };
         class vn_b_camo_m14a1
         {
             className = "vn_b_camo_m14a1";
             displayName = "Camo wrap [M14A1]";
-            itemType = "bayonet";
-            traits[] = {"bayonet", "camo"};
+            itemType = "camo";
+            traits[] = {"camo"};
             compatibleWeapons[] = {"vn_m14a1_camo", "vn_m14a1_nvg"};
         };
         class vn_b_camo_m1903
         {
             className = "vn_b_camo_m1903";
             displayName = "Camo wrap [M1903]";
-            itemType = "bayonet";
-            traits[] = {"bayonet", "camo"};
+            itemType = "camo";
+            traits[] = {"camo"};
         };
         class vn_b_camo_m1_garand
         {
             className = "vn_b_camo_m1_garand";
             displayName = "Camo wrap [M1 Garand]";
-            itemType = "bayonet";
-            traits[] = {"bayonet", "camo"};
+            itemType = "camo";
+            traits[] = {"camo"};
             compatibleWeapons[] = {"vn_m1_garand_sniper"};
         };
         class vn_b_camo_m36
         {
             className = "vn_b_camo_m36";
             displayName = "Camo wrap [M36]";
-            itemType = "bayonet";
-            traits[] = {"bayonet", "camo"};
+            itemType = "camo";
+            traits[] = {"camo"};
             compatibleWeapons[] = {"vn_m36_camo"};
         };
         class vn_b_camo_m40a1
         {
             className = "vn_b_camo_m40a1";
             displayName = "Camo wrap [M40]";
-            itemType = "bayonet";
-            traits[] = {"bayonet", "camo"};
+            itemType = "camo";
+            traits[] = {"camo"};
             compatibleWeapons[] = {"vn_m40a1_sniper_sd"};
         };
         class vn_b_camo_m9130
         {
             className = "vn_b_camo_m9130";
             displayName = "Camo wrap [M9130]";
-            itemType = "bayonet";
-            traits[] = {"bayonet", "camo"};
+            itemType = "camo";
+            traits[] = {"camo"};
         };
         class vn_b_camo_svd
         {
             className = "vn_b_camo_svd";
             displayName = "Camo wrap [SVD]";
-            itemType = "bayonet";
-            traits[] = {"bayonet", "camo"};
+            itemType = "camo";
+            traits[] = {"camo"};
             compatibleWeapons[] = {"vn_svd_sniper_camo"};
         };
         class vn_b_camo_vz54
         {
             className = "vn_b_camo_vz54";
             displayName = "Camo wrap [VZ54]";
-            itemType = "bayonet";
-            traits[] = {"bayonet", "camo"};
+            itemType = "camo";
+            traits[] = {"camo"};
             compatibleWeapons[] = {"vn_vz54_sniper_camo"};
         };
         class vn_b_carbine
@@ -7916,7 +7963,7 @@
         class vn_k98k_mrk_camo
         {
             base = "vn_k98k_mrk";
-            traits[] = {"bayonet", "camo"};
+            traits[] = {"camo"};
             requirements[] = {"vn_b_camo_k98k", "vn_k98k_mrk"};
         };
         class vn_l1a1_01_bayo
@@ -7958,7 +8005,7 @@
         class vn_m14_sd
         {
             base = "vn_m14";
-            traits[] = {"bayonet", "suppressed"};
+            traits[] = {"camo", "suppressed"};
             requirements[] = {"vn_b_camo_m14", "vn_m14", "vn_s_m14"};
         };
         class vn_m14a1_bipod
@@ -7970,7 +8017,7 @@
         class vn_m14a1_camo
         {
             base = "vn_m14a1";
-            traits[] = {"bayonet", "camo", "suppressed"};
+            traits[] = {"camo", "suppressed"};
             requirements[] = {"vn_b_camo_m14a1", "vn_m14a1", "vn_s_m14"};
         };
         class vn_m14a1_nvg
@@ -8114,7 +8161,7 @@
         class vn_m1_garand_sniper
         {
             base = "vn_m1_garand";
-            traits[] = {"bayonet", "optic"};
+            traits[] = {"camo", "optic"};
             requirements[] = {"vn_b_camo_m1_garand", "vn_m1_garand", "vn_o_3x_m84"};
         };
         class vn_m1carbine_bayo
@@ -8129,6 +8176,11 @@
             traits[] = {"optic"};
             requirements[] = {"vn_m1carbine", "vn_o_3x_m84"};
         };
+        class vn_m21_nvg
+        {
+            base = "vn_m21";
+            requirements[] = {"vn_m21", "vn_o_anpvs2_m14"};
+        };
         class vn_m21_nvg_sd
         {
             base = "vn_m21_nvg";
@@ -8138,7 +8190,7 @@
         class vn_m21_sd
         {
             base = "vn_m21";
-            traits[] = {"bayonet", "suppressed"};
+            traits[] = {"camo", "suppressed"};
             requirements[] = {"vn_b_camo_m14", "vn_m21", "vn_s_m14"};
         };
         class vn_m2carbine_bayo
@@ -8158,6 +8210,12 @@
             base = "vn_m36";
             traits[] = {"bayonet"};
             requirements[] = {"vn_b_m36", "vn_m36"};
+        };
+        class vn_m36_camo
+        {
+            base = "vn_m36";
+            traits[] = {"camo"};
+            requirements[] = {"vn_b_camo_m36", "vn_m36"};
         };
         class vn_m38_bayo
         {
@@ -8192,7 +8250,7 @@
         class vn_m40a1_sniper_sd
         {
             base = "vn_m40a1_sniper";
-            traits[] = {"bayonet", "suppressed"};
+            traits[] = {"camo", "suppressed"};
             requirements[] = {"vn_b_camo_m40a1", "vn_m40a1_sniper", "vn_s_m14"};
         };
         class vn_m45_sd
@@ -8311,9 +8369,9 @@
         };
         class vn_svd_sniper_camo
         {
-            base = "vn_svd";
-            traits[] = {"bayonet", "camo", "optic"};
-            requirements[] = {"vn_b_camo_svd", "vn_o_4x_svd", "vn_svd"};
+            base = "vn_svd_sniper";
+            traits[] = {"camo"};
+            requirements[] = {"vn_b_camo_svd", "vn_svd_sniper"};
         };
         class vn_type56_bayo
         {
@@ -8330,7 +8388,7 @@
         class vn_vz54_sniper_camo
         {
             base = "vn_vz54_sniper";
-            traits[] = {"bayonet", "camo"};
+            traits[] = {"camo"};
             requirements[] = {"vn_b_camo_vz54", "vn_vz54_sniper"};
         };
         class vn_xm16e1_bayo
@@ -8493,24 +8551,6 @@
                 resolvedWeaponClass = "vn_izh54";
             };
         };
-        class vn_izh54_p
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_izh54_p";
-            };
-        };
-        class vn_izh54_shorty
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_izh54_shorty";
-            };
-        };
         class vn_k50m
         {
             class k_none
@@ -8597,15 +8637,6 @@
                 resolvedWeaponClass = "vn_l2a3";
             };
         };
-        class vn_l2a3_f
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l2a3_f";
-            };
-        };
         class vn_l34a1
         {
             class k_none
@@ -8613,24 +8644,6 @@
                 structuralAttachments[] = {};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_l34a1";
-            };
-        };
-        class vn_l34a1_f
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l34a1_f";
-            };
-        };
-        class vn_l34a1_xm148
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_l34a1_xm148";
             };
         };
         class vn_l4
@@ -8687,15 +8700,6 @@
                 resolvedWeaponClass = "vn_m14_bayo";
             };
         };
-        class vn_m14_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m14_camo";
-            };
-        };
         class vn_m14a1
         {
             class k_none
@@ -8733,15 +8737,6 @@
                 structuralAttachments[] = {"vn_o_m14_front"};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m14a1_shorty_fs";
-            };
-        };
-        class vn_m14a1_shorty
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m14a1_shorty";
             };
         };
         class vn_m16
@@ -8801,42 +8796,6 @@
                 resolvedWeaponClass = "vn_m16_sd";
             };
         };
-        class vn_m16_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m16_camo";
-            };
-        };
-        class vn_m16_m203
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m16_m203";
-            };
-        };
-        class vn_m16_m203_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m16_m203_camo";
-            };
-        };
-        class vn_m16_muzzle
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m16_muzzle";
-            };
-        };
         class vn_m16_usaf
         {
             class k_none
@@ -8868,15 +8827,6 @@
                 structuralAttachments[] = {"vn_o_anpvs2_m16"};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m16_usaf_nvg";
-            };
-        };
-        class vn_m16_xm148
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m16_xm148";
             };
         };
         class vn_m1891
@@ -8943,15 +8893,6 @@
                 structuralAttachments[] = {"vn_b_m1903", "vn_o_8x_m1903"};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m1903_sniper";
-            };
-        };
-        class vn_m1903_gl
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m1903_gl";
             };
         };
         class vn_m1911
@@ -9023,15 +8964,6 @@
                 resolvedWeaponClass = "vn_m1_garand_bayo";
             };
         };
-        class vn_m1_garand_gl
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m1_garand_gl";
-            };
-        };
         class vn_m1a1_tommy
         {
             class k_none
@@ -9039,15 +8971,6 @@
                 structuralAttachments[] = {};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m1a1_tommy";
-            };
-        };
-        class vn_m1a1_tommy_so
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m1a1_tommy_so";
             };
         };
         class vn_m1carbine
@@ -9069,15 +8992,6 @@
                 structuralAttachments[] = {"vn_o_3x_m84"};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m1carbine_sniper";
-            };
-        };
-        class vn_m1carbine_gl
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m1carbine_gl";
             };
         };
         class vn_m1carbine_shorty
@@ -9112,18 +9026,15 @@
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m21_sd";
             };
-        };
-        class vn_m21_nvg
-        {
-            class k_none
+            class k_vn_o_anpvs2_m14
             {
-                structuralAttachments[] = {};
+                structuralAttachments[] = {"vn_o_anpvs2_m14"};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m21_nvg";
             };
-            class k_vn_s_m14
+            class k_vn_o_anpvs2_m14__vn_s_m14
             {
-                structuralAttachments[] = {"vn_s_m14"};
+                structuralAttachments[] = {"vn_o_anpvs2_m14", "vn_s_m14"};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m21_nvg_sd";
             };
@@ -9149,15 +9060,6 @@
                 resolvedWeaponClass = "vn_m2carbine_sniper";
             };
         };
-        class vn_m2carbine_gl
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m2carbine_gl";
-            };
-        };
         class vn_m36
         {
             class k_none
@@ -9166,20 +9068,17 @@
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m36";
             };
+            class k_vn_b_camo_m36
+            {
+                structuralAttachments[] = {"vn_b_camo_m36"};
+                ambiguous = 0;
+                resolvedWeaponClass = "vn_m36_camo";
+            };
             class k_vn_b_m36
             {
                 structuralAttachments[] = {"vn_b_m36"};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m36_bayo";
-            };
-        };
-        class vn_m36_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m36_camo";
             };
         };
         class vn_m38
@@ -9254,15 +9153,6 @@
                 resolvedWeaponClass = "vn_m40a1_nvg_sd";
             };
         };
-        class vn_m40a1_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m40a1_camo";
-            };
-        };
         class vn_m45
         {
             class k_none
@@ -9276,24 +9166,6 @@
                 structuralAttachments[] = {"vn_s_m45_camo"};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m45_sd";
-            };
-        };
-        class vn_m45_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m45_camo";
-            };
-        };
-        class vn_m45_fold
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m45_fold";
             };
         };
         class vn_m4956
@@ -9317,15 +9189,6 @@
                 resolvedWeaponClass = "vn_m4956_sniper";
             };
         };
-        class vn_m4956_gl
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m4956_gl";
-            };
-        };
         class vn_m60
         {
             class k_none
@@ -9333,24 +9196,6 @@
                 structuralAttachments[] = {};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_m60";
-            };
-        };
-        class vn_m60_shorty
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m60_shorty";
-            };
-        };
-        class vn_m60_shorty_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m60_shorty_camo";
             };
         };
         class vn_m63a
@@ -9419,15 +9264,6 @@
                 resolvedWeaponClass = "vn_m79";
             };
         };
-        class vn_m79_p
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_m79_p";
-            };
-        };
         class vn_m9130
         {
             class k_none
@@ -9462,15 +9298,6 @@
                 structuralAttachments[] = {"vn_s_mat49"};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_mat49_sd";
-            };
-        };
-        class vn_mat49_f
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_mat49_f";
             };
         };
         class vn_mat49_vc
@@ -9668,24 +9495,6 @@
                 resolvedWeaponClass = "vn_rpd";
             };
         };
-        class vn_rpd_shorty
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_rpd_shorty";
-            };
-        };
-        class vn_rpd_shorty_01
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_rpd_shorty_01";
-            };
-        };
         class vn_rpg2
         {
             class k_none
@@ -9741,15 +9550,6 @@
                 structuralAttachments[] = {"vn_o_3x_sks"};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_sks_sniper";
-            };
-        };
-        class vn_sks_gl
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_sks_gl";
             };
         };
         class vn_sten
@@ -9821,15 +9621,6 @@
                 resolvedWeaponClass = "vn_type64";
             };
         };
-        class vn_type64_f_smg
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_type64_f_smg";
-            };
-        };
         class vn_type64_smg
         {
             class k_none
@@ -9867,15 +9658,6 @@
                 structuralAttachments[] = {};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_vz61";
-            };
-        };
-        class vn_vz61_p
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_vz61_p";
             };
         };
         class vn_welrod
@@ -9920,15 +9702,6 @@
                 resolvedWeaponClass = "vn_xm16e1_nvg";
             };
         };
-        class vn_xm16e1_xm148
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm16e1_xm148";
-            };
-        };
         class vn_xm177
         {
             class k_none
@@ -9956,96 +9729,6 @@
                 resolvedWeaponClass = "vn_xm177_nvg";
             };
         };
-        class vn_xm177_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm177_camo";
-            };
-        };
-        class vn_xm177_fg
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm177_fg";
-            };
-        };
-        class vn_xm177_m203
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm177_m203";
-            };
-        };
-        class vn_xm177_m203_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm177_m203_camo";
-            };
-        };
-        class vn_xm177_muzzle
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm177_muzzle";
-            };
-        };
-        class vn_xm177_short
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm177_short";
-            };
-        };
-        class vn_xm177_stock
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm177_stock";
-            };
-        };
-        class vn_xm177_stock_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm177_stock_camo";
-            };
-        };
-        class vn_xm177_xm148
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm177_xm148";
-            };
-        };
-        class vn_xm177_xm148_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm177_xm148_camo";
-            };
-        };
         class vn_xm177e1
         {
             class k_none
@@ -10071,15 +9754,6 @@
                 structuralAttachments[] = {"vn_o_anpvs2_m16"};
                 ambiguous = 0;
                 resolvedWeaponClass = "vn_xm177e1_nvg";
-            };
-        };
-        class vn_xm177e1_camo
-        {
-            class k_none
-            {
-                structuralAttachments[] = {};
-                ambiguous = 0;
-                resolvedWeaponClass = "vn_xm177e1_camo";
             };
         };
     };
@@ -10118,14 +9792,6 @@
         {
             values[] = {};
         };
-        class vn_izh54_p
-        {
-            values[] = {};
-        };
-        class vn_izh54_shorty
-        {
-            values[] = {};
-        };
         class vn_k50m
         {
             values[] = {};
@@ -10150,19 +9816,7 @@
         {
             values[] = {};
         };
-        class vn_l2a3_f
-        {
-            values[] = {};
-        };
         class vn_l34a1
-        {
-            values[] = {};
-        };
-        class vn_l34a1_f
-        {
-            values[] = {};
-        };
-        class vn_l34a1_xm148
         {
             values[] = {};
         };
@@ -10182,45 +9836,17 @@
         {
             values[] = {"vn_b_camo_m14", "vn_b_m14", "vn_s_m14"};
         };
-        class vn_m14_camo
-        {
-            values[] = {};
-        };
         class vn_m14a1
         {
             values[] = {"vn_b_camo_m14a1", "vn_bipod_m14", "vn_o_9x_m14", "vn_o_anpvs2_m14", "vn_o_m14_front", "vn_s_m14"};
-        };
-        class vn_m14a1_shorty
-        {
-            values[] = {};
         };
         class vn_m16
         {
             values[] = {"vn_b_m16", "vn_bipod_m16", "vn_o_4x_m16", "vn_o_9x_m16", "vn_o_anpvs2_m16", "vn_s_m16"};
         };
-        class vn_m16_camo
-        {
-            values[] = {};
-        };
-        class vn_m16_m203
-        {
-            values[] = {};
-        };
-        class vn_m16_m203_camo
-        {
-            values[] = {};
-        };
-        class vn_m16_muzzle
-        {
-            values[] = {};
-        };
         class vn_m16_usaf
         {
             values[] = {"vn_b_m16", "vn_o_4x_m16", "vn_o_9x_m16", "vn_o_anpvs2_m16"};
-        };
-        class vn_m16_xm148
-        {
-            values[] = {};
         };
         class vn_m1891
         {
@@ -10237,10 +9863,6 @@
         class vn_m1903
         {
             values[] = {"vn_b_m1903", "vn_o_8x_m1903"};
-        };
-        class vn_m1903_gl
-        {
-            values[] = {};
         };
         class vn_m1911
         {
@@ -10262,25 +9884,13 @@
         {
             values[] = {"vn_b_camo_m1_garand", "vn_b_m1_garand", "vn_o_3x_m84"};
         };
-        class vn_m1_garand_gl
-        {
-            values[] = {};
-        };
         class vn_m1a1_tommy
-        {
-            values[] = {};
-        };
-        class vn_m1a1_tommy_so
         {
             values[] = {};
         };
         class vn_m1carbine
         {
             values[] = {"vn_b_carbine", "vn_o_3x_m84"};
-        };
-        class vn_m1carbine_gl
-        {
-            values[] = {};
         };
         class vn_m1carbine_shorty
         {
@@ -10292,27 +9902,15 @@
         };
         class vn_m21
         {
-            values[] = {"vn_b_camo_m14", "vn_s_m14"};
-        };
-        class vn_m21_nvg
-        {
-            values[] = {"vn_s_m14"};
+            values[] = {"vn_b_camo_m14", "vn_o_anpvs2_m14", "vn_s_m14"};
         };
         class vn_m2carbine
         {
             values[] = {"vn_b_carbine", "vn_o_3x_m84"};
         };
-        class vn_m2carbine_gl
-        {
-            values[] = {};
-        };
         class vn_m36
         {
-            values[] = {"vn_b_m36"};
-        };
-        class vn_m36_camo
-        {
-            values[] = {};
+            values[] = {"vn_b_camo_m36", "vn_b_m36"};
         };
         class vn_m38
         {
@@ -10330,39 +9928,15 @@
         {
             values[] = {"vn_b_camo_m40a1", "vn_o_9x_m40a1", "vn_o_anpvs2_m40a1", "vn_s_m14"};
         };
-        class vn_m40a1_camo
-        {
-            values[] = {};
-        };
         class vn_m45
         {
             values[] = {"vn_s_m45_camo"};
-        };
-        class vn_m45_camo
-        {
-            values[] = {};
-        };
-        class vn_m45_fold
-        {
-            values[] = {};
         };
         class vn_m4956
         {
             values[] = {"vn_b_m4956", "vn_o_4x_m4956"};
         };
-        class vn_m4956_gl
-        {
-            values[] = {};
-        };
         class vn_m60
-        {
-            values[] = {};
-        };
-        class vn_m60_shorty
-        {
-            values[] = {};
-        };
-        class vn_m60_shorty_camo
         {
             values[] = {};
         };
@@ -10390,10 +9964,6 @@
         {
             values[] = {};
         };
-        class vn_m79_p
-        {
-            values[] = {};
-        };
         class vn_m9130
         {
             values[] = {"vn_b_m38", "vn_o_3x_m9130"};
@@ -10401,10 +9971,6 @@
         class vn_mat49
         {
             values[] = {"vn_s_mat49"};
-        };
-        class vn_mat49_f
-        {
-            values[] = {};
         };
         class vn_mat49_vc
         {
@@ -10474,14 +10040,6 @@
         {
             values[] = {};
         };
-        class vn_rpd_shorty
-        {
-            values[] = {};
-        };
-        class vn_rpd_shorty_01
-        {
-            values[] = {};
-        };
         class vn_rpg2
         {
             values[] = {};
@@ -10501,10 +10059,6 @@
         class vn_sks
         {
             values[] = {"vn_b_sks", "vn_o_3x_sks"};
-        };
-        class vn_sks_gl
-        {
-            values[] = {};
         };
         class vn_sten
         {
@@ -10526,10 +10080,6 @@
         {
             values[] = {};
         };
-        class vn_type64_f_smg
-        {
-            values[] = {};
-        };
         class vn_type64_smg
         {
             values[] = {};
@@ -10542,10 +10092,6 @@
         {
             values[] = {};
         };
-        class vn_vz61_p
-        {
-            values[] = {};
-        };
         class vn_welrod
         {
             values[] = {};
@@ -10554,60 +10100,12 @@
         {
             values[] = {"vn_b_m16", "vn_bipod_m16", "vn_o_4x_m16", "vn_o_9x_m16", "vn_o_anpvs2_m16"};
         };
-        class vn_xm16e1_xm148
-        {
-            values[] = {};
-        };
         class vn_xm177
         {
             values[] = {"vn_o_4x_m16", "vn_o_9x_m16", "vn_o_anpvs2_m16"};
         };
-        class vn_xm177_camo
-        {
-            values[] = {};
-        };
-        class vn_xm177_fg
-        {
-            values[] = {};
-        };
-        class vn_xm177_m203
-        {
-            values[] = {};
-        };
-        class vn_xm177_m203_camo
-        {
-            values[] = {};
-        };
-        class vn_xm177_muzzle
-        {
-            values[] = {};
-        };
-        class vn_xm177_short
-        {
-            values[] = {};
-        };
-        class vn_xm177_stock
-        {
-            values[] = {};
-        };
-        class vn_xm177_stock_camo
-        {
-            values[] = {};
-        };
-        class vn_xm177_xm148
-        {
-            values[] = {};
-        };
-        class vn_xm177_xm148_camo
-        {
-            values[] = {};
-        };
         class vn_xm177e1
         {
             values[] = {"vn_o_4x_m16", "vn_o_9x_m16", "vn_o_anpvs2_m16"};
-        };
-        class vn_xm177e1_camo
-        {
-            values[] = {};
         };
     };

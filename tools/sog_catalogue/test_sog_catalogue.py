@@ -275,13 +275,25 @@ class ValidationTests(unittest.TestCase):
             self.assertTrue(weapons[class_name].get("derivedRequirements"))
             self.assertNotIn(class_name, text_by_category["unresolvedRelatedRoots"])
 
-        for class_name in ["vn_m16_camo", "vn_m16_xm148", "vn_m16_m203", "vn_m16_m203_camo"]:
-            self.assertIn(class_name, text_by_category["unresolvedRelatedRoots"])
+        for class_name in ["vn_m16_camo", "vn_m16_xm148", "vn_m16_m203", "vn_m16_m203_camo", "vn_m16_muzzle"]:
+            self.assertEqual("vn_m16", resolve_variant_root(class_name, weapons))
+            self.assertNotIn(class_name, text_by_category["unresolvedRelatedRoots"])
 
         self.assertEqual("smg", weapons["vn_mc10"]["weaponType"])
         self.assertEqual("smg", weapons["vn_mc10_sd"]["weaponType"])
         self.assertEqual("vn_mc10", weapons["vn_mc10_sd"].get("variantOf"))
         self.assertEqual(["vn_mc10", "vn_s_mc10"], weapons["vn_mc10_sd"].get("derivedRequirements"))
+
+        self.assertEqual("vn_m21", resolve_variant_root("vn_m21_nvg", weapons))
+        self.assertEqual(
+            ["vn_m21", "vn_o_anpvs2_m14"],
+            weapons["vn_m21_nvg"].get("derivedRequirements"),
+        )
+        self.assertEqual("vn_m21", resolve_variant_root("vn_m21_nvg_sd", weapons))
+        self.assertEqual(
+            ["vn_m21_nvg", "vn_s_m14"],
+            weapons["vn_m21_nvg_sd"].get("derivedRequirements"),
+        )
 
     def test_live_m16_duplicate_and_launcher_audit_expectations(self) -> None:
         warnings = validate_catalogue(load_generated_catalogue())
@@ -289,14 +301,30 @@ class ValidationTests(unittest.TestCase):
         suspicious_text = "\n".join(warnings["suspiciousLauncherRoots"])
         integrated_text = "\n".join(warnings["integratedLauncherRoots"])
 
-        self.assertIn("vn_m16_muzzle", duplicate_text)
-        self.assertIn("vn_m16_xm148", duplicate_text)
-        self.assertIn("vn_m16_muzzle", suspicious_text)
+        self.assertNotIn("vn_m16_muzzle", duplicate_text)
+        self.assertNotIn("vn_m16_xm148", duplicate_text)
+        self.assertNotIn("vn_m16_muzzle", suspicious_text)
         for class_name in ["vn_m16_xm148", "vn_m16_m203", "vn_m16_m203_camo"]:
-            self.assertIn(class_name, integrated_text)
+            self.assertNotIn(class_name, integrated_text)
 
 
 class ClassificationTests(unittest.TestCase):
+    def test_item_type_override_drives_traits_before_variant_classification(self) -> None:
+        item_sample = ITEMS_SAMPLE.replace("vn_s_m16", "vn_b_camo_m16").replace(
+            "Suppressor [M16]", "Camo wrap [M16]"
+        )
+        parsed_pages, _counts = parse_all_pages(
+            {"weapons": WEAPONS_SAMPLE, "items": item_sample, "magazines": MAGAZINES_SAMPLE}
+        )
+        catalogue, _summary = build_catalogue(
+            parsed_pages,
+            overrides={"itemType": {"vn_b_camo_m16": "camo"}},
+        )
+        item = next(record for record in catalogue["items"] if record["class"] == "vn_b_camo_m16")
+
+        self.assertEqual("camo", item["itemType"])
+        self.assertEqual(["camo"], item["traits"])
+
     def test_used_by_survives_into_catalogue_and_west_affiliation_derives(self) -> None:
         parsed_pages, _counts = parse_all_pages({"weapons": WEAPONS_SAMPLE, "items": ITEMS_SAMPLE, "magazines": MAGAZINES_SAMPLE})
         catalogue, _summary = build_catalogue(parsed_pages, overrides={})

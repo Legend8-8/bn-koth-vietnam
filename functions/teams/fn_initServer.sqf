@@ -30,11 +30,14 @@ if (_maxTeamPlayers < 1) then {
 };
 
 missionNamespace setVariable ["BN_KOTH_playerRecords", createHashMap];
+missionNamespace setVariable ["BN_KOTH_transferHandoffPending", createHashMap];
+missionNamespace setVariable ["BN_KOTH_returnToLobbyPending", []];
 ["BN_KOTH_maxPlayers", _maxPlayers] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_maxTeamPlayers", _maxTeamPlayers] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_playerStates", createHashMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_playerTeamAssignments", createHashMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_playerNames", createHashMap] call bn_koth_fnc_common_publicState;
+["BN_KOTH_playerLevels", createHashMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_teamCounts", createHashMapFromArray [[_playableSides select 0, 0], [_playableSides select 1, 0]]] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeParticipants", []] call bn_koth_fnc_common_publicState;
 

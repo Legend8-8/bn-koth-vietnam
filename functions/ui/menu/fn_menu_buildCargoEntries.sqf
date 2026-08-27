@@ -169,6 +169,11 @@ if (isClass _sourceItemsCfg) then {
 private _sortable = [];
 private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
 if !(_progression isEqualType createHashMap) then {_progression = createHashMap};
+private _uid = if (!isNull player) then {getPlayerUID player} else {""};
+private _assignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
+if !(_assignments isEqualType createHashMap) then {_assignments = createHashMap};
+private _assignedSide = _assignments getOrDefault [_uid, sideUnknown];
+private _sideToken = if (_assignedSide isEqualTo west) then {"WEST"} else {if (_assignedSide isEqualTo east) then {"EAST"} else {""}};
 {
     _x params ["_containerName", "_index"];
     private _slot = _intendedLoadout select _index;
@@ -216,7 +221,7 @@ if !(_progression isEqualType createHashMap) then {_progression = createHashMap}
             };
         };
         private _metadata = ["Consumables", _className] call bn_koth_fnc_loadouts_getItemMetadata;
-        private _entitlement = [_progression, _metadata, _className] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+        private _entitlement = [_progression, _metadata, _className, _sideToken, false] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
         private _entitled = _entitlement getOrDefault ["entitled", false];
         private _priority = 2;
         private _reason = "AVAILABLE";

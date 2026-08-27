@@ -1,0 +1,557 @@
+className,displayName,sourceSide,sourceFaction,sourceSubcategory,broadCategory,sourceWeapons
+vn_o_air_mig19_at,MiG-19 S (AT),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_nr30_v_01
+vn_o_air_mig19_bmb,MiG-19 S (BMB),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_nr30_v_01
+vn_o_air_mig19_cap,MiG-19 S (CAP),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_nr30_v_01
+vn_o_air_mig19_cas,MiG-19 S (CAS),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_nr30_v_01
+vn_o_air_mig19_gun,MiG-19 S (GUN),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_nr30_v_01
+vn_o_air_mig19_hbmb,MiG-19 S (HBMB),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_nr30_v_01
+vn_o_air_mig19_mr,MiG-19 S (MR),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_nr30_v_01
+vn_o_air_mig21_at,MiG-21 PFM (AT),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_o_air_mig21_atgm,MiG-21 PFM (ATGM),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_o_air_mig21_bmb,MiG-21 PFM (BMB),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_o_air_mig21_cap,MiG-21 PFM (CAP),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_o_air_mig21_cas,MiG-21 PFM (CAS),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_o_air_mig21_gun,MiG-21 PFM (GUN),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_o_air_mig21_hbmb,MiG-21 PFM (HBMB),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_o_air_mig21_hcas,MiG-21 PFM (HCAS),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_o_air_mig21_mr,MiG-21 PFM (MR),EAST,PAVN,Planes (VPAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_o_bicycle_01,Bicycle,EAST,PAVN,Cars (PAVN 68),GROUND,vn_bicycle_bell
+vn_o_bicycle_01_nva65,Bicycle,EAST,PAVN,Cars (PAVN 65),GROUND,vn_bicycle_bell
+vn_o_bicycle_01_nvam,Bicycle,EAST,PAVN,Cars (VPN Marines),GROUND,vn_bicycle_bell
+vn_o_bicycle_01_pl,Bicycle,EAST,Pathet Lao,Cars (Army),GROUND,vn_bicycle_bell
+vn_o_bicycle_01_vcmf,Bicycle,EAST,Viet Cong,Cars (VC),GROUND,vn_bicycle_bell
+vn_o_bicycle_02,Bicycle Mule,EAST,PAVN,Cars (PAVN 68),GROUND,vn_bicycle_bell
+vn_o_bicycle_02_nva65,Bicycle Mule,EAST,PAVN,Cars (PAVN 65),GROUND,vn_bicycle_bell
+vn_o_bicycle_02_pl,Bicycle Mule,EAST,Pathet Lao,Cars (Army),GROUND,vn_bicycle_bell
+vn_o_bicycle_02_vcmf,Bicycle Mule,EAST,Viet Cong,Cars (VC),GROUND,vn_bicycle_bell
+vn_o_wheeled_btr40_02,BTR-40 Ambulance,EAST,PAVN,Cars (PAVN 68),GROUND,CarHorn
+vn_o_wheeled_btr40_02_kr,BTR-40 Ambulance,EAST,Khmer Rouge,Cars (Army),GROUND,CarHorn
+vn_o_wheeled_btr40_02_nva65,BTR-40 Ambulance,EAST,PAVN,Cars (PAVN 65),GROUND,CarHorn
+vn_o_wheeled_btr40_02_nvam,BTR-40 Ambulance,EAST,PAVN,Cars (VPN Marines),GROUND,CarHorn
+vn_o_wheeled_btr40_02_pl,BTR-40 Ambulance,EAST,Pathet Lao,Cars (Army),GROUND,CarHorn
+vn_o_wheeled_btr40_02_vcmf,BTR-40 Ambulance,EAST,Viet Cong,Cars (VC),GROUND,CarHorn
+vn_o_wheeled_btr40_01,BTR-40 Transport,EAST,PAVN,Cars (PAVN 68),GROUND,CarHorn
+vn_o_wheeled_btr40_01_kr,BTR-40 Transport,EAST,Khmer Rouge,Cars (Army),GROUND,CarHorn
+vn_o_wheeled_btr40_01_nva65,BTR-40 Transport,EAST,PAVN,Cars (PAVN 65),GROUND,CarHorn
+vn_o_wheeled_btr40_01_nvam,BTR-40 Transport,EAST,PAVN,Cars (VPN Marines),GROUND,CarHorn
+vn_o_wheeled_btr40_01_pl,BTR-40 Transport,EAST,Pathet Lao,Cars (Army),GROUND,CarHorn
+vn_o_wheeled_btr40_01_vcmf,BTR-40 Transport,EAST,Viet Cong,Cars (VC),GROUND,CarHorn
+vn_o_car_01_01,Car (Boheme Bonn),EAST,Viet Cong,Cars (VC),GROUND,vn_CivCarHorn1
+vn_o_car_01_01_kr,Car (Boheme Bonn),EAST,Khmer Rouge,Cars (Army),GROUND,vn_CivCarHorn1
+vn_o_car_03_01,Car (Boheme Kupe),EAST,Viet Cong,Cars (VC),GROUND,vn_CivCarHorn3
+vn_o_car_03_01_kr,Car (Boheme Kupe),EAST,Khmer Rouge,Cars (Army),GROUND,vn_CivCarHorn3
+vn_o_car_02_01,Car (Boheme Rodina),EAST,Viet Cong,Cars (VC),GROUND,vn_CivCarHorn2
+vn_o_car_02_01_kr,Car (Boheme Rodina),EAST,Khmer Rouge,Cars (Army),GROUND,vn_CivCarHorn2
+vn_o_car_04_01,Van (Boheme Krabice),EAST,Viet Cong,Cars (VC),GROUND,vn_CivVanHorn1
+vn_o_car_04_01_kr,Van (Boheme Krabice),EAST,Khmer Rouge,Cars (Army),GROUND,vn_CivVanHorn1
+vn_o_wheeled_z157_04,Z-157 (PR-11AM Transporter/ S-75),EAST,PAVN,Cars (PAVN 68),GROUND,TruckHorn3
+vn_o_wheeled_z157_04_nva65,Z-157 (PR-11AM Transporter/ S-75),EAST,PAVN,Cars (PAVN 65),GROUND,TruckHorn3
+vn_o_wheeled_z157_04_nvam,Z-157 (PR-11AM Transporter/ S-75),EAST,PAVN,Cars (VPN Marines),GROUND,TruckHorn3
+vn_o_wheeled_z157_04_vcmf,Z-157 (PR-11AM Transporter/ S-75),EAST,Viet Cong,Cars (VC),GROUND,TruckHorn3
+vn_o_wheeled_z157_03,Z-157 (Radar Carrier),EAST,PAVN,Cars (PAVN 68),GROUND,TruckHorn3
+vn_o_wheeled_z157_03_nva65,Z-157 (Radar Carrier),EAST,PAVN,Cars (PAVN 65),GROUND,TruckHorn3
+vn_o_wheeled_z157_03_nvam,Z-157 (Radar Carrier),EAST,PAVN,Cars (VPN Marines),GROUND,TruckHorn3
+vn_o_wheeled_z157_03_vcmf,Z-157 (Radar Carrier),EAST,Viet Cong,Cars (VC),GROUND,TruckHorn3
+vn_o_wheeled_z157_01,Z-157 Transport,EAST,PAVN,Cars (PAVN 68),GROUND,TruckHorn3
+vn_o_wheeled_z157_01_kr,Z-157 Transport,EAST,Khmer Rouge,Cars (Army),GROUND,TruckHorn3
+vn_o_wheeled_z157_01_nva65,Z-157 Transport,EAST,PAVN,Cars (PAVN 65),GROUND,TruckHorn3
+vn_o_wheeled_z157_01_nvam,Z-157 Transport,EAST,PAVN,Cars (VPN Marines),GROUND,TruckHorn3
+vn_o_wheeled_z157_01_pl,Z-157 Transport,EAST,Pathet Lao,Cars (Army),GROUND,TruckHorn3
+vn_o_wheeled_z157_01_vcmf,Z-157 Transport,EAST,Viet Cong,Cars (VC),GROUND,TruckHorn3
+vn_o_wheeled_z157_02,Z-157 Transport Covered,EAST,PAVN,Cars (PAVN 68),GROUND,TruckHorn3
+vn_o_wheeled_z157_02_kr,Z-157 Transport Covered,EAST,Khmer Rouge,Cars (Army),GROUND,TruckHorn3
+vn_o_wheeled_z157_02_nva65,Z-157 Transport Covered,EAST,PAVN,Cars (PAVN 65),GROUND,TruckHorn3
+vn_o_wheeled_z157_02_nvam,Z-157 Transport Covered,EAST,PAVN,Cars (VPN Marines),GROUND,TruckHorn3
+vn_o_wheeled_z157_02_pl,Z-157 Transport Covered,EAST,Pathet Lao,Cars (Army),GROUND,TruckHorn3
+vn_o_wheeled_z157_02_vcmf,Z-157 Transport Covered,EAST,Viet Cong,Cars (VC),GROUND,TruckHorn3
+vn_o_wheeled_z157_ammo,Z-157 (Ammo Truck),EAST,PAVN,Cars (PAVN 68),GROUND,TruckHorn3
+vn_o_wheeled_z157_ammo_kr,Z-157 (Ammo Truck),EAST,Khmer Rouge,Cars (Army),GROUND,TruckHorn3
+vn_o_wheeled_z157_ammo_nva65,Z-157 (Ammo Truck),EAST,PAVN,Cars (PAVN 65),GROUND,TruckHorn3
+vn_o_wheeled_z157_ammo_nvam,Z-157 (Ammo Truck),EAST,PAVN,Cars (VPN Marines),GROUND,TruckHorn3
+vn_o_wheeled_z157_ammo_pl,Z-157 (Ammo Truck),EAST,Pathet Lao,Cars (Army),GROUND,TruckHorn3
+vn_o_wheeled_z157_ammo_vcmf,Z-157 (Ammo Truck),EAST,Viet Cong,Cars (VC),GROUND,TruckHorn3
+vn_o_wheeled_z157_fuel,Z-157 (Fuel Truck),EAST,PAVN,Cars (PAVN 68),GROUND,TruckHorn3
+vn_o_wheeled_z157_fuel_kr,Z-157 (Fuel Truck),EAST,Khmer Rouge,Cars (Army),GROUND,TruckHorn3
+vn_o_wheeled_z157_fuel_nva65,Z-157 (Fuel Truck),EAST,PAVN,Cars (PAVN 65),GROUND,TruckHorn3
+vn_o_wheeled_z157_fuel_nvam,Z-157 (Fuel Truck),EAST,PAVN,Cars (VPN Marines),GROUND,TruckHorn3
+vn_o_wheeled_z157_fuel_pl,Z-157 (Fuel Truck),EAST,Pathet Lao,Cars (Army),GROUND,TruckHorn3
+vn_o_wheeled_z157_fuel_vcmf,Z-157 (Fuel Truck),EAST,Viet Cong,Cars (VC),GROUND,TruckHorn3
+vn_o_wheeled_z157_repair,Z-157 (Repair Truck),EAST,PAVN,Cars (PAVN 68),GROUND,TruckHorn3
+vn_o_wheeled_z157_repair_kr,Z-157 (Repair Truck),EAST,Khmer Rouge,Cars (Army),GROUND,TruckHorn3
+vn_o_wheeled_z157_repair_nva65,Z-157 (Repair Truck),EAST,PAVN,Cars (PAVN 65),GROUND,TruckHorn3
+vn_o_wheeled_z157_repair_nvam,Z-157 (Repair Truck),EAST,PAVN,Cars (VPN Marines),GROUND,TruckHorn3
+vn_o_wheeled_z157_repair_pl,Z-157 (Repair Truck),EAST,Pathet Lao,Cars (Army),GROUND,TruckHorn3
+vn_o_wheeled_z157_repair_vcmf,Z-157 (Repair Truck),EAST,Viet Cong,Cars (VC),GROUND,TruckHorn3
+vn_o_wheeled_btr40_mg_02,BTR-40 (DShKM),EAST,PAVN,Cars (PAVN 68),GROUND,CarHorn;vn_dshkm_v_01
+vn_o_wheeled_btr40_mg_02_kr,BTR-40 (DShKM),EAST,Khmer Rouge,Cars (Army),GROUND,CarHorn;vn_dshkm_v_01
+vn_o_wheeled_btr40_mg_02_nva65,BTR-40 (DShKM),EAST,PAVN,Cars (PAVN 65),GROUND,CarHorn;vn_dshkm_v_01
+vn_o_wheeled_btr40_mg_02_nvam,BTR-40 (DShKM),EAST,PAVN,Cars (VPN Marines),GROUND,CarHorn;vn_dshkm_v_01
+vn_o_wheeled_btr40_mg_02_pl,BTR-40 (DShKM),EAST,Pathet Lao,Cars (Army),GROUND,CarHorn;vn_dshkm_v_01
+vn_o_wheeled_btr40_mg_02_vcmf,BTR-40 (DShKM),EAST,Viet Cong,Cars (VC),GROUND,CarHorn;vn_dshkm_v_01
+vn_o_wheeled_btr40_mg_01,BTR-40 (RPD),EAST,PAVN,Cars (PAVN 68),GROUND,CarHorn;vn_rpd_v_01
+vn_o_wheeled_btr40_mg_01_kr,BTR-40 (RPD),EAST,Khmer Rouge,Cars (Army),GROUND,CarHorn;vn_rpd_v_01
+vn_o_wheeled_btr40_mg_01_nva65,BTR-40 (RPD),EAST,PAVN,Cars (PAVN 65),GROUND,CarHorn;vn_rpd_v_01
+vn_o_wheeled_btr40_mg_01_nvam,BTR-40 (RPD),EAST,PAVN,Cars (VPN Marines),GROUND,CarHorn;vn_rpd_v_01
+vn_o_wheeled_btr40_mg_01_pl,BTR-40 (RPD),EAST,Pathet Lao,Cars (Army),GROUND,CarHorn;vn_rpd_v_01
+vn_o_wheeled_btr40_mg_01_vcmf,BTR-40 (RPD),EAST,Viet Cong,Cars (VC),GROUND,CarHorn;vn_rpd_v_01
+vn_o_wheeled_btr40_mg_04,BTR-40 (SGM),EAST,PAVN,Cars (PAVN 68),GROUND,CarHorn;vn_sgm_v_03
+vn_o_wheeled_btr40_mg_04_kr,BTR-40 (SGM),EAST,Khmer Rouge,Cars (Army),GROUND,CarHorn;vn_sgm_v_03
+vn_o_wheeled_btr40_mg_04_nva65,BTR-40 (SGM),EAST,PAVN,Cars (PAVN 65),GROUND,CarHorn;vn_sgm_v_03
+vn_o_wheeled_btr40_mg_04_nvam,BTR-40 (SGM),EAST,PAVN,Cars (VPN Marines),GROUND,CarHorn;vn_sgm_v_03
+vn_o_wheeled_btr40_mg_04_pl,BTR-40 (SGM),EAST,Pathet Lao,Cars (Army),GROUND,CarHorn;vn_sgm_v_03
+vn_o_wheeled_btr40_mg_04_vcmf,BTR-40 (SGM),EAST,Viet Cong,Cars (VC),GROUND,CarHorn;vn_sgm_v_03
+vn_o_wheeled_btr40_mg_06,BTR-40 (Type 53 Mortar),EAST,PAVN,Cars (PAVN 68),GROUND,CarHorn;vn_sgm_v_03;vn_v_mortar_type53
+vn_o_wheeled_btr40_mg_06_nva65,BTR-40 (Type 53 Mortar),EAST,PAVN,Cars (PAVN 65),GROUND,CarHorn;vn_sgm_v_03;vn_v_mortar_type53
+vn_o_wheeled_btr40_mg_06_nvam,BTR-40 (Type 53 Mortar),EAST,PAVN,Cars (VPN Marines),GROUND,CarHorn;vn_sgm_v_03;vn_v_mortar_type53
+vn_o_wheeled_btr40_mg_06_pl,BTR-40 (Type 53 Mortar),EAST,Pathet Lao,Cars (Army),GROUND,CarHorn;vn_sgm_v_03;vn_v_mortar_type53
+vn_o_wheeled_btr40_mg_06_vcmf,BTR-40 (Type 53 Mortar),EAST,Viet Cong,Cars (VC),GROUND,CarHorn;vn_sgm_v_03;vn_v_mortar_type53
+vn_o_wheeled_btr40_mg_05,BTR-40 (Type 56 RR),EAST,PAVN,Cars (PAVN 68),GROUND,CarHorn;vn_sgm_v_03;vn_type56_v_04
+vn_o_wheeled_btr40_mg_05_nva65,BTR-40 (Type 56 RR),EAST,PAVN,Cars (PAVN 65),GROUND,CarHorn;vn_sgm_v_03;vn_type56_v_04
+vn_o_wheeled_btr40_mg_05_nvam,BTR-40 (Type 56 RR),EAST,PAVN,Cars (VPN Marines),GROUND,CarHorn;vn_sgm_v_03;vn_type56_v_04
+vn_o_wheeled_btr40_mg_05_pl,BTR-40 (Type 56 RR),EAST,Pathet Lao,Cars (Army),GROUND,CarHorn;vn_sgm_v_03;vn_type56_v_04
+vn_o_wheeled_btr40_mg_05_vcmf,BTR-40 (Type 56 RR),EAST,Viet Cong,Cars (VC),GROUND,CarHorn;vn_sgm_v_03;vn_type56_v_04
+vn_o_car_04_mg_01,Van (Boheme Krabice/ DP-27),EAST,Viet Cong,Cars (VC),GROUND,vn_CivVanHorn1;vn_dp28_v_01
+vn_o_car_04_mg_01_kr,Van (Boheme Krabice/ DP-27),EAST,Khmer Rouge,Cars (Army),GROUND,vn_CivVanHorn1;vn_dp28_v_01
+vn_o_wheeled_z157_mg_01,Z-157 (DShKM),EAST,PAVN,Cars (PAVN 68),GROUND,TruckHorn3;vn_dshkm_v_01
+vn_o_wheeled_z157_mg_01_kr,Z-157 (DShKM),EAST,Khmer Rouge,Cars (Army),GROUND,TruckHorn3;vn_dshkm_v_01
+vn_o_wheeled_z157_mg_01_nva65,Z-157 (DShKM),EAST,PAVN,Cars (PAVN 65),GROUND,TruckHorn3;vn_dshkm_v_01
+vn_o_wheeled_z157_mg_01_nvam,Z-157 (DShKM),EAST,PAVN,Cars (VPN Marines),GROUND,TruckHorn3;vn_dshkm_v_01
+vn_o_wheeled_z157_mg_01_pl,Z-157 (DShKM),EAST,Pathet Lao,Cars (Army),GROUND,TruckHorn3;vn_dshkm_v_01
+vn_o_wheeled_z157_mg_01_vcmf,Z-157 (DShKM),EAST,Viet Cong,Cars (VC),GROUND,TruckHorn3;vn_dshkm_v_01
+vn_o_armor_m577_01,M577A1 Command,EAST,PAVN,APCs (PAVN 68),GROUND,vn_m113_horn
+vn_o_armor_btr50pk_03,BTR-50PK Ambulance,EAST,PAVN,APCs (PAVN 68),GROUND,searchlight;vn_pt76_horn
+vn_o_armor_btr50pk_03_nva65,BTR-50PK Ambulance,EAST,PAVN,APCs (PAVN 65),GROUND,searchlight;vn_pt76_horn
+vn_o_armor_btr50pk_03_nvam,BTR-50PK Ambulance,EAST,PAVN,APCs (VPN Marines),GROUND,searchlight;vn_pt76_horn
+vn_o_armor_m577_02,M577A1 Ambulance,EAST,PAVN,APCs (PAVN 68),GROUND,vn_m113_horn
+vn_o_wheeled_btr40_mg_03,BTR-40 (ZPU-4),EAST,PAVN,Cars (PAVN 68),GROUND,CarHorn;vn_zpu4_v_quad
+vn_o_wheeled_btr40_mg_03_nva65,BTR-40 (ZPU-4),EAST,PAVN,Cars (PAVN 65),GROUND,CarHorn;vn_zpu4_v_quad
+vn_o_wheeled_btr40_mg_03_nvam,BTR-40 (ZPU-4),EAST,PAVN,Cars (VPN Marines),GROUND,CarHorn;vn_zpu4_v_quad
+vn_o_wheeled_btr40_mg_03_pl,BTR-40 (ZPU-4),EAST,Pathet Lao,Cars (Army),GROUND,CarHorn;vn_zpu4_v_quad
+vn_o_wheeled_btr40_mg_03_vcmf,BTR-40 (ZPU-4),EAST,Viet Cong,Cars (VC),GROUND,CarHorn;vn_zpu4_v_quad
+vn_o_wheeled_z157_mg_02,Z-157 (ZPU-4),EAST,PAVN,Cars (PAVN 68),GROUND,TruckHorn3;vn_zpu4_v_quad
+vn_o_wheeled_z157_mg_02_nva65,Z-157 (ZPU-4),EAST,PAVN,Cars (PAVN 65),GROUND,TruckHorn3;vn_zpu4_v_quad
+vn_o_wheeled_z157_mg_02_nvam,Z-157 (ZPU-4),EAST,PAVN,Cars (VPN Marines),GROUND,TruckHorn3;vn_zpu4_v_quad
+vn_o_wheeled_z157_mg_02_pl,Z-157 (ZPU-4),EAST,Pathet Lao,Cars (Army),GROUND,TruckHorn3;vn_zpu4_v_quad
+vn_o_wheeled_z157_mg_02_vcmf,Z-157 (ZPU-4),EAST,Viet Cong,Cars (VC),GROUND,TruckHorn3;vn_zpu4_v_quad
+vn_o_armor_btr50pk_02,BTR-50PK SPAAG （ZGU-1）,EAST,PAVN,APCs (PAVN 68),GROUND,searchlight;vn_pt76_horn;vn_sgm_v_03;vn_zgu1_v_02
+vn_o_armor_btr50pk_02_nva65,BTR-50PK SPAAG （ZGU-1）,EAST,PAVN,APCs (PAVN 65),GROUND,searchlight;vn_pt76_horn;vn_sgm_v_03;vn_zgu1_v_02
+vn_o_armor_btr50pk_02_nvam,BTR-50PK SPAAG （ZGU-1）,EAST,PAVN,APCs (VPN Marines),GROUND,searchlight;vn_pt76_horn;vn_sgm_v_03;vn_zgu1_v_02
+vn_o_armor_btr50pk_01,BTR-50PK Transport,EAST,PAVN,APCs (PAVN 68),GROUND,searchlight;vn_pt76_horn;vn_sgm_v_03
+vn_o_armor_btr50pk_01_nva65,BTR-50PK Transport,EAST,PAVN,APCs (PAVN 65),GROUND,searchlight;vn_pt76_horn;vn_sgm_v_03
+vn_o_armor_btr50pk_01_nvam,BTR-50PK Transport,EAST,PAVN,APCs (VPN Marines),GROUND,searchlight;vn_pt76_horn;vn_sgm_v_03
+vn_o_armor_m113_acav_02_kr,M113A1 ACAV (M1919),EAST,Khmer Rouge,APCs (Army),GROUND,vn_m113_horn;vn_m1919_v_twin_01;vn_m60_v_02;vn_m60_v_03
+vn_o_armor_m113_acav_01,M113A1 ACAV (M2),EAST,PAVN,APCs (PAVN 68),GROUND,vn_m113_horn;vn_m2_v_01;vn_m60_v_02;vn_m60_v_03
+vn_o_armor_m113_acav_01_kr,M113A1 ACAV (M2),EAST,Khmer Rouge,APCs (Army),GROUND,vn_m113_horn;vn_m2_v_01;vn_m60_v_02;vn_m60_v_03
+vn_o_armor_m113_acav_06_kr,M113A1 ACAV (M2/ M40),EAST,Khmer Rouge,APCs (Army),GROUND,vn_m113_horn;vn_m2_v_01;vn_m60_v_02;vn_m8c_v_04;vn_static_m40a1rr_v_03
+vn_o_armor_m113_acav_03,M113A1 ACAV (M60),EAST,PAVN,APCs (PAVN 68),GROUND,vn_m113_horn;vn_m60_v_01;vn_m60_v_02;vn_m60_v_03
+vn_o_armor_m113_acav_03_kr,M113A1 ACAV (M60),EAST,Khmer Rouge,APCs (Army),GROUND,vn_m113_horn;vn_m60_v_01;vn_m60_v_02;vn_m60_v_03
+vn_o_armor_m113_01,M113A1 Transport (M2),EAST,PAVN,APCs (PAVN 68),GROUND,vn_m113_horn;vn_m2_v_01
+vn_o_armor_m113_01_kr,M113A1 Transport (M2),EAST,Khmer Rouge,APCs (Army),GROUND,vn_m113_horn;vn_m2_v_01
+vn_o_armor_m125_01,M125A1 M29 Mortar,EAST,PAVN,APCs (PAVN 68),GROUND,vn_m113_horn;vn_m2_v_01;vn_mortar_m29
+vn_o_armor_m41_01,M41A3 Walker Bulldog,EAST,PAVN,Tanks (PAVN 68),GROUND,vn_m113_horn;vn_m1919_v_05;vn_m2_v_01;vn_m32a1_v_01
+vn_o_armor_m41_02_vcmf,M41A3 Walker Bulldog,EAST,Viet Cong,Tanks (VC),GROUND,vn_m113_horn;vn_m1919_v_05;vn_m2_v_01;vn_m32a1_v_01
+vn_o_armor_pt76a_01,PT-76A Tank,EAST,PAVN,Tanks (PAVN 68),GROUND,FakeWeapon;vn_d56_v_01;vn_pt76_horn;vn_sgmt_v_05
+vn_o_armor_pt76a_01_nva65,PT-76A Tank,EAST,PAVN,Tanks (PAVN 65),GROUND,FakeWeapon;vn_d56_v_01;vn_pt76_horn;vn_sgmt_v_05
+vn_o_armor_pt76a_01_pl,PT-76A Tank,EAST,Pathet Lao,Tanks (Army),GROUND,FakeWeapon;vn_d56_v_01;vn_pt76_horn;vn_sgmt_v_05
+vn_o_armor_pt76b_01,PT-76B Tank,EAST,PAVN,Tanks (PAVN 68),GROUND,vn_d56_v_01;vn_dshkm_v_01;vn_pt76_horn;vn_sgmt_v_05
+vn_o_armor_pt76b_01_nva65,PT-76B Tank,EAST,PAVN,Tanks (PAVN 65),GROUND,vn_d56_v_01;vn_dshkm_v_01;vn_pt76_horn;vn_sgmt_v_05
+vn_o_armor_type63_01,Type 63 Tank,EAST,PAVN,Tanks (PAVN 68),GROUND,vn_dshkm_v_01;vn_pt76_horn;vn_sgmt_v_05;vn_t62_v_01
+vn_o_armor_type63_01_nva65,Type 63 Tank,EAST,PAVN,Tanks (PAVN 65),GROUND,vn_dshkm_v_01;vn_pt76_horn;vn_sgmt_v_05;vn_t62_v_01
+vn_o_armor_ot54_01,OT-54 Flame Tank,EAST,PAVN,Tanks (PAVN 68),GROUND,vn_ato54_v_05;vn_d10t2s_v_01;vn_dshkm_v_01;vn_sgmt_v_06;vn_smokegen_v;vn_t54_horn
+vn_o_armor_ot54_01_nva65,OT-54 Flame Tank,EAST,PAVN,Tanks (PAVN 65),GROUND,vn_ato54_v_05;vn_d10t2s_v_01;vn_dshkm_v_01;vn_sgmt_v_06;vn_smokegen_v;vn_t54_horn
+vn_o_armor_ot54_01_vcmf,OT-54 Flame Tank,EAST,Viet Cong,Tanks (VC),GROUND,vn_ato54_v_05;vn_d10t2s_v_01;vn_dshkm_v_01;vn_sgmt_v_06;vn_smokegen_v;vn_t54_horn
+vn_o_armor_t54b_01,T-54B Tank,EAST,PAVN,Tanks (PAVN 68),GROUND,searchlight;vn_d10t2s_v_01;vn_dshkm_v_01;vn_sgmt_v_05;vn_sgmt_v_06;vn_smokegen_v;vn_t54_horn
+vn_o_armor_t54b_01_nva65,T-54B Tank,EAST,PAVN,Tanks (PAVN 65),GROUND,searchlight;vn_d10t2s_v_01;vn_dshkm_v_01;vn_sgmt_v_05;vn_sgmt_v_06;vn_smokegen_v;vn_t54_horn
+vn_o_armor_t54b_01_vcmf,T-54B Tank,EAST,Viet Cong,Tanks (VC),GROUND,searchlight;vn_d10t2s_v_01;vn_dshkm_v_01;vn_sgmt_v_05;vn_sgmt_v_06;vn_smokegen_v;vn_t54_horn
+vn_o_air_mi2_02_01,Mi-2P Hoplite (Ambulance),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_v_launcher_rdg2;vn_v_launcher_rsp30
+vn_o_air_mi2_02_02,Mi-2P Hoplite (Ambulance/ metal),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_v_launcher_rdg2;vn_v_launcher_rsp30
+vn_o_air_mi2_01_01,Mi-2P Hoplite (Transport),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_pk_v_07;vn_v_launcher_rdg2;vn_v_launcher_rgd5;vn_v_launcher_rsp30
+vn_o_air_mi2_01_03,Mi-2P Hoplite (Transport/ camo),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_pk_v_07;vn_v_launcher_rdg2;vn_v_launcher_rgd5;vn_v_launcher_rsp30
+vn_o_air_mi2_01_02,Mi-2P Hoplite (Transport/ metal),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_pk_v_07;vn_v_launcher_rdg2;vn_v_launcher_rgd5;vn_v_launcher_rsp30
+vn_o_air_mi2_04_05,Mi-2URN Viper (APERS),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_04_06,Mi-2URN Viper (APERS/ camo),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_04_01,Mi-2URN Viper (HE),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_04_02,Mi-2URN Viper (HE/ camo),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_04_03,Mi-2URN Viper (HEAT),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_04_04,Mi-2URN Viper (HEAT/ camo),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_05_05,Mi-2URP Salamander (AA),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_05_06,Mi-2URP Salamander (AA/ camo),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_05_01,Mi-2URP Salamander (AT),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_05_02,Mi-2URP Salamander (AT/ camo),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_05_03,Mi-2URP Salamander (MR),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_05_04,Mi-2URP Salamander (MR/ camo),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_03_05,Mi-2US Hoplite (FAC),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_03_06,Mi-2US Hoplite (FAC/ camo),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_03_01,Mi-2US Hoplite (Fuel),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_03_02,Mi-2US Hoplite (Fuel/ camo),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_03_03,Mi-2US Hoplite (MG),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_air_mi2_03_04,Mi-2US Hoplite (MG/ camo),EAST,PAVN,Helicopters (VPAF),ROTARY,vn_ns23_v_01;vn_pk_v_07;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_o_boat_01_00_kr,Boat,EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_01_00_pl,Boat,EAST,Pathet Lao,Boats (Army),SEA,
+vn_o_boat_01_03,Boat (Painted),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_01_03_kr,Boat (Painted),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_01_03_pl,Boat (Painted),EAST,Pathet Lao,Boats (Army),SEA,
+vn_o_boat_01_04,Boat (Painted/ Good-Luck Eyes),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_01_04_kr,Boat (Painted/ Good-Luck Eyes),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_01_04_pl,Boat (Painted/ Good-Luck Eyes),EAST,Pathet Lao,Boats (Army),SEA,
+vn_o_boat_01_00,Boat (Random),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_01_01,Boat (Wooden),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_01_01_kr,Boat (Wooden),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_01_01_pl,Boat (Wooden),EAST,Pathet Lao,Boats (Army),SEA,
+vn_o_boat_01_02,Boat (Wooden/ Good-Luck Eyes),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_01_02_kr,Boat (Wooden/ Good-Luck Eyes),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_01_02_pl,Boat (Wooden/ Good-Luck Eyes),EAST,Pathet Lao,Boats (Army),SEA,
+vn_o_boat_02_03,Long Boat (Painted),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_02_03_kr,Long Boat (Painted),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_02_03_pl,Long Boat (Painted),EAST,Pathet Lao,Boats (Army),SEA,
+vn_o_boat_02_04,Long Boat (Painted/ Good-Luck Eyes),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_02_04_kr,Long Boat (Painted/ Good-Luck Eyes),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_02_04_pl,Long Boat (Painted/ Good-Luck Eyes),EAST,Pathet Lao,Boats (Army),SEA,
+vn_o_boat_02_00,Long Boat (Random),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_02_00_kr,Long Boat (Random),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_02_00_pl,Long Boat (Random),EAST,Pathet Lao,Boats (Army),SEA,
+vn_o_boat_02_01,Long Boat (Wooden),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_02_01_kr,Long Boat (Wooden),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_02_01_pl,Long Boat (Wooden),EAST,Pathet Lao,Boats (Army),SEA,
+vn_o_boat_02_02,Long Boat (Wooden/ Good-Luck Eyes),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_02_02_kr,Long Boat (Wooden/ Good-Luck Eyes),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_02_02_pl,Long Boat (Wooden/ Good-Luck Eyes),EAST,Pathet Lao,Boats (Army),SEA,
+vn_o_boat_08_02,Sampan (Long/ Cargo),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_08_02_kr,Sampan (Long/ Cargo),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_08_01,Sampan (Long/ Transport),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_08_01_kr,Sampan (Long/ Transport),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_07_02,Sampan (Short/ Cargo),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_07_02_kr,Sampan (Short/ Cargo),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_07_01,Sampan (Short/ Transport),EAST,Viet Cong,Boats (VC),SEA,
+vn_o_boat_07_01_kr,Sampan (Short/ Transport),EAST,Khmer Rouge,Boats (Army),SEA,
+vn_o_boat_01_mg_03,"Boat (RPD, Painted)",EAST,Viet Cong,Boats (VC),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_03_kr,"Boat (RPD, Painted)",EAST,Khmer Rouge,Boats (Army),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_03_pl,"Boat (RPD, Painted)",EAST,Pathet Lao,Boats (Army),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_04,"Boat (RPD, Painted/ Good-Luck Eyes)",EAST,Viet Cong,Boats (VC),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_04_kr,"Boat (RPD, Painted/ Good-Luck Eyes)",EAST,Khmer Rouge,Boats (Army),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_04_pl,"Boat (RPD, Painted/ Good-Luck Eyes)",EAST,Pathet Lao,Boats (Army),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_00,"Boat (RPD, Random)",EAST,Viet Cong,Boats (VC),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_00_kr,"Boat (RPD, Random)",EAST,Khmer Rouge,Boats (Army),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_00_pl,"Boat (RPD, Random)",EAST,Pathet Lao,Boats (Army),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_01,"Boat (RPD, Wooden)",EAST,Viet Cong,Boats (VC),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_01_kr,"Boat (RPD, Wooden)",EAST,Khmer Rouge,Boats (Army),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_01_pl,"Boat (RPD, Wooden)",EAST,Pathet Lao,Boats (Army),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_02,"Boat (RPD, Wooden/ Good-Luck Eyes)",EAST,Viet Cong,Boats (VC),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_02_kr,"Boat (RPD, Wooden/ Good-Luck Eyes)",EAST,Khmer Rouge,Boats (Army),SEA,vn_rpd_v_01
+vn_o_boat_01_mg_02_pl,"Boat (RPD, Wooden/ Good-Luck Eyes)",EAST,Pathet Lao,Boats (Army),SEA,vn_rpd_v_01
+vn_o_boat_02_mg_03,"Long Boat (DP27, Painted)",EAST,Viet Cong,Boats (VC),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_03_kr,"Long Boat (DP27, Painted)",EAST,Khmer Rouge,Boats (Army),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_03_pl,"Long Boat (DP27, Painted)",EAST,Pathet Lao,Boats (Army),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_04,"Long Boat (DP27, Painted/ Good-Luck Eyes)",EAST,Viet Cong,Boats (VC),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_04_kr,"Long Boat (DP27, Painted/ Good-Luck Eyes)",EAST,Khmer Rouge,Boats (Army),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_04_pl,"Long Boat (DP27, Painted/ Good-Luck Eyes)",EAST,Pathet Lao,Boats (Army),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_00,"Long Boat (DP27, Random)",EAST,Viet Cong,Boats (VC),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_00_kr,"Long Boat (DP27, Random)",EAST,Khmer Rouge,Boats (Army),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_00_pl,"Long Boat (DP27, Random)",EAST,Pathet Lao,Boats (Army),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_01,"Long Boat (DP27, Wooden)",EAST,Viet Cong,Boats (VC),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_01_kr,"Long Boat (DP27, Wooden)",EAST,Khmer Rouge,Boats (Army),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_01_pl,"Long Boat (DP27, Wooden)",EAST,Pathet Lao,Boats (Army),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_02,"Long Boat (DP27, Wooden/ Good-Luck Eyes)",EAST,Viet Cong,Boats (VC),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_02_kr,"Long Boat (DP27, Wooden/ Good-Luck Eyes)",EAST,Khmer Rouge,Boats (Army),SEA,vn_dp28_v_01
+vn_o_boat_02_mg_02_pl,"Long Boat (DP27, Wooden/ Good-Luck Eyes)",EAST,Pathet Lao,Boats (Army),SEA,vn_dp28_v_01
+vn_o_boat_03_02,Shantou Gunboat (V-11M/ Green),EAST,PAVN,Boats (PAVN),SEA,vn_dshkm_v_04;vn_dshkm_v_05;vn_rpd_v_06;vn_shantou_horn;vn_type56_v_03;vn_v11m_v_01;vn_v11m_v_02
+vn_o_boat_03_01,Shantou Gunboat (V-11M/ Grey),EAST,PAVN,Boats (PAVN),SEA,vn_dshkm_v_04;vn_dshkm_v_05;vn_rpd_v_06;vn_shantou_horn;vn_type56_v_03;vn_v11m_v_01;vn_v11m_v_02
+vn_o_boat_04_02,Shantou Gunboat (ZPU-4/ Green),EAST,PAVN,Boats (PAVN),SEA,searchlight;vn_dshkm_v_04;vn_dshkm_v_05;vn_shantou_horn;vn_type56_v_03;vn_v11m_v_01;vn_zpu4_v_quad_02
+vn_o_boat_04_01,Shantou Gunboat (ZPU-4/ Grey),EAST,PAVN,Boats (PAVN),SEA,searchlight;vn_dshkm_v_04;vn_dshkm_v_05;vn_shantou_horn;vn_type56_v_03;vn_v11m_v_01;vn_zpu4_v_quad_02
+vn_b_air_f100d_at,F-100D (AT),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f100d_bmb,F-100D (BMB),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f100d_cap,F-100D (CAP),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f100d_cas,F-100D (CAS),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f100d_cbu,F-100D (CBU),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f100d_ehcas,F-100D (EHCAS),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f100d_hbmb,F-100D (HBMB),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f100d_hcas,F-100D (HCAS),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f100d_lbmb,F-100D (LBMB),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f100d_mbmb,F-100D (MBMB),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f100d_mr,F-100D (MR),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f100d_sead,F-100D (SEAD),WEST,MACV,Planes (USAF),FIXED_WING,vn_m39a1_v_quad
+vn_b_air_f4b_navy_at,F-4B Phantom II (AT),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_at,F-4B Phantom II (AT),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_bmb,F-4B Phantom II (BMB),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_bmb,F-4B Phantom II (BMB),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_cap,F-4B Phantom II (CAP),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_cap,F-4B Phantom II (CAP),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_cas,F-4B Phantom II (CAS),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_cas,F-4B Phantom II (CAS),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_cbu,F-4B Phantom II (CBU),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_cbu,F-4B Phantom II (CBU),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_ehcas,F-4B Phantom II (EHCAS),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_ehcas,F-4B Phantom II (EHCAS),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_gbu,F-4B Phantom II (GBU),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_gbu,F-4B Phantom II (GBU),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_hbmb,F-4B Phantom II (HBMB),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_hbmb,F-4B Phantom II (HBMB),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_hcas,F-4B Phantom II (HCAS),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_hcas,F-4B Phantom II (HCAS),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_lbmb,F-4B Phantom II (LBMB),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_lbmb,F-4B Phantom II (LBMB),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_lrbmb,F-4B Phantom II (LRBMB),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_lrbmb,F-4B Phantom II (LRBMB),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_mbmb,F-4B Phantom II (MBMB),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_mbmb,F-4B Phantom II (MBMB),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_mr,F-4B Phantom II (MR),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_mr,F-4B Phantom II (MR),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_sead,F-4B Phantom II (SEAD),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_sead,F-4B Phantom II (SEAD),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_navy_ucas,F-4B Phantom II (UCAS),WEST,MACV,Planes (US Navy),FIXED_WING,CMFlareLauncher
+vn_b_air_f4b_usmc_ucas,F-4B Phantom II (UCAS),WEST,MACV,Planes (USMC),FIXED_WING,CMFlareLauncher
+vn_b_air_f4c_at,F-4C Phantom II (AT),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_bmb,F-4C Phantom II (BMB),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_cap,F-4C Phantom II (CAP),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_cas,F-4C Phantom II (CAS),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_cbu,F-4C Phantom II (CBU),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_chico,F-4C Phantom II (CHICO),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_ehcas,F-4C Phantom II (EHCAS),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_gbu,F-4C Phantom II (GBU),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_hbmb,F-4C Phantom II (HBMB),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_hcas,F-4C Phantom II (HCAS),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_lbmb,F-4C Phantom II (LBMB),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_lrbmb,F-4C Phantom II (LRBMB),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_mbmb,F-4C Phantom II (MBMB),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_mr,F-4C Phantom II (MR),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_sead,F-4C Phantom II (SEAD),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_air_f4c_ucas,F-4C Phantom II (UCAS),WEST,MACV,Planes (USAF),FIXED_WING,vn_cmflarelauncher_singles_f4c
+vn_b_wheeled_m151_01,M151A1 Transport,WEST,MACV,Cars (US Army),GROUND,CarHorn
+vn_b_wheeled_m151_01_aus_army,M151A1 Transport,WEST,Australia,Cars (Army),GROUND,CarHorn
+vn_b_wheeled_m151_01_nz_army,M151A1 Transport,WEST,New Zealand,Cars (Army),GROUND,CarHorn
+vn_b_wheeled_m151_01_rok_army,M151A1 Transport,WEST,Republic Of Korea,Cars (Army),GROUND,CarHorn
+vn_b_wheeled_m151_01_rok_marines,M151A1 Transport,WEST,Republic Of Korea,Cars (Marines),GROUND,CarHorn
+vn_b_wheeled_m151_01_usmc,M151A1 Transport,WEST,MACV,Cars (USMC),GROUND,CarHorn
+vn_b_wheeled_m151_02,M151A1 Transport (Covered),WEST,MACV,Cars (US Army),GROUND,CarHorn
+vn_b_wheeled_m151_02_aus_army,M151A1 Transport (Covered),WEST,Australia,Cars (Army),GROUND,CarHorn
+vn_b_wheeled_m151_02_nz_army,M151A1 Transport (Covered),WEST,New Zealand,Cars (Army),GROUND,CarHorn
+vn_b_wheeled_m151_02_rok_army,M151A1 Transport (Covered),WEST,Republic Of Korea,Cars (Army),GROUND,CarHorn
+vn_b_wheeled_m151_02_rok_marines,M151A1 Transport (Covered),WEST,Republic Of Korea,Cars (Marines),GROUND,CarHorn
+vn_b_wheeled_m151_02_usmc,M151A1 Transport (Covered),WEST,MACV,Cars (USMC),GROUND,CarHorn
+vn_b_wheeled_m151_02_mp,M151A1 Transport (Covered/MP),WEST,MACV,Cars (US Army),GROUND,CarHorn
+vn_b_wheeled_m151_01_mp,M151A1 Transport (MP),WEST,MACV,Cars (US Army),GROUND,CarHorn
+vn_b_wheeled_m54_01,M54 Transport,WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_01_aus_army,M54 Transport,WEST,Australia,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_01_nz_army,M54 Transport,WEST,New Zealand,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_01_rok_army,M54 Transport,WEST,Republic Of Korea,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_01_rok_marines,M54 Transport,WEST,Republic Of Korea,Cars (Marines),GROUND,TruckHorn2
+vn_b_wheeled_m54_01_usmc,M54 Transport,WEST,MACV,Cars (USMC),GROUND,TruckHorn2
+vn_b_wheeled_m54_01_airport,M54 Transport (Airport),WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_01_sog,M54 Transport (Black),WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_02,M54 Transport (Covered),WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_02_aus_army,M54 Transport (Covered),WEST,Australia,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_02_nz_army,M54 Transport (Covered),WEST,New Zealand,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_02_rok_army,M54 Transport (Covered),WEST,Republic Of Korea,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_02_rok_marines,M54 Transport (Covered),WEST,Republic Of Korea,Cars (Marines),GROUND,TruckHorn2
+vn_b_wheeled_m54_02_usmc,M54 Transport (Covered),WEST,MACV,Cars (USMC),GROUND,TruckHorn2
+vn_b_wheeled_m54_02_sog,M54 Transport (Black/covered),WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_repair,M185 Repair Truck,WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_repair_aus_army,M185 Repair Truck,WEST,Australia,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_repair_nz_army,M185 Repair Truck,WEST,New Zealand,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_repair_rok_army,M185 Repair Truck,WEST,Republic Of Korea,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_repair_rok_marines,M185 Repair Truck,WEST,Republic Of Korea,Cars (Marines),GROUND,TruckHorn2
+vn_b_wheeled_m54_repair_usmc,M185 Repair Truck,WEST,MACV,Cars (USMC),GROUND,TruckHorn2
+vn_b_wheeled_m54_repair_airport,M185 Repair Truck (Airport),WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_fuel,M49 Fuel Truck,WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_fuel_aus_army,M49 Fuel Truck,WEST,Australia,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_fuel_nz_army,M49 Fuel Truck,WEST,New Zealand,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_fuel_rok_army,M49 Fuel Truck,WEST,Republic Of Korea,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_fuel_rok_marines,M49 Fuel Truck,WEST,Republic Of Korea,Cars (Marines),GROUND,TruckHorn2
+vn_b_wheeled_m54_fuel_usmc,M49 Fuel Truck,WEST,MACV,Cars (USMC),GROUND,TruckHorn2
+vn_b_wheeled_m54_fuel_airport,M49 Fuel Truck (Airport),WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_ammo,M54 Ammo Truck,WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_ammo_aus_army,M54 Ammo Truck,WEST,Australia,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_ammo_nz_army,M54 Ammo Truck,WEST,New Zealand,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_ammo_rok_army,M54 Ammo Truck,WEST,Republic Of Korea,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_ammo_rok_marines,M54 Ammo Truck,WEST,Republic Of Korea,Cars (Marines),GROUND,TruckHorn2
+vn_b_wheeled_m54_ammo_usmc,M54 Ammo Truck,WEST,MACV,Cars (USMC),GROUND,TruckHorn2
+vn_b_wheeled_m54_ammo_airport,M54 Ammo Truck (Airport),WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_lr2a_mg_02_aus_army,Dirt Ranger (2x M60),WEST,Australia,Cars (Army),GROUND,vn_DirtRangerHorn;vn_m60_v_twin_lr2a
+vn_b_wheeled_lr2a_mg_02_nz_army,Dirt Ranger (2x M60),WEST,New Zealand,Cars (Army),GROUND,vn_DirtRangerHorn;vn_m60_v_twin_lr2a
+vn_b_wheeled_lr2a_mg_01_aus_army,Dirt Ranger (M60),WEST,Australia,Cars (Army),GROUND,vn_DirtRangerHorn;vn_m60_v_01
+vn_b_wheeled_lr2a_mg_01_nz_army,Dirt Ranger (M60),WEST,New Zealand,Cars (Army),GROUND,vn_DirtRangerHorn;vn_m60_v_01
+vn_b_wheeled_lr2a_03_aus_army,Dirt Ranger Ambulance,WEST,Australia,Cars (Army),GROUND,vn_DirtRangerHorn
+vn_b_wheeled_lr2a_03_nz_army,Dirt Ranger Ambulance,WEST,New Zealand,Cars (Army),GROUND,vn_DirtRangerHorn
+vn_b_wheeled_lr2a_02_aus_army,Dirt Ranger Transport Closed,WEST,Australia,Cars (Army),GROUND,vn_DirtRangerHorn
+vn_b_wheeled_lr2a_02_nz_army,Dirt Ranger Transport Closed,WEST,New Zealand,Cars (Army),GROUND,vn_DirtRangerHorn
+vn_b_wheeled_lr2a_01_aus_army,Dirt Ranger Transport Open,WEST,Australia,Cars (Army),GROUND,vn_DirtRangerHorn
+vn_b_wheeled_lr2a_01_nz_army,Dirt Ranger Transport Open,WEST,New Zealand,Cars (Army),GROUND,vn_DirtRangerHorn
+vn_b_wheeled_m151_mg_04,M151A1 Armoured,WEST,MACV,Cars (US Army),GROUND,CarHorn;vn_m60_v_02
+vn_b_wheeled_m151_mg_04_usmc,M151A1 Armoured,WEST,MACV,Cars (USMC),GROUND,CarHorn;vn_m60_v_02
+vn_b_wheeled_m151_mg_04_mp,M151A1 Armoured (MP),WEST,MACV,Cars (US Army),GROUND,CarHorn;vn_m60_v_02
+vn_b_wheeled_m151_mg_01_rok_army,M151A1 M1919,WEST,Republic Of Korea,Cars (Army),GROUND,CarHorn;vn_m1919_v_03
+vn_b_wheeled_m151_mg_01_rok_marines,M151A1 M1919,WEST,Republic Of Korea,Cars (Marines),GROUND,CarHorn;vn_m1919_v_03
+vn_b_wheeled_m151_mg_02,M151A1 M2,WEST,MACV,Cars (US Army),GROUND,CarHorn;vn_m2_v_01
+vn_b_wheeled_m151_mg_02_aus_army,M151A1 M2,WEST,Australia,Cars (Army),GROUND,CarHorn;vn_m2_v_01
+vn_b_wheeled_m151_mg_02_nz_army,M151A1 M2,WEST,New Zealand,Cars (Army),GROUND,CarHorn;vn_m2_v_01
+vn_b_wheeled_m151_mg_02_rok_army,M151A1 M2,WEST,Republic Of Korea,Cars (Army),GROUND,CarHorn;vn_m2_v_01
+vn_b_wheeled_m151_mg_02_rok_marines,M151A1 M2,WEST,Republic Of Korea,Cars (Marines),GROUND,CarHorn;vn_m2_v_01
+vn_b_wheeled_m151_mg_02_usmc,M151A1 M2,WEST,MACV,Cars (USMC),GROUND,CarHorn;vn_m2_v_01
+vn_b_wheeled_m151_mg_02_mp,M151A1 M2 (MP),WEST,MACV,Cars (US Army),GROUND,CarHorn;vn_m2_v_01
+vn_b_wheeled_m151_mg_03,M151A1 Patrol,WEST,MACV,Cars (US Army),GROUND,CarHorn;vn_m2_v_01;vn_m60_v_02
+vn_b_wheeled_m151_mg_03_aus_army,M151A1 Patrol,WEST,Australia,Cars (Army),GROUND,CarHorn;vn_m2_v_01;vn_m60_v_02
+vn_b_wheeled_m151_mg_03_nz_army,M151A1 Patrol,WEST,New Zealand,Cars (Army),GROUND,CarHorn;vn_m2_v_01;vn_m60_v_02
+vn_b_wheeled_m151_mg_03_usmc,M151A1 Patrol,WEST,MACV,Cars (USMC),GROUND,CarHorn;vn_m2_v_01;vn_m60_v_02
+vn_b_wheeled_m151_mg_03_mp,M151A1 Patrol (MP),WEST,MACV,Cars (US Army),GROUND,CarHorn;vn_m2_v_01;vn_m60_v_02
+vn_b_wheeled_m274_01_01,M274 Mule,WEST,MACV,Cars (US Army),GROUND,vn_m274_mulehorn
+vn_b_wheeled_m274_01_02,M274 Mule,WEST,MACV,Cars (USMC),GROUND,vn_m274_mulehorn
+vn_b_wheeled_m274_01_03,M274 Mule (Airport),WEST,MACV,Cars (US Army),GROUND,vn_m274_mulehorn
+vn_b_wheeled_m274_mg_03_01,M274 Mule (M134),WEST,MACV,Cars (US Army),GROUND,vn_m134_v_01;vn_m274_mulehorn
+vn_b_wheeled_m274_mg_03_02,M274 Mule (M134),WEST,MACV,Cars (USMC),GROUND,vn_m134_v_01;vn_m274_mulehorn
+vn_b_wheeled_m274_mg_01_01,M274 Mule (M60),WEST,MACV,Cars (US Army),GROUND,vn_m274_mulehorn;vn_m60_v_01
+vn_b_wheeled_m274_mg_01_02,M274 Mule (M60),WEST,MACV,Cars (USMC),GROUND,vn_m274_mulehorn;vn_m60_v_01
+vn_b_wheeled_m274_02_01,M274 Mule Cargo,WEST,MACV,Cars (US Army),GROUND,vn_m274_mulehorn
+vn_b_wheeled_m274_02_02,M274 Mule Cargo,WEST,MACV,Cars (USMC),GROUND,vn_m274_mulehorn
+vn_b_wheeled_m274_02_03,M274 Mule Cargo (Airport),WEST,MACV,Cars (US Army),GROUND,vn_m274_mulehorn
+vn_b_wheeled_m54_mg_01,M54 Gun Truck (3x M2HB),WEST,MACV,Cars (US Army),GROUND,TruckHorn2;vn_m2_v_01;vn_m2_v_02;vn_m2_v_03
+vn_b_wheeled_m54_03,M109 Command Truck,WEST,MACV,Cars (US Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_03_aus_army,M109 Command Truck,WEST,Australia,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_03_nz_army,M109 Command Truck,WEST,New Zealand,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_03_rok_army,M109 Command Truck,WEST,Republic Of Korea,Cars (Army),GROUND,TruckHorn2
+vn_b_wheeled_m54_03_rok_marines,M109 Command Truck,WEST,Republic Of Korea,Cars (Marines),GROUND,TruckHorn2
+vn_b_wheeled_m54_03_usmc,M109 Command Truck,WEST,MACV,Cars (USMC),GROUND,TruckHorn2
+vn_b_armor_m577_01,M577A1 Command,WEST,MACV,APCs (MACV),GROUND,vn_m113_horn
+vn_b_armor_m577_01_aus_army,M577A1 Command,WEST,Australia,APCs (Army),GROUND,vn_m113_horn
+vn_b_armor_m577_01_rok_army,M577A1 Command,WEST,Republic Of Korea,APCs (Army),GROUND,vn_m113_horn
+vn_b_armor_m577_02,M577A1 Ambulance,WEST,MACV,APCs (MACV),GROUND,vn_m113_horn
+vn_b_armor_m577_02_aus_army,M577A1 Ambulance,WEST,Australia,APCs (Army),GROUND,vn_m113_horn
+vn_b_armor_m577_02_rok_army,M577A1 Ambulance,WEST,Republic Of Korea,APCs (Army),GROUND,vn_m113_horn
+vn_b_wheeled_lr2a_mg_03_aus_army,Dirt Ranger (M40A1),WEST,Australia,Cars (Army),GROUND,vn_DirtRangerHorn;vn_m8c_v_02;vn_static_m40a1rr_v_01
+vn_b_wheeled_lr2a_mg_03_nz_army,Dirt Ranger (M40A1),WEST,New Zealand,Cars (Army),GROUND,vn_DirtRangerHorn;vn_m8c_v_02;vn_static_m40a1rr_v_01
+vn_b_wheeled_m151_mg_06,M151A1 M40A1,WEST,MACV,Cars (US Army),GROUND,CarHorn;vn_m8c_v_02;vn_static_m40a1rr_v_01
+vn_b_wheeled_m151_mg_06_aus_army,M151A1 M40A1,WEST,Australia,Cars (Army),GROUND,CarHorn;vn_m8c_v_02;vn_static_m40a1rr_v_01
+vn_b_wheeled_m151_mg_06_nz_army,M151A1 M40A1,WEST,New Zealand,Cars (Army),GROUND,CarHorn;vn_m8c_v_02;vn_static_m40a1rr_v_01
+vn_b_wheeled_m151_mg_06_rok_army,M151A1 M40A1,WEST,Republic Of Korea,Cars (Army),GROUND,CarHorn;vn_m8c_v_02;vn_static_m40a1rr_v_01
+vn_b_wheeled_m151_mg_06_rok_marines,M151A1 M40A1,WEST,Republic Of Korea,Cars (Marines),GROUND,CarHorn;vn_m8c_v_02;vn_static_m40a1rr_v_01
+vn_b_wheeled_m151_mg_05,M151A1 TOW,WEST,MACV,Cars (US Army),GROUND,CarHorn;vn_missile_tow_launcher
+vn_b_wheeled_m274_mg_02_01,M274 Mule (M40A1),WEST,MACV,Cars (US Army),GROUND,vn_m274_mulehorn;vn_m8c_v_02;vn_static_m40a1rr_v_01
+vn_b_wheeled_m274_mg_02_02,M274 Mule (M40A1),WEST,MACV,Cars (USMC),GROUND,vn_m274_mulehorn;vn_m8c_v_02;vn_static_m40a1rr_v_01
+vn_b_wheeled_m54_mg_03,M54 Gun Truck (Minigun),WEST,MACV,Cars (US Army),GROUND,TruckHorn2;vn_m134_v_01;vn_m60_v_02;vn_m60_v_03
+vn_b_wheeled_m54_mg_02,M55 AA Truck (Quad),WEST,MACV,Cars (US Army),GROUND,TruckHorn2;vn_m2_v_quad
+vn_b_armor_m113_acav_04,M113A1 ACAV (M134),WEST,MACV,APCs (MACV),GROUND,vn_m113_horn;vn_m134_v_01;vn_m60_v_02;vn_m60_v_03
+vn_b_armor_m113_acav_04_rok_army,M113A1 ACAV (M134),WEST,Republic Of Korea,APCs (Army),GROUND,vn_m113_horn;vn_m134_v_01;vn_m60_v_02;vn_m60_v_03
+vn_b_armor_m113_acav_02,M113A1 ACAV (M1919),WEST,MACV,APCs (MACV),GROUND,vn_m113_horn;vn_m1919_v_twin_01;vn_m60_v_02;vn_m60_v_03
+vn_b_armor_m113_acav_02_rok_army,M113A1 ACAV (M1919),WEST,Republic Of Korea,APCs (Army),GROUND,vn_m113_horn;vn_m1919_v_twin_01;vn_m60_v_02;vn_m60_v_03
+vn_b_armor_m113_acav_01,M113A1 ACAV (M2),WEST,MACV,APCs (MACV),GROUND,vn_m113_horn;vn_m2_v_01;vn_m60_v_02;vn_m60_v_03
+vn_b_armor_m113_acav_01_rok_army,M113A1 ACAV (M2),WEST,Republic Of Korea,APCs (Army),GROUND,vn_m113_horn;vn_m2_v_01;vn_m60_v_02;vn_m60_v_03
+vn_b_armor_m113_acav_06,M113A1 ACAV (M2/ M40),WEST,MACV,APCs (MACV),GROUND,vn_m113_horn;vn_m2_v_01;vn_m60_v_02;vn_m8c_v_04;vn_static_m40a1rr_v_03
+vn_b_armor_m113_acav_06_rok_army,M113A1 ACAV (M2/ M40),WEST,Republic Of Korea,APCs (Army),GROUND,vn_m113_horn;vn_m2_v_01;vn_m60_v_02;vn_m8c_v_04;vn_static_m40a1rr_v_03
+vn_b_armor_m113_acav_03,M113A1 ACAV (M60),WEST,MACV,APCs (MACV),GROUND,vn_m113_horn;vn_m60_v_01;vn_m60_v_02;vn_m60_v_03
+vn_b_armor_m113_acav_03_rok_army,M113A1 ACAV (M60),WEST,Republic Of Korea,APCs (Army),GROUND,vn_m113_horn;vn_m60_v_01;vn_m60_v_02;vn_m60_v_03
+vn_b_armor_m113_acav_05,M113A1 ACAV (Mk18),WEST,MACV,APCs (MACV),GROUND,vn_m113_horn;vn_m60_v_02;vn_m60_v_03;vn_mk18_v_01
+vn_b_armor_m113_acav_05_rok_army,M113A1 ACAV (Mk18),WEST,Republic Of Korea,APCs (Army),GROUND,vn_m113_horn;vn_m60_v_02;vn_m60_v_03;vn_mk18_v_01
+vn_b_armor_m113_01,M113A1 Transport (M2),WEST,MACV,APCs (MACV),GROUND,vn_m113_horn;vn_m2_v_01
+vn_b_armor_m113_01_aus_army,M113A1 Transport (M2),WEST,Australia,APCs (Army),GROUND,vn_m113_horn;vn_m2_v_01
+vn_b_armor_m113_01_rok_army,M113A1 Transport (M2),WEST,Republic Of Korea,APCs (Army),GROUND,vn_m113_horn;vn_m2_v_01
+vn_b_armor_m125_01,M125A1 M29 Mortar,WEST,MACV,APCs (MACV),GROUND,vn_m113_horn;vn_m2_v_01;vn_mortar_m29
+vn_b_armor_m125_01_aus_army,M125A1 M29 Mortar,WEST,Australia,APCs (Army),GROUND,vn_m113_horn;vn_m2_v_01;vn_mortar_m29
+vn_b_armor_m125_01_rok_army,M125A1 M29 Mortar,WEST,Republic Of Korea,APCs (Army),GROUND,vn_m113_horn;vn_m2_v_01;vn_mortar_m29
+vn_b_armor_m132_01,M132A1 Flamethrower,WEST,MACV,APCs (MACV),GROUND,vn_m10_v_01;vn_m113_horn;vn_m1919_v_05
+vn_b_armor_m41_01_01,M41A3 Walker Bulldog,WEST,MACV,Tanks (Army),GROUND,vn_m113_horn;vn_m1919_v_05;vn_m2_v_01;vn_m32a1_v_01
+vn_b_armor_m41_01_02,M41A3 Walker Bulldog,WEST,MACV,Tanks (USMC),GROUND,vn_m113_horn;vn_m1919_v_05;vn_m2_v_01;vn_m32a1_v_01
+vn_b_armor_m67_01_01,M67A2 Flame Tank,WEST,MACV,Tanks (Army),GROUND,vn_m113_horn;vn_m1919_v_05;vn_m2_v_09;vn_m7_v_02
+vn_b_armor_m67_01_02,M67A2 Flame Tank,WEST,MACV,Tanks (USMC),GROUND,vn_m113_horn;vn_m1919_v_05;vn_m2_v_09;vn_m7_v_02
+vn_b_armor_m48_01_01,M48A3 Patton Tank,WEST,MACV,Tanks (Army),GROUND,vn_m113_horn;vn_m1919_v_05;vn_m2_v_09;vn_m41_v_01
+vn_b_armor_m48_01_02,M48A3 Patton Tank,WEST,MACV,Tanks (USMC),GROUND,vn_m113_horn;vn_m1919_v_05;vn_m2_v_09;vn_m41_v_01
+vn_b_air_oh6a_01,OH-6A Cayuse,WEST,MACV,Helicopters (US Army),ROTARY,vn_m60_v_07;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_oh6a_06,OH-6A Cayuse (Gunship/ APERS),WEST,MACV,Helicopters (US Army),ROTARY,vn_m134_v_05;vn_m60_v_07;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_oh6a_05,OH-6A Cayuse (Gunship/ AT),WEST,MACV,Helicopters (US Army),ROTARY,vn_m134_v_05;vn_m60_v_07;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_oh6a_04,OH-6A Cayuse (Gunship/ CAS),WEST,MACV,Helicopters (US Army),ROTARY,vn_m134_v_05;vn_m60_v_07;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_oh6a_07,OH-6A Cayuse (Gunship/ FAC),WEST,MACV,Helicopters (US Army),ROTARY,vn_m134_v_05;vn_m60_v_07;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_oh6a_03,OH-6A Cayuse (Scout GL),WEST,MACV,Helicopters (US Army),ROTARY,vn_m60_v_07;vn_m75;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_oh6a_02,OH-6A Cayuse (Scout MG),WEST,MACV,Helicopters (US Army),ROTARY,vn_m134_v_05;vn_m60_v_07;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1d_04_09,UH-1D Iroquois,WEST,US CIA,Helicopters (CIA),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_b_air_uh1d_01_06,UH-1D Iroquois Dust-off,WEST,Australia,Helicopters (RAAF),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_b_air_uh1d_01_02,UH-1D Iroquois Dust-off (Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_b_air_uh1d_01_01,UH-1D Iroquois Dust-off (Army),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_b_air_uh1d_01_07,UH-1D Iroquois Dust-off (SOG),WEST,MACV,Helicopters (MACV),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r
+vn_b_air_ch47_02_02,CH-47A Chinook (Medevac/ Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch47_02_01,CH-47A Chinook (Medevac/ Army),WEST,MACV,Helicopters (US Army),ROTARY,vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1b_01_09,UH-1B Iroquois,WEST,US CIA,Helicopters (CIA),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1b_01_03,UH-1B Iroquois Dust-off,WEST,MACV,Helicopters (USAF),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1b_01_04,UH-1B Iroquois Dust-off,WEST,MACV,Helicopters (USMC),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1b_01_05,UH-1B Iroquois Dust-off,WEST,MACV,Helicopters (US Navy),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1b_01_06,UH-1B Iroquois Dust-off,WEST,Australia,Helicopters (RAAF),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1b_01_02,UH-1B Iroquois Dust-off (Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1b_01_01,UH-1B Iroquois Dust-off (Army),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1b_02_05,UH-1B Iroquois Gunship,WEST,MACV,Helicopters (US Navy),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_07_05,UH-1B Iroquois Slick,WEST,MACV,Helicopters (US Navy),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_07_06,UH-1B Iroquois Slick,WEST,Australia,Helicopters (RAAF),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_07_02,UH-1B Iroquois Slick (Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_07_01,UH-1B Iroquois Slick (Army),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_07_07,UH-1B Iroquois Slick (SOG),WEST,MACV,Helicopters (MACV),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1e_01_04,UH-1E Iroquois Gunship,WEST,MACV,Helicopters (USMC),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_m60_v_quad_05;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1e_02_04,UH-1E Iroquois Heavy Gunship,WEST,MACV,Helicopters (USMC),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_m60_v_quad_05;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1e_03_04,UH-1E Iroquois Slick,WEST,MACV,Helicopters (USMC),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_06_02,UH-1C Iroquois ARA (Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_06_01,UH-1C Iroquois ARA (Army),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_04_02,UH-1C Iroquois Frog (Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m75_v_06;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_04_01,UH-1C Iroquois Frog (Army),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m75_v_06;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_02_02,UH-1C Iroquois Gunship (Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_02_01,UH-1C Iroquois Gunship (Army),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_05_02,UH-1C Iroquois Heavy Hog (Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m75_v_06;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_05_01,UH-1C Iroquois Heavy Hog (Army),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m75_v_06;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_01_03,UH-1C Iroquois Hog,WEST,MACV,Helicopters (USAF),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_01_02,UH-1C Iroquois Hog (Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_01_01,UH-1C Iroquois Hog (Army),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1d_02_03,UH-1D Iroquois Slick,WEST,MACV,Helicopters (USAF),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1d_02_04,UH-1D Iroquois Slick,WEST,MACV,Helicopters (USMC),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1d_02_06,UH-1D Iroquois Slick,WEST,Australia,Helicopters (RAAF),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1d_02_02,UH-1D Iroquois Slick (Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1d_02_01,UH-1D Iroquois Slick (Army),WEST,MACV,Helicopters (US Army),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1d_02_07,UH-1D Iroquois Slick (SOG),WEST,MACV,Helicopters (MACV),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1f_01_03,UH-1F Iroquois Slick,WEST,MACV,Helicopters (USAF),ROTARY,searchlight;vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch34_04_03,UH-34 Stinger (APERS),WEST,MACV,Helicopters (USMC),ROTARY,vn_m60_v_07;vn_m60_v_08;vn_m60_v_twin;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch34_04_02,UH-34 Stinger (CAS),WEST,MACV,Helicopters (USMC),ROTARY,vn_m60_v_07;vn_m60_v_08;vn_m60_v_twin;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch34_04_04,UH-34 Stinger (FAC),WEST,MACV,Helicopters (USMC),ROTARY,vn_m60_v_07;vn_m60_v_08;vn_m60_v_twin;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch34_04_01,UH-34 Stinger (FFAR),WEST,MACV,Helicopters (USMC),ROTARY,vn_m60_v_07;vn_m60_v_08;vn_m60_v_twin;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch34_03_01,UH-34D Seahorse (M60 x2),WEST,MACV,Helicopters (USMC),ROTARY,vn_m60_v_07;vn_m60_v_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch34_01_01,UH-34D Seahorse (M60),WEST,MACV,Helicopters (USMC),ROTARY,vn_m60_v_07;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1c_03_01,UH-1P Iroquois Hornet,WEST,MACV,Helicopters (USAF),ROTARY,searchlight;vn_m134_v_09;vn_m134_v_10;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_uh1d_03_06,UH-1D Iroquois Bushranger,WEST,Australia,Helicopters (RAAF),ROTARY,searchlight;vn_m60_v_twin_07;vn_m60_v_twin_08;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch47_04_02,CH-47A Chinook (Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,vn_m60_v_01;vn_m60_v_02;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch47_04_01,CH-47A Chinook (Army),WEST,MACV,Helicopters (US Army),ROTARY,vn_m60_v_01;vn_m60_v_02;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch47_03_02,CH-47A Chinook (Cargo/ Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,vn_m60_v_01;vn_m60_v_02;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch47_03_01,CH-47A Chinook (Cargo/ Army),WEST,MACV,Helicopters (US Army),ROTARY,vn_m60_v_01;vn_m60_v_02;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch47_01_02,CH-47A Chinook (M60/ Air Cav),WEST,MACV,Helicopters (US Army),ROTARY,vn_m60_v_01;vn_m60_v_02;vn_m60_v_03;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ch47_01_01,CH-47A Chinook (M60/ Army),WEST,MACV,Helicopters (US Army),ROTARY,vn_m60_v_01;vn_m60_v_02;vn_m60_v_03;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ach47_04_01,ACH-47A Guns-A-Go-Go (APERS),WEST,MACV,Helicopters (US Army),ROTARY,vn_m2_v_01;vn_m2_v_02;vn_m2_v_03;vn_m2_v_04;vn_m2_v_05;vn_m75_v_06;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ach47_03_01,ACH-47A Guns-A-Go-Go (AT),WEST,MACV,Helicopters (US Army),ROTARY,vn_m2_v_01;vn_m2_v_02;vn_m2_v_03;vn_m2_v_04;vn_m2_v_05;vn_m75_v_06;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ach47_05_01,ACH-47A Guns-A-Go-Go (Cannon),WEST,MACV,Helicopters (US Army),ROTARY,vn_m2_v_01;vn_m2_v_02;vn_m2_v_03;vn_m2_v_04;vn_m2_v_05;vn_m75_v_06;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ach47_01_01,ACH-47A Guns-A-Go-Go (M200),WEST,MACV,Helicopters (US Army),ROTARY,vn_m2_v_01;vn_m2_v_02;vn_m2_v_03;vn_m2_v_04;vn_m2_v_05;vn_m75_v_06;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ach47_02_01,ACH-47A Guns-A-Go-Go (XM18),WEST,MACV,Helicopters (US Army),ROTARY,vn_m2_v_01;vn_m2_v_02;vn_m2_v_03;vn_m2_v_04;vn_m2_v_05;vn_m75_v_06;vn_v_launcher_m127;vn_v_launcher_m18r;vn_v_launcher_m61;vn_v_launcher_m7
+vn_b_air_ah1g_02,AH-1G Cobra (APERS),WEST,MACV,Helicopters (US Army),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_02_usmc,AH-1G Cobra (APERS),WEST,MACV,Helicopters (USMC),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_03,AH-1G Cobra (AT),WEST,MACV,Helicopters (US Army),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_03_usmc,AH-1G Cobra (AT),WEST,MACV,Helicopters (USMC),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_04,AH-1G Cobra (CAS),WEST,MACV,Helicopters (US Army),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_04_usmc,AH-1G Cobra (CAS),WEST,MACV,Helicopters (USMC),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_05,AH-1G Cobra (FAC),WEST,MACV,Helicopters (US Army),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_05_usmc,AH-1G Cobra (FAC),WEST,MACV,Helicopters (USMC),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_01,AH-1G Cobra (FFAR),WEST,MACV,Helicopters (US Army),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_01_usmc,AH-1G Cobra (FFAR),WEST,MACV,Helicopters (USMC),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_07,AH-1G Cobra (M195/APERS),WEST,MACV,Helicopters (US Army),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_07_usmc,AH-1G Cobra (M195/APERS),WEST,MACV,Helicopters (USMC),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_08,AH-1G Cobra (M195/AT),WEST,MACV,Helicopters (US Army),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_08_usmc,AH-1G Cobra (M195/AT),WEST,MACV,Helicopters (USMC),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_09,AH-1G Cobra (M195/CAS),WEST,MACV,Helicopters (US Army),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_09_usmc,AH-1G Cobra (M195/CAS),WEST,MACV,Helicopters (USMC),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_10,AH-1G Cobra (M195/FAC),WEST,MACV,Helicopters (US Army),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_10_usmc,AH-1G Cobra (M195/FAC),WEST,MACV,Helicopters (USMC),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_06,AH-1G Cobra (M195/FFAR),WEST,MACV,Helicopters (US Army),ROTARY,vn_m129;vn_m134_v_051
+vn_b_air_ah1g_06_usmc,AH-1G Cobra (M195/FFAR),WEST,MACV,Helicopters (USMC),ROTARY,vn_m129;vn_m134_v_051
+vn_b_boat_09_01,STAB (M60),WEST,MACV,Boats (MACV),SEA,vn_m60_v_01;vn_m60_v_02
+vn_b_boat_12_02,"PBR MkII (M60, Black, Clean)",WEST,MACV,Boats (MACV),SEA,searchlight;vn_m2_twin_v_01;vn_m2_v_02;vn_m60_v_03;vn_m60_v_04;vn_pbr_horn
+vn_b_boat_12_04,"PBR MkII (M60, Black, Dirty)",WEST,MACV,Boats (MACV),SEA,searchlight;vn_m2_twin_v_01;vn_m2_v_02;vn_m60_v_03;vn_m60_v_04;vn_pbr_horn
+vn_b_boat_12_01,"PBR MkII (M60, Red, Clean)",WEST,MACV,Boats (MACV),SEA,searchlight;vn_m2_twin_v_01;vn_m2_v_02;vn_m60_v_03;vn_m60_v_04;vn_pbr_horn
+vn_b_boat_12_03,"PBR MkII (M60, Red, Dirty)",WEST,MACV,Boats (MACV),SEA,searchlight;vn_m2_twin_v_01;vn_m2_v_02;vn_m60_v_03;vn_m60_v_04;vn_pbr_horn
+vn_b_boat_13_02,"PBR MkII (Mk18, Black, Clean)",WEST,MACV,Boats (MACV),SEA,searchlight;vn_m2_twin_v_01;vn_m2_v_02;vn_mk18_v_03;vn_mk18_v_04;vn_pbr_horn
+vn_b_boat_13_04,"PBR MkII (Mk18, Black, Dirty)",WEST,MACV,Boats (MACV),SEA,searchlight;vn_m2_twin_v_01;vn_m2_v_02;vn_mk18_v_03;vn_mk18_v_04;vn_pbr_horn
+vn_b_boat_13_01,"PBR MkII (Mk18, Red, Clean)",WEST,MACV,Boats (MACV),SEA,searchlight;vn_m2_twin_v_01;vn_m2_v_02;vn_mk18_v_03;vn_mk18_v_04;vn_pbr_horn
+vn_b_boat_13_03,"PBR MkII (Mk18, Red, Dirty)",WEST,MACV,Boats (MACV),SEA,searchlight;vn_m2_twin_v_01;vn_m2_v_02;vn_mk18_v_03;vn_mk18_v_04;vn_pbr_horn
+vn_b_boat_10_01,STAB (M2),WEST,MACV,Boats (MACV),SEA,vn_m2_v_03;vn_m60_v_01;vn_m60_v_02
+vn_b_boat_11_01,STAB (Mk18),WEST,MACV,Boats (MACV),SEA,vn_m2_v_03;vn_m60_v_01;vn_mk18_v_02
+vn_b_boat_06_02,"PTF Nasty Boat (40mm, Black)",WEST,MACV,Boats (MACV),SEA,vn_m60_v_05;vn_m60_v_06;vn_mk2_v_03;vn_mk2_v_04;vn_mk3_v_01;vn_mk3_v_02;vn_ptf_horn
+vn_b_boat_06_01,"PTF Nasty Boat (40mm, Red)",WEST,MACV,Boats (MACV),SEA,vn_m60_v_05;vn_m60_v_06;vn_mk2_v_03;vn_mk2_v_04;vn_mk3_v_01;vn_mk3_v_02;vn_ptf_horn
+vn_b_boat_05_02,PTF Nasty Boat (Mortar/ Black),WEST,MACV,Boats (MACV),SEA,searchlight;vn_m2_v_02;vn_mk2_v_03;vn_mk2_v_04;vn_mk3_v_01;vn_mortar_m29;vn_ptf_horn
+vn_b_boat_05_01,PTF Nasty Boat (Mortar/ Red),WEST,MACV,Boats (MACV),SEA,searchlight;vn_m2_v_02;vn_mk2_v_03;vn_mk2_v_04;vn_mk3_v_01;vn_mortar_m29;vn_ptf_horn

@@ -40,6 +40,9 @@ if !(_progression isEqualType createHashMap) then {
 };
 
 private _oldXp = _progression getOrDefault ["xp", 0];
+if !(_oldXp isEqualType 0 && {finite _oldXp}) then {_oldXp = 0};
+private _oldLevel = _progression getOrDefault ["level", [_oldXp] call bn_koth_fnc_progression_xp_getLevel];
+if !(_oldLevel isEqualType 0 && {finite _oldLevel}) then {_oldLevel = 1};
 private _newXp = (_oldXp max 0) + _amount;
 private _newLevel = [_newXp] call bn_koth_fnc_progression_xp_getLevel;
 
@@ -48,6 +51,7 @@ _progression set ["xp", _newXp];
 _progression set ["level", _newLevel];
 _progressionByUid set [_uid, _progression];
 missionNamespace setVariable ["BN_KOTH_playerProgression", _progressionByUid];
+[_uid, "xp"] call bn_koth_fnc_persistence_markDirty;
 
 private _result = createHashMapFromArray [
     ["uid", _uid],
@@ -56,21 +60,9 @@ private _result = createHashMapFromArray [
     ["reason", _reason]
 ];
 
-private _clientPayload = createHashMapFromArray [
-    ["uid", _uid],
-    ["xp", _newXp],
-    ["level", _newLevel],
-    ["amount", _amount],
-    ["reason", _reason]
-];
-
-private _ownerId = _playerRecord getOrDefault ["ownerId", -1];
-if (_ownerId > 2) then {
-    [_clientPayload] remoteExecCall ["bn_koth_fnc_ui_receiveProgression", _ownerId];
-} else {
-    if (_ownerId isEqualTo 2 && {hasInterface}) then {
-        [_clientPayload] call bn_koth_fnc_ui_receiveProgression;
-    };
+[_uid, "xp", _amount, _reason] call bn_koth_fnc_progression_publishUpdate;
+if !(_newLevel isEqualTo _oldLevel) then {
+    [] call bn_koth_fnc_teams_publishState;
 };
 
 [format [

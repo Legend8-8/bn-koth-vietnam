@@ -49,6 +49,20 @@ SOURCE_PAGES = {
     },
 }
 
+WEARABLE_SOURCE_PAGE = {
+    "name": "equipment",
+    "url": "https://wiki.sogpf.com/index.php?title=CfgWeapons_Equipment&action=raw",
+    "headers": [
+        "Ver.",
+        "Preview",
+        "Class",
+        "Name",
+        "Inventory description",
+        "Magazines",
+        "Used by",
+    ],
+}
+
 USER_AGENT = "bn-koth-vietnam-sog-catalogue/1.0"
 
 LINK_PATTERN = re.compile(r"\[\[(?:[^\]|]+\|)?([^\]]+)\]\]")
@@ -100,6 +114,18 @@ def parse_all_pages(raw_pages: dict[str, str]) -> tuple[dict[str, list[dict[str,
         parsed[page_name] = parsed_rows
         counts[page_name] = len(parsed_rows)
     return parsed, counts
+
+
+def parse_wearable_page(text: str) -> list[dict[str, Any]]:
+    """Parse the frozen official CfgWeapons equipment table for one-time curation."""
+    headers, rows = parse_main_table(text)
+    normalized_headers = [normalize_header(header) for header in headers]
+    required_headers = WEARABLE_SOURCE_PAGE["headers"]
+    if normalized_headers[: len(required_headers)] != required_headers:
+        raise CatalogueError(
+            f"Required identifying columns missing on equipment: expected {required_headers}, got {normalized_headers}"
+        )
+    return [map_row("equipment", row, normalized_headers) for row in rows]
 
 
 def parse_main_table(text: str) -> tuple[list[str], list[list[str]]]:
@@ -184,6 +210,16 @@ def map_row(page_name: str, row_lines: list[str], headers: list[str]) -> dict[st
             "usedBy": parse_links(cells[7]),
         }
     if page_name == "items":
+        return {
+            **row,
+            "version": normalize_markup_text(cells[0]),
+            "class": parse_class_cell(cells[2]),
+            "displayName": normalize_markup_text(cells[3]),
+            "description": normalize_markup_text(cells[4]),
+            "magazines": parse_links(cells[5]),
+            "usedBy": parse_links(cells[6]),
+        }
+    if page_name == "equipment":
         return {
             **row,
             "version": normalize_markup_text(cells[0]),

@@ -37,8 +37,15 @@ if !(remoteExecutedOwner isEqualTo 2) exitWith {
 if !(_validationResult isEqualType createHashMap) exitWith {};
 
 if !(_validationResult getOrDefault ["success", false]) exitWith {
+    private _pendingKitOperation = uiNamespace getVariable ["BN_KOTH_menuPendingKitOperation", ""];
+    if !(_pendingKitOperation isEqualTo "") then {
+        uiNamespace setVariable ["BN_KOTH_menuPendingKitOperation", ""];
+        uiNamespace setVariable ["BN_KOTH_menuPendingKitId", ""];
+        uiNamespace setVariable ["BN_KOTH_menuPendingKitName", ""];
+    };
     systemChat format [
-        "[KOTH] Loadout rejected: %1",
+        "[KOTH] %1: %2",
+        if !(_pendingKitOperation isEqualTo "") then {"Saved loadout rejected"} else {"Loadout rejected"},
         _validationResult getOrDefault ["message", "Request rejected."]
     ];
 };
@@ -86,5 +93,34 @@ if !(_applyResult getOrDefault ["success", false]) exitWith {
         "[KOTH] Loadout application failed: %1",
         _applyResult getOrDefault ["message", "Unknown failure."]
     ];
+
+    uiNamespace setVariable ["BN_KOTH_menuPendingKitOperation", ""];
+    uiNamespace setVariable ["BN_KOTH_menuPendingKitId", ""];
+    uiNamespace setVariable ["BN_KOTH_menuPendingKitName", ""];
+};
+
+private _mutationOp = _validationResult getOrDefault ["mutationOp", ""];
+private _savedKitId = _validationResult getOrDefault ["savedKitId", ""];
+private _pendingKitOperation = uiNamespace getVariable ["BN_KOTH_menuPendingKitOperation", ""];
+private _pendingKitId = uiNamespace getVariable ["BN_KOTH_menuPendingKitId", ""];
+private _pendingKitName = uiNamespace getVariable ["BN_KOTH_menuPendingKitName", ""];
+if (
+    (_mutationOp isEqualTo "load_local_kit")
+    && {!(_pendingKitOperation isEqualTo "")}
+    && {_savedKitId isEqualTo _pendingKitId}
+) then {
+    if (_pendingKitOperation isEqualTo "EDIT") then {
+        uiNamespace setVariable ["BN_KOTH_menuKitEditId", _savedKitId];
+        uiNamespace setVariable ["BN_KOTH_menuKitEditName", _pendingKitName];
+        [format ["EDITING SAVED LOADOUT: %1", toUpper _pendingKitName]] call bn_koth_fnc_ui_notify;
+    } else {
+        uiNamespace setVariable ["BN_KOTH_menuKitEditId", ""];
+        uiNamespace setVariable ["BN_KOTH_menuKitEditName", ""];
+        [format ["LOADOUT APPLIED: %1", toUpper _pendingKitName]] call bn_koth_fnc_ui_notify;
+    };
+    uiNamespace setVariable ["BN_KOTH_menuPendingKitOperation", ""];
+    uiNamespace setVariable ["BN_KOTH_menuPendingKitId", ""];
+    uiNamespace setVariable ["BN_KOTH_menuPendingKitName", ""];
+    ["LOADOUT"] call bn_koth_fnc_menu_refresh;
 };
 

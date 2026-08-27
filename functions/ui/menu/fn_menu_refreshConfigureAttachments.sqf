@@ -68,7 +68,6 @@ if !(_cache getOrDefault [_cacheReadyKey, false]) then {
         };
     } forEach ("true" configClasses _sourceWeaponsCfg);
 
-    private _metadataAttachmentsCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment" >> "Metadata" >> "Attachments";
     private _sortable = [];
     {
         private _attachmentClass = _x;
@@ -87,14 +86,8 @@ if !(_cache getOrDefault [_cacheReadyKey, false]) then {
             _itemType = "ATTACHMENT";
         };
 
-        private _minLevel = 1;
-        private _hasMinLevel = false;
-        private _attachmentMetadataCfg = _metadataAttachmentsCfg >> _attachmentClass;
-        if (isClass _attachmentMetadataCfg && {isNumber (_attachmentMetadataCfg >> "minLevel")}) then {
-            _minLevel = (getNumber (_attachmentMetadataCfg >> "minLevel")) max 1;
-            _hasMinLevel = true;
-        };
-
+        private _entitlementMetadata = ["Attachments", _attachmentClass] call bn_koth_fnc_loadouts_getItemMetadata;
+        private _minLevel = _entitlementMetadata getOrDefault ["minLevel", 1];
         private _levelText = str _minLevel;
         private _levelSortKey = ("000000" + _levelText) select [(count _levelText), 6];
         _sortable pushBack [
@@ -105,7 +98,7 @@ if !(_cache getOrDefault [_cacheReadyKey, false]) then {
                 ["picture", getText (_attachmentCfg >> "picture")],
                 ["category", _itemType],
                 ["minLevel", _minLevel],
-                ["hasMinLevel", _hasMinLevel]
+                ["entitlementMetadata", _entitlementMetadata]
             ]
         ];
     } forEach _candidateClasses;
@@ -175,7 +168,18 @@ private _presentationProgression = missionNamespace getVariable ["BN_KOTH_player
 if !(_presentationProgression isEqualType createHashMap) then {
     _presentationProgression = createHashMap;
 };
-private _playerLevel = (_presentationProgression getOrDefault ["level", 1]) max 1;
+private _assignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
+if !(_assignments isEqualType createHashMap) then {_assignments = createHashMap};
+private _assignedSide = _assignments getOrDefault [getPlayerUID player, sideUnknown];
+private _sideToken = if (_assignedSide isEqualTo west) then {"WEST"} else {
+    if (_assignedSide isEqualTo east) then {"EAST"} else {""}
+};
+
+private _evaluateEntryEntitlement = {
+    params ["_entry"];
+    private _metadata = _entry getOrDefault ["entitlementMetadata", createHashMap];
+    [_presentationProgression, _metadata, _entry getOrDefault ["className", ""], _sideToken, false] call bn_koth_fnc_progression_evaluateItemEntitlementRules
+};
 
 private _drafts = uiNamespace getVariable ["BN_KOTH_menuConfigureDrafts", createHashMap];
 if !(_drafts isEqualType createHashMap) then {
@@ -215,9 +219,8 @@ private _selectedAttachments = [];
     if !(_entry isEqualType createHashMap) then {continue;};
     if ((count _entry) <= 0) then {continue;};
 
-    private _minLevel = _entry getOrDefault ["minLevel", 1];
-    private _hasMinLevel = _entry getOrDefault ["hasMinLevel", false];
-    if (_hasMinLevel && {_playerLevel < _minLevel}) then {continue;};
+    private _entitlement = [_entry] call _evaluateEntryEntitlement;
+    if !(_entitlement getOrDefault ["entitled", false]) then {continue;};
 
     _selectedAttachments pushBackUnique _attachmentClass;
 } forEach _selectedAttachmentsRaw;
@@ -284,8 +287,9 @@ private _subtitle = if ((count _completionDescriptions) > 0) then {
     private _controls = _x;
     private _entry = _entries select _cardIndex;
     private _minLevel = _entry getOrDefault ["minLevel", 1];
-    private _hasMinLevel = _entry getOrDefault ["hasMinLevel", false];
-    private _locked = _hasMinLevel && {_playerLevel < _minLevel};
+    private _entitlement = [_entry] call _evaluateEntryEntitlement;
+    private _locked = !(_entitlement getOrDefault ["entitled", false]);
+    private _entitlementCode = _entitlement getOrDefault ["code", "ERR_ATTACHMENT_ENTITLEMENT"];
     private _attachmentClass = _entry getOrDefault ["className", ""];
     private _isSelected = _attachmentClass in _selectedAttachments;
     private _proposedAttachments = if (_isSelected) then {
@@ -302,8 +306,15 @@ private _subtitle = if ((count _completionDescriptions) > 0) then {
     private _compositionAvailable = _compositionEvaluation getOrDefault ["available", false];
     private _compositionState = _compositionEvaluation getOrDefault ["state", "INVALID"];
     private _isRequiredCompletion = !_isSelected && {_attachmentClass in _requiredCompletionClasses};
+    private _lockedLabel = switch (_entitlementCode) do {
+        case "LOCKED_LEVEL": {format ["LOCKED UNTIL LEVEL %1", _minLevel]};
+        case "LOCKED_SIDE": {"NOT AVAILABLE FOR YOUR SIDE"};
+        case "LOCKED_SIDE_STATE": {"SIDE ASSIGNMENT REQUIRED"};
+        case "LOCKED_SIDE_METADATA": {"SIDE POLICY REVIEW REQUIRED"};
+        default {"ATTACHMENT UNAVAILABLE"};
+    };
     private _status = if (_locked) then {
-        format ["LOCKED UNTIL LEVEL %1", _minLevel]
+        _lockedLabel
     } else {
         if (_isSelected) then {
             "SELECTED"
@@ -323,7 +334,7 @@ private _subtitle = if ((count _completionDescriptions) > 0) then {
             }
         }
     };
-    private _lockText = if (_locked) then {format ["LOCKED UNTIL LEVEL %1", _minLevel]} else {""};
+    private _lockText = if (_locked) then {_lockedLabel} else {""};
     private _actionText = if (_isSelected) then {"REMOVE"} else {"SELECT"};
     private _hasAction = !_locked && {_compositionAvailable};
 

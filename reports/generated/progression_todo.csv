@@ -77,8 +77,8 @@ vn_hp_mag,Base Magazine,NO,hp;m1carbine,3,vn_hp;vn_hp_sd;vn_m1carbine_shorty,,in
 vn_hp_sd,Derived Weapon,NO,hp,0,,vn_hp,canonical alias of vn_hp
 vn_izh54,Weapon,YES,izh54,0,,,weapon
 vn_izh54_mag,Base Magazine,NO,izh54,3,vn_izh54;vn_izh54_p;vn_izh54_shorty,,included base magazine
-vn_izh54_p,Weapon,YES,izh54,0,,,weapon
-vn_izh54_shorty,Weapon,YES,izh54,0,,,weapon
+vn_izh54_p,Derived Weapon,NO,izh54,0,,vn_izh54,canonical alias of vn_izh54
+vn_izh54_shorty,Derived Weapon,NO,izh54,0,,vn_izh54,canonical alias of vn_izh54
 vn_izh54_so_mag,Magazine,YES,izh54,2,vn_izh54_p;vn_izh54_shorty,,additional compatible magazine
 vn_k50m,Weapon,YES,k50m,0,,,weapon
 vn_k98k,Weapon,YES,k98k,0,,,weapon
@@ -115,10 +115,10 @@ vn_l1a1_xm148,Derived Weapon,NO,l1a1,0,,vn_l1a1_01,canonical alias of vn_l1a1_01
 vn_l1a1_xm148_camo,Derived Weapon,NO,l1a1,0,,vn_l1a1_01,canonical alias of vn_l1a1_01
 vn_l2a1_01,Weapon,YES,l2a1,0,,,weapon
 vn_l2a3,Weapon,YES,l2a3,0,,,weapon
-vn_l2a3_f,Weapon,YES,l2a3,0,,,weapon
+vn_l2a3_f,Derived Weapon,NO,l2a3,0,,vn_l2a3,canonical alias of vn_l2a3
 vn_l34a1,Weapon,YES,l34a1,0,,,weapon
-vn_l34a1_f,Weapon,YES,l34a1,0,,,weapon
-vn_l34a1_xm148,Weapon,YES,l34a1,0,,,weapon
+vn_l34a1_f,Derived Weapon,NO,l34a1,0,,vn_l34a1,canonical alias of vn_l34a1
+vn_l34a1_xm148,Derived Weapon,NO,l34a1,0,,vn_l34a1,canonical alias of vn_l34a1
 vn_l4,Weapon,YES,l4,0,,,weapon
 vn_m10,Weapon,YES,m10,0,,,weapon
 vn_m10_mag,Base Magazine,NO,m10;p38s,3,vn_m10;vn_m10_sd;vn_p38s,,included base magazine
@@ -131,7 +131,7 @@ vn_m14,Weapon,YES,m14,0,,,weapon
 vn_m14_10_mag,Magazine,YES,m14;m14a1;m21,15,vn_m14;vn_m14_bayo;vn_m14_camo;vn_m14_sd;vn_m14a1;vn_m14a1_bipod;vn_m14a1_camo;vn_m14a1_nvg;vn_m14a1_shorty;vn_m14a1_shorty_fs;vn_m14a1_sniper;vn_m21;vn_m21_nvg;vn_m21_nvg_sd;vn_m21_sd,,additional compatible magazine
 vn_m14_10_t_mag,Magazine,YES,m14;m14a1;m21,15,vn_m14;vn_m14_bayo;vn_m14_camo;vn_m14_sd;vn_m14a1;vn_m14a1_bipod;vn_m14a1_camo;vn_m14a1_nvg;vn_m14a1_shorty;vn_m14a1_shorty_fs;vn_m14a1_sniper;vn_m21;vn_m21_nvg;vn_m21_nvg_sd;vn_m21_sd,,additional compatible magazine
 vn_m14_bayo,Derived Weapon,NO,m14,0,,vn_m14,canonical alias of vn_m14
-vn_m14_camo,Weapon,YES,m14,0,,,weapon
+vn_m14_camo,Derived Weapon,NO,m14,0,,vn_m14,canonical alias of vn_m14
 vn_m14_mag,Magazine,YES,m14;m14a1;m21,15,vn_m14;vn_m14_bayo;vn_m14_camo;vn_m14_sd;vn_m14a1;vn_m14a1_bipod;vn_m14a1_camo;vn_m14a1_nvg;vn_m14a1_shorty;vn_m14a1_shorty_fs;vn_m14a1_sniper;vn_m21;vn_m21_nvg;vn_m21_nvg_sd;vn_m21_sd,,additional compatible magazine
 vn_m14_sd,Derived Weapon,NO,m14,0,,vn_m14,canonical alias of vn_m14
 vn_m14_t_mag,Magazine,YES,m14;m14a1;m21,15,vn_m14;vn_m14_bayo;vn_m14_camo;vn_m14_sd;vn_m14a1;vn_m14a1_bipod;vn_m14a1_camo;vn_m14a1_nvg;vn_m14a1_shorty;vn_m14a1_shorty_fs;vn_m14a1_sniper;vn_m21;vn_m21_nvg;vn_m21_nvg_sd;vn_m21_sd,,additional compatible magazine
@@ -139,7 +139,7 @@ vn_m14a1,Weapon,YES,m14a1,0,,,weapon
 vn_m14a1_bipod,Derived Weapon,NO,m14a1,0,,vn_m14a1,canonical alias of vn_m14a1
 vn_m14a1_camo,Derived Weapon,NO,m14a1,0,,vn_m14a1,canonical alias of vn_m14a1
 vn_m14a1_nvg,Derived Weapon,NO,m14a1,0,,vn_m14a1_camo,canonical alias of vn_m14a1_camo
-vn_m14a1_shorty,Weapon,YES,m14a1,0,,,weapon
+vn_m14a1_shorty,Derived Weapon,NO,m14a1,0,,vn_m14a1,canonical alias of vn_m14a1
 vn_m14a1_shorty_fs,Derived Weapon,NO,m14a1,0,,vn_m14a1,canonical alias of vn_m14a1
 vn_m14a1_sniper,Derived Weapon,NO,m14a1,0,,vn_m14a1_bipod,canonical alias of vn_m14a1_bipod
 vn_m16,Weapon,YES,m16,0,,,weapon
@@ -150,12 +150,12 @@ vn_m16_30_t_mag,Magazine,YES,gau5a;m16;m16_muzzle;m16_usaf;xm16e1;xm177;xm177_fg
 vn_m16_40_mag,Magazine,YES,gau5a;m16;m16_muzzle;m16_usaf;xm16e1;xm177;xm177_fg;xm177_muzzle;xm177e1,46,vn_gau5a;vn_gau5a_mrk;vn_m16;vn_m16_bayo;vn_m16_camo;vn_m16_m203;vn_m16_m203_camo;vn_m16_mrk;vn_m16_mrk_sd;vn_m16_muzzle;vn_m16_nvg;vn_m16_nvg_sd;vn_m16_sd;vn_m16_sniper;vn_m16_sniper_sd;vn_m16_usaf;vn_m16_usaf_bayo;vn_m16_usaf_mrk;vn_m16_usaf_nvg;vn_m16_usaf_sniper;vn_m16_xm148;vn_xm16e1;vn_xm16e1_bayo;vn_xm16e1_mrk;vn_xm16e1_nvg;vn_xm16e1_sniper;vn_xm16e1_xm148;vn_xm177;vn_xm177_camo;vn_xm177_fg;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_mrk;vn_xm177_muzzle;vn_xm177_nvg;vn_xm177_short;vn_xm177_sniper;vn_xm177_stock;vn_xm177_stock_camo;vn_xm177_xm148;vn_xm177_xm148_camo;vn_xm177e1;vn_xm177e1_camo;vn_xm177e1_mrk;vn_xm177e1_nvg;vn_xm177e1_sniper,,additional compatible magazine
 vn_m16_40_t_mag,Magazine,YES,gau5a;m16;m16_muzzle;m16_usaf;xm16e1;xm177;xm177_fg;xm177_muzzle;xm177e1,46,vn_gau5a;vn_gau5a_mrk;vn_m16;vn_m16_bayo;vn_m16_camo;vn_m16_m203;vn_m16_m203_camo;vn_m16_mrk;vn_m16_mrk_sd;vn_m16_muzzle;vn_m16_nvg;vn_m16_nvg_sd;vn_m16_sd;vn_m16_sniper;vn_m16_sniper_sd;vn_m16_usaf;vn_m16_usaf_bayo;vn_m16_usaf_mrk;vn_m16_usaf_nvg;vn_m16_usaf_sniper;vn_m16_xm148;vn_xm16e1;vn_xm16e1_bayo;vn_xm16e1_mrk;vn_xm16e1_nvg;vn_xm16e1_sniper;vn_xm16e1_xm148;vn_xm177;vn_xm177_camo;vn_xm177_fg;vn_xm177_m203;vn_xm177_m203_camo;vn_xm177_mrk;vn_xm177_muzzle;vn_xm177_nvg;vn_xm177_short;vn_xm177_sniper;vn_xm177_stock;vn_xm177_stock_camo;vn_xm177_xm148;vn_xm177_xm148_camo;vn_xm177e1;vn_xm177e1_camo;vn_xm177e1_mrk;vn_xm177e1_nvg;vn_xm177e1_sniper,,additional compatible magazine
 vn_m16_bayo,Derived Weapon,NO,m16,0,,vn_m16,canonical alias of vn_m16
-vn_m16_camo,Weapon,YES,m16,0,,,weapon
-vn_m16_m203,Weapon,YES,m16,0,,,weapon
-vn_m16_m203_camo,Weapon,YES,m16,0,,,weapon
+vn_m16_camo,Derived Weapon,NO,m16,0,,vn_m16,canonical alias of vn_m16
+vn_m16_m203,Derived Weapon,NO,m16,0,,vn_m16,canonical alias of vn_m16
+vn_m16_m203_camo,Derived Weapon,NO,m16,0,,vn_m16,canonical alias of vn_m16
 vn_m16_mrk,Derived Weapon,NO,m16,0,,vn_m16,canonical alias of vn_m16
 vn_m16_mrk_sd,Derived Weapon,NO,m16,0,,vn_m16_sd,canonical alias of vn_m16_sd
-vn_m16_muzzle,Weapon,YES,m16_muzzle,0,,,weapon
+vn_m16_muzzle,Derived Weapon,NO,m16_muzzle,0,,vn_m16,canonical alias of vn_m16
 vn_m16_nvg,Derived Weapon,NO,m16,0,,vn_m16,canonical alias of vn_m16
 vn_m16_nvg_sd,Derived Weapon,NO,m16,0,,vn_m16_sd,canonical alias of vn_m16_sd
 vn_m16_sd,Derived Weapon,NO,m16,0,,vn_m16,canonical alias of vn_m16
@@ -166,7 +166,7 @@ vn_m16_usaf_bayo,Derived Weapon,NO,m16_usaf,0,,vn_m16_usaf,canonical alias of vn
 vn_m16_usaf_mrk,Derived Weapon,NO,m16_usaf,0,,vn_m16_usaf,canonical alias of vn_m16_usaf
 vn_m16_usaf_nvg,Derived Weapon,NO,m16_usaf,0,,vn_m16_usaf,canonical alias of vn_m16_usaf
 vn_m16_usaf_sniper,Derived Weapon,NO,m16_usaf,0,,vn_m16_usaf,canonical alias of vn_m16_usaf
-vn_m16_xm148,Weapon,YES,m16,0,,,weapon
+vn_m16_xm148,Derived Weapon,NO,m16,0,,vn_m16,canonical alias of vn_m16
 vn_m1891,Weapon,YES,m1891,0,,,weapon
 vn_m1891_bayo,Derived Weapon,NO,m1891,0,,vn_m1891,canonical alias of vn_m1891
 vn_m1895,Weapon,YES,m1895,0,,,weapon
@@ -178,7 +178,7 @@ vn_m1897_buck_mag,Magazine,YES,m1897,2,vn_m1897;vn_m1897_bayo,,additional compat
 vn_m1897_fl_mag,Magazine,YES,m1897,2,vn_m1897;vn_m1897_bayo,,additional compatible magazine
 vn_m1903,Weapon,YES,m1903,0,,,weapon
 vn_m1903_bayo,Derived Weapon,NO,m1903,0,,vn_m1903,canonical alias of vn_m1903
-vn_m1903_gl,Weapon,YES,m1903,0,,,weapon
+vn_m1903_gl,Derived Weapon,NO,m1903,0,,vn_m1903,canonical alias of vn_m1903
 vn_m1903_mag,Base Magazine,NO,m1903,4,vn_m1903;vn_m1903_bayo;vn_m1903_gl;vn_m1903_sniper,,included base magazine
 vn_m1903_sniper,Derived Weapon,NO,m1903,0,,vn_m1903_bayo,canonical alias of vn_m1903_bayo
 vn_m1903_t_mag,Magazine,YES,m1903,4,vn_m1903;vn_m1903_bayo;vn_m1903_gl;vn_m1903_sniper,,additional compatible magazine
@@ -195,7 +195,7 @@ vn_m1928_tommy,Weapon,YES,m1928_tommy,0,,,weapon
 vn_m1928a1_tommy,Weapon,YES,m1928a1_tommy,0,,,weapon
 vn_m1_garand,Weapon,YES,m1_garand,0,,,weapon
 vn_m1_garand_bayo,Derived Weapon,NO,m1_garand,0,,vn_m1_garand,canonical alias of vn_m1_garand
-vn_m1_garand_gl,Weapon,YES,m1_garand,0,,,weapon
+vn_m1_garand_gl,Derived Weapon,NO,m1_garand,0,,vn_m1_garand,canonical alias of vn_m1_garand
 vn_m1_garand_mag,Base Magazine,NO,m1_garand,4,vn_m1_garand;vn_m1_garand_bayo;vn_m1_garand_gl;vn_m1_garand_sniper,,included base magazine
 vn_m1_garand_sniper,Derived Weapon,NO,m1_garand,0,,vn_m1_garand,canonical alias of vn_m1_garand
 vn_m1_garand_t_mag,Magazine,YES,m1_garand,4,vn_m1_garand;vn_m1_garand_bayo;vn_m1_garand_gl;vn_m1_garand_sniper,,additional compatible magazine
@@ -204,26 +204,26 @@ vn_m1a1_20_t_mag,Magazine,YES,m1928_tommy;m1928a1_tommy;m1a1_tommy;m1a1_tommy_so
 vn_m1a1_30_mag,Magazine,YES,m1928_tommy;m1928a1_tommy;m1a1_tommy;m1a1_tommy_so,4,vn_m1928_tommy;vn_m1928a1_tommy;vn_m1a1_tommy;vn_m1a1_tommy_so,,additional compatible magazine
 vn_m1a1_30_t_mag,Magazine,YES,m1928_tommy;m1928a1_tommy;m1a1_tommy;m1a1_tommy_so,4,vn_m1928_tommy;vn_m1928a1_tommy;vn_m1a1_tommy;vn_m1a1_tommy_so,,additional compatible magazine
 vn_m1a1_tommy,Weapon,YES,m1a1_tommy,0,,,weapon
-vn_m1a1_tommy_so,Weapon,YES,m1a1_tommy_so,0,,,weapon
+vn_m1a1_tommy_so,Derived Weapon,NO,m1a1_tommy_so,0,,vn_m1a1_tommy,canonical alias of vn_m1a1_tommy
 vn_m1carbine,Weapon,YES,m1carbine,0,,,weapon
 vn_m1carbine_bayo,Derived Weapon,NO,m1carbine,0,,vn_m1carbine,canonical alias of vn_m1carbine
-vn_m1carbine_gl,Weapon,YES,m1carbine,0,,,weapon
+vn_m1carbine_gl,Derived Weapon,NO,m1carbine,0,,vn_m1carbine,canonical alias of vn_m1carbine
 vn_m1carbine_shorty,Weapon,YES,m1carbine,0,,,weapon
 vn_m1carbine_sniper,Derived Weapon,NO,m1carbine,0,,vn_m1carbine,canonical alias of vn_m1carbine
 vn_m20a1b1_01,Weapon,YES,m20a1b1,0,,,weapon
 vn_m20a1b1_heat_mag,Magazine,YES,m20a1b1,1,vn_m20a1b1_01,,additional compatible magazine
 vn_m20a1b1_wp_mag,Magazine,YES,m20a1b1,1,vn_m20a1b1_01,,additional compatible magazine
 vn_m21,Weapon,YES,m21,0,,,weapon
-vn_m21_nvg,Weapon,YES,m21,0,,,weapon
+vn_m21_nvg,Derived Weapon,NO,m21,0,,vn_m21,canonical alias of vn_m21
 vn_m21_nvg_sd,Derived Weapon,NO,m21,0,,vn_m21_nvg,canonical alias of vn_m21_nvg
 vn_m21_sd,Derived Weapon,NO,m21,0,,vn_m21,canonical alias of vn_m21
 vn_m2carbine,Weapon,YES,m2carbine,0,,,weapon
 vn_m2carbine_bayo,Derived Weapon,NO,m2carbine,0,,vn_m2carbine,canonical alias of vn_m2carbine
-vn_m2carbine_gl,Weapon,YES,m2carbine,0,,,weapon
+vn_m2carbine_gl,Derived Weapon,NO,m2carbine,0,,vn_m2carbine,canonical alias of vn_m2carbine
 vn_m2carbine_sniper,Derived Weapon,NO,m2carbine,0,,vn_m2carbine,canonical alias of vn_m2carbine
 vn_m36,Weapon,YES,m36,0,,,weapon
 vn_m36_bayo,Derived Weapon,NO,m36,0,,vn_m36,canonical alias of vn_m36
-vn_m36_camo,Weapon,YES,m36,0,,,weapon
+vn_m36_camo,Derived Weapon,NO,m36,0,,vn_m36,canonical alias of vn_m36
 vn_m36_mag,Base Magazine,NO,m36,3,vn_m36;vn_m36_bayo;vn_m36_camo,,included base magazine
 vn_m36_t_mag,Magazine,YES,m36,3,vn_m36;vn_m36_bayo;vn_m36_camo,,additional compatible magazine
 vn_m38,Weapon,YES,m38,0,,,weapon
@@ -236,7 +236,7 @@ vn_m3a1_t_mag,Magazine,YES,m3a1,2,vn_m3a1;vn_m3sd,,additional compatible magazin
 vn_m3carbine,Weapon,YES,m3carbine,0,,,weapon
 vn_m3sd,Derived Weapon,NO,m3a1,0,,vn_m3a1,canonical alias of vn_m3a1
 vn_m40a1,Weapon,YES,m40a1,0,,,weapon
-vn_m40a1_camo,Weapon,YES,m40a1,0,,,weapon
+vn_m40a1_camo,Derived Weapon,NO,m40a1,0,,vn_m40a1,canonical alias of vn_m40a1
 vn_m40a1_mag,Base Magazine,NO,m40a1,6,vn_m40a1;vn_m40a1_camo;vn_m40a1_nvg;vn_m40a1_nvg_sd;vn_m40a1_sniper;vn_m40a1_sniper_sd,,included base magazine
 vn_m40a1_nvg,Derived Weapon,NO,m40a1,0,,vn_m40a1,canonical alias of vn_m40a1
 vn_m40a1_nvg_sd,Derived Weapon,NO,m40a1,0,,vn_m40a1_nvg,canonical alias of vn_m40a1_nvg
@@ -244,8 +244,8 @@ vn_m40a1_sniper,Derived Weapon,NO,m40a1,0,,vn_m40a1,canonical alias of vn_m40a1
 vn_m40a1_sniper_sd,Derived Weapon,NO,m40a1,0,,vn_m40a1_sniper,canonical alias of vn_m40a1_sniper
 vn_m40a1_t_mag,Magazine,YES,m40a1,6,vn_m40a1;vn_m40a1_camo;vn_m40a1_nvg;vn_m40a1_nvg_sd;vn_m40a1_sniper;vn_m40a1_sniper_sd,,additional compatible magazine
 vn_m45,Weapon,YES,m45,0,,,weapon
-vn_m45_camo,Weapon,YES,m45,0,,,weapon
-vn_m45_fold,Weapon,YES,m45,0,,,weapon
+vn_m45_camo,Derived Weapon,NO,m45,0,,vn_m45,canonical alias of vn_m45
+vn_m45_fold,Derived Weapon,NO,m45,0,,vn_m45,canonical alias of vn_m45
 vn_m45_mag,Base Magazine,NO,m45,4,vn_m45;vn_m45_camo;vn_m45_fold;vn_m45_sd,,included base magazine
 vn_m45_sd,Derived Weapon,NO,m45,0,,vn_m45,canonical alias of vn_m45
 vn_m45_t_mag,Magazine,YES,m45,4,vn_m45;vn_m45_camo;vn_m45_fold;vn_m45_sd,,additional compatible magazine
@@ -253,12 +253,12 @@ vn_m4956,Weapon,YES,m4956,0,,,weapon
 vn_m4956_10_mag,Base Magazine,NO,m4956,4,vn_m4956;vn_m4956_bayo;vn_m4956_gl;vn_m4956_sniper,,included base magazine
 vn_m4956_10_t_mag,Magazine,YES,m4956,4,vn_m4956;vn_m4956_bayo;vn_m4956_gl;vn_m4956_sniper,,additional compatible magazine
 vn_m4956_bayo,Derived Weapon,NO,m4956,0,,vn_m4956,canonical alias of vn_m4956
-vn_m4956_gl,Weapon,YES,m4956,0,,,weapon
+vn_m4956_gl,Derived Weapon,NO,m4956,0,,vn_m4956,canonical alias of vn_m4956
 vn_m4956_sniper,Derived Weapon,NO,m4956,0,,vn_m4956,canonical alias of vn_m4956
 vn_m60,Weapon,YES,m60,0,,,weapon
 vn_m60_100_mag,Magazine,YES,m60,3,vn_m60;vn_m60_shorty;vn_m60_shorty_camo,,additional compatible magazine
-vn_m60_shorty,Weapon,YES,m60,0,,,weapon
-vn_m60_shorty_camo,Weapon,YES,m60,0,,,weapon
+vn_m60_shorty,Derived Weapon,NO,m60,0,,vn_m60,canonical alias of vn_m60
+vn_m60_shorty_camo,Derived Weapon,NO,m60,0,,vn_m60,canonical alias of vn_m60
 vn_m63a,Weapon,YES,m63a,0,,,weapon
 vn_m63a_100_mag,Magazine,YES,m63a_lmg,2,vn_m63a_lmg;vn_m63a_lmg_bipod,,additional compatible magazine
 vn_m63a_100_t_mag,Magazine,YES,m63a_lmg,2,vn_m63a_lmg;vn_m63a_lmg_bipod,,additional compatible magazine
@@ -275,12 +275,12 @@ vn_m712_mag,Base Magazine,NO,m712,1,vn_m712,,included base magazine
 vn_m72,Weapon,YES,m72,0,,,weapon
 vn_m72_mag,Magazine,YES,m72,1,vn_m72,,additional compatible magazine
 vn_m79,Weapon,YES,m79,0,,,weapon
-vn_m79_p,Weapon,YES,m79,0,,,weapon
+vn_m79_p,Derived Weapon,NO,m79,0,,vn_m79,canonical alias of vn_m79
 vn_m9130,Weapon,YES,m9130,0,,,weapon
 vn_m9130_bayo,Derived Weapon,NO,m9130,0,,vn_m9130,canonical alias of vn_m9130
 vn_m9130_sniper,Derived Weapon,NO,m9130,0,,vn_m9130,canonical alias of vn_m9130
 vn_mat49,Weapon,YES,mat49,0,,,weapon
-vn_mat49_f,Weapon,YES,mat49,0,,,weapon
+vn_mat49_f,Derived Weapon,NO,mat49,0,,vn_mat49,canonical alias of vn_mat49
 vn_mat49_mag,Base Magazine,NO,mat49,3,vn_mat49;vn_mat49_f;vn_mat49_sd,,included base magazine
 vn_mat49_sd,Derived Weapon,NO,mat49,0,,vn_mat49,canonical alias of vn_mat49
 vn_mat49_t_mag,Magazine,YES,mat49,3,vn_mat49;vn_mat49_f;vn_mat49_sd,,additional compatible magazine
@@ -350,8 +350,8 @@ vn_ppsh41_71_t_mag,Magazine,YES,k50m;ppsh41,2,vn_k50m;vn_ppsh41,,additional comp
 vn_rpd,Weapon,YES,rpd,0,,,weapon
 vn_rpd_100_mag,Magazine,YES,rpd;rpd_shorty,3,vn_rpd;vn_rpd_shorty;vn_rpd_shorty_01,,additional compatible magazine
 vn_rpd_125_mag,Magazine,YES,rpd;rpd_shorty,3,vn_rpd;vn_rpd_shorty;vn_rpd_shorty_01,,additional compatible magazine
-vn_rpd_shorty,Weapon,YES,rpd,0,,,weapon
-vn_rpd_shorty_01,Weapon,YES,rpd_shorty,0,,,weapon
+vn_rpd_shorty,Derived Weapon,NO,rpd,0,,vn_rpd,canonical alias of vn_rpd
+vn_rpd_shorty_01,Derived Weapon,NO,rpd_shorty,0,,vn_rpd,canonical alias of vn_rpd
 vn_rpg2,Weapon,YES,rpg2,0,,,weapon
 vn_rpg2_fuze_mag,Magazine,YES,rpg2,1,vn_rpg2,,additional compatible magazine
 vn_rpg2_mag,Magazine,YES,rpg2,1,vn_rpg2,,additional compatible magazine
@@ -377,7 +377,7 @@ vn_sa7b,Weapon,YES,sa7b,0,,,weapon
 vn_sa7b_mag,Base Magazine,NO,sa7b,1,vn_sa7b,,included base magazine
 vn_sks,Weapon,YES,sks,0,,,weapon
 vn_sks_bayo,Derived Weapon,NO,sks,0,,vn_sks,canonical alias of vn_sks
-vn_sks_gl,Weapon,YES,sks,0,,,weapon
+vn_sks_gl,Derived Weapon,NO,sks,0,,vn_sks,canonical alias of vn_sks
 vn_sks_mag,Base Magazine,NO,sks,4,vn_sks;vn_sks_bayo;vn_sks_gl;vn_sks_sniper,,included base magazine
 vn_sks_sniper,Derived Weapon,NO,sks,0,,vn_sks,canonical alias of vn_sks
 vn_sks_t_mag,Magazine,YES,sks,4,vn_sks;vn_sks_bayo;vn_sks_gl;vn_sks_sniper,,additional compatible magazine
@@ -388,7 +388,7 @@ vn_sten_t_mag,Magazine,YES,sten,2,vn_sten;vn_sten_sd,,additional compatible maga
 vn_svd,Weapon,YES,svd,0,,,weapon
 vn_svd_mag,Base Magazine,NO,svd,3,vn_svd;vn_svd_sniper;vn_svd_sniper_camo,,included base magazine
 vn_svd_sniper,Derived Weapon,NO,svd,0,,vn_svd,canonical alias of vn_svd
-vn_svd_sniper_camo,Derived Weapon,NO,svd,0,,vn_svd,canonical alias of vn_svd
+vn_svd_sniper_camo,Derived Weapon,NO,svd,0,,vn_svd_sniper,canonical alias of vn_svd_sniper
 vn_svd_t_mag,Magazine,YES,svd,3,vn_svd;vn_svd_sniper;vn_svd_sniper_camo,,additional compatible magazine
 vn_tt33,Weapon,YES,tt33,0,,,weapon
 vn_tt33_mag,Base Magazine,NO,tt33,1,vn_tt33,,included base magazine
@@ -397,7 +397,7 @@ vn_type56_bayo,Derived Weapon,NO,type56,0,,vn_type56,canonical alias of vn_type5
 vn_type56_mag,Magazine,YES,ak;kbkg;type56,5,vn_ak_01;vn_kbkg;vn_kbkg_gl;vn_type56;vn_type56_bayo,,additional compatible magazine
 vn_type56_t_mag,Magazine,YES,ak;kbkg;type56,5,vn_ak_01;vn_kbkg;vn_kbkg_gl;vn_type56;vn_type56_bayo,,additional compatible magazine
 vn_type64,Weapon,YES,type64,0,,,weapon
-vn_type64_f_smg,Weapon,YES,type64_f_smg,0,,,weapon
+vn_type64_f_smg,Derived Weapon,NO,type64_f_smg,0,,vn_type64_smg,canonical alias of vn_type64_smg
 vn_type64_mag,Base Magazine,NO,type64,1,vn_type64,,included base magazine
 vn_type64_smg,Weapon,YES,type64_smg,0,,,weapon
 vn_type64_smg_mag,Base Magazine,NO,type64_f_smg;type64_smg,2,vn_type64_f_smg;vn_type64_smg,,included base magazine
@@ -407,7 +407,7 @@ vn_vz54_sniper,Derived Weapon,NO,vz54,0,,vn_vz54,canonical alias of vn_vz54
 vn_vz54_sniper_camo,Derived Weapon,NO,vz54,0,,vn_vz54_sniper,canonical alias of vn_vz54_sniper
 vn_vz61,Weapon,YES,vz61,0,,,weapon
 vn_vz61_mag,Base Magazine,NO,vz61,2,vn_vz61;vn_vz61_p,,included base magazine
-vn_vz61_p,Weapon,YES,vz61,0,,,weapon
+vn_vz61_p,Derived Weapon,NO,vz61,0,,vn_vz61,canonical alias of vn_vz61
 vn_vz61_t_mag,Magazine,YES,vz61,2,vn_vz61;vn_vz61_p,,additional compatible magazine
 vn_welrod,Weapon,YES,welrod,0,,,weapon
 vn_welrod_mag,Base Magazine,NO,welrod,1,vn_welrod,,included base magazine
@@ -416,23 +416,23 @@ vn_xm16e1_bayo,Derived Weapon,NO,xm16e1,0,,vn_xm16e1,canonical alias of vn_xm16e
 vn_xm16e1_mrk,Derived Weapon,NO,xm16e1,0,,vn_xm16e1,canonical alias of vn_xm16e1
 vn_xm16e1_nvg,Derived Weapon,NO,xm16e1,0,,vn_xm16e1,canonical alias of vn_xm16e1
 vn_xm16e1_sniper,Derived Weapon,NO,xm16e1,0,,vn_xm16e1,canonical alias of vn_xm16e1
-vn_xm16e1_xm148,Weapon,YES,xm16e1,0,,,weapon
+vn_xm16e1_xm148,Derived Weapon,NO,xm16e1,0,,vn_xm16e1,canonical alias of vn_xm16e1
 vn_xm177,Weapon,YES,xm177,0,,,weapon
-vn_xm177_camo,Weapon,YES,xm177,0,,,weapon
-vn_xm177_fg,Weapon,YES,xm177_fg,0,,,weapon
-vn_xm177_m203,Weapon,YES,xm177,0,,,weapon
-vn_xm177_m203_camo,Weapon,YES,xm177,0,,,weapon
+vn_xm177_camo,Derived Weapon,NO,xm177,0,,vn_xm177,canonical alias of vn_xm177
+vn_xm177_fg,Derived Weapon,NO,xm177_fg,0,,vn_xm177,canonical alias of vn_xm177
+vn_xm177_m203,Derived Weapon,NO,xm177,0,,vn_xm177,canonical alias of vn_xm177
+vn_xm177_m203_camo,Derived Weapon,NO,xm177,0,,vn_xm177,canonical alias of vn_xm177
 vn_xm177_mrk,Derived Weapon,NO,xm177,0,,vn_xm177,canonical alias of vn_xm177
-vn_xm177_muzzle,Weapon,YES,xm177_muzzle,0,,,weapon
+vn_xm177_muzzle,Derived Weapon,NO,xm177_muzzle,0,,vn_xm177,canonical alias of vn_xm177
 vn_xm177_nvg,Derived Weapon,NO,xm177,0,,vn_xm177,canonical alias of vn_xm177
-vn_xm177_short,Weapon,YES,xm177,0,,,weapon
+vn_xm177_short,Derived Weapon,NO,xm177,0,,vn_xm177,canonical alias of vn_xm177
 vn_xm177_sniper,Derived Weapon,NO,xm177,0,,vn_xm177,canonical alias of vn_xm177
-vn_xm177_stock,Weapon,YES,xm177,0,,,weapon
-vn_xm177_stock_camo,Weapon,YES,xm177,0,,,weapon
-vn_xm177_xm148,Weapon,YES,xm177,0,,,weapon
-vn_xm177_xm148_camo,Weapon,YES,xm177,0,,,weapon
+vn_xm177_stock,Derived Weapon,NO,xm177,0,,vn_xm177,canonical alias of vn_xm177
+vn_xm177_stock_camo,Derived Weapon,NO,xm177,0,,vn_xm177,canonical alias of vn_xm177
+vn_xm177_xm148,Derived Weapon,NO,xm177,0,,vn_xm177,canonical alias of vn_xm177
+vn_xm177_xm148_camo,Derived Weapon,NO,xm177,0,,vn_xm177,canonical alias of vn_xm177
 vn_xm177e1,Weapon,YES,xm177e1,0,,,weapon
-vn_xm177e1_camo,Weapon,YES,xm177e1,0,,,weapon
+vn_xm177e1_camo,Derived Weapon,NO,xm177e1,0,,vn_xm177e1,canonical alias of vn_xm177e1
 vn_xm177e1_mrk,Derived Weapon,NO,xm177e1,0,,vn_xm177e1,canonical alias of vn_xm177e1
 vn_xm177e1_nvg,Derived Weapon,NO,xm177e1,0,,vn_xm177e1,canonical alias of vn_xm177e1
 vn_xm177e1_sniper,Derived Weapon,NO,xm177e1,0,,vn_xm177e1,canonical alias of vn_xm177e1

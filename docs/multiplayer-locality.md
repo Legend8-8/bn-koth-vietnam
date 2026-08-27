@@ -18,6 +18,13 @@ The server calculates gameplay truth.
 
 Clients display information and send requests.
 
+Combat-attribution collection registers only on the server. Projectile facts
+and bounded victim hit records remain server-local and are not broadcast;
+optional diagnostics only control RPT verbosity. `EntityKilled` owns lethality,
+`combat_handleKill` owns valid PvP, and progression mastery consumes only the
+attached unique `ATTRIBUTED` canonical infantry root. Clients have no mastery
+mutation or weapon-attribution request endpoint.
+
 A client must not be trusted to determine:
 
 - zone ownership;
@@ -103,7 +110,7 @@ Examples:
 - validating the player;
 - assigning initial server-side player state;
 - sending the current round state to the joining player;
-- loading future persistent data.
+- loading and normalizing persistent data through the server-only persistence service.
 
 "init.sqf"
 
@@ -244,7 +251,15 @@ Suggested initial intervals:
 - safe-zone ground cleanup: entity events plus one activation-time sweep, never a recurring world scan;
 - score awarding: configurable, such as once every five seconds;
 - HUD refresh: only when values change, or at a controlled client-side interval;
-- database saving: event-based and periodic, not every score tick.
+- persistence saving: mutation-driven dirty state with one coalesced delayed save,
+  plus disconnect/mission-end flushes; never every frame or every score tick.
+
+Clients have no persistence endpoint. They cannot load, save, or submit XP, cash,
+ownership, or mastery values. Registration supplies only a server-observed Steam
+UID to `functions/persistence/`; the existing targeted progression snapshot is the
+sole client presentation path. extDB3 calls remain server-local behind the backend
+adapter. No persistence function is remotely exposed and no database result is
+accepted from a client.
 
 All players do not need to calculate the same authoritative zone result independently.
 
@@ -272,3 +287,22 @@ Before merging a multiplayer feature, answer:
 6. What happens if the player disconnects midway?
 7. Is the same work unnecessarily running on every client?
 8. Does the server remain authoritative?
+
+13. Store Weapon Requests
+
+The client sends only `PURCHASE`/`RENT` plus a canonical weapon classname. The
+server resolves the player and UID from `remoteExecutedOwner`, invokes the
+existing server-only acquisition API, targets the result to that owner, and
+publishes changed cash/ownership/rental state through the existing player-only
+progression update. Store requests never broadcast and never equip equipment.
+
+14. Vehicle Rental Requests
+
+Clients submit only RENT or owner access-mode intent. The server derives the
+UID from `remoteExecutedOwner`, validates current side/level/perks, cash and
+active-rental state, selects/reserves a cached authored paid pad, creates the
+vehicle server-local, and only then deducts cash — all as one transaction with
+no separate requisition step. The active rental map is server-only; only the
+requesting client receives their projected state. Get-in authorization is
+checked from server-owned UID/access data. A narrowly allowlisted
+server-to-owner endpoint performs locality-sensitive ejection.

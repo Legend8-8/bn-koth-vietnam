@@ -166,9 +166,19 @@ Respawn-related changes must verify:
 - safe-zone AI corpses are deleted immediately and player corpses are unlootable immediately, then deleted without breaking UID resolution or respawn;
 - corpses and dropped equipment created in the active AO outside safe zones remain available for normal scavenging;
 - the server-validated KOTH loadout path still works in a safe zone without opening physical inventory;
-- battlefield pickup and scavenging continue to work in the active AO outside safe zones;
+- battlefield pickup and scavenging continue to work in the active AO outside safe zones even below level, unowned, or unmastered; the physical item remains usable while it grants no Arsenal, Store, ownership, rental, or saved-loadout entitlement;
 - safe-zone status survives respawn representation handoff and is cleared outside active safe-zone states;
 - reconnecting does not produce invalid spawn state.
+
+Starter-loadout configuration changes must additionally verify on a dedicated
+server that both WEST and EAST definitions initialize, receive the configured
+side-correct assigned equipment, derive each weapon's generated canonical
+`baseMagazine`, load those compatible magazines at
+their actual `CfgMagazines` capacity, carry the configured spare counts in the
+configured containers, and remain the native respawn/deployment fallback.
+Invalid weapon compatibility, assigned-slot order, equipment classes, cargo
+classes, counts, or cargo-without-container definitions must be rejected with a
+clear server RPT warning rather than silently falling back to template gear.
 
 9. Join In Progress Testing
 
@@ -251,12 +261,40 @@ Examples:
 - UI changes must not alter authoritative state;
 - persistence changes must not alter live round logic.
 
+Persistence changes must also run
+`call compile preprocessFileLineNumbers "functions\persistence\test_persistence.sqf"`
+on a hosted server and expect `[]`. Verify first-time defaults, known-state load,
+XP-derived level, cash/ownership/mastery normalization, rental and round-state
+exclusion, legacy/future schema handling, repeated-registration idempotence, and
+dirty-state save success/failure. A failed save must remain dirty and produce a
+server RPT error; it must never be reported as successful. Dedicated testing must
+confirm disconnect and mission-end flush markers without any persistence RemoteExec
+entry or per-frame activity.
+
+Pure extDB3 adapter checks in the same test cover deterministic owned-weapon and
+weapon-kill serialization, malformed codec input, valid/error/malformed extDB3
+response parsing, and persistent projection exclusions. `MEMORY` is used only to
+exercise the service contract without a database. Before deployment, follow the
+live matrix in `docs/deployment-extdb3.md`: verify first-time insert, valid reload,
+mutation/disconnect UPSERT, reconnect, full server restart, unavailable database,
+and malformed/future-row fail-closed behavior. Inspect both the server RPT and
+extDB3 log; a session fallback is not proof of durability.
+
 Test the directly affected system and any system that depends on it.
 
 For the Arsenal rework, also verify:
 
 - opening at the correct team mapboard reconciles the overview from the
   server-observed physical player loadout;
+- an unentitled battlefield pickup remains physically usable, but Arsenal
+  reconciliation does not retain it in the reusable intended-loadout baseline;
+- after that reconciliation, changing an unrelated wearable/cargo slot does not
+  reapply the picked-up weapon;
+- replacing the unentitled pickup with an entitled weapon remains possible;
+- saving a physical snapshot never grants entitlement: loading that local kit
+  without current authoritative entitlement is rejected;
+- death/respawn, reconnect, and server restart do not convert picked-up weapons
+  into ownership or rental state;
 - each browser opens on the currently applied item when one exists, without
   repeatedly overriding manual pagination;
 - locked weapons, attachments, wearables, assigned items, and positive cargo
@@ -271,7 +309,132 @@ For the Arsenal rework, also verify:
 - client and server RPT files remain free of Arsenal script errors throughout
   the complete flow.
 
-14. Definition of Tested
+Equipment-side policy changes must additionally verify:
+
+- WEST-only, EAST-only, and both-sides `allowedSides[]` decisions;
+- opposing uniforms, vests, and backpacks are rejected in both directions;
+- headgear with `appearanceSide=BOTH` is usable by WEST and EAST alike,
+  subject to `minLevel` only;
+- missing appearance metadata fails closed while missing combat metadata
+  remains temporarily uncontrolled;
+- level gates appearance entitlement regardless of side/appearance being
+  otherwise correct, and no Mastery/ownership/rental signal is ever consulted
+  or reported for appearance items;
+- `sourceAffiliations[]` never grants or revokes entitlement in either
+  direction;
+- structural weapon variants inherit the canonical root policy;
+- direct slot mutation, saved-kit application, starter validation, respawn,
+  and deployment restore cannot bypass the authoritative decision;
+- client filtering agrees with the server but cannot grant entitlement.
+
+After mission functions and config initialize, the focused pure-policy checks
+can be run in an appropriate in-engine test context with:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_equipmentSidePolicy.sqf"
+```
+
+An empty returned array is a pass. This focused check does not replace hosted
+and dedicated two-side testing or client/server RPT review.
+
+Session cash API checks can be run on a hosted or dedicated server after
+mission functions initialize:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\cash\test_cash.sqf"
+```
+
+An empty array is a pass. Hosted and dedicated testing must additionally verify
+one cash award per validated kill/control/Priority event, no reward for rejected
+events, starting cash only once across respawn/side/round changes, targeted
+client updates, atomic insufficient-funds rejection, and clean server/client
+RPT output.
+
+Canonical weapon price authoring must additionally verify that every priced
+entry is a canonical root, no structural variant owns a manual price, rental is
+20% of purchase, Level 1 starter roots remain unpriced until starter ownership
+has an authoritative owner, and Store purchase/rent results agree with the
+server-owned cash and acquisition state.
+
+Weapon acquisition transaction rules and server-session initialization can be
+checked after mission functions initialize with:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\acquisition\test_weaponAcquisition.sqf"
+```
+
+An empty array is a pass. Dedicated testing must still verify the public
+purchase/rent APIs with explicitly priced test metadata, one targeted update
+per committed transaction, no charge on repeated requests, canonical
+structural-variant inheritance, no equipment application, rental survival
+across respawn/side/round transitions, and clean server/client RPT output.
+
+Weapon entitlement and mastery checks can be run after mission
+functions initialize:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_weaponEntitlementRules.sqf"
+call compile preprocessFileLineNumbers "functions\progression\mastery\test_weaponMastery.sqf"
+call compile preprocessFileLineNumbers "functions\progression\test_progressionMetadata.sqf"
+```
+
+Each must return `[]`. Dedicated testing must verify that one uniquely
+attributed valid PvP kill increments the canonical root once, structural
+variants share that root, ambiguous/non-infantry/explosive evidence awards
+nothing, and mastery survives respawn, side changes, and round transitions.
+Cross-side acquisition must fail before cash mutation until explicit
+permission, level, mastery, and perks all pass.
+
+Config-driven rank presentation checks can be run after mission functions
+initialize on a client or hosted session:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_rankPresentation.sqf"
+```
+
+An empty array is a pass. Hosted UI testing must additionally confirm that the
+lobby local-player card, WEST/EAST roster rows, every deployed-menu page, and
+each newly opened pause display show the same config-derived insignia shape and
+bronze/silver/gold tint. Recruit levels must preserve aligned blank roster icon
+columns and show no icon or textual fallback. Repeated pause opening must not
+duplicate controls. Rank presentation must not call `setRank`/`setUnitRank`,
+mutate progression, or add rank fields to persistence.
+
+14. Combat Attribution Probe
+
+The pure factual candidate checks can be run after mission initialization:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\combat\test_weaponAttribution.sqf"
+```
+
+An empty array is a pass.
+
+For a hosted or dedicated diagnostic session, execute on the server before
+shots are fired:
+
+```sqf
+missionNamespace setVariable ["BN_KOTH_combatAttributionDiagnostics", true];
+[] call bn_koth_fnc_combat_initAttributionDiagnostics;
+```
+
+Search the server RPT for `[BN_KOTH][ATTRIBUTION]`. The expected event sequence
+is `ENABLED`, `PROJECTILE`, `HIT`, `KILL`, and `PROJECTILE_DELETED`. The probe
+uses disabled-by-default verbose logging. Collection remains server-only,
+event-driven, and bounded per victim; only the separate mastery owner may
+consume a finalized unique result attached to a valid PvP kill.
+Run the dedicated matrix with: M16; M16 then pistol switch before impact; two
+carried roots sharing ammo; a structural/camo variant; pistol; grenade;
+handheld launcher; delayed explosive; vehicle MG; attack-helicopter cannon and
+rocket; multiple attackers; and shooter death/disconnect before impact. Record
+the `KILL.result`, `reason`, canonical candidates, hit-to-kill timing, and
+projectile lifetime for every case. Any missing server projectile/hit callback,
+multiple canonical candidates, non-infantry source, or non-infantry ammo
+category must remain `UNKNOWN`/`AMBIGUOUS`. `EntityKilled` supplies the lethal
+fact; projectile callbacks are expected to observe the victim before final
+damage/death state becomes visible.
+
+15. Definition of Tested
 
 A feature may be considered tested when:
 
@@ -282,3 +445,114 @@ A feature may be considered tested when:
 - client and server RPT files were reviewed;
 - no repeated script errors remain;
 - documentation reflects the implemented behaviour.
+
+16. Store V1 Checks
+
+Run `functions/ui/menu/test_storeV1.sqf` in a client debug context and
+`functions/progression/acquisition/test_weaponAcquisition.sqf` on the server;
+both return `[]` on success. Hosted and dedicated tests must also verify
+root-to-category and category-to-product navigation, canonical-only deterministic
+weapon ordering, global WEST/EAST/BOTH weapon visibility, level/mastery/perk
+locks, unconfigured-price safety, buy/rent outcomes, rental-to-owned upgrade,
+requester-only results, targeted progression repaint, the exact curated vehicle
+surface (37 Ground, 29 Rotary Wing, 18 Fixed Wing, no SEA), real config pictures,
+disabled vehicle actions while locked, four-card pagination, Store-only operator
+panel collapse/restoration, Primary/Handgun/Launcher Arsenal handoff with target
+page snap/highlight, and tab transitions without stale controls.
+
+Also cycle Store -> Loadout -> Arsenal -> Configure -> Saved Loadouts several
+times and verify canonical title/subtitle/BACK/action/pagination geometry is
+restored without cumulative drift. Cross-side mastery-capable cards must expose
+current/required progress even below level; prohibited products must say
+`FACTION RESTRICTED`; unusable cross-side discovery products must remain absent
+from Arsenal. Saved-loadout LOAD feedback must follow successful authoritative
+application. EDIT must establish context only after the same validation path
+succeeds; SAVE CHANGES must update the selected local record without creating a
+duplicate, while CANCEL EDIT or closing the menu must leave the stored record
+unchanged.
+
+17. Vehicle Progression Metadata Checks
+
+After mission functions and S.O.G. configuration initialize, run:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\vehicles\test_progressionMetadata.sqf"
+```
+
+An empty array is a pass. The focused check verifies valid explicit Store
+categories, roles, sides, finite non-negative levels/prices, resolvable and
+acyclic canonical links, policy-free structural entries, deterministic Store
+projection, curated product count, the reserved SEA category boundary,
+side/level eligibility and absence of weapon mastery policy.
+
+Hosted and dedicated testing must confirm that existing managed free and
+command vehicles still spawn and recycle exactly as before. For paid rentals,
+run:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\vehicles\test_rental.sqf"
+```
+
+An empty array is a pass. Then verify: RENT is the complete transaction (a
+successful RENT immediately spawns the active vehicle in the same request,
+with no separate requisition/pending step); cash is deducted exactly once and
+only after the vehicle exists; a blocked spawn (occupied pads and no safe
+fallback) leaves no vehicle, no active record and no charge, and the player
+remains `AVAILABLE TO RENT`; destroyed/cleaned vehicles restore nothing and
+begin cooldown; cargo is empty while mounted armament remains; owner/group/
+public access is enforced; occupied pads cannot collide; disconnect does not
+instantly delete occupied vehicles; and restart clears all rental state.
+
+18. Development Progression Debug Script
+
+`functions/progression/test_setProgression.sqf` is a standalone, non-registered
+developer script for quickly staging Store/vehicle test states (level, cash,
+optionally one canonical weapon's mastery kill count) on a hosted or dedicated
+server. It grants no client-callable endpoint. Edit the `_targetPlayer`,
+`_targetLevel`, `_targetCash`, and optional `_debugWeaponClass`/
+`_debugMasteryKills` values at the top of the file, then paste the file's
+contents into the server-side debug console (select "Server" execution) and
+run it, or execute:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_setProgression.sqf"
+```
+
+The target player must already be registered (joined and assigned a side).
+The script derives XP from the existing level curve, adds/reduces XP and cash
+through the existing authoritative progression APIs, marks persistence dirty
+normally, and publishes the normal targeted progression update. Result UID,
+XP, level and cash print to RPT and `systemChat`.
+
+19. Arsenal Direct Weapon Acquisition
+
+Native-side Arsenal browser cards now show `BUY $X`/`RENT $Y` in place of
+`APPLY`/`CONFIGURE` while entitlement is `REQUIRES_ACQUISITION` (side, level,
+mastery and perks already satisfied, ownership/rental still missing), and
+submit through the exact same `bn_koth_fnc_progression_requestWeaponAcquisition`
+endpoint Store uses. Verify:
+
+- a below-level native weapon shows `LOCKED · LEVEL N` with no BUY/RENT;
+- a level-eligible unacquired native weapon shows `AVAILABLE TO ACQUIRE` with
+  BUY/RENT enabled only up to the player's current cash;
+- BUY/RENT from Arsenal succeeds without a Store round-trip, and the card
+  becomes `OWNED`/`RENTED` with normal `APPLY`/`CONFIGURE` actions, staying on
+  the same browser slot/page;
+- an insufficient-cash attempt is rejected server-side with the existing
+  notification, and the card state is unchanged;
+- a cross-faction weapon with incomplete mastery never appears in the Arsenal
+  browser at all, while it remains discoverable/acquirable in Store;
+- once that cross-faction weapon is fully entitled (owned/rented, mastery
+  complete, perks satisfied), it appears in Arsenal like a native weapon;
+- Store weapon BUY/RENT continues to work unchanged from Store.
+
+20. Vehicle Rental RPT Audit Trail
+
+`functions/vehicles/fn_rentVehicle.sqf` logs every RENT outcome to RPT. A
+successful RENT logs UID, canonical class, pad id (or `FALLBACK`), spawn
+position, `netId` and cash charged; a failed RENT logs UID, requested class,
+code and exact reason, with no charge. Verify the Store card only ever shows
+`AVAILABLE TO RENT` (or `LOCKED`/`INSUFFICIENT CASH`/`COOLDOWN`) before a
+successful RENT, and `VEHICLE ACTIVE` only after a logged `RENTED` success with
+a real `netId`. There is no `REQUISITION` action, no `RENTAL READY` state, and
+no pending-rental state anywhere in the client or server rental payloads.

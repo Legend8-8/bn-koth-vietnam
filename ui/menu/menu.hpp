@@ -35,7 +35,7 @@ class BN_KOTH_RscMenu
     movingEnable = 0;
     enableSimulation = 1;
     onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_menuDisplay', _display]; _display displayAddEventHandler ['KeyDown', 'if ((_this select 1) isEqualTo 1) exitWith {[] call bn_koth_fnc_menu_close; true}; false']; ['LOADOUT'] call bn_koth_fnc_menu_refresh;";
-    onUnload = "[] call bn_koth_fnc_menu_stopPlayerPreview; uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuArsenalEnabled', false]; uiNamespace setVariable ['BN_KOTH_menuIntendedLoadout', []]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuLauncherEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingLauncher', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuUniformEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingUniform', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuVestEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingVest', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBackpackEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBackpack', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHeadgearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHeadgear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuFacewearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingFacewear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBinocularEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBinocular', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAssignedEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAttachmentEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAttachment', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuCargoEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureDrafts', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0];";
+    onUnload = "[] call bn_koth_fnc_menu_stopPlayerPreview; uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuArsenalEnabled', false]; uiNamespace setVariable ['BN_KOTH_menuIntendedLoadout', []]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuLauncherEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingLauncher', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuUniformEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingUniform', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuVestEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingVest', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBackpackEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBackpack', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHeadgearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHeadgear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuFacewearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingFacewear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBinocularEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBinocular', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAssignedEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAttachmentEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAttachment', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuCargoEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureDrafts', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0]; uiNamespace setVariable ['BN_KOTH_menuKitEditId', '']; uiNamespace setVariable ['BN_KOTH_menuKitEditName', '']; uiNamespace setVariable ['BN_KOTH_menuPendingKitOperation', '']; uiNamespace setVariable ['BN_KOTH_menuPendingKitId', '']; uiNamespace setVariable ['BN_KOTH_menuPendingKitName', ''];";
 
     class controlsBackground
     {
@@ -191,13 +191,24 @@ class BN_KOTH_RscMenu
             colorText[] = {0.86, 0.84, 0.78, 0.82};
         };
 
+        class HeaderRankBadge: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_MENU_HEADER_RANK_BADGE;
+            text = "";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.730;
+            y = BN_KOTH_MENU_Y + safeZoneH * 0.010;
+            w = safeZoneH * 0.050;
+            h = safeZoneH * 0.050;
+            colorText[] = {1, 1, 1, 0};
+        };
+
         class HeaderPlayer: BN_KOTH_Menu_Title
         {
             idc = BN_KOTH_IDC_MENU_HEADER_PLAYER;
             text = "PLAYER";
-            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.735;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.775;
             y = BN_KOTH_MENU_Y + safeZoneH * 0.013;
-            w = BN_KOTH_MENU_W * 0.145;
+            w = BN_KOTH_MENU_W * 0.075;
             h = safeZoneH * 0.024;
             sizeEx = "0.023 * safeZoneH";
             colorText[] = {0.92, 0.90, 0.84, 0.98};
@@ -208,9 +219,9 @@ class BN_KOTH_RscMenu
             idc = BN_KOTH_IDC_MENU_HEADER_LEVEL;
             text = "LEVEL 1";
             style = 1;
-            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.875;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.850;
             y = BN_KOTH_MENU_Y + safeZoneH * 0.013;
-            w = BN_KOTH_MENU_W * 0.085;
+            w = BN_KOTH_MENU_W * 0.110;
             h = safeZoneH * 0.024;
             sizeEx = "0.020 * safeZoneH";
             colorText[] = {0.89, 0.70, 0.24, 1};
@@ -220,12 +231,25 @@ class BN_KOTH_RscMenu
         {
             idc = BN_KOTH_IDC_MENU_HEADER_XP;
             text = "0 / 100 XP";
-            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.735;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.775;
             y = BN_KOTH_MENU_Y + safeZoneH * 0.039;
-            w = BN_KOTH_MENU_W * 0.225;
+            w = BN_KOTH_MENU_W * 0.095;
             h = safeZoneH * 0.020;
             sizeEx = "0.016 * safeZoneH";
             colorText[] = {0.72, 0.70, 0.64, 0.98};
+        };
+
+        class HeaderCash: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_HEADER_CASH;
+            text = "$0";
+            style = 1;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.870;
+            y = BN_KOTH_MENU_Y + safeZoneH * 0.039;
+            w = BN_KOTH_MENU_W * 0.090;
+            h = safeZoneH * 0.020;
+            sizeEx = "0.016 * safeZoneH";
+            colorText[] = {0.78, 0.76, 0.52, 0.98};
         };
 
         class OperatorTitle: BN_KOTH_Menu_Label
@@ -355,34 +379,11 @@ class BN_KOTH_RscMenu
         class LoadoutBgBackpack: LoadoutBgPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_BG_BACKPACK; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 6;};
         class LoadoutBgEquipment: LoadoutBgPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_BG_EQUIPMENT; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 7;};
 
-        class SlotPrimaryButton: BN_KOTH_Menu_ActionButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_PRIMARY_BUTTON;
-            text = "";
-            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.025;
-            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y;
-            w = BN_KOTH_MENU_CENTER_W * 0.95;
-            h = BN_KOTH_MENU_LOADOUT_ROW_H;
-            colorBackground[] = {0, 0, 0, 0};
-            colorBackgroundActive[] = {0.22, 0.17, 0.08, 0.30};
-            colorFocused[] = {0.22, 0.17, 0.08, 0.30};
-            colorBackgroundDisabled[] = {0, 0, 0, 0};
-            colorBorder[] = {0, 0, 0, 0};
-            action = "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'primary']; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
-        };
-
         class SlotHandgun: SlotPrimary
         {
             idc = BN_KOTH_IDC_MENU_SLOT_HANDGUN;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.124;
             text = "HANDGUN";
-        };
-
-        class SlotHandgunButton: SlotPrimaryButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_HANDGUN_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP;
-            action = "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'handgun']; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
         };
 
         class SlotLauncher: SlotPrimary
@@ -392,25 +393,11 @@ class BN_KOTH_RscMenu
             text = "LAUNCHER";
         };
 
-        class SlotLauncherButton: SlotPrimaryButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_LAUNCHER_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 2;
-            action = "['LOADOUT_LAUNCHER'] call bn_koth_fnc_menu_refresh;";
-        };
-
         class SlotUniform: SlotPrimary
         {
             idc = BN_KOTH_IDC_MENU_SLOT_UNIFORM;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.214;
             text = "UNIFORM";
-        };
-
-        class SlotUniformButton: SlotPrimaryButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_UNIFORM_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 3;
-            action = "['LOADOUT_UNIFORM'] call bn_koth_fnc_menu_refresh;";
         };
 
         class SlotVest: SlotPrimary
@@ -420,25 +407,11 @@ class BN_KOTH_RscMenu
             text = "VEST";
         };
 
-        class SlotVestButton: SlotPrimaryButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_VEST_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 4;
-            action = "['LOADOUT_VEST'] call bn_koth_fnc_menu_refresh;";
-        };
-
         class SlotHeadgear: SlotPrimary
         {
             idc = BN_KOTH_IDC_MENU_SLOT_HEADGEAR;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.294;
             text = "HEADGEAR";
-        };
-
-        class SlotHeadgearButton: SlotPrimaryButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_HEADGEAR_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 5;
-            action = "['LOADOUT_HEADGEAR'] call bn_koth_fnc_menu_refresh;";
         };
 
         class SlotBackpack: SlotPrimary
@@ -448,25 +421,11 @@ class BN_KOTH_RscMenu
             text = "BACKPACK";
         };
 
-        class SlotBackpackButton: SlotPrimaryButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_BACKPACK_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 6;
-            action = "['LOADOUT_BACKPACK'] call bn_koth_fnc_menu_refresh;";
-        };
-
         class SlotFacewear: SlotPrimary
         {
             idc = BN_KOTH_IDC_MENU_SLOT_FACEWEAR;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.374;
             text = "FACEWEAR";
-        };
-
-        class SlotFacewearButton: SlotPrimaryButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_FACEWEAR_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.372;
-            action = "['LOADOUT_FACEWEAR'] call bn_koth_fnc_menu_refresh;";
         };
 
         class SlotBinocular: SlotPrimary
@@ -476,33 +435,11 @@ class BN_KOTH_RscMenu
             text = "BINOCULAR";
         };
 
-        class SlotBinocularButton: SlotPrimaryButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_BINOCULAR_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.412;
-            action = "['LOADOUT_BINOCULAR'] call bn_koth_fnc_menu_refresh;";
-        };
-
         class SlotEquipment: SlotPrimary
         {
             idc = BN_KOTH_IDC_MENU_SLOT_EQUIPMENT;
             y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.454;
             text = "EQUIPMENT";
-        };
-
-        class SlotEquipmentButton: SlotPrimaryButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_EQUIPMENT_BUTTON;
-            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 7;
-            action = "['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;";
-        };
-
-        class SlotCargoButton: SlotPrimaryButton
-        {
-            idc = BN_KOTH_IDC_MENU_SLOT_CARGO_BUTTON;
-            text = "CARGO / ITEMS";
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.492;
-            action = "uiNamespace setVariable ['BN_KOTH_menuSelectorReturnPage','LOADOUT']; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";
         };
 
         // Main LOADOUT page: contained item art and two-line row text.
@@ -542,6 +479,85 @@ class BN_KOTH_RscMenu
         class LoadoutRowTextHeadgear: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_HEADGEAR; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 5 + safeZoneH * 0.010;};
         class LoadoutRowTextBackpack: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_BACKPACK; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 6 + safeZoneH * 0.010;};
         class LoadoutRowTextEquipment: LoadoutRowTextPrimary {idc = BN_KOTH_IDC_MENU_LOADOUT_TEXT_EQUIPMENT; y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 7 + safeZoneH * 0.010;};
+
+        // Full-row hit controls are declared after row art/text so the visual
+        // controls cannot intercept clicks intended for the tile.
+        class SlotPrimaryButton: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_PRIMARY_BUTTON;
+            text = "";
+            x = BN_KOTH_MENU_CENTER_X + BN_KOTH_MENU_CENTER_W * 0.025;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y;
+            w = BN_KOTH_MENU_CENTER_W * 0.95;
+            h = BN_KOTH_MENU_LOADOUT_ROW_H;
+            colorBackground[] = {0, 0, 0, 0};
+            colorBackgroundActive[] = {0.22, 0.17, 0.08, 0.30};
+            colorFocused[] = {0.22, 0.17, 0.08, 0.30};
+            colorBackgroundDisabled[] = {0, 0, 0, 0};
+            colorBorder[] = {0, 0, 0, 0};
+            action = "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'primary']; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
+        };
+        class SlotHandgunButton: SlotPrimaryButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_HANDGUN_BUTTON;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP;
+            action = "uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', 'handgun']; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
+        };
+        class SlotLauncherButton: SlotPrimaryButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_LAUNCHER_BUTTON;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 2;
+            action = "['LOADOUT_LAUNCHER'] call bn_koth_fnc_menu_refresh;";
+        };
+        class SlotUniformButton: SlotPrimaryButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_UNIFORM_BUTTON;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 3;
+            action = "['LOADOUT_UNIFORM'] call bn_koth_fnc_menu_refresh;";
+        };
+        class SlotVestButton: SlotPrimaryButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_VEST_BUTTON;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 4;
+            action = "['LOADOUT_VEST'] call bn_koth_fnc_menu_refresh;";
+        };
+        class SlotHeadgearButton: SlotPrimaryButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_HEADGEAR_BUTTON;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 5;
+            action = "['LOADOUT_HEADGEAR'] call bn_koth_fnc_menu_refresh;";
+        };
+        class SlotBackpackButton: SlotPrimaryButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_BACKPACK_BUTTON;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 6;
+            action = "['LOADOUT_BACKPACK'] call bn_koth_fnc_menu_refresh;";
+        };
+        class SlotFacewearButton: SlotPrimaryButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_FACEWEAR_BUTTON;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.372;
+            action = "['LOADOUT_FACEWEAR'] call bn_koth_fnc_menu_refresh;";
+        };
+        class SlotBinocularButton: SlotPrimaryButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_BINOCULAR_BUTTON;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.412;
+            action = "['LOADOUT_BINOCULAR'] call bn_koth_fnc_menu_refresh;";
+        };
+        class SlotEquipmentButton: SlotPrimaryButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_EQUIPMENT_BUTTON;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_LOADOUT_ROW_Y + BN_KOTH_MENU_LOADOUT_ROW_STEP * 7;
+            action = "['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;";
+        };
+        class SlotCargoButton: SlotPrimaryButton
+        {
+            idc = BN_KOTH_IDC_MENU_SLOT_CARGO_BUTTON;
+            text = "CARGO / ITEMS";
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.492;
+            action = "uiNamespace setVariable ['BN_KOTH_menuSelectorReturnPage','LOADOUT']; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";
+        };
 
         class SectionFooter: BN_KOTH_Menu_Subtitle
         {
@@ -962,7 +978,7 @@ class BN_KOTH_RscMenu
             idc = BN_KOTH_IDC_MENU_NAV_STORE;
             text = "STORE";
             y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H * 0.205;
-            action = "['STORE'] call bn_koth_fnc_menu_refresh;";
+            action = "uiNamespace setVariable ['BN_KOTH_menuStoreRoute', 'ROOT']; uiNamespace setVariable ['BN_KOTH_menuStoreSelectedKey', '']; uiNamespace setVariable ['BN_KOTH_menuStorePage', 0]; uiNamespace setVariable ['BN_KOTH_menuStoreEntriesRoute', '']; ['STORE'] call bn_koth_fnc_menu_refresh;";
         };
 
         class NavPerks: NavLoadout

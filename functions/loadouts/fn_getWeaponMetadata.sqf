@@ -67,22 +67,29 @@ while {_safety < 16} do {
 private _metadataCfg = _arsenalCfg >> "Metadata" >> "Weapons" >> _canonicalClass;
 private _configured = isClass _metadataCfg;
 
-private _nativeSide = "";
+private _allowedSides = [];
+private _crossSideAllowed = false;
 private _minLevel = 1;
-private _licenseKills = 0;
+private _masteryKillsRequired = 0;
 private _purchasePrice = -1;
 private _rentalPrice = -1;
 private _requiredPerks = [];
 
 if (_configured) then {
-    _nativeSide = toUpper (getText (_metadataCfg >> "nativeSide"));
+    if (isArray (_metadataCfg >> "allowedSides")) then {
+        _allowedSides = (getArray (_metadataCfg >> "allowedSides")) apply {toUpper _x};
+    };
+
+    if (isNumber (_metadataCfg >> "crossSideAllowed")) then {
+        _crossSideAllowed = (getNumber (_metadataCfg >> "crossSideAllowed")) > 0;
+    };
 
     if (isNumber (_metadataCfg >> "minLevel")) then {
         _minLevel = (getNumber (_metadataCfg >> "minLevel")) max 1;
     };
 
-    if (isNumber (_metadataCfg >> "licenseKills")) then {
-        _licenseKills = (getNumber (_metadataCfg >> "licenseKills")) max 0;
+    if (isNumber (_metadataCfg >> "masteryKillsRequired")) then {
+        _masteryKillsRequired = (getNumber (_metadataCfg >> "masteryKillsRequired")) max 0;
     };
 
     if (isNumber (_metadataCfg >> "purchasePrice")) then {
@@ -104,9 +111,10 @@ createHashMapFromArray [
     ["requestedClass", _requestedClass],
     ["canonicalClass", _canonicalClass],
     ["configured", _configured],
-    ["nativeSide", _nativeSide],
+    ["allowedSides", _allowedSides],
+    ["crossSideAllowed", _crossSideAllowed],
     ["minLevel", _minLevel],
-    ["licenseKills", _licenseKills],
+    ["masteryKillsRequired", _masteryKillsRequired],
     ["purchasePrice", _purchasePrice],
     ["rentalPrice", _rentalPrice],
     ["requiredPerks", _requiredPerks]

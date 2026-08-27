@@ -608,7 +608,8 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                         private _uniformEntitlement = [
                                             _uid,
                                             "Wearables",
-                                            _uniformClass
+                                            _uniformClass,
+                                            true
                                         ] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                         if !(_uniformEntitlement getOrDefault ["entitled", false]) then {
                                             _slotFailure = createHashMapFromArray [
@@ -699,7 +700,7 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                             ["message", format ["Class '%1' is not a vest item.", _vestClass]]
                                         ];
                                     } else {
-                                        private _entitlement = [_uid,"Wearables",_vestClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        private _entitlement = [_uid,"Wearables",_vestClass,true] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                         if !(_entitlement getOrDefault ["entitled",false]) then {
                                             _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Vest is not entitled for this player."]]];
                                         } else {
@@ -773,7 +774,8 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                     private _backpackEntitlement = [
                                         _uid,
                                         "Wearables",
-                                        _backpackClass
+                                        _backpackClass,
+                                        true
                                     ] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                     if !(_backpackEntitlement getOrDefault ["entitled", false]) then {
                                         _slotFailure = createHashMapFromArray [
@@ -860,7 +862,7 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                             ["message", format ["Class '%1' is not a headgear item.", _headgearClass]]
                                         ];
                                     } else {
-                                        private _entitlement = [_uid,"Wearables",_headgearClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        private _entitlement = [_uid,"Wearables",_headgearClass,true] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                         if !(_entitlement getOrDefault ["entitled",false]) then {
                                             _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Headgear is not entitled for this player."]]];
                                         } else {
@@ -924,7 +926,7 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                     ["message", format ["Facewear '%1' is not publicly available.", _facewearClass]]
                                 ];
                             } else {
-                                private _entitlement = [_uid,"Wearables",_facewearClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                private _entitlement = [_uid,"Wearables",_facewearClass,true] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                 if !(_entitlement getOrDefault ["entitled",false]) then {
                                     _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Facewear is not entitled for this player."]]];
                                 } else {

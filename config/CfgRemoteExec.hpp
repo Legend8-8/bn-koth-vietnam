@@ -17,9 +17,45 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_teams_requestReturnToLobby
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
         class bn_koth_fnc_loadouts_request
         {
             allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_progression_requestWeaponAcquisition
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_vehicles_requestRental
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_vehicles_receiveRentalResult
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_vehicles_forceOutRentalVehicle
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_vehicles_addRentalOwnerActions
+        {
+            allowedTargets = 1;
             jip = 0;
         };
 
@@ -47,9 +83,21 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_ui_receiveWeaponAcquisitionResult
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_ui_selectControlledUnit
         {
             allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_teams_receiveTransferHandoffAck
+        {
+            allowedTargets = 2;
             jip = 0;
         };
 

@@ -19,6 +19,11 @@ if (_uid isEqualTo "") exitWith {};
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 private _record = _records getOrDefault [_uid, createHashMap];
 
+private _saveResult = [_uid, "disconnect"] call bn_koth_fnc_persistence_savePlayer;
+if !(_saveResult getOrDefault ["success", false]) then {
+    [format ["Disconnect persistence save failed UID=%1 code=%2", _uid, _saveResult getOrDefault ["code", "UNKNOWN"]], "ERROR"] call bn_koth_fnc_common_log;
+};
+
 if (_record isEqualType createHashMap) then {
     private _unit = _record getOrDefault ["currentUnit", objNull];
     if (!isNull _unit) then {
@@ -33,6 +38,14 @@ if (_record isEqualType createHashMap) then {
 
 _records deleteAt _uid;
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+
+private _handoffs = missionNamespace getVariable ["BN_KOTH_transferHandoffPending", createHashMap];
+if (_handoffs isEqualType createHashMap) then {
+    _handoffs deleteAt _uid;
+    missionNamespace setVariable ["BN_KOTH_transferHandoffPending", _handoffs];
+};
+private _returns = missionNamespace getVariable ["BN_KOTH_returnToLobbyPending", []];
+missionNamespace setVariable ["BN_KOTH_returnToLobbyPending", _returns - [_uid]];
 
 [_uid] call bn_koth_fnc_loadouts_clearPlayerState;
 

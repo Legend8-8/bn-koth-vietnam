@@ -245,68 +245,6 @@ private _extractWeaponComposition = {
     ]
 };
 
-private _validateAssignedClassForIndex = {
-    params ["_assignedIndex", "_itemClass"];
-
-    private _assignedFail = {
-        params ["_code", "_message"];
-        createHashMapFromArray [
-            ["success", false],
-            ["code", _code],
-            ["message", _message]
-        ]
-    };
-
-    if (_itemClass isEqualTo "") exitWith {
-        createHashMapFromArray [
-            ["success", true],
-            ["code", "OK"],
-            ["message", "Assigned slot clear intent accepted."]
-        ]
-    };
-
-    if !(isClass (_sourceItemsCfg >> _itemClass)) exitWith {
-        [
-            "ERR_ASSIGNED_ITEM_UNKNOWN",
-            format ["Assigned item '%1' is missing from canonical SourceItems.", _itemClass]
-        ] call _assignedFail
-    };
-
-    if !(isClass (configFile >> "CfgWeapons" >> _itemClass)) exitWith {
-        ["ERR_ASSIGNED_ITEM_CONFIG_MISSING", format ["Assigned item '%1' is missing from CfgWeapons.", _itemClass]] call _assignedFail
-    };
-
-    private _itemType = [_itemClass] call BIS_fnc_itemType;
-    if !((_itemType isEqualType []) && {(count _itemType) >= 2}) exitWith {
-        ["ERR_ASSIGNED_ITEM_TYPE_UNKNOWN", format ["Assigned item '%1' type could not be resolved.", _itemClass]] call _assignedFail
-    };
-
-    private _subType = toLower (_itemType select 1);
-
-    private _allowed = switch (_assignedIndex) do {
-        case 0: {_subType isEqualTo "map"};
-        case 1: {(_subType isEqualTo "gps") || {_subType find "uav" >= 0}};
-        case 2: {_subType isEqualTo "radio"};
-        case 3: {_subType isEqualTo "compass"};
-        case 4: {_subType isEqualTo "watch"};
-        case 5: {_subType find "nvg" >= 0};
-        default {false};
-    };
-
-    if (!_allowed) exitWith {
-        [
-            "ERR_ASSIGNED_ITEM_SLOT_MISMATCH",
-            format ["Assigned item '%1' subtype '%2' is not valid for assigned slot index %3.", _itemClass, _subType, _assignedIndex]
-        ] call _assignedFail
-    };
-
-    createHashMapFromArray [
-        ["success", true],
-        ["code", "OK"],
-        ["message", "Assigned slot item validated."]
-    ]
-};
-
 private _resolveAllowedCargoMagazines = {
     params ["_loadout"];
 
@@ -556,14 +494,79 @@ switch (_op) do {
     case "snapshot": {
         // Reconcile from the server-observed physical unit state. This keeps
         // partial Arsenal mutations from rebuilding a stale intended kit after
-        // the player has dropped equipment outside the menu.
+        // the player has dropped equipment outside the menu. Battlefield
+        // possession is not entitlement: an unentitled carried composition is
+        // left physically untouched, but must not enter the reusable mutation
+        // baseline where a later unrelated change could reapply it.
         private _physicalLoadout = getUnitLoadout _player;
         if !(_physicalLoadout isEqualType [] && {(count _physicalLoadout) >= 10}) exitWith {
             ["ERR_PHYSICAL_LOADOUT_SHAPE", "Server could not read the player's current physical loadout.", _baseLoadoutId] call _resultFail
         };
+
+        {
+            _x params ["_slotIndex", "_slotToken", "_slotLabel"];
+            private _extractResult = [
+                _physicalLoadout select _slotIndex,
+                _slotToken,
+                _slotLabel
+            ] call _extractWeaponComposition;
+            private _retainComposition = _extractResult getOrDefault ["success", false];
+
+            if (_retainComposition) then {
+                private _composition = _extractResult getOrDefault ["composition", createHashMap];
+                if !(_composition getOrDefault ["isEmpty", false]) then {
+                    private _compositionResult = [
+                        createHashMapFromArray [
+                            ["weaponClass", _composition getOrDefault ["baseWeaponClass", ""]],
+                            ["magazines", _composition getOrDefault ["magazines", []]],
+                            ["attachments", _composition getOrDefault ["attachments", []]]
+                        ],
+                        _compatibilityCfg,
+                        _slotToken,
+                        _slotLabel
+                    ] call bn_koth_fnc_loadouts_validateWeaponComposition;
+
+                    _retainComposition = _compositionResult getOrDefault ["success", false];
+                    if (_retainComposition) then {
+                        private _validatedWeapon = _compositionResult getOrDefault ["validatedWeapon", createHashMap];
+                        private _weaponClass = _validatedWeapon getOrDefault ["weaponClass", ""];
+                        if (_weaponClass isEqualTo "") then {
+                            _weaponClass = _validatedWeapon getOrDefault ["baseWeaponClass", ""];
+                        };
+
+                        private _weaponEntitlement = [
+                            _uid,
+                            _weaponClass
+                        ] call bn_koth_fnc_progression_evaluateWeaponEntitlement;
+                        _retainComposition = _weaponEntitlement getOrDefault ["entitled", false];
+
+                        if (_retainComposition) then {
+                            {
+                                private _attachmentEntitlement = [
+                                    _uid,
+                                    _x
+                                ] call bn_koth_fnc_progression_evaluateAttachmentEntitlement;
+                                if !(_attachmentEntitlement getOrDefault ["entitled", false]) exitWith {
+                                    _retainComposition = false;
+                                };
+                            } forEach (_validatedWeapon getOrDefault ["attachments", []]);
+                        };
+                    };
+                };
+            };
+
+            if (!_retainComposition) then {
+                _physicalLoadout set [_slotIndex, []];
+            };
+        } forEach [
+            [0, "PRIMARY", "Primary"],
+            [1, "LAUNCHER", "Launcher"],
+            [2, "HANDGUN", "Handgun"]
+        ];
+
         _mutatedLoadout = +_physicalLoadout;
         _shouldApply = false;
-        _resultMessage = "Authoritative loadout state reconciled from the physical player unit.";
+        _resultMessage = "Authoritative loadout state reconciled without treating battlefield possession as entitlement.";
     };
 
     case "load_local_kit": {
@@ -700,7 +703,7 @@ switch (_op) do {
 
         for "_i" from 0 to 5 do {
             private _itemClass = toLower (_assignedSlot select _i);
-            private _assignedCheck = [_i, _itemClass] call _validateAssignedClassForIndex;
+            private _assignedCheck = [_i, _itemClass, _sourceItemsCfg] call bn_koth_fnc_loadouts_validateAssignedItemSlot;
             if !(_assignedCheck getOrDefault ["success", false]) exitWith {
                 _resultCode = _assignedCheck getOrDefault ["code", "ERR_ASSIGNED_ITEM_SLOT_MISMATCH"];
                 _resultMessage = _assignedCheck getOrDefault ["message", "Saved kit assigned item is invalid."];
@@ -775,7 +778,7 @@ switch (_op) do {
                         if (!_factual || {((_class find "vn_") != 0)}) then {
                             _resultCode="ERR_WEARABLE_INVALID"; _resultMessage=format ["Saved %1 class '%2' is not a canonical S.O.G. item.",_kind,_class];
                         } else {
-                            private _entitlement=[_uid,"Wearables",_class] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                            private _entitlement=[_uid,"Wearables",_class,true] call bn_koth_fnc_progression_evaluateItemEntitlement;
                             if !(_entitlement getOrDefault ["entitled",false]) then {_resultCode=_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"];_resultMessage=_entitlement getOrDefault ["message",format ["Saved %1 is not entitled.",_kind]];};
                         };
                     };
@@ -922,7 +925,7 @@ switch (_op) do {
         };
 
         private _itemClass = toLower _itemClassRaw;
-        private _assignedCheck = [_assignedIndex, _itemClass] call _validateAssignedClassForIndex;
+        private _assignedCheck = [_assignedIndex, _itemClass, _sourceItemsCfg] call bn_koth_fnc_loadouts_validateAssignedItemSlot;
         if !(_assignedCheck getOrDefault ["success", false]) exitWith {
             [
                 _assignedCheck getOrDefault ["code", "ERR_ASSIGNED_ITEM_SLOT_MISMATCH"],
@@ -977,14 +980,6 @@ switch (_op) do {
 
         if !(isClass (_sourceItemsCfg >> _attachmentClass)) exitWith {
             ["ERR_UNKNOWN_ATTACHMENT", format ["Attachment '%1' is not present in canonical source items.", _attachmentClass], _baseLoadoutId] call _resultFail
-        };
-
-        private _assignedEntitlement = createHashMapFromArray [["entitled",true]];
-        if !(_itemClass isEqualTo "") then {
-            _assignedEntitlement = [_uid,"Wearables",_itemClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
-        };
-        if !(_assignedEntitlement getOrDefault ["entitled",false]) exitWith {
-            [_assignedEntitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"],_assignedEntitlement getOrDefault ["message","Assigned item is not entitled for this player."],_baseLoadoutId] call _resultFail
         };
 
         private _attachmentEntitlement = createHashMapFromArray [["entitled", true]];

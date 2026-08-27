@@ -44,9 +44,10 @@ if !(_localProgression isEqualType createHashMap) then {
 
 missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", _localProgression];
 
-private _rewardAmount = _progression getOrDefault ["amount", 0];
-private _rewardReason = _progression getOrDefault ["reason", ""];
-if (_rewardAmount > 0 && {!(_rewardReason isEqualTo "")}) then {
+private _rewardAmount = _progression getOrDefault ["rewardAmount", _progression getOrDefault ["amount", 0]];
+private _rewardReason = _progression getOrDefault ["rewardReason", _progression getOrDefault ["reason", ""]];
+private _rewardType = toLower (_progression getOrDefault ["rewardType", "xp"]);
+if !(_rewardAmount isEqualTo 0 || {_rewardReason isEqualTo ""}) then {
     private _reasonLabel = switch (toLower _rewardReason) do {
         case "kill": {"KILL"};
         case "control": {"OBJECTIVE"};
@@ -54,10 +55,18 @@ if (_rewardAmount > 0 && {!(_rewardReason isEqualTo "")}) then {
         default {toUpper _rewardReason};
     };
 
-    systemChat format ["[XP] %1 +%2 XP", _reasonLabel, _rewardAmount];
+    if (_rewardType isEqualTo "cash") then {
+        private _cashSign = if (_rewardAmount > 0) then {"+"} else {""};
+        systemChat format ["[CASH] %1 %2$%3", _reasonLabel, _cashSign, _rewardAmount];
+    } else {
+        systemChat format ["[XP] %1 +%2 XP", _reasonLabel, _rewardAmount];
+    };
 };
 
 disableSerialization;
+[] call bn_koth_fnc_ui_refreshLobby;
+// Store's cached weapon entries must not go stale even when acquired from Arsenal.
+uiNamespace setVariable ["BN_KOTH_menuStoreEntriesRoute", ""];
 private _menuDisplay = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
 if (!isNull _menuDisplay) then {
     [] call bn_koth_fnc_menu_refresh;

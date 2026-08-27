@@ -57,11 +57,16 @@ private _playerName = toUpper (_viewModel getOrDefault ["playerName", profileNam
 private _playerLevel = (_viewModel getOrDefault ["playerLevel", 1]) max 1;
 private _playerMaxLevel = (_viewModel getOrDefault ["playerMaxLevel", 270]) max 1;
 private _playerXp = (_viewModel getOrDefault ["playerXp", 0]) max 0;
+private _playerCash = (_viewModel getOrDefault ["playerCash", 0]) max 0;
 private _playerXpIntoLevel = (_viewModel getOrDefault ["playerXpIntoLevel", 0]) max 0;
 private _playerXpRequired = (_viewModel getOrDefault ["playerXpRequired", 0]) max 0;
 private _playerXpRatio = (_viewModel getOrDefault ["playerXpRatio", 1]) max 0 min 1;
+private _rank = [_playerLevel] call bn_koth_fnc_progression_resolveRankPresentation;
+private _rankCtrl = _display displayCtrl BN_KOTH_IDC_HEADER_RANK_BADGE;
 
-(_display displayCtrl BN_KOTH_IDC_HEADER_RANK_BADGE) ctrlSetText str _playerLevel;
+_rankCtrl ctrlSetText (_rank getOrDefault ["icon", ""]);
+_rankCtrl ctrlSetTextColor (_rank getOrDefault ["color", [1, 1, 1, 0]]);
+_rankCtrl ctrlShow (_rank getOrDefault ["hasIcon", false]);
 (_display displayCtrl BN_KOTH_IDC_HEADER_PLAYER_NAME) ctrlSetText _playerName;
 (_display displayCtrl BN_KOTH_IDC_HEADER_PLAYER_LEVEL) ctrlSetText format ["LEVEL %1", _playerLevel];
 
@@ -71,6 +76,7 @@ if (_playerLevel >= _playerMaxLevel) then {
 } else {
     _xpCtrl ctrlSetText format ["%1 / %2 XP", round _playerXpIntoLevel, round _playerXpRequired];
 };
+(_display displayCtrl BN_KOTH_IDC_HEADER_CASH) ctrlSetText ([_playerCash] call bn_koth_fnc_ui_formatCash);
 
 disableSerialization;
 private _xpTrack = _display displayCtrl BN_KOTH_IDC_BG_HEADER_XP_TRACK;

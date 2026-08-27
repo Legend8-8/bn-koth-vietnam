@@ -219,7 +219,7 @@ def filter_item_rows(rows: list[dict[str, Any]], overrides: dict[str, Any], summ
             increment_reason(summary["filtering"]["rejectedReasons"]["items"], reason)
             continue
 
-        item_type = classify_item_type(row)
+        item_type = overrides.get("itemType", {}).get(class_name, classify_item_type(row))
         accepted.append(
             {
                 "class": class_name,
