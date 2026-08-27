@@ -103,6 +103,15 @@ ownership is part of the persistent schema, while rentals remain session state;
 vehicles, final equipment prices, stock, wider mastery content/population, and a
 durable database adapter remain unfinished.
 
+Military rank is icon-only presentation derived from account level, not another
+progression currency or authoritative engine rank. The config-driven 1-270
+ladder reuses built-in Arma 3 insignia shapes and config-owned bronze, silver,
+and gold tints. No military rank name or abbreviation is shown. During the
+configurable recruit period before the first insignia threshold, `LEVEL N`
+remains visible but no rank icon appears. The same derived icon is used in the
+lobby local-player card, WEST/EAST roster rows, shared deployed-menu header,
+and pause-menu panel. Rank is neither persisted nor applied to engine units.
+
 Future progression may include:
 
 - persistent currency and economy sinks;

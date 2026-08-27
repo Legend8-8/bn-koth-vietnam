@@ -48,6 +48,7 @@ private _payload = createHashMapFromArray [
     ["playerStates", missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap]],
     ["playerTeamAssignments", missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap]],
     ["playerNames", missionNamespace getVariable ["BN_KOTH_playerNames", createHashMap]],
+    ["playerLevels", missionNamespace getVariable ["BN_KOTH_playerLevels", createHashMap]],
     ["teamCounts", missionNamespace getVariable ["BN_KOTH_teamCounts", createHashMapFromArray [[_playableSides select 0, 0], [_playableSides select 1, 0]]]],
     ["activeParticipants", missionNamespace getVariable ["BN_KOTH_activeParticipants", []]],
     ["selectedLocationId", missionNamespace getVariable ["BN_KOTH_selectedLocationId", ""]],

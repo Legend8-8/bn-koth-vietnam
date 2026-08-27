@@ -191,13 +191,24 @@ class BN_KOTH_RscMenu
             colorText[] = {0.86, 0.84, 0.78, 0.82};
         };
 
+        class HeaderRankBadge: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_MENU_HEADER_RANK_BADGE;
+            text = "";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.730;
+            y = BN_KOTH_MENU_Y + safeZoneH * 0.010;
+            w = safeZoneH * 0.050;
+            h = safeZoneH * 0.050;
+            colorText[] = {1, 1, 1, 0};
+        };
+
         class HeaderPlayer: BN_KOTH_Menu_Title
         {
             idc = BN_KOTH_IDC_MENU_HEADER_PLAYER;
             text = "PLAYER";
-            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.735;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.775;
             y = BN_KOTH_MENU_Y + safeZoneH * 0.013;
-            w = BN_KOTH_MENU_W * 0.145;
+            w = BN_KOTH_MENU_W * 0.075;
             h = safeZoneH * 0.024;
             sizeEx = "0.023 * safeZoneH";
             colorText[] = {0.92, 0.90, 0.84, 0.98};
@@ -208,9 +219,9 @@ class BN_KOTH_RscMenu
             idc = BN_KOTH_IDC_MENU_HEADER_LEVEL;
             text = "LEVEL 1";
             style = 1;
-            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.875;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.850;
             y = BN_KOTH_MENU_Y + safeZoneH * 0.013;
-            w = BN_KOTH_MENU_W * 0.085;
+            w = BN_KOTH_MENU_W * 0.110;
             h = safeZoneH * 0.024;
             sizeEx = "0.020 * safeZoneH";
             colorText[] = {0.89, 0.70, 0.24, 1};
@@ -220,9 +231,9 @@ class BN_KOTH_RscMenu
         {
             idc = BN_KOTH_IDC_MENU_HEADER_XP;
             text = "0 / 100 XP";
-            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.735;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.775;
             y = BN_KOTH_MENU_Y + safeZoneH * 0.039;
-            w = BN_KOTH_MENU_W * 0.135;
+            w = BN_KOTH_MENU_W * 0.095;
             h = safeZoneH * 0.020;
             sizeEx = "0.016 * safeZoneH";
             colorText[] = {0.72, 0.70, 0.64, 0.98};

@@ -12,6 +12,7 @@
 */
 
 params [["_xp", 0, [0]]];
+if !(_xp isEqualType 0 && {finite _xp}) then {_xp = 0};
 
 private _progressionCfg = missionConfigFile >> "CfgBnKothScoring" >> "progression";
 private _maxLevel = if (isNumber (_progressionCfg >> "maxLevel")) then {
@@ -19,6 +20,7 @@ private _maxLevel = if (isNumber (_progressionCfg >> "maxLevel")) then {
 } else {
     270
 };
+if !(finite _maxLevel) then {_maxLevel = 270};
 _maxLevel = floor (_maxLevel max 1);
 
 private _safeXp = _xp max 0;

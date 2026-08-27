@@ -61,11 +61,14 @@ class CfgFunctions
             class teams_removePlayer {file = "functions\teams\fn_removePlayer.sqf";};
             class teams_requestSelection {file = "functions\teams\fn_requestSelection.sqf";};
             class teams_returnSelectedPlayerToLobby {file = "functions\teams\fn_returnSelectedPlayerToLobby.sqf";};
+            class teams_returnDeployedPlayerToLobby {file = "functions\teams\fn_returnDeployedPlayerToLobby.sqf";};
+            class teams_requestReturnToLobby {file = "functions\teams\fn_requestReturnToLobby.sqf";};
             class teams_publishState {file = "functions\teams\fn_publishState.sqf";};
             class teams_getEligibleSelectedUids {file = "functions\teams\fn_getEligibleSelectedUids.sqf";};
             class teams_getPlayerByOwner {file = "functions\teams\fn_getPlayerByOwner.sqf";};
             class teams_getDefaultUnitClass {file = "functions\teams\fn_getDefaultUnitClass.sqf";};
             class teams_transferRepresentation {file = "functions\teams\fn_transferRepresentation.sqf";};
+            class teams_receiveTransferHandoffAck {file = "functions\teams\fn_receiveTransferHandoffAck.sqf";};
             class teams_assignLobbyRepresentation {file = "functions\teams\fn_assignLobbyRepresentation.sqf";};
             class teams_deployRoundParticipants {file = "functions\teams\fn_deployRoundParticipants.sqf";};
             class teams_deploySelectedPlayer {file = "functions\teams\fn_deploySelectedPlayer.sqf";};
@@ -115,6 +118,7 @@ class CfgFunctions
             class progression_requestWeaponAcquisition {file = "functions\progression\acquisition\fn_requestWeapon.sqf";};
             class progression_publishUpdate {file = "functions\progression\fn_publishUpdate.sqf";};
             class progression_buildPresentationState {file = "functions\progression\fn_buildPresentationState.sqf";};
+            class progression_resolveRankPresentation {file = "functions\progression\fn_resolveRankPresentation.sqf";};
             class progression_evaluateEquipmentSidePolicyRules {file = "functions\progression\fn_evaluateEquipmentSidePolicyRules.sqf";};
             class progression_evaluateWeaponEntitlement {file = "functions\progression\fn_evaluateWeaponEntitlement.sqf";};
             class progression_evaluateWeaponEntitlementRules {file = "functions\progression\fn_evaluateWeaponEntitlementRules.sqf";};

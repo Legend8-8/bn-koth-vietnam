@@ -45,11 +45,21 @@ private _renderRows = {
     params ["_ctrl", "_rows"];
 
     lbClear _ctrl;
+    private _emptyPicture = "#(argb,8,8,3)color(0,0,0,0)";
     {
         private _entry = _x;
         private _text = _entry select 0;
         private _isCurrent = _entry select 1;
+        private _level = _entry param [2, 1, [0]];
+        private _isPlayerRow = _entry param [3, false, [false]];
         private _rowIndex = _ctrl lbAdd _text;
+        private _rank = if (_isPlayerRow) then {[_level] call bn_koth_fnc_progression_resolveRankPresentation} else {createHashMap};
+        private _hasIcon = _rank getOrDefault ["hasIcon", false];
+        private _pictureColor = _rank getOrDefault ["color", [1, 1, 1, 0]];
+
+        _ctrl lbSetPicture [_rowIndex, if (_hasIcon) then {_rank getOrDefault ["icon", _emptyPicture]} else {_emptyPicture}];
+        _ctrl lbSetPictureColor [_rowIndex, _pictureColor];
+        _ctrl lbSetPictureColorSelected [_rowIndex, _pictureColor];
 
         if (_isCurrent) then {
             _ctrl lbSetColor [_rowIndex, [0.96, 0.83, 0.34, 1]];

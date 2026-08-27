@@ -28,6 +28,7 @@ private _keyMap = createHashMapFromArray [
     ["playerStates", "BN_KOTH_playerStates"],
     ["playerTeamAssignments", "BN_KOTH_playerTeamAssignments"],
     ["playerNames", "BN_KOTH_playerNames"],
+    ["playerLevels", "BN_KOTH_playerLevels"],
     ["teamCounts", "BN_KOTH_teamCounts"],
     ["activeParticipants", "BN_KOTH_activeParticipants"],
     ["selectedLocationId", "BN_KOTH_selectedLocationId"],

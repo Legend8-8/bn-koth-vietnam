@@ -63,6 +63,7 @@ private _ctrlHeaderPlayer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_PLAYER;
 private _ctrlHeaderLevel = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_LEVEL;
 private _ctrlHeaderXp = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_XP;
 private _ctrlHeaderCash = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_CASH;
+private _ctrlHeaderRankBadge = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_RANK_BADGE;
 private _ctrlHeaderXpTrack = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_TRACK;
 private _ctrlHeaderXpFill = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_FILL;
 private _ctrlBgLeft = _display displayCtrl BN_KOTH_IDC_MENU_BG_LEFT;
@@ -196,7 +197,11 @@ private _maxLevel = _levelProgress getOrDefault ["maxLevel", 270];
 private _xpIntoLevel = _levelProgress getOrDefault ["xpIntoLevel", 0];
 private _xpRequired = _levelProgress getOrDefault ["xpRequired", 0];
 private _xpRatio = _levelProgress getOrDefault ["ratio", 1];
+private _rank = [_level] call bn_koth_fnc_progression_resolveRankPresentation;
 
+_ctrlHeaderRankBadge ctrlSetText (_rank getOrDefault ["icon", ""]);
+_ctrlHeaderRankBadge ctrlSetTextColor (_rank getOrDefault ["color", [1, 1, 1, 0]]);
+_ctrlHeaderRankBadge ctrlShow (_rank getOrDefault ["hasIcon", false]);
 _ctrlHeaderLevel ctrlSetText format ["LEVEL %1", _level];
 
 if (_level >= _maxLevel) then {

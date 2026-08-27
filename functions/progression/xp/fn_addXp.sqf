@@ -40,6 +40,9 @@ if !(_progression isEqualType createHashMap) then {
 };
 
 private _oldXp = _progression getOrDefault ["xp", 0];
+if !(_oldXp isEqualType 0 && {finite _oldXp}) then {_oldXp = 0};
+private _oldLevel = _progression getOrDefault ["level", [_oldXp] call bn_koth_fnc_progression_xp_getLevel];
+if !(_oldLevel isEqualType 0 && {finite _oldLevel}) then {_oldLevel = 1};
 private _newXp = (_oldXp max 0) + _amount;
 private _newLevel = [_newXp] call bn_koth_fnc_progression_xp_getLevel;
 
@@ -58,6 +61,9 @@ private _result = createHashMapFromArray [
 ];
 
 [_uid, "xp", _amount, _reason] call bn_koth_fnc_progression_publishUpdate;
+if !(_newLevel isEqualTo _oldLevel) then {
+    [] call bn_koth_fnc_teams_publishState;
+};
 
 [format [
     "XP award UID=%1 reason=%2 amount=%3 total=%4 level=%5",

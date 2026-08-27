@@ -39,6 +39,14 @@ if (_record isEqualType createHashMap) then {
 _records deleteAt _uid;
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
+private _handoffs = missionNamespace getVariable ["BN_KOTH_transferHandoffPending", createHashMap];
+if (_handoffs isEqualType createHashMap) then {
+    _handoffs deleteAt _uid;
+    missionNamespace setVariable ["BN_KOTH_transferHandoffPending", _handoffs];
+};
+private _returns = missionNamespace getVariable ["BN_KOTH_returnToLobbyPending", []];
+missionNamespace setVariable ["BN_KOTH_returnToLobbyPending", _returns - [_uid]];
+
 [_uid] call bn_koth_fnc_loadouts_clearPlayerState;
 
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];

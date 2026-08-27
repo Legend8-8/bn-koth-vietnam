@@ -5,6 +5,7 @@
 #include "config\combat.hpp"
 #include "config\lobby.hpp"
 #include "config\scoring.hpp"
+#include "config\ranks.hpp"
 #include "config\vehicles.hpp"
 #include "config\teams.hpp"
 #include "config\playerIcons\playerMapMarkers.hpp"

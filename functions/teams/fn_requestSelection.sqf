@@ -69,14 +69,26 @@ if (_requestedSemantic isEqualTo "LOBBY") exitWith {
         [format ["Rejected lobby-return request from non-selected UID=%1 logicalState=%2", _uid, _playerState], "WARN"] call bn_koth_fnc_common_log;
     };
 
-    private _returned = [_uid] call bn_koth_fnc_teams_returnSelectedPlayerToLobby;
-    if (_returned) then {
-        [format ["Team return-to-lobby accepted UID=%1", _uid], "INFO"] call bn_koth_fnc_common_log;
-    };
-    if (_returned) then {
-        [_ownerId, "Returned to lobby."] call bn_koth_fnc_teams_notifyPlayer;
+    private _pendingReturns = missionNamespace getVariable ["BN_KOTH_returnToLobbyPending", []];
+    if (_uid in _pendingReturns) then {
+        [_ownerId, "Return to lobby request is already in progress."] call bn_koth_fnc_teams_notifyPlayer;
     } else {
-        [_ownerId, "Return to lobby failed."] call bn_koth_fnc_teams_notifyPlayer;
+        _pendingReturns pushBackUnique _uid;
+        missionNamespace setVariable ["BN_KOTH_returnToLobbyPending", _pendingReturns];
+
+        [_uid, _ownerId] spawn {
+            params ["_returnUid", "_returnOwnerId"];
+            private _returned = [_returnUid] call bn_koth_fnc_teams_returnSelectedPlayerToLobby;
+            private _pending = missionNamespace getVariable ["BN_KOTH_returnToLobbyPending", []];
+            missionNamespace setVariable ["BN_KOTH_returnToLobbyPending", _pending - [_returnUid]];
+
+            if (_returned) then {
+                [format ["Team return-to-lobby accepted UID=%1", _returnUid], "INFO"] call bn_koth_fnc_common_log;
+                [_returnOwnerId, "Returned to lobby."] call bn_koth_fnc_teams_notifyPlayer;
+            } else {
+                [_returnOwnerId, "Return to lobby failed."] call bn_koth_fnc_teams_notifyPlayer;
+            };
+        };
     };
     false
 };

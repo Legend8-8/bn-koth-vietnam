@@ -39,7 +39,20 @@ When adding or modifying player-representation transitions, use the locality lif
 
 Short rule: initPlayerLocal.sqf is client startup only, while bn_koth_fnc_teams_transferRepresentation is the server-owned handoff path for moving a player to a new representation unit.
 
-7. Equipment Side Metadata
+7. Rank And Equipment Side Metadata
+
+Account rank presentation is configured only under `CfgBnKothRanks` in
+`config/ranks.hpp`. It is insignia-only: there are no player-facing rank names
+or abbreviations. Each band owns `minLevel`, a built-in Arma 3 rank-insignia
+`icon`, and a presentation-only bronze/silver/gold `grade`; grade colours are
+also config-owned. Runtime selects the highest valid threshold not greater than
+the derived account level. Levels below the first configured threshold are the
+recruit period and show no insignia while continuing to show `LEVEL N`.
+
+One shared resolver supplies the lobby local-player card, both WEST/EAST lobby
+rosters, the shared deployed-menu header, and the pause-menu panel. Rank is not
+persisted separately, does not mutate progression, and must never call Arma's
+`setRank`/`setUnitRank`. Do not add mission-owned rank artwork.
 
 Generated `sourceAffiliations[]` is factual S.O.G. provenance only. KOTH
 gameplay availability is human-authored as `allowedSides[]`; visual faction

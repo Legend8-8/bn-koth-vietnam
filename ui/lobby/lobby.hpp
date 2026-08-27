@@ -464,18 +464,15 @@ class HeaderPlayers: BN_KOTH_Lobby_Subtitle
             colorText[] = {0.95, 0.94, 0.90, 0.90};
         };
 
-        class HeaderRankBadge: BN_KOTH_Lobby_Value
+        class HeaderRankBadge: BN_KOTH_Lobby_Picture
         {
             idc = BN_KOTH_IDC_HEADER_RANK_BADGE;
-            text = "1";
-            style = 2;
+            text = "";
             x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.887;
             y = BN_KOTH_UI_Y + safeZoneH * 0.018;
-            w = BN_KOTH_UI_W * 0.022;
+            w = safeZoneH * 0.044;
             h = safeZoneH * 0.044;
-            sizeEx = "0.028 * safeZoneH";
-            colorText[] = {0.89, 0.70, 0.24, 1};
-            colorBackground[] = {0.12, 0.11, 0.08, 0.92};
+            colorText[] = {1, 1, 1, 0};
         };
 
         class HeaderPlayerName: BN_KOTH_Lobby_SectionLabel
@@ -498,7 +495,7 @@ class HeaderPlayers: BN_KOTH_Lobby_Subtitle
             style = 0;
             x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.912;
             y = BN_KOTH_UI_Y + safeZoneH * 0.029;
-            w = BN_KOTH_UI_W * 0.045;
+            w = BN_KOTH_UI_W * 0.075;
             h = safeZoneH * 0.020;
             sizeEx = "0.018 * safeZoneH";
             colorText[] = {0.89, 0.70, 0.24, 1};
@@ -523,7 +520,7 @@ class HeaderPlayers: BN_KOTH_Lobby_Subtitle
             text = "$0";
             style = 1;
             x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.957;
-            y = BN_KOTH_UI_Y + safeZoneH * 0.029;
+            y = BN_KOTH_UI_Y + safeZoneH * 0.009;
             w = BN_KOTH_UI_W * 0.030;
             h = safeZoneH * 0.016;
             sizeEx = "0.016 * safeZoneH";

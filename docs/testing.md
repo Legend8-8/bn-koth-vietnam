@@ -385,6 +385,21 @@ nothing, and mastery survives respawn, side changes, and round transitions.
 Cross-side acquisition must fail before cash mutation until explicit
 permission, level, mastery, and perks all pass.
 
+Config-driven rank presentation checks can be run after mission functions
+initialize on a client or hosted session:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_rankPresentation.sqf"
+```
+
+An empty array is a pass. Hosted UI testing must additionally confirm that the
+lobby local-player card, WEST/EAST roster rows, every deployed-menu page, and
+each newly opened pause display show the same config-derived insignia shape and
+bronze/silver/gold tint. Recruit levels must preserve aligned blank roster icon
+columns and show no icon or textual fallback. Repeated pause opening must not
+duplicate controls. Rank presentation must not call `setRank`/`setUnitRank`,
+mutate progression, or add rank fields to persistence.
+
 14. Combat Attribution Probe
 
 The pure factual candidate checks can be run after mission initialization:

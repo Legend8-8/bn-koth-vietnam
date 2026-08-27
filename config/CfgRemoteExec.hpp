@@ -17,6 +17,12 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_teams_requestReturnToLobby
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
         class bn_koth_fnc_loadouts_request
         {
             allowedTargets = 2;
@@ -86,6 +92,12 @@ class CfgRemoteExec
         class bn_koth_fnc_ui_selectControlledUnit
         {
             allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_teams_receiveTransferHandoffAck
+        {
+            allowedTargets = 2;
             jip = 0;
         };
 

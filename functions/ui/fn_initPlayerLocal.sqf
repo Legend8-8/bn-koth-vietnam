@@ -61,6 +61,10 @@ if (isNil {missionNamespace getVariable "BN_KOTH_lifecycleHooksInstalled"}) then
         [] call bn_koth_fnc_ui_updateLobbyLifecycle;
         [] call bn_koth_fnc_ui_refreshLobby;
     };
+
+    "BN_KOTH_playerLevels" addPublicVariableEventHandler {
+        [] call bn_koth_fnc_ui_refreshLobby;
+    };
 };
 
 "BN_KOTH_scoreProgress" addPublicVariableEventHandler {

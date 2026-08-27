@@ -61,8 +61,12 @@ private _playerCash = (_viewModel getOrDefault ["playerCash", 0]) max 0;
 private _playerXpIntoLevel = (_viewModel getOrDefault ["playerXpIntoLevel", 0]) max 0;
 private _playerXpRequired = (_viewModel getOrDefault ["playerXpRequired", 0]) max 0;
 private _playerXpRatio = (_viewModel getOrDefault ["playerXpRatio", 1]) max 0 min 1;
+private _rank = [_playerLevel] call bn_koth_fnc_progression_resolveRankPresentation;
+private _rankCtrl = _display displayCtrl BN_KOTH_IDC_HEADER_RANK_BADGE;
 
-(_display displayCtrl BN_KOTH_IDC_HEADER_RANK_BADGE) ctrlSetText str _playerLevel;
+_rankCtrl ctrlSetText (_rank getOrDefault ["icon", ""]);
+_rankCtrl ctrlSetTextColor (_rank getOrDefault ["color", [1, 1, 1, 0]]);
+_rankCtrl ctrlShow (_rank getOrDefault ["hasIcon", false]);
 (_display displayCtrl BN_KOTH_IDC_HEADER_PLAYER_NAME) ctrlSetText _playerName;
 (_display displayCtrl BN_KOTH_IDC_HEADER_PLAYER_LEVEL) ctrlSetText format ["LEVEL %1", _playerLevel];
 

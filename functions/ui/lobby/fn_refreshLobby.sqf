@@ -35,6 +35,7 @@ private _teamCounts = missionNamespace getVariable ["BN_KOTH_teamCounts", create
 private _playerStates = missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap];
 private _playerAssignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
 private _playerNames = missionNamespace getVariable ["BN_KOTH_playerNames", createHashMap];
+private _playerLevels = missionNamespace getVariable ["BN_KOTH_playerLevels", createHashMap];
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 private _voteCandidates = missionNamespace getVariable ["BN_KOTH_voteCandidates", []];
 private _voteTotals = missionNamespace getVariable ["BN_KOTH_voteTotals", createHashMap];
@@ -259,7 +260,9 @@ if (_playerAssignments isEqualType createHashMap) then {
 
             private _labelPrefix = if (_uid isEqualTo _myUid) then {"[YOU] "} else {""};
             private _stateText = [_state] call _describePlayerState;
-            private _row = [format ["%1%2 - %3", _labelPrefix, _displayName, _stateText], _uid isEqualTo _myUid];
+            private _level = if (_playerLevels isEqualType createHashMap) then {_playerLevels getOrDefault [_uid, 1]} else {1};
+            if !(_level isEqualType 0) then {_level = 1};
+            private _row = [format ["%1%2 - %3", _labelPrefix, _displayName, _stateText], _uid isEqualTo _myUid, floor (_level max 1), true];
 
             if (_assigned isEqualTo west) then {
                 _westRows pushBack _row;
@@ -271,11 +274,11 @@ if (_playerAssignments isEqualType createHashMap) then {
 };
 
 if ((count _westRows) <= 0) then {
-    _westRows pushBack ["No selected WEST players", false];
+    _westRows pushBack ["No selected WEST players", false, 1, false];
 };
 
 if ((count _eastRows) <= 0) then {
-    _eastRows pushBack ["No selected EAST players", false];
+    _eastRows pushBack ["No selected EAST players", false, 1, false];
 };
 
 private _selectionLocked = _roundState in ["PREPARING", "ENDING", "RESETTING"];
