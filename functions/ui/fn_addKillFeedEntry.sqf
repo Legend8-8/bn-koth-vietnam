@@ -104,19 +104,21 @@ private _text = switch (_type) do {
 };
 
 private _w = BN_KOTH_KF_ENTRY_W * safeZoneW;
-private _h = BN_KOTH_KF_ENTRY_H * safeZoneH;
+private _minH = BN_KOTH_KF_ENTRY_H * safeZoneH;
+private _spacing = BN_KOTH_KF_SPACING * safeZoneH;
 private _ctrlX = safeZoneX + safeZoneW - _w - (BN_KOTH_KF_MARGIN * safeZoneW);
 
 private _fncReposition = {
-    params ["_list", "_posX", "_w", "_h"];
+    params ["_list", "_posX", "_w", "_spacing"];
 
+    private _posY = safeZoneY + (BN_KOTH_KF_TOP_OFFSET * safeZoneH);
     {
-        _x params ["_c"];
-        private _posY = (safeZoneY + (BN_KOTH_KF_TOP_OFFSET * safeZoneH))
-            + (_forEachIndex * ((BN_KOTH_KF_ENTRY_H + BN_KOTH_KF_SPACING) * safeZoneH));
-
-        _c ctrlSetPosition [_posX, _posY, _w, _h];
-        _c ctrlCommit 0.15;
+        _x params ["_c", "_entryH"];
+        if (!isNull _c) then {
+            _c ctrlSetPosition [_posX, _posY, _w, _entryH];
+            _c ctrlCommit 0.15;
+            _posY = _posY + _entryH + _spacing;
+        };
     } forEach _list;
 };
 
@@ -133,11 +135,22 @@ if (count _entries >= BN_KOTH_KF_MAX_ENTRIES) then {
 private _ctrl = _display ctrlCreate ["RscStructuredText", -1];
 _ctrl ctrlSetStructuredText (parseText _text);
 _ctrl ctrlSetBackgroundColor [0, 0, 0, 0.35];
+
+// Set final width first, then measure rendered structured-text height.
 _ctrl ctrlSetPosition [
     _ctrlX,
     safeZoneY + (BN_KOTH_KF_TOP_OFFSET * safeZoneH),
     _w,
-    _h
+    _minH
+];
+_ctrl ctrlCommit 0;
+
+private _entryH = (ctrlTextHeight _ctrl) max _minH;
+_ctrl ctrlSetPosition [
+    _ctrlX,
+    safeZoneY + (BN_KOTH_KF_TOP_OFFSET * safeZoneH),
+    _w,
+    _entryH
 ];
 _ctrl ctrlCommit 0;
 
@@ -146,16 +159,16 @@ _ctrl ctrlCommit 0;
 _ctrl ctrlSetFade 0;
 _ctrl ctrlCommit 0.15;
 
-_entries pushBack [_ctrl];
+_entries pushBack [_ctrl, _entryH];
 uiNamespace setVariable ["BN_KOTH_killFeedEntries", _entries];
 
-[_entries, _ctrlX, _w, _h] call _fncReposition;
+[_entries, _ctrlX, _w, _spacing] call _fncReposition;
 
-[_ctrl, _ctrlX, _w, _h, _fncReposition] spawn {
+[_ctrl, _ctrlX, _w, _spacing, _fncReposition] spawn {
     private _ctrl = _this select 0;
     private _posX = _this select 1;
     private _w = _this select 2;
-    private _h = _this select 3;
+    private _spacing = _this select 3;
     private _fncReposition = _this select 4;
 
     if (isNil "_ctrl") exitWith {
@@ -179,5 +192,5 @@ uiNamespace setVariable ["BN_KOTH_killFeedEntries", _entries];
     };
     uiNamespace setVariable ["BN_KOTH_killFeedEntries", _entries];
 
-    [_entries, _posX, _w, _h] call _fncReposition;
+    [_entries, _posX, _w, _spacing] call _fncReposition;
 };
