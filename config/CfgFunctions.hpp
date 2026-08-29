@@ -83,6 +83,8 @@ class CfgFunctions
             class zone_clearActiveLocation {file = "functions\zone\fn_clearActiveLocation.sqf";};
             class zone_cacheStaticObjects {file = "functions\zone\fn_cacheStaticObjects.sqf";};
             class zone_cleanupRuntimeObjects {file = "functions\zone\fn_cleanupRuntimeObjects.sqf";};
+            class zone_cleanupBattlefieldPickups {file = "functions\zone\fn_cleanupBattlefieldPickups.sqf";};
+            class zone_spawnBattlefieldPickups {file = "functions\zone\fn_spawnBattlefieldPickups.sqf";};
             class zone_evaluateControl {file = "functions\zone\fn_evaluateControl.sqf";};
             class zone_updatePriorityZone {file = "functions\zone\fn_updatePriorityZone.sqf";};
         };
@@ -240,6 +242,7 @@ class CfgFunctions
             class ui_evaluateStateReadiness {file = "functions\ui\state\fn_evaluateStateReadiness.sqf";};
             class ui_updateHudLifecycle {file = "functions\ui\hud\fn_updateHudLifecycle.sqf";};
             class ui_refreshHud {file = "functions\ui\hud\fn_refreshHud.sqf";};
+            class ui_updatePriorityTask {file = "functions\ui\hud\fn_updatePriorityTask.sqf";};
             class ui_updateLobbyBlackout {file = "functions\ui\lobby\fn_updateLobbyBlackout.sqf";};
             class ui_updateLobbyRepresentationContainment {file = "functions\ui\lobby\fn_updateLobbyRepresentationContainment.sqf";};
             class ui_handleLobbyKeyDown {file = "functions\ui\lobby\fn_handleLobbyKeyDown.sqf";};

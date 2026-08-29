@@ -25,12 +25,12 @@ private _check = {
 } forEach ["vn_m3a1", "vn_m1911", "vn_pps43", "vn_pm"];
 
 private _m1903Metadata = ["vn_m1903"] call bn_koth_fnc_loadouts_getWeaponMetadata;
-["Former WEST starter M1903 moved to level 10",
-    (_m1903Metadata getOrDefault ["minLevel", 0]) isEqualTo 10] call _check;
+["WEST M1903 is starter-accessible at level 1",
+    (_m1903Metadata getOrDefault ["minLevel", 0]) isEqualTo 1] call _check;
 
 private _k98kMetadata = ["vn_k98k"] call bn_koth_fnc_loadouts_getWeaponMetadata;
-["Former EAST starter K98K moved to level 10",
-    (_k98kMetadata getOrDefault ["minLevel", 0]) isEqualTo 10] call _check;
+["EAST K98K is starter-accessible at level 1",
+    (_k98kMetadata getOrDefault ["minLevel", 0]) isEqualTo 1] call _check;
 
 private _westStarterCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Loadouts" >> "starter_west";
 private _eastStarterCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Loadouts" >> "starter_east";
@@ -45,6 +45,29 @@ private _eastAssignedItems = getArray (_eastStarterCfg >> "assignedItems");
 ["Starter primary magazine counts remain four",
     (getNumber (_westStarterCfg >> "primaryMagazineCount")) isEqualTo 4 &&
     {(getNumber (_eastStarterCfg >> "primaryMagazineCount")) isEqualTo 4}] call _check;
+private _westCargo = getArray (_westStarterCfg >> "cargo");
+private _eastCargo = getArray (_eastStarterCfg >> "cargo");
+["WEST starter carries three M61 frags and two M18 white smokes",
+    ["vn_m61_grenade_mag", 3, "vest"] in _westCargo &&
+    {["vn_m18_white_mag", 2, "vest"] in _westCargo}] call _check;
+["EAST starter carries three RGD-5 frags and two RDG-2 smokes",
+    ["vn_rgd5_grenade_mag", 3, "vest"] in _eastCargo &&
+    {["vn_rdg2_mag", 2, "vest"] in _eastCargo}] call _check;
+
+{
+    _x params ["_group", "_className", "_sideToken"];
+    private _metadata = [_group, _className] call bn_koth_fnc_loadouts_getItemMetadata;
+    private _sidePolicy = [_sideToken, _metadata, false] call bn_koth_fnc_progression_evaluateEquipmentSidePolicyRules;
+    [format ["Starter consumable %1 is explicit Level 1 %2 policy", _className, _sideToken],
+        (_metadata getOrDefault ["configured", false]) &&
+        {(_metadata getOrDefault ["minLevel", 0]) isEqualTo 1} &&
+        {_sidePolicy getOrDefault ["allowed", false]}] call _check;
+} forEach [
+    ["Consumables", "vn_m61_grenade_mag", "WEST"],
+    ["Consumables", "vn_m18_white_mag", "WEST"],
+    ["Consumables", "vn_rgd5_grenade_mag", "EAST"],
+    ["Consumables", "vn_rdg2_mag", "EAST"]
+];
 
 private _sourceWeaponsCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment" >> "Compatibility" >> "SourceWeapons";
 private _sourceItemsCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment" >> "Compatibility" >> "SourceItems";

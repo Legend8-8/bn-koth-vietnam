@@ -861,6 +861,13 @@ and binocular classes; spare-magazine counts and target containers; generic star
 cargo; and the six assigned-item slots in Arma order (map, GPS/terminal, radio,
 compass, watch, NVG). Empty optional classnames explicitly clear that slot.
 
+The current default kits keep the faction SMGs equipped (`vn_m3a1` WEST and
+`vn_pps43` EAST), with the faction bolt-actions (`vn_m1903` and `vn_k98k`)
+also available through normal Level 1 Arsenal entitlement. Each default kit
+places three faction-appropriate fragmentation grenades and two white smoke
+grenades in its configured vest; those consumables have explicit Level 1 side
+policy rather than relying on uncontrolled metadata.
+
 Runtime derives each configured weapon's loaded and spare magazine classname
 from the generated canonical S.O.G. `baseMagazine` fact; starter config does not
 duplicate that factual choice. Magazines and attachments are then validated

@@ -146,6 +146,7 @@ if (_roundState in ["PREPARING", "ACTIVE"]) then {
 };
 
 [] call bn_koth_fnc_respawn_sweepSafeZoneGroundItems;
+[] call bn_koth_fnc_zone_spawnBattlefieldPickups;
 
 [format ["Active location set: %1 (%2)", _locationId, _activeZoneMarker]] call bn_koth_fnc_common_log;
 

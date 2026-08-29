@@ -33,14 +33,16 @@ private _readText = {
 
 private _maximumControlHeight = ["maximumControlHeight", 50] call _readNumber;
 missionNamespace setVariable ["BN_KOTH_maximumControlHeight", _maximumControlHeight max 0];
-private _prioritySizeRatio = (["prioritySizeRatio", 0.14142136] call _readNumber) max 0;
-private _priorityMinimumHalfSize = (["priorityMinimumHalfSize", 8.4852814] call _readNumber) max 0;
+private _priorityAreaRatio = ((["priorityAreaRatio", 0.10] call _readNumber) max 0) min 1;
+private _prioritySizeRatio = sqrt _priorityAreaRatio;
+private _priorityMinimumHalfSize = (["priorityMinimumHalfSize", 1] call _readNumber) max 0;
 private _priorityMoveTickInterval = (["priorityMoveTickInterval", 0.5] call _readNumber) max 0.01;
 private _priorityMoveDistancePerTick = (["priorityMoveDistancePerTick", 0.25] call _readNumber) max 0;
 private _priorityControlWeight = (["priorityControlWeight", 2] call _readNumber) max 1;
 private _priorityMarkerAlpha = ((["priorityMarkerAlpha", 0.75] call _readNumber) max 0) min 1;
 
 missionNamespace setVariable ["BN_KOTH_priorityZoneRatio", _prioritySizeRatio];
+missionNamespace setVariable ["BN_KOTH_priorityZoneAreaRatio", _priorityAreaRatio];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMinimumHalfSize", _priorityMinimumHalfSize];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMoveTickInterval", _priorityMoveTickInterval];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMoveDistancePerTick", _priorityMoveDistancePerTick];

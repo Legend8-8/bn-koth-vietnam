@@ -44,6 +44,7 @@ if (_shouldShow) then {
         _layer cutFadeOut 0;
         uiNamespace setVariable ["BN_KOTH_hudVisible", false];
         uiNamespace setVariable ["BN_KOTH_hudDisplay", displayNull];
+        [] call bn_koth_fnc_ui_updatePriorityTask;
 
         private _loopHandle = uiNamespace getVariable ["BN_KOTH_hudAnimatorHandle", scriptNull];
         if !(_loopHandle isEqualTo scriptNull) then {
