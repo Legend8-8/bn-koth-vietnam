@@ -11,6 +11,7 @@
 */
 
 #include "..\..\..\ui\lobby\idcs.hpp"
+#include "..\..\..\ui\menu\idcs.hpp"
 
 if (!hasInterface) exitWith {false};
 
@@ -60,6 +61,16 @@ private _nativeRestorePending = uiNamespace getVariable ["BN_KOTH_lobbyNativeMen
 private _myState = _playerStates getOrDefault [_uid, "LOBBY"];
 private _isDeployed = (_uid in _activeParticipants) || {_myState in ["ACTIVE", "RESPAWNING"]};
 [_isDeployed] call _syncHud;
+
+if (!_isDeployed) then {
+    private _menuDisplay = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
+    if (isNull _menuDisplay) then {
+        _menuDisplay = findDisplay BN_KOTH_IDD_MENU;
+    };
+    if (!isNull _menuDisplay) then {
+        [] call bn_koth_fnc_menu_close;
+    };
+};
 
 private _shouldOpen = !_isDeployed && {_initialPreloadFinished};
 
