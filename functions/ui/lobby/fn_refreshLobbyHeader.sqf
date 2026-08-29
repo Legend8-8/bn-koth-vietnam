@@ -67,7 +67,8 @@ private _rankCtrl = _display displayCtrl BN_KOTH_IDC_HEADER_RANK_BADGE;
 _rankCtrl ctrlSetText (_rank getOrDefault ["icon", ""]);
 _rankCtrl ctrlSetTextColor (_rank getOrDefault ["color", [1, 1, 1, 0]]);
 _rankCtrl ctrlShow (_rank getOrDefault ["hasIcon", false]);
-(_display displayCtrl BN_KOTH_IDC_HEADER_PLAYER_NAME) ctrlSetText _playerName;
+private _playerNameCtrl = _display displayCtrl BN_KOTH_IDC_HEADER_PLAYER_NAME;
+_playerNameCtrl ctrlSetText ([_playerNameCtrl, _playerName] call bn_koth_fnc_ui_fitLobbyName);
 (_display displayCtrl BN_KOTH_IDC_HEADER_PLAYER_LEVEL) ctrlSetText format ["LEVEL %1", _playerLevel];
 
 private _xpCtrl = _display displayCtrl BN_KOTH_IDC_HEADER_XP;

@@ -251,6 +251,7 @@ class CfgFunctions
             class ui_refreshLobby {file = "functions\ui\lobby\fn_refreshLobby.sqf";};
             class ui_refreshLobbyHeader {file = "functions\ui\lobby\fn_refreshLobbyHeader.sqf";};
             class ui_refreshLobbyTeams {file = "functions\ui\lobby\fn_refreshLobbyTeams.sqf";};
+            class ui_fitLobbyName {file = "functions\ui\lobby\fn_fitLobbyName.sqf";};
             class ui_refreshLobbyCenter {file = "functions\ui\lobby\fn_refreshLobbyCenter.sqf";};
             class ui_refreshLobbyVote {file = "functions\ui\lobby\fn_refreshLobbyVote.sqf";};
             class ui_refreshLobbyLeaders {file = "functions\ui\lobby\fn_refreshLobbyLeaders.sqf";};
