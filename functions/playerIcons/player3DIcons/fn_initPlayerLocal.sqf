@@ -28,6 +28,7 @@ missionNamespace setVariable ["BN_KOTH_player3DIconsSize", (getNumber (_config >
 missionNamespace setVariable ["BN_KOTH_player3DIconsNameSize", (getNumber (_config >> "nameSize")) max 0.01];
 missionNamespace setVariable ["BN_KOTH_player3DIconsShadow", (getNumber (_config >> "shadow")) > 0];
 missionNamespace setVariable ["BN_KOTH_player3DIconsMaxDistance", (getNumber (_config >> "maxDistance")) max 25];
+missionNamespace setVariable ["BN_KOTH_player3DIconsProximityVisibilityDistance", (getNumber (_config >> "proximityVisibilityDistance")) max 0];
 missionNamespace setVariable ["BN_KOTH_player3DIconsWestColor", getArray (_config >> "westColor")];
 missionNamespace setVariable ["BN_KOTH_player3DIconsEastColor", getArray (_config >> "eastColor")];
 missionNamespace setVariable ["BN_KOTH_player3DIconsSameGroupColor", getArray (_config >> "sameGroupColor")];

@@ -64,9 +64,14 @@ The score interval, points awarded per interval and winning score must be config
 The server is responsible for calculating and awarding all team score.
 
 The deployed bottom-right HUD presents WEST and EAST team scores, current AO
-control status, the round lead, and scoring progress. Raw player population,
-weighted control, Priority occupancy, and personal Priority status remain part
-of authoritative gameplay where applicable but are not displayed in that panel.
+control status, the round lead, scoring progress, the local server-provided
+rank/level/XP presentation, raw WEST/EAST main-AO population, and a visually
+distinct `+N` Priority bonus row. Weighted control and personal Priority status
+remain authoritative gameplay state but are not displayed directly in that panel.
+
+Normal controlled-AO score ticks occur every 30 seconds. A player in Priority
+already contributes one normal AO unit plus one bonus control unit; the HUD bonus
+row explains that existing weighting without changing it.
 
 5. Player Progression
 

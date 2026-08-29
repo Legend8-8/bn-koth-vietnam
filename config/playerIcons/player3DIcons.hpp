@@ -7,6 +7,8 @@ class CfgBnKothPlayer3DIcons
     nameSize = 0.035;
     shadow = 1;
     maxDistance = 1000;
+    // Nearby friendlies remain visible through thin geometry and vegetation.
+    proximityVisibilityDistance = 25;
     westColor[] = {0.00, 0.30, 0.60, 1.00};
     eastColor[] = {0.50, 0.00, 0.00, 1.00};
     sameGroupColor[] = {0.00, 0.80, 0.00, 1.00};

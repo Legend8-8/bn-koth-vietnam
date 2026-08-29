@@ -33,7 +33,9 @@ class CfgBnKothArsenal
             binocular = "";
 
             cargo[] = {
-                {"vn_b_item_firstaidkit", 2, "uniform"}
+                {"vn_b_item_firstaidkit", 2, "uniform"},
+                {"vn_m61_grenade_mag", 3, "vest"},
+                {"vn_m18_white_mag", 2, "vest"}
             };
 
             // Arma assigned-item order: map, GPS/terminal, radio, compass, watch, NVG.
@@ -78,7 +80,9 @@ class CfgBnKothArsenal
             binocular = "";
 
             cargo[] = {
-                {"vn_o_item_firstaidkit", 2, "uniform"}
+                {"vn_o_item_firstaidkit", 2, "uniform"},
+                {"vn_rgd5_grenade_mag", 3, "vest"},
+                {"vn_rdg2_mag", 2, "vest"}
             };
 
             // Arma assigned-item order: map, GPS/terminal, radio, compass, watch, NVG.
@@ -129,7 +133,7 @@ class CfgBnKothArsenal
                 class vn_hp {allowedSides[] = {"WEST"}; minLevel = 12; purchasePrice = 500; rentalPrice = 100;};
                 class vn_izh54 {allowedSides[] = {"EAST"}; minLevel = 25; purchasePrice = 1500; rentalPrice = 300;};
                 class vn_k50m {allowedSides[] = {"EAST"}; minLevel = 20; purchasePrice = 1000; rentalPrice = 200;};
-                class vn_k98k {allowedSides[] = {"EAST"}; minLevel = 10;};
+                class vn_k98k {allowedSides[] = {"EAST"}; minLevel = 1;};
                 class vn_kbkg {allowedSides[] = {"EAST"}; minLevel = 38; purchasePrice = 2500; rentalPrice = 500;};
                 class vn_l1a1_01
                 {
@@ -154,7 +158,7 @@ class CfgBnKothArsenal
                 class vn_m1891 {allowedSides[] = {"EAST"}; minLevel = 12; purchasePrice = 750; rentalPrice = 150;};
                 class vn_m1895 {allowedSides[] = {"EAST"}; minLevel = 12; purchasePrice = 500; rentalPrice = 100;};
                 class vn_m1897 {allowedSides[] = {"WEST"}; minLevel = 30; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_m1903 {allowedSides[] = {"WEST"}; minLevel = 10;};
+                class vn_m1903 {allowedSides[] = {"WEST"}; minLevel = 1;};
                 class vn_m1911 {allowedSides[] = {"WEST"}; minLevel = 1;};
                 class vn_m1918 {allowedSides[] = {"WEST"}; minLevel = 40; purchasePrice = 2500; rentalPrice = 500;};
                 class vn_m1928_tommy {allowedSides[] = {"WEST"}; minLevel = 18; purchasePrice = 1000; rentalPrice = 200;};
@@ -285,7 +289,13 @@ class CfgBnKothArsenal
             {
                 #include "wearables.hpp"
             };
-            class Consumables {};
+            class Consumables
+            {
+                class vn_m18_white_mag {allowedSides[] = {"WEST"}; minLevel = 1;};
+                class vn_m61_grenade_mag {allowedSides[] = {"WEST"}; minLevel = 1;};
+                class vn_rdg2_mag {allowedSides[] = {"EAST"}; minLevel = 1;};
+                class vn_rgd5_grenade_mag {allowedSides[] = {"EAST"}; minLevel = 1;};
+            };
         };
 
         // Intentionally tiny, reviewable seed catalogue.

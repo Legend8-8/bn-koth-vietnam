@@ -108,11 +108,27 @@ Zone-related changes must verify:
 - disconnected players are removed from the calculation;
 - zone state updates at the expected interval;
 - actual-player, weighted-control and Priority-occupancy values come from the same eligible-player pass;
-- the bottom-right HUD shows WEST/EAST team scores, AO status, round lead, and
-  scoring progress without showing actual-player, weighted-control,
-  Priority-occupancy, or personal Priority-status rows;
-- removing those HUD rows does not change published population values, Priority
-  weighting, zone control, scoring, or the debug display.
+- the bottom-right HUD shows WEST/EAST team scores, AO status, round lead,
+  scoring progress, local rank/level/XP, published WEST/EAST raw AO population,
+  and the published Priority counts as a visually distinct `+N` bonus without
+  independently scanning players;
+- missing progression state shows a safe syncing presentation and maximum level
+  never displays an invalid next-level requirement;
+- HUD presentation does not change published population values, Priority
+  weighting, zone control, scoring, or the debug display;
+- the configured battlefield pickup count is attempted once per active AO,
+  holders stay within the active marker with bounded placement attempts, factual
+  compatible ammunition is included, pavement/sidewalk surfaces do not bury the
+  holder, per-holder diagnostics identify RNG output and final position, and
+  active-location cleanup deletes all tracked holders without granting
+  progression entitlement;
+- controlled-AO score progress and award cadence use the config-owned 30-second
+  interval without changing point or reward values;
+- the Priority client-local Simple Task is created once without notification,
+  follows the global moving marker, and is removed outside ACTIVE state or when
+  the deployed HUD/AO/Priority marker is absent;
+- friendly 3D icons bypass geometry LOS only within the configured 25-metre
+  proximity threshold; maximum range and beyond-threshold LOS remain unchanged.
 
 If vehicle occupants count toward control, test players entering and leaving vehicles inside the zone.
 

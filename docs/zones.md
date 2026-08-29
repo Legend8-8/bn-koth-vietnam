@@ -87,15 +87,17 @@ Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
 The zone system also supports a moving priority area inside the active AO.
 
 - The priority zone is a smaller rectangle aligned with the active zone marker.
-- Its default footprint area is twice the original 10%-dimension priority zone while preserving the same aspect ratio.
-- Each dimension uses a ratio of approximately 0.1414 of the AO dimensions, with a minimum half-size of approximately 8.49 metres.
-- It moves on a 0.5-second server tick, advancing a nominal 0.25 metres per tick in every AO (0.5 metres per second).
+- `priorityAreaRatio = 0.10` directly configures ten percent of the AO footprint area; the server derives the linear scale with `sqrt(priorityAreaRatio)` while preserving the AO aspect ratio.
+- A one-metre minimum half-size is only a degenerate-AO safety floor and does not override the configured ratio for normal AOs.
+- Movement cadence and distance remain config-owned and are applied by the existing server zone manager.
 - Actual elapsed server time is used for movement so scheduler delays do not reduce its real-time speed.
 - The complete priority-zone footprint remains inside the active AO, including rotated and elliptical AOs.
 - Players inside the priority zone count as two players for objective control weighting.
 - Main AO players continue to count normally.
 - The existing control pass publishes one structured population value with raw eligible players, weighted control and raw Priority occupancy for both playable sides.
-- The gameplay HUD shows all three population views, the round lead, current AO state and whether the local player is inside or outside Priority.
+- The gameplay HUD consumes published `raw` population for the main AO row and
+  published `priority` population for a visually distinct `+N` bonus row; it
+  does not rescan players or alter control weighting.
 - Its appearance uses raw eligible-player counts inside the priority zone, independently of control weighting:
   - no WEST or EAST players: green with a solid fill;
   - more WEST than EAST players: blue with a solid fill;
@@ -104,3 +106,15 @@ The zone system also supports a moving priority area inside the active AO.
 - The server owns movement and control weighting; control evaluation does not advance movement.
 - The server also owns priority-zone appearance decisions and broadcasts marker changes only when the color or brush changes.
 - A global marker provides client and join-in-progress visibility of the current objective hotspot.
+- During ACTIVE play, one silent client-local Arma Simple Task identifies the
+  Priority objective. Its destination follows the same global marker, owns no
+  geometry or gameplay state, and is removed with the deployed HUD/objective.
+
+The same active-AO lifecycle owns a small config-driven set of physical battlefield
+weapon holders. The server performs a bounded placement search inside the active
+marker, resolves ammunition from factual compatibility data, tracks every holder,
+and deletes the tracked set when the AO is cleared. Physical use grants no Arsenal,
+ownership, rental, or persistent progression entitlement.
+Placement resolves the highest nearby geometry surface within 1.5 metres of the
+terrain baseline and adds only 0.08 metres of clearance, keeping holders visible
+on pavement without accepting inaccessible elevated surfaces.

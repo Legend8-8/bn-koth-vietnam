@@ -85,5 +85,10 @@ missionNamespace setVariable ["BN_KOTH_priorityZonePosition", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMarker", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneSize", nil];
 [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
+private _pickupCleanupCount = [] call bn_koth_fnc_zone_cleanupBattlefieldPickups;
 private _runtimeCleanupCount = [] call bn_koth_fnc_zone_cleanupRuntimeObjects;
-[format ["Active AO cleared and runtime content cleaned up: %1 object(s).", _runtimeCleanupCount]] call bn_koth_fnc_common_log;
+[format [
+    "Active AO cleared and runtime content cleaned up: %1 battlefield pickup(s), %2 other object(s).",
+    _pickupCleanupCount,
+    _runtimeCleanupCount
+]] call bn_koth_fnc_common_log;

@@ -42,8 +42,8 @@ missionNamespace setVariable ["BN_KOTH_warnedUnsupportedPriorityAoShape", false]
 private _aoSize = markerSize _activeMarker;
 private _aoHalfWidth = if ((count _aoSize) > 0) then {_aoSize select 0} else {40};
 private _aoHalfHeight = if ((count _aoSize) > 1) then {_aoSize select 1} else {30};
-private _priorityRatio = missionNamespace getVariable ["BN_KOTH_priorityZoneRatio", 0.14142136];
-private _priorityMinimumHalfSize = missionNamespace getVariable ["BN_KOTH_priorityZoneMinimumHalfSize", 8.4852814];
+private _priorityRatio = missionNamespace getVariable ["BN_KOTH_priorityZoneRatio", sqrt 0.10];
+private _priorityMinimumHalfSize = missionNamespace getVariable ["BN_KOTH_priorityZoneMinimumHalfSize", 1];
 private _priorityHalfWidth = (_aoHalfWidth * _priorityRatio) max _priorityMinimumHalfSize;
 private _priorityHalfHeight = (_aoHalfHeight * _priorityRatio) max _priorityMinimumHalfSize;
 private _aoDirection = markerDir _activeMarker;

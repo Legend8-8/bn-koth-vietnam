@@ -2,7 +2,7 @@ class CfgBnKothScoring
 {
 	scoreLimit = 100;
 	scoreTick = 1;
-	scoreTickInterval = 15;
+	scoreTickInterval = 30;
 
 	class progression
 	{
