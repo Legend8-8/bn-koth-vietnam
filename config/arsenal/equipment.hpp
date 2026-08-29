@@ -10,7 +10,7 @@ class CfgBnKothArsenal
             starter = 1;
             category = "starter";
 
-            primaryWeapon = "vn_m1903";
+            primaryWeapon = "vn_m3a1";
             primaryMagazineCount = 4;
             primaryMagazineContainer = "vest";
             primaryAttachments[] = {};
@@ -39,7 +39,7 @@ class CfgBnKothArsenal
             // Arma assigned-item order: map, GPS/terminal, radio, compass, watch, NVG.
             assignedItems[] = {
                 "vn_b_item_map",
-                "",
+                "ItemGPS",
                 "vn_b_item_radio_urc10",
                 "vn_b_item_compass_sog",
                 "vn_b_item_watch",
@@ -55,7 +55,7 @@ class CfgBnKothArsenal
             starter = 1;
             category = "starter";
 
-            primaryWeapon = "vn_k98k";
+            primaryWeapon = "vn_pps43";
             primaryMagazineCount = 4;
             primaryMagazineContainer = "vest";
             primaryAttachments[] = {};
@@ -84,7 +84,7 @@ class CfgBnKothArsenal
             // Arma assigned-item order: map, GPS/terminal, radio, compass, watch, NVG.
             assignedItems[] = {
                 "vn_o_item_map",
-                "",
+                "ItemGPS",
                 "vn_o_item_radio_m252",
                 "vn_b_item_compass_sog",
                 "vn_b_item_watch",
@@ -129,7 +129,7 @@ class CfgBnKothArsenal
                 class vn_hp {allowedSides[] = {"WEST"}; minLevel = 12; purchasePrice = 500; rentalPrice = 100;};
                 class vn_izh54 {allowedSides[] = {"EAST"}; minLevel = 25; purchasePrice = 1500; rentalPrice = 300;};
                 class vn_k50m {allowedSides[] = {"EAST"}; minLevel = 20; purchasePrice = 1000; rentalPrice = 200;};
-                class vn_k98k {allowedSides[] = {"EAST"}; minLevel = 1;};
+                class vn_k98k {allowedSides[] = {"EAST"}; minLevel = 10;};
                 class vn_kbkg {allowedSides[] = {"EAST"}; minLevel = 38; purchasePrice = 2500; rentalPrice = 500;};
                 class vn_l1a1_01
                 {
@@ -154,7 +154,7 @@ class CfgBnKothArsenal
                 class vn_m1891 {allowedSides[] = {"EAST"}; minLevel = 12; purchasePrice = 750; rentalPrice = 150;};
                 class vn_m1895 {allowedSides[] = {"EAST"}; minLevel = 12; purchasePrice = 500; rentalPrice = 100;};
                 class vn_m1897 {allowedSides[] = {"WEST"}; minLevel = 30; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_m1903 {allowedSides[] = {"WEST"}; minLevel = 1;};
+                class vn_m1903 {allowedSides[] = {"WEST"}; minLevel = 10;};
                 class vn_m1911 {allowedSides[] = {"WEST"}; minLevel = 1;};
                 class vn_m1918 {allowedSides[] = {"WEST"}; minLevel = 40; purchasePrice = 2500; rentalPrice = 500;};
                 class vn_m1928_tommy {allowedSides[] = {"WEST"}; minLevel = 18; purchasePrice = 1000; rentalPrice = 200;};
@@ -168,7 +168,7 @@ class CfgBnKothArsenal
                 class vn_m2carbine {allowedSides[] = {"WEST"}; minLevel = 25; purchasePrice = 1500; rentalPrice = 300;};
                 class vn_m36 {allowedSides[] = {"EAST"}; minLevel = 18; purchasePrice = 1000; rentalPrice = 200;};
                 class vn_m38 {allowedSides[] = {"EAST"}; minLevel = 15; purchasePrice = 750; rentalPrice = 150;};
-                class vn_m3a1 {allowedSides[] = {"WEST", "EAST"}; minLevel = 12; purchasePrice = 750; rentalPrice = 150;};
+                class vn_m3a1 {allowedSides[] = {"WEST"}; minLevel = 1;};
                 class vn_m3carbine {allowedSides[] = {"WEST"}; minLevel = 175; purchasePrice = 6500; rentalPrice = 1300;};
                 class vn_m40a1 {allowedSides[] = {"WEST"}; minLevel = 125; purchasePrice = 5000; rentalPrice = 1000;};
                 class vn_m45 {allowedSides[] = {"WEST"}; minLevel = 30; purchasePrice = 1500; rentalPrice = 300;};
@@ -195,7 +195,7 @@ class CfgBnKothArsenal
                 class vn_pk {allowedSides[] = {"EAST"}; minLevel = 115; purchasePrice = 5000; rentalPrice = 1000;};
                 class vn_pm {allowedSides[] = {"EAST"}; minLevel = 1;};
                 class vn_ppk {allowedSides[] = {"EAST"}; minLevel = 8; purchasePrice = 500; rentalPrice = 100;};
-                class vn_pps43 {allowedSides[] = {"EAST"}; minLevel = 15; purchasePrice = 750; rentalPrice = 150;};
+                class vn_pps43 {allowedSides[] = {"EAST"}; minLevel = 1;};
                 class vn_pps52 {allowedSides[] = {"EAST"}; minLevel = 18; purchasePrice = 1000; rentalPrice = 200;};
                 class vn_ppsh41 {allowedSides[] = {"EAST"}; minLevel = 22; purchasePrice = 1250; rentalPrice = 250;};
                 class vn_rpd {allowedSides[] = {"WEST", "EAST"}; minLevel = 70; purchasePrice = 3500; rentalPrice = 700;};

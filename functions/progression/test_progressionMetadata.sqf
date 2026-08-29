@@ -22,7 +22,41 @@ private _check = {
     [format ["Starter %1 remains acquisition-uncontrolled", _x],
         (_metadata getOrDefault ["purchasePrice", 0]) < 0 &&
         {(_metadata getOrDefault ["rentalPrice", 0]) < 0}] call _check;
-} forEach ["vn_m1903", "vn_m1911", "vn_k98k", "vn_pm"];
+} forEach ["vn_m3a1", "vn_m1911", "vn_pps43", "vn_pm"];
+
+private _m1903Metadata = ["vn_m1903"] call bn_koth_fnc_loadouts_getWeaponMetadata;
+["Former WEST starter M1903 moved to level 10",
+    (_m1903Metadata getOrDefault ["minLevel", 0]) isEqualTo 10] call _check;
+
+private _k98kMetadata = ["vn_k98k"] call bn_koth_fnc_loadouts_getWeaponMetadata;
+["Former EAST starter K98K moved to level 10",
+    (_k98kMetadata getOrDefault ["minLevel", 0]) isEqualTo 10] call _check;
+
+private _westStarterCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Loadouts" >> "starter_west";
+private _eastStarterCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Loadouts" >> "starter_east";
+private _westAssignedItems = getArray (_westStarterCfg >> "assignedItems");
+private _eastAssignedItems = getArray (_eastStarterCfg >> "assignedItems");
+["WEST starter uses M3A1 and GPS slot 1",
+    (getText (_westStarterCfg >> "primaryWeapon")) isEqualTo "vn_m3a1" &&
+    {(_westAssignedItems param [1, ""]) isEqualTo "ItemGPS"}] call _check;
+["EAST starter uses PPS-43 and GPS slot 1",
+    (getText (_eastStarterCfg >> "primaryWeapon")) isEqualTo "vn_pps43" &&
+    {(_eastAssignedItems param [1, ""]) isEqualTo "ItemGPS"}] call _check;
+["Starter primary magazine counts remain four",
+    (getNumber (_westStarterCfg >> "primaryMagazineCount")) isEqualTo 4 &&
+    {(getNumber (_eastStarterCfg >> "primaryMagazineCount")) isEqualTo 4}] call _check;
+
+private _sourceWeaponsCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment" >> "Compatibility" >> "SourceWeapons";
+private _sourceItemsCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment" >> "Compatibility" >> "SourceItems";
+private _gpsValidation = [1, "ItemGPS", _sourceItemsCfg] call bn_koth_fnc_loadouts_validateAssignedItemSlot;
+["ItemGPS validates in assigned GPS slot 1",
+    _gpsValidation getOrDefault ["success", false]] call _check;
+["WEST starter magazine remains factual high-confidence M3A1 magazine",
+    (getText (_sourceWeaponsCfg >> "vn_m3a1" >> "baseMagazine")) isEqualTo "vn_m3a1_mag" &&
+    {(getText (_sourceWeaponsCfg >> "vn_m3a1" >> "baseMagazineConfidence")) isEqualTo "high"}] call _check;
+["EAST starter magazine remains factual high-confidence PPS magazine",
+    (getText (_sourceWeaponsCfg >> "vn_pps43" >> "baseMagazine")) isEqualTo "vn_pps_mag" &&
+    {(getText (_sourceWeaponsCfg >> "vn_pps43" >> "baseMagazineConfidence")) isEqualTo "high"}] call _check;
 
 private _l1a1Metadata = ["vn_l1a1_01"] call bn_koth_fnc_loadouts_getWeaponMetadata;
 ["L1A1 remains level 20", (_l1a1Metadata getOrDefault ["minLevel", 0]) isEqualTo 20] call _check;

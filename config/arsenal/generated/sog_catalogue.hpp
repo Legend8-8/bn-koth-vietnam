@@ -5605,6 +5605,12 @@
 
     class SourceItems
     {
+        class ItemGPS
+        {
+            className = "ItemGPS";
+            displayName = "GPS";
+            itemType = "item";
+        };
         class vn_anpvs2_binoc
         {
             className = "vn_anpvs2_binoc";
