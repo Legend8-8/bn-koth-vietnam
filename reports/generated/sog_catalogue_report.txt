@@ -5,7 +5,7 @@ SOURCE COVERAGE
 
 FILTERING
 - accepted weapons: 227
-- accepted items: 80
+- accepted items: 81
 - accepted magazines: 340
 - rejected weapons: {'non_sog_class': 3, 'non_magazine_weapon_record': 35, 'helper_or_fake_weapon': 2}
 - rejected items: {'range_placeholder': 2, 'non_player_item': 7}
@@ -70,6 +70,7 @@ EXCLUSIONS
 - vnx_* records excluded: 0
 
 OVERRIDES
+- additionalItem:ItemGPS
 - weaponType:vn_mc10->smg
 - weaponType:vn_mc10_sd->smg
 - itemType:vn_b_camo_k98k->camo

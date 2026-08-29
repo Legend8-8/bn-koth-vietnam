@@ -39,7 +39,17 @@
     "itemType": {
       "_description": "Override an item's catalogue category when automatic classification is wrong or ambiguous.",
       "vn_example_item": "optic"
-    }
+    },
+    "additionalItems": [
+      {
+        "_description": "Explicit factual base-game items required by BN KOTH but absent from the S.O.G. wiki item table.",
+        "class": "ExampleItem",
+        "displayName": "Example Item",
+        "source": "arma3",
+        "sourcePage": "CfgWeapons",
+        "itemType": "item"
+      }
+    ]
   },
   "exclude": {
     "weapons": [],
@@ -130,6 +140,17 @@
     "vn_b_camo_svd": "camo",
     "vn_b_camo_vz54": "camo"
   },
+  "additionalItems": [
+    {
+      "class": "ItemGPS",
+      "displayName": "GPS",
+      "description": "Arma 3 GPS assigned item.",
+      "source": "arma3",
+      "sourcePage": "CfgWeapons",
+      "itemType": "item",
+      "traits": []
+    }
+  ],
   "notes": [
     "Use this file for explicit manual corrections when the source data is ambiguous or automatic classification is unsuitable.",
     "Generated catalogue files must not be edited by hand; make factual/manual corrections here and regenerate.",

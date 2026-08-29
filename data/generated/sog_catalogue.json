@@ -32629,6 +32629,20 @@
   ],
   "items": [
     {
+      "class": "ItemGPS",
+      "displayName": "GPS",
+      "description": "Arma 3 GPS assigned item.",
+      "source": "arma3",
+      "sourcePage": "CfgWeapons",
+      "version": "",
+      "itemType": "item",
+      "magazines": [],
+      "compatibleWeapons": [],
+      "traits": [],
+      "usedBy": [],
+      "sourceAffiliations": []
+    },
+    {
       "class": "vn_anpvs2_binoc",
       "displayName": "Starlight ANPVS2 (NV)",
       "description": "Starlight ANPVS2 (NV)",
@@ -40265,7 +40279,7 @@
     "filtering": {
       "accepted": {
         "weapons": 227,
-        "items": 80,
+        "items": 81,
         "magazines": 340
       },
       "rejectedReasons": {
@@ -40291,6 +40305,7 @@
     },
     "warnings": [],
     "overridesApplied": [
+      "additionalItem:ItemGPS",
       "weaponType:vn_mc10->smg",
       "weaponType:vn_mc10_sd->smg",
       "itemType:vn_b_camo_k98k->camo",

@@ -309,6 +309,31 @@ class ValidationTests(unittest.TestCase):
 
 
 class ClassificationTests(unittest.TestCase):
+    def test_explicit_base_game_item_absent_from_sog_table_is_added(self) -> None:
+        parsed_pages, _counts = parse_all_pages(
+            {"weapons": WEAPONS_SAMPLE, "items": ITEMS_SAMPLE, "magazines": MAGAZINES_SAMPLE}
+        )
+        catalogue, summary = build_catalogue(
+            parsed_pages,
+            overrides={
+                "additionalItems": [
+                    {
+                        "class": "ItemGPS",
+                        "displayName": "GPS",
+                        "source": "arma3",
+                        "sourcePage": "CfgWeapons",
+                        "itemType": "item",
+                    }
+                ]
+            },
+        )
+        item = next(record for record in catalogue["items"] if record["class"] == "ItemGPS")
+
+        self.assertEqual("arma3", item["source"])
+        self.assertEqual("item", item["itemType"])
+        self.assertEqual([], item["sourceAffiliations"])
+        self.assertIn("additionalItem:ItemGPS", summary["overridesApplied"])
+
     def test_item_type_override_drives_traits_before_variant_classification(self) -> None:
         item_sample = ITEMS_SAMPLE.replace("vn_s_m16", "vn_b_camo_m16").replace(
             "Suppressor [M16]", "Camo wrap [M16]"

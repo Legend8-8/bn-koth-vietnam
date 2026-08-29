@@ -122,6 +122,7 @@ def build_catalogue(parsed_pages: dict[str, list[dict[str, Any]]], overrides: di
 
     accepted_weapons = filter_weapon_rows(parsed_pages["weapons"], overrides, summary)
     accepted_items = filter_item_rows(parsed_pages["items"], overrides, summary)
+    append_additional_items(accepted_items, overrides, summary)
     accepted_magazines = filter_magazine_rows(parsed_pages["magazines"], overrides, summary)
 
     item_map = {item["class"]: item for item in accepted_items}
@@ -153,6 +154,37 @@ def build_catalogue(parsed_pages: dict[str, list[dict[str, Any]]], overrides: di
     }
 
     return catalogue, catalogue["summary"]
+
+
+def append_additional_items(items: list[dict[str, Any]], overrides: dict[str, Any], summary: dict[str, Any]) -> None:
+    """Append explicitly sourced base-game items absent from the S.O.G. wiki table."""
+    known_classes = {item["class"] for item in items}
+    for record in overrides.get("additionalItems", []):
+        class_name = record["class"]
+        if class_name in known_classes:
+            continue
+
+        item_type = record["itemType"]
+        items.append(
+            {
+                "class": class_name,
+                "displayName": record["displayName"],
+                "description": record.get("description", ""),
+                "source": record["source"],
+                "sourcePage": record["sourcePage"],
+                "version": record.get("version", ""),
+                "itemType": item_type,
+                "magazines": [],
+                "compatibleWeapons": [],
+                "traits": list(record.get("traits", [])),
+                "usedBy": [],
+                "sourceAffiliations": [],
+            }
+        )
+        known_classes.add(class_name)
+        summary["overridesApplied"].append(f"additionalItem:{class_name}")
+
+    summary["filtering"]["accepted"]["items"] = len(items)
 
 
 def filter_weapon_rows(rows: list[dict[str, Any]], overrides: dict[str, Any], summary: dict[str, Any]) -> list[dict[str, Any]]:
