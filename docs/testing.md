@@ -324,6 +324,11 @@ For the Arsenal rework, also verify:
 - authoritative return to the lobby closes an open deployed menu through its
   normal unload path from every page, while ACTIVE/RESPAWNING state leaves it
   open and stale `BN_KOTH_menuDisplay` state is cleared;
+- lobby player-name presentation preserves short names and width-fits only
+  overflowing names with an ellipsis in the local-player header, both team
+  rosters, and all three Live Leaders cards. Test `Legend`, a clan/prefix name,
+  spaces and permitted punctuation, plus the 24-character `W`, `M`, and `i`
+  torture cases documented by the profile-name acceptance boundary;
 - the disabled operator preview creates no camera or render-to-texture view;
 - client and server RPT files remain free of Arsenal script errors throughout
   the complete flow.

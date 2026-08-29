@@ -52,6 +52,19 @@ private _renderRows = {
         private _isCurrent = _entry select 1;
         private _level = _entry param [2, 1, [0]];
         private _isPlayerRow = _entry param [3, false, [false]];
+        if (_isPlayerRow) then {
+            private _prefix = _entry param [4, "", [""]];
+            private _stateText = _entry param [5, "LOBBY", [""]];
+            private _suffix = format [" - %1", _stateText];
+            private _font = ctrlFont _ctrl;
+            private _fontHeight = ctrlFontHeight _ctrl;
+            private _reservedWidth = 0.028
+                + (safeZoneH * 0.027)
+                + (_prefix getTextWidth [_font, _fontHeight])
+                + (_suffix getTextWidth [_font, _fontHeight]);
+            private _fittedName = [_ctrl, _text, _reservedWidth] call bn_koth_fnc_ui_fitLobbyName;
+            _text = format ["%1%2%3", _prefix, _fittedName, _suffix];
+        };
         private _rowIndex = _ctrl lbAdd _text;
         private _rank = if (_isPlayerRow) then {[_level] call bn_koth_fnc_progression_resolveRankPresentation} else {createHashMap};
         private _hasIcon = _rank getOrDefault ["hasIcon", false];

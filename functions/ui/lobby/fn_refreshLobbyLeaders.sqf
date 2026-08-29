@@ -36,7 +36,7 @@ private _renderLeader = {
         _nameCtrl ctrlSetText "NO LEADER";
         _valueCtrl ctrlSetText format ["0 %1", _suffixPlural];
     } else {
-        _nameCtrl ctrlSetText _name;
+        _nameCtrl ctrlSetText ([_nameCtrl, _name] call bn_koth_fnc_ui_fitLobbyName);
         _valueCtrl ctrlSetText format [
             "%1 %2",
             _value,

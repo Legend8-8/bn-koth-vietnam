@@ -262,7 +262,14 @@ if (_playerAssignments isEqualType createHashMap) then {
             private _stateText = [_state] call _describePlayerState;
             private _level = if (_playerLevels isEqualType createHashMap) then {_playerLevels getOrDefault [_uid, 1]} else {1};
             if !(_level isEqualType 0) then {_level = 1};
-            private _row = [format ["%1%2 - %3", _labelPrefix, _displayName, _stateText], _uid isEqualTo _myUid, floor (_level max 1), true];
+            private _row = [
+                _displayName,
+                _uid isEqualTo _myUid,
+                floor (_level max 1),
+                true,
+                _labelPrefix,
+                _stateText
+            ];
 
             if (_assigned isEqualTo west) then {
                 _westRows pushBack _row;
