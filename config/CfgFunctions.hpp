@@ -182,6 +182,21 @@ class CfgFunctions
             class respawn_handlePlayerRespawn {file = "functions\respawn\fn_handlePlayerRespawn.sqf";};
         };
 
+        class traversal
+        {
+            class traversal_initPlayerLocal {file = "functions\traversal\fn_initPlayerLocal.sqf";};
+            class traversal_canTraverse {file = "functions\traversal\fn_canTraverse.sqf";};
+            class traversal_request {file = "functions\traversal\fn_request.sqf";};
+            class traversal_classify {file = "functions\traversal\fn_classify.sqf";};
+            class traversal_probe {file = "functions\traversal\fn_probe.sqf";};
+            class traversal_selectAnimation {file = "functions\traversal\fn_selectAnimation.sqf";};
+            class traversal_execute {file = "functions\traversal\fn_execute.sqf";};
+            class traversal_finish {file = "functions\traversal\fn_finish.sqf";};
+            class traversal_cancel {file = "functions\traversal\fn_cancel.sqf";};
+            class traversal_debugDraw {file = "functions\traversal\fn_debugDraw.sqf";};
+            class traversal_log {file = "functions\traversal\fn_log.sqf";};
+        };
+
         class loadouts
         {
             class loadouts_initServer {file = "functions\loadouts\fn_initServer.sqf";};

@@ -2,6 +2,18 @@
 
 class CfgBnKothEscMenuKeybinds
 {
+    class traversal
+    {
+        defaultKey = 0;
+        shift = "false";
+        ctrl = "false";
+        alt = "false";
+        down = 0;
+        function = "bn_koth_fnc_traversal_request";
+        displayName = "Advanced Climb (Vanilla/SOG)";
+        access = 1;
+    };
+
     class earplugs_toggle
     {
         defaultKey = DIK_F1;

@@ -1,6 +1,7 @@
 /*
     File: fn_keybinds_init.sqf
     Author: tylervip
+    Edited: Legend
     Description: Rebuilds mission-local lookup maps for key down and key up binds.
     Execution: Client
     Parameters:
@@ -27,6 +28,7 @@ private _cfgRoot = missionConfigFile >> "CfgBnKothEscMenuKeybinds";
 
     private _bind = [_action] call bn_koth_fnc_escMenu_keybinds_getBind;
     if !(_bind isEqualType [] && {(count _bind) >= 4}) then {continue;};
+    if ((_bind select 0) <= 0) then {continue;};
 
     private _isDown = (getNumber (_x >> "down")) > 0;
     private _prefix = if (_isDown) then {"keyDown"} else {"keyUp"};
