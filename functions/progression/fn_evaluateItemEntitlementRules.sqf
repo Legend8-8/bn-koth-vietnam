@@ -69,7 +69,7 @@ if (_playerLevel < _minLevel) exitWith {
 
 private _requiredPerks = _metadata getOrDefault ["requiredPerks", []];
 if !(_requiredPerks isEqualType []) then {_requiredPerks = []};
-private _playerPerks = _progression getOrDefault ["perks", []];
+private _playerPerks = _progression getOrDefault ["activePerks", _progression getOrDefault ["perks", []]];
 if !(_playerPerks isEqualType []) then {_playerPerks = []};
 private _normalizedPerks = _playerPerks apply {toLower _x};
 private _missingPerks = [];

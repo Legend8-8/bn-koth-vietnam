@@ -31,6 +31,8 @@ if !(_recordUid isEqualTo "" || {_recordUid isEqualTo _uid}) exitWith {["UID_MIS
 
 private _warnings = [];
 if (_missingVersion) then {_warnings pushBack "MISSING_SCHEMA_VERSION_LEGACY"};
+private _isLegacyVersion = _missingVersion || {_version < _currentVersion};
+if (!_missingVersion && {_isLegacyVersion}) then {_warnings pushBack "OLDER_SCHEMA_VERSION"};
 
 private _xp = _raw getOrDefault ["xp", 0];
 if !(_xp isEqualType 0 && {finite _xp} && {_xp >= 0}) then {
@@ -58,6 +60,33 @@ private _normalizedOwned = [];
     };
 } forEach _owned;
 
+private _normalizePerks = {
+    params ["_values", "_warning"];
+    if !(_values isEqualType []) exitWith {_warnings pushBack _warning; []};
+    private _result = [];
+    {
+        if (_x isEqualType "" && {!(_x isEqualTo "")}) then {
+            private _id = toLower _x;
+            private _metadata = [_id] call bn_koth_fnc_progression_perks_getConfig;
+            if (_metadata getOrDefault ["success", false] && {_metadata getOrDefault ["available", false]}) then {_result pushBackUnique _id} else {_warnings pushBackUnique _warning};
+        } else {
+            _warnings pushBackUnique _warning;
+        };
+    } forEach _values;
+    _result
+};
+private _ownedPerks = [_raw getOrDefault ["ownedPerks", []], "NORMALIZED_OWNED_PERKS"] call _normalizePerks;
+private _activePerks = [_raw getOrDefault ["activePerks", []], "NORMALIZED_ACTIVE_PERKS"] call _normalizePerks;
+private _activeBeforeOwnership = count _activePerks;
+_activePerks = _activePerks select {_x in _ownedPerks};
+if ((count _activePerks) != _activeBeforeOwnership) then {_warnings pushBackUnique "NORMALIZED_ACTIVE_PERK_OWNERSHIP"};
+private _perkCfg = missionConfigFile >> "CfgBnKothPerks";
+private _maxActivePerks = if (isClass _perkCfg) then {floor ((getNumber (_perkCfg >> "maxActivePerks")) max 0)} else {0};
+if ((count _activePerks) > _maxActivePerks) then {
+    _activePerks resize _maxActivePerks;
+    _warnings pushBackUnique "NORMALIZED_ACTIVE_PERK_LIMIT";
+};
+
 private _rawKills = _raw getOrDefault ["weaponKills", createHashMap];
 if !(_rawKills isEqualType createHashMap) then {
     _rawKills = createHashMap;
@@ -80,15 +109,16 @@ private _state = createHashMapFromArray [
     ["level", [_xp] call bn_koth_fnc_progression_xp_getLevel],
     ["cash", _cash],
     ["ownedWeapons", _normalizedOwned],
+    ["ownedPerks", _ownedPerks],
+    ["activePerks", _activePerks],
     ["rentedWeapons", []],
     ["weaponKills", _weaponKills]
 ];
 
 createHashMapFromArray [
     ["success", true],
-    ["code", if (_missingVersion) then {"NORMALIZED_LEGACY"} else {"NORMALIZED_CURRENT"}],
+    ["code", if (_isLegacyVersion) then {"NORMALIZED_LEGACY"} else {"NORMALIZED_CURRENT"}],
     ["uid", _uid],
     ["state", _state],
     ["warnings", _warnings]
 ]
-

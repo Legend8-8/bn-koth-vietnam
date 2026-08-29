@@ -445,3 +445,8 @@ active rented vehicle at a time; there is no pending/requisition stage. Rental
 state never persists. The managed free-vehicle and command-vehicle lifecycles
 remain separate, and a
 rented M577 receives no managed command capability.
+# Perk ownership and activation
+
+Perks extend the existing progression/persistence boundary. `ownedPerks` is permanent purchase state; `activePerks` is the persisted, bounded subset whose gameplay effects are enabled. The server owns both arrays, purchase transactions, active-slot validation, and managed-loadout enforcement. Clients receive only a targeted presentation projection and submit narrow perk intents.
+
+The Suppressor perk is enforced only when constructing or applying a managed loadout. Battlefield pickups remain ordinary Arma inventory state and are not polled or deleted. Confirmed deactivation first replaces the server-owned intended loadout with a catalogue-derived suppressor-free loadout, applies that server-derived loadout through the existing local application path, and only then finalizes deactivation.

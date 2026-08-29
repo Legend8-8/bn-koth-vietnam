@@ -580,3 +580,18 @@ code and exact reason, with no charge. Verify the Store card only ever shows
 successful RENT, and `VEHICLE ACTIVE` only after a logged `RENTED` success with
 a real `netId`. There is no `REQUISITION` action, no `RENTAL READY` state, and
 no pending-rental state anywhere in the client or server rental payloads.
+# Perk foundation manual matrix
+
+Run on hosted and dedicated servers with the extDB schema-v2 migration applied:
+
+- Fresh/legacy player: `ownedPerks=[]`, `activePerks=[]`; malformed, duplicate, unknown, non-owned active, and over-limit persisted IDs normalize safely.
+- Purchase Suppressor at $1: cash falls once, ownership appears once, duplicate/spammed purchase does not charge again, reconnect restores it.
+- Activation: unowned is rejected; owned activates without a fee; repeated/rapid requests cannot exceed the configured maximum of three; reconnect restores the normalized active subset.
+- Inactive Suppressor: primary, handgun, launcher, uniform, vest, and backpack suppressors are rejected from managed requests with `ERR_PERK_SUPPRESSOR_INACTIVE`.
+- Active Suppressor: the same otherwise-valid managed loadouts succeed.
+- Deactivation with none present succeeds immediately. With any present it asks for confirmation; cancel changes nothing; confirm removes every factual suppressor from equipped slots and cargo, applies the sanitized intended loadout, then deactivates. Failed/incomplete cleanup leaves it active.
+- A saved kit containing a suppressor remains unchanged, fails while inactive, and succeeds while active if all other entitlement checks pass.
+- Battlefield pickup remains possible while inactive; death/redeployment returns to the existing starter/validated-loadout behavior.
+- Dedicated security: invoke requests only from the owning client and confirm forged UID/cost/ownership/loadout data is neither accepted nor part of the endpoint schema.
+
+Focused server tests: `call compile preprocessFileLineNumbers "functions\progression\perks\test_perks.sqf"`. Expected result: `[]`.

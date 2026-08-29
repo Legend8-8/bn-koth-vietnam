@@ -56,7 +56,7 @@ private _renderRows = {
             private _prefix = _entry param [4, "", [""]];
             private _stateText = _entry param [5, "LOBBY", [""]];
             private _suffix = format [" - %1", _stateText];
-            private _font = ctrlFont _ctrl;
+            private _font = "RobotoCondensed";
             private _fontHeight = ctrlFontHeight _ctrl;
             private _reservedWidth = 0.028
                 + (safeZoneH * 0.027)

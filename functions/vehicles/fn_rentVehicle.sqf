@@ -36,7 +36,7 @@ private _sideToken=if ((_record getOrDefault ["assignedSide",sideUnknown]) isEqu
 private _progressions=missionNamespace getVariable ["BN_KOTH_playerProgression",createHashMap];
 private _progression=_progressions getOrDefault [_uid,createHashMap];
 private _level=[_progression getOrDefault ["xp",0]] call bn_koth_fnc_progression_xp_getLevel;
-private _rules=[_sideToken,_level,_progression getOrDefault ["perks",[]],_metadata] call bn_koth_fnc_vehicles_evaluateProgressionRules;
+private _rules=[_sideToken,_level,_progression getOrDefault ["activePerks", _progression getOrDefault ["perks",[]]],_metadata] call bn_koth_fnc_vehicles_evaluateProgressionRules;
 if !(_rules getOrDefault ["eligible",false]) exitWith {[_rules getOrDefault ["code","INVALID_VEHICLE"],_rules getOrDefault ["message","Vehicle unavailable."]] call _fail};
 
 private _price=_metadata getOrDefault ["rentalPrice",-1];

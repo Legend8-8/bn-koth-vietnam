@@ -1797,3 +1797,6 @@ restoration. There is no BUY action, permanent vehicle ownership, persisted
 rental, or session-wide unlimited unlock. M577 rental grants only the normal
 vehicle object and never
 managed command/teleport capability. Vehicles do not use weapon mastery.
+# Perk-gated managed equipment
+
+Attachment facts continue to come from the generated S.O.G. compatibility catalogue. The Suppressor perk uses factual `SourceItems.itemType = "suppressor"` metadata. While inactive, any complete managed loadout containing such an item in a weapon slot or uniform/vest/backpack cargo is rejected with `ERR_PERK_SUPPRESSOR_INACTIVE`. Local saved kits are not modified; applying one is denied until the perk is active. Battlefield pickups are intentionally outside this managed-loadout rule.

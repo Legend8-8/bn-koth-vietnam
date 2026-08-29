@@ -35,6 +35,18 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_progression_perks_request
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_progression_perks_ackCleanup
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
         class bn_koth_fnc_vehicles_requestRental
         {
             allowedTargets = 2;
@@ -84,6 +96,12 @@ class CfgRemoteExec
         };
 
         class bn_koth_fnc_ui_receiveWeaponAcquisitionResult
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_ui_receivePerkResult
         {
             allowedTargets = 1;
             jip = 0;

@@ -10,18 +10,19 @@ Number of Retrys = 1
 
 [loadPlayer]
 Prepared Statement = true
-SQL1_1 = SELECT uid, schema_version, xp, cash, owned_weapons, weapon_kills
+SQL1_1 = SELECT uid, schema_version, xp, cash, owned_weapons, weapon_kills, owned_perks, active_perks
 SQL1_2 = FROM bn_koth_player_progression WHERE uid = ? LIMIT 2;
 SQL1_INPUTS = 1
-OUTPUT = 1-STRING,2,3,4,5-STRING,6-STRING
+OUTPUT = 1-STRING,2,3,4,5-STRING,6-STRING,7-STRING,8-STRING
 
 [savePlayer]
 Prepared Statement = true
 SQL1_1 = INSERT INTO bn_koth_player_progression
-SQL1_2 = (uid, schema_version, xp, cash, owned_weapons, weapon_kills)
-SQL1_3 = VALUES (?, ?, ?, ?, ?, ?)
+SQL1_2 = (uid, schema_version, xp, cash, owned_weapons, weapon_kills, owned_perks, active_perks)
+SQL1_3 = VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 SQL1_4 = ON DUPLICATE KEY UPDATE schema_version = VALUES(schema_version),
 SQL1_5 = xp = VALUES(xp), cash = VALUES(cash), owned_weapons = VALUES(owned_weapons),
-SQL1_6 = weapon_kills = VALUES(weapon_kills), updated_at = CURRENT_TIMESTAMP;
-SQL1_INPUTS = 1,2,3,4,5,6
+SQL1_6 = weapon_kills = VALUES(weapon_kills), owned_perks = VALUES(owned_perks),
+SQL1_7 = active_perks = VALUES(active_perks), updated_at = CURRENT_TIMESTAMP;
+SQL1_INPUTS = 1,2,3,4,5,6,7,8
 Return InsertID = false

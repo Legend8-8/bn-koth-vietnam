@@ -306,3 +306,6 @@ no separate requisition step. The active rental map is server-only; only the
 requesting client receives their projected state. Get-in authorization is
 checked from server-owned UID/access data. A narrowly allowlisted
 server-to-owner endpoint performs locality-sensitive ejection.
+# Perk requests
+
+Perk purchase and activation requests are client intent only. The server derives the player from `remoteExecutedOwner`, reads configured price and authoritative progression, commits atomically, marks persistence dirty, and publishes only to that owner. Suppressor cleanup is server-derived; the owning client only applies the server-signed Unit Loadout because `setUnitLoadout` must execute where the player unit is local.

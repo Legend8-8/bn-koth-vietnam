@@ -60,12 +60,6 @@ if !(_requestedPage isEqualTo "") then {
 
 private _ctrlServer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_SERVER;
 private _ctrlHeaderPlayer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_PLAYER;
-private _ctrlHeaderLevel = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_LEVEL;
-private _ctrlHeaderXp = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_XP;
-private _ctrlHeaderCash = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_CASH;
-private _ctrlHeaderRankBadge = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_RANK_BADGE;
-private _ctrlHeaderXpTrack = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_TRACK;
-private _ctrlHeaderXpFill = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_FILL;
 private _ctrlBgLeft = _display displayCtrl BN_KOTH_IDC_MENU_BG_LEFT;
 private _ctrlBrowserWorkspace = _display displayCtrl BN_KOTH_IDC_MENU_BG_BROWSER_WORKSPACE;
 private _ctrlOperatorTitle = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_TITLE;
@@ -159,6 +153,13 @@ private _ctrlKitSave = _display displayCtrl BN_KOTH_IDC_MENU_KIT_SAVE;
 private _ctrlKitRename = _display displayCtrl BN_KOTH_IDC_MENU_KIT_RENAME;
 private _ctrlKitManage = _display displayCtrl BN_KOTH_IDC_MENU_KIT_MANAGE;
 private _ctrlKitSaveCurrent = _display displayCtrl BN_KOTH_IDC_MENU_KIT_SAVE_CURRENT;
+private _ctrlPerksTitle = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_TITLE;
+private _ctrlPerksSubtitle = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_SUBTITLE;
+private _ctrlPerksActive = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_ACTIVE;
+private _ctrlPerksBack = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_BACK;
+private _ctrlPerksPagePrevious = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_PAGE_PREVIOUS;
+private _ctrlPerksPageNext = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_PAGE_NEXT;
+private _ctrlPerksPageLabel = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_PAGE_LABEL;
 
 private _setNavState = {
     params ["_ctrl", "_isActive"];
@@ -182,43 +183,7 @@ private _playerNameUpper = toUpper _playerName;
 _ctrlOperatorName ctrlSetText _playerNameUpper;
 _ctrlHeaderPlayer ctrlSetText _playerNameUpper;
 
-private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
-if !(_progression isEqualType createHashMap) then {
-    _progression = createHashMap;
-};
-
-private _level = (_progression getOrDefault ["level", 1]) max 1;
-private _xp = (_progression getOrDefault ["xp", 0]) max 0;
-private _cash = (_progression getOrDefault ["cash", 0]) max 0;
-
-private _levelProgress = [_xp, _level] call bn_koth_fnc_progression_xp_getLevelProgress;
-_level = _levelProgress getOrDefault ["level", 1];
-private _maxLevel = _levelProgress getOrDefault ["maxLevel", 270];
-private _xpIntoLevel = _levelProgress getOrDefault ["xpIntoLevel", 0];
-private _xpRequired = _levelProgress getOrDefault ["xpRequired", 0];
-private _xpRatio = _levelProgress getOrDefault ["ratio", 1];
-private _rank = [_level] call bn_koth_fnc_progression_resolveRankPresentation;
-
-_ctrlHeaderRankBadge ctrlSetText (_rank getOrDefault ["icon", ""]);
-_ctrlHeaderRankBadge ctrlSetTextColor (_rank getOrDefault ["color", [1, 1, 1, 0]]);
-_ctrlHeaderRankBadge ctrlShow (_rank getOrDefault ["hasIcon", false]);
-_ctrlHeaderLevel ctrlSetText format ["LEVEL %1", _level];
-
-if (_level >= _maxLevel) then {
-    _ctrlHeaderXp ctrlSetText format ["MAX LEVEL  |  %1 XP", _xp];
-} else {
-    _ctrlHeaderXp ctrlSetText format ["%1 / %2 XP", round _xpIntoLevel, round _xpRequired];
-};
-_ctrlHeaderCash ctrlSetText ([_cash] call bn_koth_fnc_ui_formatCash);
-
-private _trackPos = ctrlPosition _ctrlHeaderXpTrack;
-_ctrlHeaderXpFill ctrlSetPosition [
-    _trackPos select 0,
-    _trackPos select 1,
-    (_trackPos select 2) * _xpRatio,
-    _trackPos select 3
-];
-_ctrlHeaderXpFill ctrlCommit 0;
+[_display] call bn_koth_fnc_menu_refreshProgressionHeader;
 
 private _sideLabel = "UNASSIGNED";
 if (!isNull player) then {
@@ -379,6 +344,35 @@ private _storeViewControls = [
     _ctrlBrowserPageNext,
     _ctrlBrowserPageLabel
 ];
+
+private _perkViewControls = [
+    _ctrlPerksTitle,
+    _ctrlPerksSubtitle,
+    _ctrlPerksActive,
+    _ctrlPerksBack,
+    _ctrlPerksPagePrevious,
+    _ctrlPerksPageNext,
+    _ctrlPerksPageLabel
+];
+{
+    _perkViewControls append [
+        _display displayCtrl _x,
+        _display displayCtrl (_x + 1),
+        _display displayCtrl (_x + 2),
+        _display displayCtrl (_x + 3),
+        _display displayCtrl (_x + 4),
+        _display displayCtrl (_x + 5)
+    ];
+} forEach [
+    BN_KOTH_IDC_MENU_PERKS_CARD_1_BG,
+    BN_KOTH_IDC_MENU_PERKS_CARD_2_BG,
+    BN_KOTH_IDC_MENU_PERKS_CARD_3_BG,
+    BN_KOTH_IDC_MENU_PERKS_CARD_4_BG
+];
+
+// Every route begins with PERKS' independently owned pool hidden. The PERKS
+// view is the only owner that may reveal or mutate these controls.
+{_x ctrlShow false} forEach _perkViewControls;
 
 private _operatorControls = [
     _ctrlBgLeft,
@@ -547,6 +541,29 @@ private _showStoreView = {
     { _x ctrlShow true; } forEach _storeViewControls;
 };
 
+private _showPerksView = {
+    private _menuX = safeZoneX + safeZoneW * 0.02;
+    private _menuY = safeZoneY + safeZoneH * 0.03;
+    private _menuW = safeZoneW * 0.96;
+    private _menuH = safeZoneH * 0.94;
+    private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
+    private _mainH = _menuH * 0.78;
+    _ctrlBrowserWorkspace ctrlSetPosition [_menuX, _mainY, _menuW, _mainH];
+    _ctrlBrowserWorkspace ctrlCommit 0;
+    {_x ctrlShow false} forEach _operatorControls;
+    _ctrlBrowserWorkspace ctrlShow true;
+    {_x ctrlShow false} forEach _mainViewControls;
+    {_x ctrlShow false} forEach _selectorViewControls;
+    {_x ctrlShow false} forEach _browserViewControls;
+    {_x ctrlShow false} forEach _browserCardControls;
+    {_x ctrlShow false} forEach _configureViewControls;
+    {_x ctrlShow false} forEach _cargoBrowserControls;
+    {_x ctrlShow false} forEach _kitManagerControls;
+    {_x ctrlShow false} forEach _navControls;
+    {_x ctrlShow false} forEach _storeViewControls;
+    {_x ctrlShow true} forEach _perkViewControls;
+};
+
 if !(_activePage isEqualTo "LOADOUT_ATTACHMENTS") then {
     uiNamespace setVariable ["BN_KOTH_menuAttachmentSlotFilter", ""];
 };
@@ -572,6 +589,11 @@ private _showCargoBrowserView = {
 if (_activePage isEqualTo "STORE") exitWith {
     call _showStoreView;
     [_display] call bn_koth_fnc_menu_refreshStore;
+};
+
+if (_activePage isEqualTo "PERKS") exitWith {
+    call _showPerksView;
+    [_display] call bn_koth_fnc_menu_refreshPerks;
 };
 
 if !(_activePage in _loadoutPages) exitWith {

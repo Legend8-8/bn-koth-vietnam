@@ -113,3 +113,6 @@ inferred from a classname or from a similar display name.
 Unclassified combat equipment may temporarily remain uncontrolled. Visual
 equipment (uniforms, vests, backpacks, headgear, and facewear) must have a
 valid matching `appearanceSide` before it can enter an authoritative loadout.
+# Adding perks
+
+Author perk identity, display text, availability, and price under `CfgBnKothPerks`; runtime code must not infer effects from display names. Persistent IDs are lowercase stable tokens. New effects should consume `activePerks`, never ownership alone, and must attach to an existing authoritative gameplay boundary rather than introduce inventory polling or client authority.
