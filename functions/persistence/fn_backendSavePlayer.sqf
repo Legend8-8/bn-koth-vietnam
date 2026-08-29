@@ -25,15 +25,20 @@ if (_backend isEqualTo "EXTDB3") exitWith {
     };
     private _owned = [_projection getOrDefault ["ownedWeapons", []]] call bn_koth_fnc_persistence_serializeOwnedWeapons;
     private _kills = [_projection getOrDefault ["weaponKills", createHashMap]] call bn_koth_fnc_persistence_serializeWeaponKills;
+    private _ownedPerks = [_projection getOrDefault ["ownedPerks", []]] call bn_koth_fnc_persistence_serializePerkIds;
+    private _activePerks = [_projection getOrDefault ["activePerks", []]] call bn_koth_fnc_persistence_serializePerkIds;
     if !(_owned getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _owned getOrDefault ["code", "SERIALIZATION_FAILED"]], ["uid", _uid]]};
     if !(_kills getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _kills getOrDefault ["code", "SERIALIZATION_FAILED"]], ["uid", _uid]]};
+    if !(_ownedPerks getOrDefault ["success", false] && {_activePerks getOrDefault ["success", false]}) exitWith {createHashMapFromArray [["success", false], ["code", "PERK_SERIALIZATION_FAILED"], ["uid", _uid]]};
     private _query = ["savePlayer", [
         _uid,
         _schemaVersion,
         _xp,
         _cash,
         _owned get "value",
-        _kills get "value"
+        _kills get "value",
+        _ownedPerks get "value",
+        _activePerks get "value"
     ]] call bn_koth_fnc_persistence_extdbCall;
     if !(_query getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _query getOrDefault ["code", "BACKEND_SAVE_FAILED"]], ["uid", _uid]]};
     createHashMapFromArray [["success", true], ["code", "SAVED"], ["uid", _uid]]

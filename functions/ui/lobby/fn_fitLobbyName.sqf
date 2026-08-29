@@ -20,7 +20,7 @@ params [
 
 if (isNull _control || {_name isEqualTo ""}) exitWith {_name};
 
-private _font = ctrlFont _control;
+private _font = "RobotoCondensed";
 private _fontHeight = ctrlFontHeight _control;
 private _availableWidth = (((ctrlPosition _control) select 2) - (_reservedWidth max 0)) max 0;
 private _ellipsis = "...";

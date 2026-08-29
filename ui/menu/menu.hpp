@@ -962,6 +962,166 @@ class BN_KOTH_RscMenu
         class BrowserCard4PrimaryAction: BrowserCard2PrimaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_PRIMARY_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.588;};
         class BrowserCard4SecondaryAction: BrowserCard2SecondaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_SECONDARY_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.588;};
 
+        // PERKS owns a separate fixed catalogue pool. These controls are never
+        // shared with Loadout, Store, or the Arsenal browser.
+        class PerksTitle: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_TITLE;
+            text = "PERKS";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.018;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.016;
+            w = BN_KOTH_MENU_W * 0.30;
+            h = safeZoneH * 0.035;
+            sizeEx = "0.036 * safeZoneH";
+        };
+
+        class PerksSubtitle: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_SUBTITLE;
+            text = "PURCHASE PERMANENT PERKS AND CHOOSE YOUR ACTIVE LOADOUT";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.018;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.052;
+            w = BN_KOTH_MENU_W * 0.52;
+            h = safeZoneH * 0.024;
+        };
+
+        class PerksActive: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_ACTIVE;
+            text = "ACTIVE PERKS 0 / 0";
+            style = 1;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.55;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.020;
+            w = BN_KOTH_MENU_W * 0.25;
+            h = safeZoneH * 0.035;
+            sizeEx = "0.026 * safeZoneH";
+            colorText[] = {0.94, 0.80, 0.34, 1};
+        };
+
+        class PerksBack: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_BACK;
+            text = "BACK";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W - safeZoneW * 0.128;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.020;
+            w = safeZoneW * 0.110;
+            h = safeZoneH * 0.038;
+            action = "['LOADOUT'] call bn_koth_fnc_menu_refresh;";
+        };
+
+        class PerksCardBackground: BN_KOTH_Menu_Background
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_CARD_1_BG;
+            x = BN_KOTH_MENU_X + safeZoneW * 0.018;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.100;
+            w = (BN_KOTH_MENU_W - safeZoneW * 0.054) * 0.5;
+            h = safeZoneH * 0.255;
+            colorBackground[] = {0.075, 0.075, 0.065, 0.96};
+        };
+
+        class PerksCardName: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_CARD_1_NAME;
+            text = "";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.032;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.118;
+            w = (BN_KOTH_MENU_W - safeZoneW * 0.082) * 0.5;
+            h = safeZoneH * 0.035;
+            sizeEx = "0.030 * safeZoneH";
+        };
+
+        class PerksCardDescription: BN_KOTH_RscStructuredText
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_CARD_1_DESCRIPTION;
+            text = "";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.032;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.158;
+            w = (BN_KOTH_MENU_W - safeZoneW * 0.082) * 0.5;
+            h = safeZoneH * 0.075;
+            size = "0.020 * safeZoneH";
+            colorText[] = {0.84, 0.82, 0.78, 0.92};
+        };
+
+        class PerksCardState: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_CARD_1_STATE;
+            text = "";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.032;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.238;
+            w = BN_KOTH_MENU_W * 0.24;
+            h = safeZoneH * 0.026;
+            colorText[] = {0.94, 0.80, 0.34, 1};
+        };
+
+        class PerksCardPrice: PerksCardState
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_CARD_1_PRICE;
+            style = 1;
+            x = BN_KOTH_MENU_X + safeZoneW * 0.280;
+            w = BN_KOTH_MENU_W * 0.19;
+            colorText[] = {0.84, 0.82, 0.78, 0.92};
+        };
+
+        class PerksCardAction: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_CARD_1_ACTION;
+            text = "";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.032;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.292;
+            w = (BN_KOTH_MENU_W - safeZoneW * 0.110) * 0.5;
+            h = safeZoneH * 0.042;
+        };
+
+        class PerksCard2Background: PerksCardBackground {idc = BN_KOTH_IDC_MENU_PERKS_CARD_2_BG; x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.5 + safeZoneW * 0.009;};
+        class PerksCard2Name: PerksCardName {idc = BN_KOTH_IDC_MENU_PERKS_CARD_2_NAME; x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.5 + safeZoneW * 0.023;};
+        class PerksCard2Description: PerksCardDescription {idc = BN_KOTH_IDC_MENU_PERKS_CARD_2_DESCRIPTION; x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.5 + safeZoneW * 0.023;};
+        class PerksCard2State: PerksCardState {idc = BN_KOTH_IDC_MENU_PERKS_CARD_2_STATE; x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.5 + safeZoneW * 0.023;};
+        class PerksCard2Price: PerksCardPrice {idc = BN_KOTH_IDC_MENU_PERKS_CARD_2_PRICE; x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.5 + safeZoneW * 0.271;};
+        class PerksCard2Action: PerksCardAction {idc = BN_KOTH_IDC_MENU_PERKS_CARD_2_ACTION; x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.5 + safeZoneW * 0.023;};
+
+        class PerksCard3Background: PerksCardBackground {idc = BN_KOTH_IDC_MENU_PERKS_CARD_3_BG; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.382;};
+        class PerksCard3Name: PerksCardName {idc = BN_KOTH_IDC_MENU_PERKS_CARD_3_NAME; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.400;};
+        class PerksCard3Description: PerksCardDescription {idc = BN_KOTH_IDC_MENU_PERKS_CARD_3_DESCRIPTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.440;};
+        class PerksCard3State: PerksCardState {idc = BN_KOTH_IDC_MENU_PERKS_CARD_3_STATE; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.520;};
+        class PerksCard3Price: PerksCardPrice {idc = BN_KOTH_IDC_MENU_PERKS_CARD_3_PRICE; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.520;};
+        class PerksCard3Action: PerksCardAction {idc = BN_KOTH_IDC_MENU_PERKS_CARD_3_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.574;};
+
+        class PerksCard4Background: PerksCard2Background {idc = BN_KOTH_IDC_MENU_PERKS_CARD_4_BG; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.382;};
+        class PerksCard4Name: PerksCard2Name {idc = BN_KOTH_IDC_MENU_PERKS_CARD_4_NAME; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.400;};
+        class PerksCard4Description: PerksCard2Description {idc = BN_KOTH_IDC_MENU_PERKS_CARD_4_DESCRIPTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.440;};
+        class PerksCard4State: PerksCard2State {idc = BN_KOTH_IDC_MENU_PERKS_CARD_4_STATE; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.520;};
+        class PerksCard4Price: PerksCard2Price {idc = BN_KOTH_IDC_MENU_PERKS_CARD_4_PRICE; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.520;};
+        class PerksCard4Action: PerksCard2Action {idc = BN_KOTH_IDC_MENU_PERKS_CARD_4_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.574;};
+
+        class PerksPagePrevious: PerksBack
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_PAGE_PREVIOUS;
+            text = "<";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.41;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H - safeZoneH * 0.060;
+            w = safeZoneW * 0.038;
+            h = safeZoneH * 0.034;
+            action = "";
+        };
+
+        class PerksPageNext: PerksPagePrevious
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_PAGE_NEXT;
+            text = ">";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.55;
+        };
+
+        class PerksPageLabel: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_PERKS_PAGE_LABEL;
+            text = "PAGE 1 / 1";
+            style = 2;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.455;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H - safeZoneH * 0.056;
+            w = BN_KOTH_MENU_W * 0.09;
+            h = safeZoneH * 0.028;
+        };
+
         class NavLoadout: BN_KOTH_Menu_NavButton
         {
             idc = BN_KOTH_IDC_MENU_NAV_LOADOUT;

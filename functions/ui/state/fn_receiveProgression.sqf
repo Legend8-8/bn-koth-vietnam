@@ -69,5 +69,17 @@ disableSerialization;
 uiNamespace setVariable ["BN_KOTH_menuStoreEntriesRoute", ""];
 private _menuDisplay = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
 if (!isNull _menuDisplay) then {
-    [] call bn_koth_fnc_menu_refresh;
+    [_menuDisplay] call bn_koth_fnc_menu_refreshProgressionHeader;
+
+    // Only pages whose presentation depends directly on progression need a
+    // targeted repaint. Do not rebuild/re-route the entire deployed menu.
+    private _activePage = toUpper (uiNamespace getVariable ["BN_KOTH_menuActivePage", "LOADOUT"]);
+    switch (_activePage) do {
+        case "PERKS": {
+            [_menuDisplay] call bn_koth_fnc_menu_refreshPerks;
+        };
+        case "STORE": {
+            [_menuDisplay] call bn_koth_fnc_menu_refreshStore;
+        };
+    };
 };

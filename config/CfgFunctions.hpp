@@ -127,6 +127,17 @@ class CfgFunctions
             class progression_evaluateAttachmentEntitlement {file = "functions\progression\fn_evaluateAttachmentEntitlement.sqf";};
             class progression_evaluateItemEntitlement {file = "functions\progression\fn_evaluateItemEntitlement.sqf";};
             class progression_evaluateItemEntitlementRules {file = "functions\progression\fn_evaluateItemEntitlementRules.sqf";};
+            class progression_perks_getConfig {file = "functions\progression\perks\fn_getConfig.sqf";};
+            class progression_perks_purchase {file = "functions\progression\perks\fn_purchase.sqf";};
+            class progression_perks_setActive {file = "functions\progression\perks\fn_setActive.sqf";};
+            class progression_perks_completeCleanup {file = "functions\progression\perks\fn_completeCleanup.sqf";};
+            class progression_perks_ackCleanup {file = "functions\progression\perks\fn_ackCleanup.sqf";};
+            class progression_perks_request {file = "functions\progression\perks\fn_request.sqf";};
+            class progression_perks_isSuppressor {file = "functions\progression\perks\fn_isSuppressor.sqf";};
+            class progression_perks_findRestrictedItems {file = "functions\progression\perks\fn_findRestrictedItems.sqf";};
+            class progression_perks_findSuppressors {file = "functions\progression\perks\fn_findSuppressors.sqf";};
+            class progression_perks_removeSuppressors {file = "functions\progression\perks\fn_removeSuppressors.sqf";};
+            class progression_perks_test_perks {file = "functions\progression\perks\test_perks.sqf";};
         };
 
         class persistence
@@ -137,6 +148,8 @@ class CfgFunctions
             class persistence_projectPlayerState {file = "functions\persistence\fn_projectPlayerState.sqf";};
             class persistence_serializeOwnedWeapons {file = "functions\persistence\fn_serializeOwnedWeapons.sqf";};
             class persistence_deserializeOwnedWeapons {file = "functions\persistence\fn_deserializeOwnedWeapons.sqf";};
+            class persistence_serializePerkIds {file = "functions\persistence\fn_serializePerkIds.sqf";};
+            class persistence_deserializePerkIds {file = "functions\persistence\fn_deserializePerkIds.sqf";};
             class persistence_serializeWeaponKills {file = "functions\persistence\fn_serializeWeaponKills.sqf";};
             class persistence_deserializeWeaponKills {file = "functions\persistence\fn_deserializeWeaponKills.sqf";};
             class persistence_parseExtdbResponse {file = "functions\persistence\fn_parseExtdbResponse.sqf";};
@@ -261,6 +274,7 @@ class CfgFunctions
             class ui_receiveState {file = "functions\ui\state\fn_receiveState.sqf";};
             class ui_receiveProgression {file = "functions\ui\state\fn_receiveProgression.sqf";};
             class ui_receiveWeaponAcquisitionResult {file = "functions\ui\state\fn_receiveWeaponAcquisitionResult.sqf";};
+            class ui_receivePerkResult {file = "functions\ui\state\fn_receivePerkResult.sqf";};
             class ui_formatCash {file = "functions\ui\state\fn_formatCash.sqf";};
             class ui_toggleDebugDisplay {file = "functions\ui\debug\fn_toggleDebugDisplay.sqf";};
             class ui_debugDisplayLoop {file = "functions\ui\debug\fn_debugDisplayLoop.sqf";};
@@ -295,8 +309,11 @@ class CfgFunctions
             class menu_startPlayerPreview {file = "functions\ui\menu\fn_menu_startPlayerPreview.sqf";};
             class menu_stopPlayerPreview {file = "functions\ui\menu\fn_menu_stopPlayerPreview.sqf";};
             class menu_refresh {file = "functions\ui\menu\fn_menu_refresh.sqf";};
+            class menu_refreshProgressionHeader {file = "functions\ui\menu\fn_menu_refreshProgressionHeader.sqf";};
             class menu_refreshLoadout {file = "functions\ui\menu\fn_menu_refreshLoadout.sqf";};
             class menu_refreshStore {file = "functions\ui\menu\fn_menu_refreshStore.sqf";};
+            class menu_refreshPerks {file = "functions\ui\menu\fn_menu_refreshPerks.sqf";};
+            class menu_requestPerk {file = "functions\ui\menu\fn_menu_requestPerk.sqf";};
             class menu_buildStoreWeaponEntries {file = "functions\ui\menu\fn_menu_buildStoreWeaponEntries.sqf";};
             class menu_projectStoreWeaponState {file = "functions\ui\menu\fn_menu_projectStoreWeaponState.sqf";};
             class menu_buildStoreVehicleEntries {file = "functions\ui\menu\fn_menu_buildStoreVehicleEntries.sqf";};

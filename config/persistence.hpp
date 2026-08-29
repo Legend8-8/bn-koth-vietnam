@@ -1,6 +1,6 @@
 class CfgBnKothPersistence
 {
-    schemaVersion = 1;
+    schemaVersion = 2;
     backend = "EXTDB3";
     saveDebounceSeconds = 15;
     sessionFallbackOnFailure = 1;

@@ -31,7 +31,7 @@ private _backup = createHashMap;
     };
 } forEach _variables;
 
-missionNamespace setVariable ["BN_KOTH_persistenceSchemaVersion", 1];
+missionNamespace setVariable ["BN_KOTH_persistenceSchemaVersion", 2];
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "MEMORY"];
 missionNamespace setVariable ["BN_KOTH_persistenceBackendReady", true];
 missionNamespace setVariable ["BN_KOTH_persistenceSaveDebounceSeconds", 0];
@@ -51,12 +51,14 @@ private _firstState = _first getOrDefault ["state", createHashMap];
 [(_firstState getOrDefault ["xp", -1]) isEqualTo 0, "First-time XP was not zero."] call _assert;
 [(_firstState getOrDefault ["cash", -1]) isEqualTo 1000, "First-time cash did not use authoritative starting cash."] call _assert;
 [(count (_firstState getOrDefault ["ownedWeapons", ["bad"]])) isEqualTo 0, "First-time ownership was not empty."] call _assert;
+[(count (_firstState getOrDefault ["ownedPerks", ["bad"]])) isEqualTo 0 && {(count (_firstState getOrDefault ["activePerks", ["bad"]])) isEqualTo 0}, "First-time perk state was not empty."] call _assert;
 
 private _knownUid = "PERSIST_KNOWN";
 private _rawKills = createHashMapFromArray [["VN_M1903", 7]];
 private _raw = createHashMapFromArray [
-    ["schemaVersion", 1], ["uid", _knownUid], ["xp", 12345], ["level", 999], ["cash", 4321],
-    ["ownedWeapons", ["VN_M1903"]], ["rentedWeapons", ["vn_m1911"]], ["weaponKills", _rawKills]
+    ["schemaVersion", 2], ["uid", _knownUid], ["xp", 12345], ["level", 999], ["cash", 4321],
+    ["ownedWeapons", ["VN_M1903"]], ["rentedWeapons", ["vn_m1911"]], ["weaponKills", _rawKills],
+    ["ownedPerks", ["SUPPRESSOR", "unknown", "suppressor"]], ["activePerks", ["suppressor", "unknown"]]
 ];
 private _backend = missionNamespace getVariable ["BN_KOTH_persistenceMemoryBackend", createHashMap];
 _backend set [_knownUid, _raw];
@@ -68,6 +70,7 @@ private _knownState = _known getOrDefault ["state", createHashMap];
 ["vn_m1903" in (_knownState getOrDefault ["ownedWeapons", []]), "Known ownership did not load/canonicalize case."] call _assert;
 [((_knownState getOrDefault ["weaponKills", createHashMap]) getOrDefault ["vn_m1903", -1]) isEqualTo 7, "Known weapon mastery did not load."] call _assert;
 [(count (_knownState getOrDefault ["rentedWeapons", ["bad"]])) isEqualTo 0, "Session rentals were loaded from persistence."] call _assert;
+[(_knownState getOrDefault ["ownedPerks", []]) isEqualTo ["suppressor"] && {(_knownState getOrDefault ["activePerks", []]) isEqualTo ["suppressor"]}, "Known perk state did not normalize unknown/duplicate IDs."] call _assert;
 
 _knownState set ["cash", 9999];
 private _again = [_knownUid] call bn_koth_fnc_persistence_loadPlayer;
@@ -86,6 +89,7 @@ private _projection = [_knownUid, _knownState] call bn_koth_fnc_persistence_proj
 [isNil {_projection get "pickedUpWeapons"}, "Save projection persisted battlefield pickup state."] call _assert;
 [isNil {_projection get "transientArsenalState"}, "Save projection persisted transient Arsenal state."] call _assert;
 [(_projection getOrDefault ["ownedWeapons", []]) isEqualTo ["vn_m1903"], "Save projection omitted persistent ownership."] call _assert;
+[(_projection getOrDefault ["ownedPerks", []]) isEqualTo ["suppressor"] && {(_projection getOrDefault ["activePerks", []]) isEqualTo ["suppressor"]}, "Save projection omitted persistent perk state."] call _assert;
 [((_projection getOrDefault ["weaponKills", createHashMap]) getOrDefault ["vn_m1903", -1]) isEqualTo 7, "Save projection omitted persistent weapon mastery."] call _assert;
 
 private _ownedSerialized = [["vn_m1911", "VN_M1903"]] call bn_koth_fnc_persistence_serializeOwnedWeapons;
@@ -93,6 +97,11 @@ private _ownedSerialized = [["vn_m1911", "VN_M1903"]] call bn_koth_fnc_persisten
 private _ownedParsed = [_ownedSerialized getOrDefault ["value", ""]] call bn_koth_fnc_persistence_deserializeOwnedWeapons;
 [_ownedParsed getOrDefault ["success", false] && {(_ownedParsed getOrDefault ["value", []]) isEqualTo ["vn_m1903", "vn_m1911"]}, "Owned weapons did not round-trip."] call _assert;
 [!((["vn_m1903,,vn_m1911"] call bn_koth_fnc_persistence_deserializeOwnedWeapons) getOrDefault ["success", true]), "Malformed owned-weapon text was accepted."] call _assert;
+
+private _perksSerialized = [["suppressor"]] call bn_koth_fnc_persistence_serializePerkIds;
+private _perksParsed = [_perksSerialized getOrDefault ["value", ""]] call bn_koth_fnc_persistence_deserializePerkIds;
+[_perksSerialized getOrDefault ["success", false] && {_perksParsed getOrDefault ["success", false]} && {(_perksParsed getOrDefault ["value", []]) isEqualTo ["suppressor"]}, "Perk IDs did not round-trip."] call _assert;
+[!((["suppressor,suppressor"] call bn_koth_fnc_persistence_deserializePerkIds) getOrDefault ["success", true]), "Duplicate persisted perk IDs were accepted by the restricted codec."] call _assert;
 
 private _killsSerialized = [createHashMapFromArray [["vn_m1911", 2], ["vn_m1903", 7]]] call bn_koth_fnc_persistence_serializeWeaponKills;
 [_killsSerialized getOrDefault ["success", false] && {(_killsSerialized getOrDefault ["value", ""]) isEqualTo "vn_m1903=7,vn_m1911=2"}, "Weapon kills did not serialize deterministically."] call _assert;
@@ -103,19 +112,19 @@ private _roundTripKills = _killsParsed getOrDefault ["value", createHashMap];
 
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "EXTDB3"];
 private _invalidNumericSave = ["76561198000000000", createHashMapFromArray [
-    ["schemaVersion", 1], ["xp", "bad"], ["cash", 1000], ["ownedWeapons", []], ["weaponKills", createHashMap]
+    ["schemaVersion", 2], ["xp", "bad"], ["cash", 1000], ["ownedWeapons", []], ["weaponKills", createHashMap], ["ownedPerks", []], ["activePerks", []]
 ]] call bn_koth_fnc_persistence_backendSavePlayer;
 [!(_invalidNumericSave getOrDefault ["success", true]) && {(_invalidNumericSave getOrDefault ["code", ""]) isEqualTo "INVALID_PERSISTENT_NUMERIC_FIELDS"}, "Malformed persistent numeric fields reached extDB3."] call _assert;
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "MEMORY"];
 
-private _extdbValid = ["[1,[[""76561198000000000"",1,12,34,""vn_m1903"",""vn_m1903=7""]]]"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _extdbValid = ["[1,[[""76561198000000000"",2,12,34,""vn_m1903"",""vn_m1903=7"",""suppressor"",""suppressor""]]]"] call bn_koth_fnc_persistence_parseExtdbResponse;
 [_extdbValid getOrDefault ["success", false] && {(count (_extdbValid getOrDefault ["rows", []])) isEqualTo 1}, "Valid extDB3 response was rejected."] call _assert;
 [!((["[0,""Error MariaDBQueryException Exception""]"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "extDB3 error response was accepted."] call _assert;
 [!((["not an array"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "Malformed extDB3 response was accepted."] call _assert;
 
 private _legacy = [_knownUid, createHashMapFromArray [["uid", _knownUid], ["xp", 5]]] call bn_koth_fnc_persistence_normalizePlayerState;
 [(_legacy getOrDefault ["code", ""]) isEqualTo "NORMALIZED_LEGACY", "Missing schemaVersion was not handled as legacy."] call _assert;
-private _future = [_knownUid, createHashMapFromArray [["schemaVersion", 2], ["uid", _knownUid]]] call bn_koth_fnc_persistence_normalizePlayerState;
+private _future = [_knownUid, createHashMapFromArray [["schemaVersion", 3], ["uid", _knownUid]]] call bn_koth_fnc_persistence_normalizePlayerState;
 [!(_future getOrDefault ["success", true]) && {(_future getOrDefault ["code", ""]) isEqualTo "UNSUPPORTED_FUTURE_SCHEMA"}, "Future schema did not fail closed."] call _assert;
 private _malformed = [_knownUid, createHashMapFromArray [["schemaVersion", 1], ["uid", _knownUid], ["xp", "bad"], ["cash", -4], ["ownedWeapons", "bad"], ["weaponKills", []]]] call bn_koth_fnc_persistence_normalizePlayerState;
 private _malformedState = _malformed getOrDefault ["state", createHashMap];

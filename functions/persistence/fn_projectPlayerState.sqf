@@ -22,6 +22,7 @@ createHashMapFromArray [
     ["xp", _state getOrDefault ["xp", 0]],
     ["cash", _state getOrDefault ["cash", missionNamespace getVariable ["BN_KOTH_startingCash", 1000]]],
     ["ownedWeapons", +(_state getOrDefault ["ownedWeapons", []])],
+    ["ownedPerks", +(_state getOrDefault ["ownedPerks", []])],
+    ["activePerks", +(_state getOrDefault ["activePerks", []])],
     ["weaponKills", _projectedKills]
 ]
-
