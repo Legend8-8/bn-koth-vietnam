@@ -321,6 +321,9 @@ For the Arsenal rework, also verify:
   profile data is rejected by server validation;
 - repeated browser, Configure, cargo, assigned-item, and kit-manager entry and
   exit does not leave stale controls, actions, pages, or draft state;
+- authoritative return to the lobby closes an open deployed menu through its
+  normal unload path from every page, while ACTIVE/RESPAWNING state leaves it
+  open and stale `BN_KOTH_menuDisplay` state is cleared;
 - the disabled operator preview creates no camera or render-to-texture view;
 - client and server RPT files remain free of Arsenal script errors throughout
   the complete flow.
