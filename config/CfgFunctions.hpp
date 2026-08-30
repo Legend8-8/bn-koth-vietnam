@@ -220,6 +220,15 @@ class CfgFunctions
             class player3DIcons_draw {file = "functions\playerIcons\player3DIcons\fn_draw.sqf";};
         };
 
+        class enemySpotting
+        {
+            class enemySpotting_initServer {file = "functions\playerIcons\enemySpotting\fn_initServer.sqf";};
+            class enemySpotting_initPlayerLocal {file = "functions\playerIcons\enemySpotting\fn_initPlayerLocal.sqf";};
+            class enemySpotting_requestSpot {file = "functions\playerIcons\enemySpotting\fn_requestSpot.sqf";};
+            class enemySpotting_serverValidateAndMark {file = "functions\playerIcons\enemySpotting\fn_serverValidateAndMark.sqf";};
+            class enemySpotting_serverExpireMarks {file = "functions\playerIcons\enemySpotting\fn_serverExpireMarks.sqf";};
+        };
+
         class vehicles
         {
             class vehicles_addVehicleInventory {file = "functions\vehicles\fn_addVehicleInventory.sqf";};

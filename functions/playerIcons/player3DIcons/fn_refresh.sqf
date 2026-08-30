@@ -83,5 +83,38 @@ private _eligiblePlayers = allPlayers select {
     ];
 } forEach _eligiblePlayers;
 
+{
+    private _unit = _x;
+    private _markedUntil = _unit getVariable ["BN_KOTH_spottedUntil", -1];
+    private _markedBySide = _unit getVariable ["BN_KOTH_spottedBySide", sideUnknown];
+
+    if (isNull _unit || {!alive _unit} || {_unit isEqualTo player}) then {
+        continue;
+    };
+    if (time >= _markedUntil) then {
+        continue;
+    };
+    if !([_markedBySide] call bn_koth_fnc_teams_validateSide) then {
+        continue;
+    };
+    if (_markedBySide isNotEqualTo _mySide) then {
+        continue;
+    };
+    if (player distance2D _unit > _maxDistance) then {
+        continue;
+    };
+
+    private _unitPos = _unit modelToWorldVisual (_unit selectionPosition "neck");
+    private _color = if (side group _unit isEqualTo west) then {_westColor} else {_eastColor};
+    _drawEntries pushBack [
+        _unitPos,
+        180,
+        "",
+        _friendlyTexture,
+        _color,
+        false
+    ];
+} forEach allPlayers;
+
 uiNamespace setVariable ["BN_KOTH_player3DIconsDrawData", _drawEntries];
 count _drawEntries
