@@ -14,9 +14,8 @@ class CfgBnKothLocations
     class bra
     {
         displayName = "Bra";
-        zoneMarker = "bra_zone";
-        respawnWestMarker = "bra_respawn_west";
-        respawnEastMarker = "bra_respawn_east";
+        description = "Riverside valley combat.";
+        image = "images\ui\lobby\bra.jpg";
 
         // Use Eden variable prefix bra_ for map-specific objects.
         objects[] = {};

@@ -26,9 +26,9 @@ if !(isClass _locationsCfg) exitWith {
     0
 };
 
-private _activeCfg = _locationsCfg >> _activeLocationId;
-if !(isClass _activeCfg) exitWith {
-    [format ["Vehicle slot build failed: active location '%1' missing config class.", _activeLocationId], "ERROR"] call bn_koth_fnc_common_log;
+private _activeLocationData = [_activeLocationId] call bn_koth_fnc_zone_getLocationData;
+if !(_activeLocationData isEqualType createHashMap) exitWith {
+    [format ["Vehicle slot build failed: active location '%1' missing resolver data.", _activeLocationId], "ERROR"] call bn_koth_fnc_common_log;
     0
 };
 
@@ -74,7 +74,7 @@ private _slotIds = [];
 {
     _x params ["_slotId", "_side", "_category", "_cfgSpawnpointKey"];
 
-    private _markerName = getText (_activeCfg >> _cfgSpawnpointKey);
+    private _markerName = _activeLocationData getOrDefault [_cfgSpawnpointKey, ""];
     if (_markerName isEqualTo "") then {
         [format ["Vehicle slot '%1' skipped: missing marker key '%2' in location '%3'.", _slotId, _cfgSpawnpointKey, _activeLocationId], "WARN"] call bn_koth_fnc_common_log;
         continue;
