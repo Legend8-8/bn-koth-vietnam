@@ -271,6 +271,12 @@ class CfgFunctions
             class ui_refreshLobbyVote {file = "functions\ui\lobby\fn_refreshLobbyVote.sqf";};
             class ui_refreshLobbyLeaders {file = "functions\ui\lobby\fn_refreshLobbyLeaders.sqf";};
             class ui_updateLobbyLifecycle {file = "functions\ui\lobby\fn_updateLobbyLifecycle.sqf";};
+            class ui_transition_update {file = "functions\ui\transition\fn_update.sqf";};
+            class ui_transition_runTypewriter {file = "functions\ui\transition\fn_runTypewriter.sqf";};
+            class ui_transition_hide {file = "functions\ui\transition\fn_hide.sqf";};
+            class ui_results_update {file = "functions\ui\results\fn_update.sqf";};
+            class ui_results_runPresentation {file = "functions\ui\results\fn_runPresentation.sqf";};
+            class ui_results_hide {file = "functions\ui\results\fn_hide.sqf";};
             class ui_requestState {file = "functions\ui\state\fn_requestState.sqf";};
             class ui_sendStateToClient {file = "functions\ui\state\fn_sendStateToClient.sqf";};
             class ui_receiveState {file = "functions\ui\state\fn_receiveState.sqf";};
