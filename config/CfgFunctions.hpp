@@ -79,6 +79,8 @@ class CfgFunctions
         class zone
         {
             class zone_initServer {file = "functions\zone\fn_initServer.sqf";};
+            class zone_getLocationData {file = "functions\zone\fn_getLocationData.sqf";};
+            class zone_validateLocation {file = "functions\zone\fn_validateLocation.sqf";};
             class zone_setActiveLocation {file = "functions\zone\fn_setActiveLocation.sqf";};
             class zone_clearActiveLocation {file = "functions\zone\fn_clearActiveLocation.sqf";};
             class zone_cacheStaticObjects {file = "functions\zone\fn_cacheStaticObjects.sqf";};
@@ -233,6 +235,15 @@ class CfgFunctions
             class player3DIcons_draw {file = "functions\playerIcons\player3DIcons\fn_draw.sqf";};
         };
 
+        class enemySpotting
+        {
+            class enemySpotting_initServer {file = "functions\playerIcons\enemySpotting\fn_initServer.sqf";};
+            class enemySpotting_initPlayerLocal {file = "functions\playerIcons\enemySpotting\fn_initPlayerLocal.sqf";};
+            class enemySpotting_requestSpot {file = "functions\playerIcons\enemySpotting\fn_requestSpot.sqf";};
+            class enemySpotting_serverValidateAndMark {file = "functions\playerIcons\enemySpotting\fn_serverValidateAndMark.sqf";};
+            class enemySpotting_serverExpireMarks {file = "functions\playerIcons\enemySpotting\fn_serverExpireMarks.sqf";};
+        };
+
         class vehicles
         {
             class vehicles_addVehicleInventory {file = "functions\vehicles\fn_addVehicleInventory.sqf";};
@@ -284,6 +295,12 @@ class CfgFunctions
             class ui_refreshLobbyVote {file = "functions\ui\lobby\fn_refreshLobbyVote.sqf";};
             class ui_refreshLobbyLeaders {file = "functions\ui\lobby\fn_refreshLobbyLeaders.sqf";};
             class ui_updateLobbyLifecycle {file = "functions\ui\lobby\fn_updateLobbyLifecycle.sqf";};
+            class ui_transition_update {file = "functions\ui\transition\fn_update.sqf";};
+            class ui_transition_runTypewriter {file = "functions\ui\transition\fn_runTypewriter.sqf";};
+            class ui_transition_hide {file = "functions\ui\transition\fn_hide.sqf";};
+            class ui_results_update {file = "functions\ui\results\fn_update.sqf";};
+            class ui_results_runPresentation {file = "functions\ui\results\fn_runPresentation.sqf";};
+            class ui_results_hide {file = "functions\ui\results\fn_hide.sqf";};
             class ui_requestState {file = "functions\ui\state\fn_requestState.sqf";};
             class ui_sendStateToClient {file = "functions\ui\state\fn_sendStateToClient.sqf";};
             class ui_receiveState {file = "functions\ui\state\fn_receiveState.sqf";};

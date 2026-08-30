@@ -25,6 +25,18 @@ class CfgBnKothEscMenuKeybinds
         displayName = "Toggle Earplugs";
         access = 1;
     };
+
+    class enemySpotting_mark
+    {
+        defaultKey = DIK_T;
+        shift = "false";
+        ctrl = "false";
+        alt = "false";
+        down = 1;
+        function = "bn_koth_fnc_enemySpotting_requestSpot";
+        displayName = "Spot Enemy";
+        access = 1;
+    };
 };
 
 class CfgBnKothEscMenuOptions

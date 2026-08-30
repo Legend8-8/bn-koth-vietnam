@@ -26,7 +26,9 @@ if (_stateReady && {!(_uid isEqualTo "")}) then {
     };
 };
 
-private _shouldShowBlackout = _initialPreloadFinished && {!_isDeployed};
+private _transitionVisible = uiNamespace getVariable ["BN_KOTH_transitionVisible", false];
+private _resultsVisible = uiNamespace getVariable ["BN_KOTH_resultsVisible", false];
+private _shouldShowBlackout = _initialPreloadFinished && {!_isDeployed || {_transitionVisible} || {_resultsVisible}};
 private _layer = "BN_KOTH_LobbyBlackout" call BIS_fnc_rscLayer;
 private _isVisible = uiNamespace getVariable ["BN_KOTH_lobbyBlackoutVisible", false];
 

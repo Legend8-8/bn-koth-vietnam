@@ -15,6 +15,9 @@ params [["_shouldShow", false, [false]]];
 
 if (!hasInterface) exitWith {false};
 
+_shouldShow = _shouldShow && {!(uiNamespace getVariable ["BN_KOTH_transitionVisible", false])};
+_shouldShow = _shouldShow && {!(uiNamespace getVariable ["BN_KOTH_resultsVisible", false])};
+
 private _visible = uiNamespace getVariable ["BN_KOTH_hudVisible", false];
 private _layer = "BN_KOTH_HUD" call BIS_fnc_rscLayer;
 

@@ -121,9 +121,10 @@ if (_requiresArsenalAccess) then {
     };
 
     if (_arsenalAccessFailure isEqualTo "") then {
+        private _locationData = [_activeLocationId] call bn_koth_fnc_zone_getLocationData;
         _boardRef = switch (_assignedSide) do {
-            case west: {getText (_activeCfg >> "westCommand_mapboard")};
-            case east: {getText (_activeCfg >> "eastCommand_mapboard")};
+            case west: {_locationData getOrDefault ["westCommand_mapboard", ""]};
+            case east: {_locationData getOrDefault ["eastCommand_mapboard", ""]};
             default {""};
         };
 
