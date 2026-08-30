@@ -595,3 +595,77 @@ Run on hosted and dedicated servers with the extDB schema-v2 migration applied:
 - Dedicated security: invoke requests only from the owning client and confirm forged UID/cost/ownership/loadout data is neither accepted nor part of the endpoint schema.
 
 Focused server tests: `call compile preprocessFileLineNumbers "functions\progression\perks\test_perks.sqf"`. Expected result: `[]`.
+
+21. Deployment Transition Presentation
+
+The deployment transition is client-local presentation over the existing
+authoritative `WAITING -> PREPARING -> ACTIVE` lifecycle. On hosted and
+dedicated servers verify:
+
+- a selected player sees the transition before the lobby closes or the
+  PREPARING gameplay representation becomes visible;
+- the retained lobby blackout plus the transition's absolute-width opaque
+  background leaves no terrain, world object, HUD or screen-edge gap visible;
+- walking, sprinting, firing, interaction and gameplay controls are blocked
+  while the transition owns presentation, then return after normal reveal,
+  PREPARING abort and participation loss;
+- the theatre uses loaded-world metadata and the AO uses the selected
+  `CfgBnKothLocations` display name;
+- a fast preparation reaching `ACTIVE` first still plays the complete
+  typewriter sequence before fading into gameplay;
+- a slow preparation finishing the sequence first holds on `READY` and
+  `AWAITING DEPLOYMENT CLEARANCE` until authoritative `ACTIVE` arrives;
+- a PREPARING abort to `WAITING`, removal from the participating set, or a
+  failed deployment removes the transition and restores the normal lobby with
+  no permanent black screen;
+- repeated rounds and duplicate state publications create only one transition
+  resource and one typewriter script per client;
+- each run produces one controlled typo in an operational status line,
+  visibly backspaces and corrects it, and leaves the final order correct;
+- the slower variable cadence, selected blinking-cursor thought pauses and
+  brief `READY_` hold remain natural without spawning separate cursor scripts;
+- the normal BN KOTH score/AO/rank HUD is withdrawn as transition ownership
+  begins, remains absent through fast/slow preparation and the final fade, then
+  restarts exactly one animator only after successful transition cleanup;
+- a PREPARING abort leaves both transition and gameplay HUD hidden while the
+  normal lobby lifecycle resumes;
+- two or more clients animate independently without presentation traffic or
+  any effect on server readiness;
+- a JIP client during PREPARING either enters the same transition safely or
+  remains in the lobby when not selected, and no client joining directly into
+  ACTIVE receives a fabricated deployment sequence.
+
+During each case confirm the existing `BN_KOTH_LobbyBlackout` remains behind
+the transition with no visible frame of AO setup and that the transition's
+fade does not remove the HUD, lobby, or other named UI layers.
+
+22. Round-End Results Presentation
+
+The round-end results screen is client-local presentation over the existing
+authoritative `ACTIVE -> ENDING -> RESETTING -> WAITING` lifecycle. On hosted
+and dedicated servers verify:
+
+- normal round end shows the authoritative winning side, both final team
+  scores, and the same MOST DEADLY, OBJECTIVE and BEST STREAK values shown by
+  the lobby Live Leaders cards;
+- missing or zero-value leader entries render `NO LEADER` with the appropriate
+  zero-value `KILLS`/`PTS` fallback;
+- RESETTING and player return-to-lobby cleanup remain fully concealed by the
+  opaque results layer, with no gameplay HUD, deployed menu, world frame or
+  half-reset AO visible;
+- movement, firing and interaction remain blocked while results own
+  presentation, and input is restored after both the minimum results sequence
+  and authoritative lobby readiness have completed;
+- a fast reset reaching WAITING before the sequence finishes does not reveal
+  the lobby early, while a slow reset holds on `RETURNING TO OPERATIONS...`
+  until WAITING and the local lobby representation are ready;
+- long leader names remain within their cards through the existing width-aware
+  lobby name fitter;
+- repeated rounds show only the new winner/scores/leaders, create one results
+  resource and presentation script per client, and do not leave stale input,
+  blackout or HUD state;
+- display recreation during ENDING/RESETTING safely rebuilds the presentation
+  from the completed-round snapshot, and a JIP client during those states does
+  not expose cleanup or fabricate authoritative result data;
+- multiple clients render independently with no cosmetic network traffic and
+  no delay to the server round lifecycle.

@@ -59,6 +59,8 @@ private _nativeActive = uiNamespace getVariable ["BN_KOTH_lobbyNativeMenuActive"
 private _nativeRestorePending = uiNamespace getVariable ["BN_KOTH_lobbyNativeMenuRestorePending", false];
 
 private _myState = _playerStates getOrDefault [_uid, "LOBBY"];
+[] call bn_koth_fnc_ui_results_update;
+[] call bn_koth_fnc_ui_transition_update;
 private _isDeployed = (_uid in _activeParticipants) || {_myState in ["ACTIVE", "RESPAWNING"]};
 [_isDeployed] call _syncHud;
 
