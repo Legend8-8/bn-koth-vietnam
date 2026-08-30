@@ -23,29 +23,46 @@ private _requiredRoles = [
     ["respawnWestMarker", "respawnWestMarker"],
     ["respawnEastMarker", "respawnEastMarker"],
     ["westBaseZoneMarker", "westBaseZoneMarker"],
-    ["eastBaseZoneMarker", "eastBaseZoneMarker"],
-    ["westCommand_spawnpoint", "westCommand_spawnpoint"],
-    ["eastCommand_spawnpoint", "eastCommand_spawnpoint"],
-    ["westCommand_mapboard", "westCommand_mapboard"],
-    ["eastCommand_mapboard", "eastCommand_mapboard"]
+    ["eastBaseZoneMarker", "eastBaseZoneMarker"]
 ];
+
+private _roleIsPresent = {
+    params ["_roleName", "_roleLabel"];
+
+    if (_roleName isEqualTo "") exitWith {
+        [format ["Location '%1' failed validation: missing required role '%2' (expected resolved name unavailable).", _locationId, _roleLabel], "ERROR"] call bn_koth_fnc_common_log;
+        false
+    };
+
+    if ((markerShape _roleName) isNotEqualTo "") exitWith {true};
+
+    private _candidate = missionNamespace getVariable [_roleName, objNull];
+    if (_candidate isEqualType []) exitWith {
+        ({!isNull _x} count _candidate) > 0
+    };
+
+    if (!isNull _candidate) exitWith {true};
+
+    {
+        private _object = _x;
+        if (isNull _object) then {continue};
+        if ((_object getVariable ["BN_KOTH_roleName", ""]) isEqualTo _roleName) exitWith {true};
+        if ((vehicleVarName _object) isEqualTo _roleName) exitWith {true};
+        if ((str _object) isEqualTo _roleName) exitWith {true};
+    } forEach (allMissionObjects "");
+
+    [format ["Location '%1' failed validation: required role '%2' marker/object/agent '%3' is missing.", _locationId, _roleLabel, _roleName], "ERROR"] call bn_koth_fnc_common_log;
+    false
+};
 
 private _valid = true;
 {
     _x params ["_key", "_label"];
     private _expected = _locationData getOrDefault [_key, ""];
 
-    if (_expected isEqualTo "") then {
-        [format ["Location '%1' failed validation: missing required role '%2' (expected resolved name unavailable).", _locationId, _label], "ERROR"] call bn_koth_fnc_common_log;
+    if !([_expected, _label] call _roleIsPresent) exitWith {
         _valid = false;
-    } else {
-        if ((markerShape _expected) isEqualTo "") then {
-            [format ["Location '%1' failed validation: required role '%2' marker '%3' is missing.", _locationId, _label, _expected], "ERROR"] call bn_koth_fnc_common_log;
-            _valid = false;
-        };
     };
-
-    if !(_valid) exitWith {false};
 } forEach _requiredRoles;
 
 _valid
