@@ -79,6 +79,8 @@ class CfgFunctions
         class zone
         {
             class zone_initServer {file = "functions\zone\fn_initServer.sqf";};
+            class zone_getLocationData {file = "functions\zone\fn_getLocationData.sqf";};
+            class zone_validateLocation {file = "functions\zone\fn_validateLocation.sqf";};
             class zone_setActiveLocation {file = "functions\zone\fn_setActiveLocation.sqf";};
             class zone_clearActiveLocation {file = "functions\zone\fn_clearActiveLocation.sqf";};
             class zone_cacheStaticObjects {file = "functions\zone\fn_cacheStaticObjects.sqf";};

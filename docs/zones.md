@@ -17,14 +17,23 @@ For Cam Lao Nam, keep all potential zones in the same mission.sqm and select one
 
 Each zone is defined by location ID in maps/<map_name>/map_config/locations.hpp under CfgBnKothLocations.
 
-Each location should include:
+The canonical runtime naming is owned by bn_koth_fnc_zone_getLocationData. Consumers must call that resolver instead of reimplementing location suffix rules in SQF.
 
-- zoneMarker
-- respawnWestMarker
-- respawnEastMarker
-- westBaseZoneMarker
-- eastBaseZoneMarker
+A location now only needs the short display metadata in config:
+
+- displayName
+- description
+- image
 - objects[] (optional explicit list; prefix-based detection is preferred)
+- optional explicit override values for exceptional Eden naming breaks
+
+The resolver derives the mandatory runtime names from the location ID by convention, for example:
+
+- <id>_zone
+- <id>_respawn_west
+- <id>_respawn_east
+- <id>_west_base_zone
+- <id>_east_base_zone
 
 Both base-zone markers must have valid marker geometry. They define the spatial safe zones for player and vehicle protection, physical inventory blocking, ground-loot removal and corpse cleanup, and are required for the location to be selected. These rules apply only to the active bases; battlefield scavenging remains available in the active AO outside them.
 
@@ -66,23 +75,82 @@ Server startup uses CfgBnKothSettings.defaultLocationId and calls:
 
 That function:
 
+- resolves the active location via bn_koth_fnc_zone_getLocationData;
+- validates the location with bn_koth_fnc_zone_validateLocation before publishing state;
 - publishes BN_KOTH_activeLocationId;
 - publishes BN_KOTH_activeZoneMarker, active respawn markers and active safe-zone markers;
 - hides inactive location markers;
-- deactivates non-active static location objects using <locationId>_ prefix matching (and objects[] entries if provided), while keeping them reactivatable.
+- deactivates non-active static location objects using the location base-zone spatial ownership plus objects[] entries if provided, while keeping them reactivatable.
 
 Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
+
+Configured vs activatable is intentionally different:
+
+- configured means the class exists under CfgBnKothLocations for voting/listing;
+- activatable means the location passes the validator, including all mandatory markers.
 
 7. Adding a New Zone
 
 1. Add zone, respawn and side-specific base-zone markers in mission.sqm (via Eden).
-2. Name markers clearly (example: hue_zone, hue_respawn_west, hue_respawn_east, hue_west_base_zone and hue_east_base_zone).
-3. Add class hue in maps/<map_name>/map_config/locations.hpp.
+2. Name markers to the convention, for example hue_zone, hue_respawn_west, hue_respawn_east, hue_west_base_zone and hue_east_base_zone.
+3. Add a short class hue in maps/<map_name>/map_config/locations.hpp with displayName, description and image.
 4. Give zone-specific objects Eden variable names with prefix <locationId>_ (for example hue_...).
 5. Set defaultLocationId to hue for testing.
 6. Start mission and verify only hue markers/objects are active.
 
-8. Dynamic Priority Zone
+8. Extending the Location Schema
+
+If a new location feature needs additional runtime markers, objects or spawn references, keep it in the same pattern: the resolver owns the naming, while the config file only declares exceptional overrides.
+
+Use this checklist:
+
+1. Give the Eden object or marker a clear <locationId>_ name.
+2. Decide whether it is mandatory or optional for activation.
+3. Add the role to bn_koth_fnc_zone_getLocationData with the canonical default name.
+4. If it is mandatory, also add the role to bn_koth_fnc_zone_validateLocation.
+5. Update the consuming SQF code to read the resolved value through the hash map instead of reading a flat config field.
+6. Only add a config override if the actual Eden object name must differ from the convention.
+
+Example pattern for a mapboard or command board:
+
+```cpp
+class hue
+{
+    displayName = "Hue";
+    description = "Riverside city. Long sightlines and strong defensive positions.";
+    image = "images\ui\lobby\hue.jpg";
+
+    // Optional override only when the actual Eden object/marker differs.
+    // westCommand_mapboard = "hue_special_mapboard";
+    // eastCommand_mapboard = "hue_east_special_mapboard";
+
+    objects[] = {};
+};
+```
+
+The default resolved names follow the convention table, so most mapboards/spawnpoints do not need any literal config strings:
+
+- westCommand_mapboard -> <id>_west_command_mapboard
+- eastCommand_mapboard -> <id>_east_command_mapboard
+- westCommand_spawnpoint -> <id>_west_command_spawnpoint
+- eastCommand_spawnpoint -> <id>_east_command_spawnpoint
+- westPaidGround_spawnpoint -> <id>_west_paid_ground_spawnpoint
+
+If a feature is truly optional, leave it out of validation and simply treat missing values as empty. If the feature is required to start or run the location, add it to the mandatory validation list and log the missing role with the expected resolved name when it fails.
+
+The key rule is: no consumer may re-create the naming suffix table locally. Every new marker-role should go through the resolver and, if relevant, the validator.
+
+For this mission, the required runtime roles are:
+
+- AO zone marker
+- west/east respawns
+- west/east base-zone markers
+- west/east command spawnpoints
+- west/east command mapboards
+
+Paid/free vehicle spawnpoints remain optional. If one is missing, the slot builder simply skips that vehicle slot rather than blocking activation of the active location.
+
+9. Dynamic Priority Zone
 
 The zone system also supports a moving priority area inside the active AO.
 

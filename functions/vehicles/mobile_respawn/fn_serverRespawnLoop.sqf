@@ -92,19 +92,18 @@ while {missionNamespace getVariable ["BN_KOTH_commandTeleportMonitorRunning", fa
         continue;
     };
 
-    private _locationsCfg = missionConfigFile >> "CfgBnKothLocations";
-    private _activeCfg = _locationsCfg >> _activeLocationId;
-    if !(isClass _activeCfg) then {
+    private _locationData = [_activeLocationId] call bn_koth_fnc_zone_getLocationData;
+    if !(_locationData isEqualType createHashMap) then {
         missionNamespace setVariable ["BN_KOTH_commandBoardDefs", [], true];
         missionNamespace setVariable ["BN_KOTH_commandVehicles", createHashMap, true];
         uiSleep 2;
         continue;
     };
 
-    private _westSpawnRef = getText (_activeCfg >> "westCommand_spawnpoint");
-    private _eastSpawnRef = getText (_activeCfg >> "eastCommand_spawnpoint");
-    private _westBoardRef = getText (_activeCfg >> "westCommand_mapboard");
-    private _eastBoardRef = getText (_activeCfg >> "eastCommand_mapboard");
+    private _westSpawnRef = _locationData getOrDefault ["westCommand_spawnpoint", ""];
+    private _eastSpawnRef = _locationData getOrDefault ["eastCommand_spawnpoint", ""];
+    private _westBoardRef = _locationData getOrDefault ["westCommand_mapboard", ""];
+    private _eastBoardRef = _locationData getOrDefault ["eastCommand_mapboard", ""];
 
     private _vehiclesBySide = createHashMap;
     private _currentVehiclesBySide = missionNamespace getVariable ["BN_KOTH_commandVehicles", createHashMap];
