@@ -7,6 +7,7 @@
 class CfgBnKothTraversal
 {
     enabled = 1;
+    developerDebugScriptsEnabled = 0;
 
     // Traversal classification.
     minObstacleHeight = 0.25;
