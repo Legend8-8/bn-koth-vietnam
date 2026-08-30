@@ -32,7 +32,6 @@ missionNamespace setVariable ["BN_KOTH_player3DIconsProximityVisibilityDistance"
 missionNamespace setVariable ["BN_KOTH_player3DIconsWestColor", getArray (_config >> "westColor")];
 missionNamespace setVariable ["BN_KOTH_player3DIconsEastColor", getArray (_config >> "eastColor")];
 missionNamespace setVariable ["BN_KOTH_player3DIconsSameGroupColor", getArray (_config >> "sameGroupColor")];
-missionNamespace setVariable ["BN_KOTH_player3DIconsEnemyMarkKey", getText (_config >> "temporaryEnemyMarkKey")];
 missionNamespace setVariable ["BN_KOTH_player3DIconsEnemyMarkDuration", (getNumber (_config >> "temporaryEnemyMarkDuration")) max 0];
 uiNamespace setVariable ["BN_KOTH_player3DIconsDrawData", []];
 

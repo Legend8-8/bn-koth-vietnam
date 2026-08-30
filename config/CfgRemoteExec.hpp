@@ -143,6 +143,12 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_enemySpotting_serverValidateAndMark
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
         class bn_koth_fnc_escMenu_initPlayerLocal
         {
             allowedTargets = 1;
