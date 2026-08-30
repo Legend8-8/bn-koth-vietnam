@@ -4,8 +4,8 @@ class CfgBnKothEscMenuKeybinds
 {
     class traversal
     {
-        defaultKey = 0;
-        shift = "false";
+        defaultKey = DIK_SPACE;
+        shift = "true";
         ctrl = "false";
         alt = "false";
         down = 0;

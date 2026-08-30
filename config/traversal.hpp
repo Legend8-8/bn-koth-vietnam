@@ -46,7 +46,8 @@ class CfgBnKothTraversal
     mediumMantleDuration = 1.48;
     highMantleDuration = 1.78;
     weaponRestrictions[] = {};
-
+    
+    //debugging
     class Diagnostics
     {
         debugDraw = 0;

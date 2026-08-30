@@ -68,7 +68,14 @@ private _cases = [
 
 private _keybindCfg = missionConfigFile >> "CfgBnKothEscMenuKeybinds" >> "traversal";
 [isClass _keybindCfg, "Traversal gamemode keybind config is missing"] call _assert;
-[(getNumber (_keybindCfg >> "defaultKey")) isEqualTo 0, "Traversal must remain unbound by default"] call _assert;
+[
+    getNumber (_keybindCfg >> "defaultKey") > 0,
+    "Traversal default key must be configured in the mission keybind file"
+] call _assert;
+[
+    (getText (_keybindCfg >> "shift")) isEqualTo "true",
+    "Traversal must default to Shift modifier"
+] call _assert;
 [
     (getText (_keybindCfg >> "function")) isEqualTo "bn_koth_fnc_traversal_request",
     "Traversal keybind does not target traversal_request"
