@@ -1,6 +1,7 @@
 /*
     File: fn_finish.sqf
     Author: Legend
+    Edited: Legend
     Description: Finalizes successful traversal, applies stamina cost, and releases the lock.
     Execution: Owning client
     Parameters:
@@ -31,8 +32,13 @@ _unit setVelocity [0, 0, 0];
 _unit setPosASL _landing;
 
 private _selectedAnimation = _result getOrDefault ["selectedAnimation", ""];
-if ((_selectedAnimation != "") && {(animationState _unit) isEqualTo (toLower _selectedAnimation)}) then {
-    isNil {_unit switchMove ""};
+private _finishAnimation = _result getOrDefault ["finishAnimation", ""];
+if (_finishAnimation != "") then {
+    _unit playMoveNow _finishAnimation;
+} else {
+    if ((_selectedAnimation != "") && {(animationState _unit) isEqualTo (toLower _selectedAnimation)}) then {
+        isNil {_unit switchMove ""};
+    };
 };
 private _staminaCost = _result getOrDefault ["staminaCost", 0];
 _unit setStamina (((getStamina _unit) - _staminaCost) max 0);

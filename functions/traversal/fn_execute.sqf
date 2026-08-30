@@ -1,6 +1,7 @@
 /*
     File: fn_execute.sqf
     Author: Legend
+    Edited: Legend
     Description: Moves the local unit along the measured cubic traversal path.
     Execution: Owning client in scheduled environment
     Parameters:
@@ -37,7 +38,8 @@ if ((_start vectorDistance _origin) > _originTolerance) exitWith {
 
 private _action = _result getOrDefault ["action", "VAULT"];
 private _landingMode = _result getOrDefault ["landingMode", "ON_TOP"];
-private _animation = [_unit, _action, _landingMode] call bn_koth_fnc_traversal_selectAnimation;
+private _animation = [_unit, _action, _landingMode, "START"] call bn_koth_fnc_traversal_selectAnimation;
+private _finishAnimation = [_unit, _action, _landingMode, "FINISH"] call bn_koth_fnc_traversal_selectAnimation;
 private _forward = vectorNormalized (_result getOrDefault ["facingDirection", vectorDir _unit]);
 private _height = _result getOrDefault ["height", 0.80];
 private _loadFactor = load _unit;
@@ -67,6 +69,7 @@ private _controlTwo = _landing vectorDiff (_forward vectorMultiply _follow);
 _controlTwo set [2, if (_landingMode isEqualTo "OVER") then {_arcZ} else {_arcZ max ((_landing select 2) + 0.12)}];
 
 _result set ["selectedAnimation", _animation];
+_result set ["finishAnimation", _finishAnimation];
 _result set ["staminaCost", _staminaCost];
 _result set ["movementWaypoints", [_start, _controlOne, _controlTwo, _landing]];
 _result set ["state", "TRAVERSING"];
@@ -104,10 +107,11 @@ _unit playMoveNow _animation;
 [
     "INFO",
     format [
-        "Traversal started: %1 %2 animation=%3 duration=%4 stamina=%5",
+        "Traversal started: %1 %2 animation=%3 finish=%4 duration=%5 stamina=%6",
         _action,
         _landingMode,
         _animation,
+        _finishAnimation,
         _duration toFixed 2,
         _staminaCost toFixed 1
     ]

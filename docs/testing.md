@@ -580,7 +580,6 @@ code and exact reason, with no charge. Verify the Store card only ever shows
 successful RENT, and `VEHICLE ACTIVE` only after a logged `RENTED` success with
 a real `netId`. There is no `REQUISITION` action, no `RENTAL READY` state, and
 no pending-rental state anywhere in the client or server rental payloads.
-<<<<<<< Updated upstream
 # Perk foundation manual matrix
 
 Run on hosted and dedicated servers with the extDB schema-v2 migration applied:
@@ -596,7 +595,6 @@ Run on hosted and dedicated servers with the extDB schema-v2 migration applied:
 - Dedicated security: invoke requests only from the owning client and confirm forged UID/cost/ownership/loadout data is neither accepted nor part of the endpoint schema.
 
 Focused server tests: `call compile preprocessFileLineNumbers "functions\progression\perks\test_perks.sqf"`. Expected result: `[]`.
-=======
 
 21. Advanced Traversal Checks
 
@@ -608,11 +606,15 @@ call compile preprocessFileLineNumbers "functions\traversal\test_traversal.sqf"
 
 An empty array is a pass. The focused check verifies configured classification
 boundaries, the unbound-default gamemode action, required stock animation
-states, and absence of a traversal RemoteExec endpoint.
+states, mantle climb-first/top-off-last phase selection, no finish phase for
+step-over/vault, and absence of a traversal RemoteExec endpoint.
 
 Hosted and dedicated testing must additionally bind the action and verify
 step-over, vault, low/medium/high mantle, on-top and over-obstacle landings with
-rifle, pistol, launcher and unarmed states. Verify rejection while dead,
+rifle, pistol, launcher and unarmed states. Every mantle must begin with the
+matching `Ladder*UpLoop` and call the matching `Ladder*TopOff` only after the
+unit reaches its final landing position; step-over and vault must never call a
+ladder top-off. Verify rejection while dead,
 incapacitated, prone, underwater, attached, in a vehicle, already traversing,
 inside the cooldown, without an obstacle, without landing support, and with
 blocked headroom. Death, respawn, `selectPlayer` representation handoff and
@@ -622,4 +624,3 @@ is remotely executed, no persistent/JIP state is created, and client/server RPT
 files contain no repeated traversal errors. Enable `Diagnostics.debugDraw` only
 for a separate probe-visualization pass and confirm the handler is absent when
 the option is disabled.
->>>>>>> Stashed changes

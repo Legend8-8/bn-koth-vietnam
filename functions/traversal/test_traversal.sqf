@@ -1,6 +1,7 @@
 /*
     File: test_traversal.sqf
     Author: Legend
+    Edited: Legend
     Description: Focused config, classification, animation, input, and networking checks.
     Execution: Hosted or dedicated session after mission functions initialize
     Parameters:
@@ -82,6 +83,31 @@ private _keybindCfg = missionConfigFile >> "CfgBnKothEscMenuKeybinds" >> "traver
     isClass (configFile >> "CfgMovesMaleSdr" >> "States" >> "vn_weapon_on_back_evaF"),
     "S.O.G. step-over animation is missing"
 ] call _assert;
+
+private _animationUnit = if (hasInterface && {!isNull player}) then {player} else {objNull};
+{
+    private _startAnimation = [_animationUnit, _x, "ON_TOP", "START"] call bn_koth_fnc_traversal_selectAnimation;
+    private _finishAnimation = [_animationUnit, _x, "ON_TOP", "FINISH"] call bn_koth_fnc_traversal_selectAnimation;
+    [
+        _startAnimation in ["LadderRifleUpLoop", "LadderCivilUpLoop"],
+        format ["%1 must start with a ladder climb animation, got %2", _x, _startAnimation]
+    ] call _assert;
+    [
+        _finishAnimation in ["LadderRifleTopOff", "LadderCivilTopOff"],
+        format ["%1 must finish with a ladder top-off animation, got %2", _x, _finishAnimation]
+    ] call _assert;
+    [
+        _startAnimation isNotEqualTo _finishAnimation,
+        format ["%1 start and finish animations must be distinct", _x]
+    ] call _assert;
+} forEach ["MANTLE_LOW", "MANTLE_MEDIUM", "MANTLE_HIGH"];
+
+{
+    [
+        ([_animationUnit, _x, "ON_TOP", "FINISH"] call bn_koth_fnc_traversal_selectAnimation) isEqualTo "",
+        format ["%1 must not schedule a mantle top-off animation", _x]
+    ] call _assert;
+} forEach ["STEP_OVER", "VAULT"];
 
 private _remoteCfg = missionConfigFile >> "CfgRemoteExec" >> "Functions";
 [

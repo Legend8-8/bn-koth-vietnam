@@ -23,6 +23,7 @@ private _result = createHashMapFromArray [
     ["state", "PROBING"],
     ["action", "NONE"],
     ["selectedAnimation", "NONE"],
+    ["finishAnimation", ""],
     ["timestamp", diag_tickTime],
     ["originASL", _originASL],
     ["forward", _forward],
