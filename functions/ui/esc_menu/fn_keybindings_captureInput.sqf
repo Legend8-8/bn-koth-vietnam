@@ -2,6 +2,7 @@
     File: fn_keybindings_captureInput.sqf
     Author: tylervip
     Edited: Legend
+    Edited: Mango Mongo
     Description: Starts or handles key-capture for one keybind row.
     Execution: Client
     Parameters:

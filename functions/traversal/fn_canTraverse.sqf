@@ -1,6 +1,6 @@
 /*
     File: fn_canTraverse.sqf
-    Author: Legend
+    Author: Mango Mongo
     Description: Applies the lightweight local player-state gate for traversal.
     Execution: Client; the supplied unit must be local
     Parameters:

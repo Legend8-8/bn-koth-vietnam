@@ -1,7 +1,7 @@
 /*
     File: fn_keybinds_init.sqf
     Author: tylervip
-    Edited: Legend
+    Edited: Mango Mongo
     Description: Rebuilds mission-local lookup maps for key down and key up binds.
     Execution: Client
     Parameters:

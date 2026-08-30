@@ -2,6 +2,7 @@
     File: fn_keybindings_onLoad.sqf
     Author: tylervip
     Edited: Legend
+    Edited: Mango Mongo
     Description: Populates keybindings menu rows and event handlers.
     Execution: Client
     Parameters:

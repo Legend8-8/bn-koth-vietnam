@@ -1,6 +1,6 @@
 /*
     File: fn_classify.sqf
-    Author: Legend
+    Author: Mango Mongo
     Description: Classifies a measured obstacle using configured height thresholds.
     Execution: Any; pure calculation against mission configuration
     Parameters:

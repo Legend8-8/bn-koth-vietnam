@@ -1,6 +1,6 @@
 /*
     File: fn_initPlayerLocal.sqf
-    Author: Legend
+    Author: Mango Mongo
     Description: Initializes owning-client traversal state and optional debug drawing.
     Execution: Client
     Parameters:

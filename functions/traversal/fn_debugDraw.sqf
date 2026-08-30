@@ -1,6 +1,6 @@
 /*
     File: fn_debugDraw.sqf
-    Author: Legend
+    Author: Mango Mongo
     Description: Draws the latest traversal probe, clearance, path, and result diagnostics.
     Execution: Client, from the optional local Draw3D mission event handler
     Parameters:

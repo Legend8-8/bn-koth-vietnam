@@ -1,6 +1,7 @@
 /*
     File: fn_probe.sqf
-    Author: Legend
+    Author: Mango Mongo
+    Edited: Mango Mongo
     Description: Finds a climbable face, ledge profile, clear path, and supported destination.
     Execution: Owning client; the supplied unit must be local
     Parameters:

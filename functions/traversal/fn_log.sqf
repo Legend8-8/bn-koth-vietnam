@@ -1,6 +1,6 @@
 /*
     File: fn_log.sqf
-    Author: Legend
+    Author: Mango Mongo
     Description: Emits optional traversal diagnostics through the mission logger.
     Execution: Any
     Parameters:
