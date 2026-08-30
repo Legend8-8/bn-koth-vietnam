@@ -23,7 +23,11 @@ private _requiredRoles = [
     ["respawnWestMarker", "respawnWestMarker"],
     ["respawnEastMarker", "respawnEastMarker"],
     ["westBaseZoneMarker", "westBaseZoneMarker"],
-    ["eastBaseZoneMarker", "eastBaseZoneMarker"]
+    ["eastBaseZoneMarker", "eastBaseZoneMarker"],
+    ["westCommand_spawnpoint", "westCommand_spawnpoint"],
+    ["eastCommand_spawnpoint", "eastCommand_spawnpoint"],
+    ["westCommand_mapboard", "westCommand_mapboard"],
+    ["eastCommand_mapboard", "eastCommand_mapboard"]
 ];
 
 private _valid = true;

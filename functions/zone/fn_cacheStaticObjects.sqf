@@ -26,8 +26,8 @@ private _allMissionObjects = allMissionObjects "";
     private _cfg = _x;
     private _locationId = configName _cfg;
     private _locationData = [_locationId] call bn_koth_fnc_zone_getLocationData;
-    private _westBaseZone = _locationData getOrDefault ["westBaseZoneMarker", ""];
-    private _eastBaseZone = _locationData getOrDefault ["eastBaseZoneMarker", ""];
+    private _westBaseZone = _locationData get "westBaseZoneMarker";
+    private _eastBaseZone = _locationData get "eastBaseZoneMarker";
 
     private _collected = [];
 

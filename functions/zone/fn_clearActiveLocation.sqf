@@ -20,11 +20,11 @@ if (isClass _locationsCfg) then {
         private _cfg = _x;
         private _locationId = configName _cfg;
         private _locationData = [_locationId] call bn_koth_fnc_zone_getLocationData;
-        private _zoneMarker = _locationData getOrDefault ["zoneMarker", ""];
-        private _westRespawn = _locationData getOrDefault ["respawnWestMarker", ""];
-        private _eastRespawn = _locationData getOrDefault ["respawnEastMarker", ""];
-        private _westBaseZone = _locationData getOrDefault ["westBaseZoneMarker", ""];
-        private _eastBaseZone = _locationData getOrDefault ["eastBaseZoneMarker", ""];
+        private _zoneMarker = _locationData get "zoneMarker";
+        private _westRespawn = _locationData get "respawnWestMarker";
+        private _eastRespawn = _locationData get "respawnEastMarker";
+        private _westBaseZone = _locationData get "westBaseZoneMarker";
+        private _eastBaseZone = _locationData get "eastBaseZoneMarker";
 
         if !(_zoneMarker isEqualTo "") then {
             _zoneMarker setMarkerAlpha 0;

@@ -38,11 +38,11 @@ if !([_locationId] call bn_koth_fnc_zone_validateLocation) exitWith {
     false
 };
 
-private _activeZoneMarker = _activeLocationData getOrDefault ["zoneMarker", ""];
-private _activeWestRespawn = _activeLocationData getOrDefault ["respawnWestMarker", ""];
-private _activeEastRespawn = _activeLocationData getOrDefault ["respawnEastMarker", ""];
-private _activeWestBaseZone = _activeLocationData getOrDefault ["westBaseZoneMarker", ""];
-private _activeEastBaseZone = _activeLocationData getOrDefault ["eastBaseZoneMarker", ""];
+private _activeZoneMarker = _activeLocationData get "zoneMarker";
+private _activeWestRespawn = _activeLocationData get "respawnWestMarker";
+private _activeEastRespawn = _activeLocationData get "respawnEastMarker";
+private _activeWestBaseZone = _activeLocationData get "westBaseZoneMarker";
+private _activeEastBaseZone = _activeLocationData get "eastBaseZoneMarker";
 
 private _nativeWestRespawnMarker = "respawn_west";
 private _nativeEastRespawnMarker = "respawn_east";
@@ -106,11 +106,11 @@ if (_westApplied && _eastApplied) then {
     private _cfg = _x;
     private _cfgName = configName _cfg;
     private _resolved = [_cfgName] call bn_koth_fnc_zone_getLocationData;
-    private _zoneMarker = _resolved getOrDefault ["zoneMarker", ""];
-    private _westRespawn = _resolved getOrDefault ["respawnWestMarker", ""];
-    private _eastRespawn = _resolved getOrDefault ["respawnEastMarker", ""];
-    private _westBaseZone = _resolved getOrDefault ["westBaseZoneMarker", ""];
-    private _eastBaseZone = _resolved getOrDefault ["eastBaseZoneMarker", ""];
+    private _zoneMarker = _resolved get "zoneMarker";
+    private _westRespawn = _resolved get "respawnWestMarker";
+    private _eastRespawn = _resolved get "respawnEastMarker";
+    private _westBaseZone = _resolved get "westBaseZoneMarker";
+    private _eastBaseZone = _resolved get "eastBaseZoneMarker";
     private _isActive = (_cfgName isEqualTo _locationId);
 
     if !(_zoneMarker isEqualTo "") then {

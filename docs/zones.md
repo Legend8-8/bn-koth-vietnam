@@ -140,6 +140,16 @@ If a feature is truly optional, leave it out of validation and simply treat miss
 
 The key rule is: no consumer may re-create the naming suffix table locally. Every new marker-role should go through the resolver and, if relevant, the validator.
 
+For this mission, the required runtime roles are:
+
+- AO zone marker
+- west/east respawns
+- west/east base-zone markers
+- west/east command spawnpoints
+- west/east command mapboards
+
+Paid/free vehicle spawnpoints remain optional. If one is missing, the slot builder simply skips that vehicle slot rather than blocking activation of the active location.
+
 9. Dynamic Priority Zone
 
 The zone system also supports a moving priority area inside the active AO.
