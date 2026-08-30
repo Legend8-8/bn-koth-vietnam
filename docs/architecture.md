@@ -57,6 +57,7 @@ bn-koth-vietnam/
 │   ├── zone/
 │   ├── scoring/
 │   ├── respawn/
+│   ├── traversal/
 │   ├── loadouts/
 │   ├── vehicles/
 │   ├── progression/
@@ -192,6 +193,20 @@ Contains:
 - opposing-safe-zone vehicle-entry prevention and ejection;
 - server-owned safe-zone ground-loot and corpse cleanup;
 - valid spawn selection.
+
+"functions/traversal/"
+
+Contains owning-client traversal behaviour:
+
+- local player-state validation;
+- obstacle, ledge, destination and clearance probing;
+- stock Arma 3/S.O.G. animation selection;
+- local cubic movement execution and interruption recovery;
+- optional client-only RPT and Draw3D diagnostics.
+
+Traversal owns no authoritative game-mode state and exposes no RemoteExec
+endpoint. Its tuning is owned by `CfgBnKothTraversal`, and its input action is
+registered through the existing mission-local gamemode keybinding system.
 
 "functions/loadouts/"
 

@@ -596,6 +596,34 @@ Run on hosted and dedicated servers with the extDB schema-v2 migration applied:
 
 Focused server tests: `call compile preprocessFileLineNumbers "functions\progression\perks\test_perks.sqf"`. Expected result: `[]`.
 
+21. Advanced Traversal Checks
+
+After mission functions and S.O.G. configuration initialize, run:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\traversal\test_traversal.sqf"
+```
+
+An empty array is a pass. The focused check verifies configured classification
+boundaries, the unbound-default gamemode action, required stock animation
+states, mantle climb-first/top-off-last phase selection, no finish phase for
+step-over/vault, and absence of a traversal RemoteExec endpoint.
+
+Hosted and dedicated testing must additionally bind the action and verify
+step-over, vault, low/medium/high mantle, on-top and over-obstacle landings with
+rifle, pistol, launcher and unarmed states. Every mantle must begin with the
+matching `Ladder*UpLoop` and call the matching `Ladder*TopOff` only after the
+unit reaches its final landing position; step-over and vault must never call a
+ladder top-off. Verify rejection while dead,
+incapacitated, prone, underwater, attached, in a vehicle, already traversing,
+inside the cooldown, without an obstacle, without landing support, and with
+blocked headroom. Death, respawn, `selectPlayer` representation handoff and
+locality loss during movement must release the traversal lock or safely cancel.
+With two clients, confirm movement is visible remotely, no traversal function
+is remotely executed, no persistent/JIP state is created, and client/server RPT
+files contain no repeated traversal errors. Enable `Diagnostics.debugDraw` only
+for a separate probe-visualization pass and confirm the handler is absent when
+the option is disabled.
 21. Deployment Transition Presentation
 
 The deployment transition is client-local presentation over the existing

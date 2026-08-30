@@ -60,6 +60,7 @@ Database access| Server
 Gameplay vehicle creation| Server
 Local player loadout interface| Owning client
 Loadout entitlement validation| Server
+Traversal input, geometry probing and movement| Owning client
 Named kit profile storage and management| Owning client; stored data remains untrusted intent
 Arsenal physical-loadout reconciliation| Server reads the owned player object
 Arsenal preview framework| Owning client; currently disabled
@@ -236,6 +237,11 @@ Vehicle creation should normally be performed by the server.
 Commands that require local execution must be sent to the machine that owns the object.
 
 Locality must not be guessed from where a function happened to be called.
+
+Traversal runs only for the current local player representation. It publishes
+no authoritative state, sends no remote request, and creates no JIP payload.
+The engine continues to replicate the owning client's unit transform normally;
+the mission-local traversal lock and diagnostics remain client-local.
 
 Safe-zone membership is calculated on the server. Player `HandleDamage`, `FiredMan`, `GetInMan` and physical-inventory handlers are installed on each current local player representation, including after respawn or `selectPlayer`. The inventory-open handler uses the published active markers and the shared safe-zone geometry helper to block local UI access when either the actor or container crosses the boundary. Vehicle `allowDamage`, `HandleDamage` and `Fired` enforcement is reapplied whenever the vehicle owner changes. The server independently validates and deletes safe-zone loot holders and corpses. The only safe-zone remote endpoints are server-to-owner ejection and vehicle-protection application; both reject non-server remote callers.
 

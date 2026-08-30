@@ -1,6 +1,7 @@
 /*
     File: fn_keybinds_reset.sqf
     Author: tylervip
+    Edited: Mongo
     Description: Resets keybinds in the open menu to config defaults.
     Execution: Client
     Parameters:
@@ -40,7 +41,7 @@ for "_row" from 0 to ((lnbSize _list select 0) - 1) do {
 
     _usedBinds pushBack _bind;
 
-    private _keyName = keyName (_bind select 0);
+    private _keyName = if ((_bind select 0) <= 0) then {"UNBOUND"} else {keyName (_bind select 0)};
     if (_keyName isEqualTo "") then {
         _keyName = str (_bind select 0);
     };

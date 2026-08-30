@@ -1,6 +1,8 @@
 /*
     File: fn_keybindings_captureInput.sqf
     Author: tylervip
+    Edited: Legend
+    Edited: Mongo
     Description: Starts or handles key-capture for one keybind row.
     Execution: Client
     Parameters:
@@ -39,7 +41,7 @@ if ((count _this) >= 6) exitWith {
             private _bindCtrl = _bind select 2;
             private _bindAlt = _bind select 3;
 
-            private _keyName = keyName _keyId;
+            private _keyName = if (_keyId <= 0) then {"UNBOUND"} else {keyName _keyId};
             if (_keyName isEqualTo "") then {
                 _keyName = str _keyId;
             };

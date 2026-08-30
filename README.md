@@ -53,6 +53,13 @@ The initial project does not require:
 
 Additional dependencies must not be introduced without a documented reason and maintainer agreement.
 
+Advanced Traversal
+
+The mission directly includes Bro-Nation Advanced Climbing - Vanilla/SOG
+behaviour using stock Arma 3 and S.O.G. animation states. No separate client mod
+is required. The action is unbound by default and can be assigned from the pause
+menu under `GAMEMODE KEYBINDINGS` as `Advanced Climb (Vanilla/SOG)`.
+
 Project Principles
 
 - The server owns authoritative gameplay state.

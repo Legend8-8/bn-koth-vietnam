@@ -269,3 +269,15 @@ never auto-equip, and repaint from the targeted player progression update.
 Final pricing, stock and persistence remain later release work. Vehicle
 metadata prepares non-weapon Store grouping, but Store V1 still implements
 canonical weapon products only.
+
+13. Advanced Traversal
+
+The mission includes client-local step-over, vault and low/medium/high mantle
+movement using only animation states supplied by Arma 3 or S.O.G. Prairie Fire.
+No separate climbing addon, custom movement state, or RTM file is required.
+
+The action is intentionally unbound by default. Players bind `Advanced Climb
+(Vanilla/SOG)` through the pause menu's `GAMEMODE KEYBINDINGS` screen. Traversal
+is unavailable while dead, incapacitated, prone, underwater, attached, already
+traversing, or inside a vehicle. Geometry probing must find a supported, clear
+destination before movement begins.

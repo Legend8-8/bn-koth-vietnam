@@ -27,6 +27,11 @@ BLACKLISTED_FILES = {
     "user_paths_example.py",
 }
 
+# Developer-only files retained in the repository but omitted from mission builds.
+BLACKLISTED_RELATIVE_FILES = {
+    Path("functions/traversal/test_traversal.sqf"),
+}
+
 
 def ignore_unreadable_entries(base_dir, names):
     """Skip unreadable children so copytree does not fail on protected paths."""
@@ -158,6 +163,12 @@ def trim_output(target_folder):
 
     for file_name in BLACKLISTED_FILES:
         path_to_delete = target_folder / file_name
+        if path_to_delete.exists() and path_to_delete.is_file():
+            print(f"Removing {path_to_delete}")
+            path_to_delete.unlink()
+
+    for relative_file in BLACKLISTED_RELATIVE_FILES:
+        path_to_delete = target_folder / relative_file
         if path_to_delete.exists() and path_to_delete.is_file():
             print(f"Removing {path_to_delete}")
             path_to_delete.unlink()
