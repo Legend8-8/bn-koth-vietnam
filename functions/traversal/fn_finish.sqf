@@ -1,7 +1,6 @@
 /*
     File: fn_finish.sqf
-    Author: Mango Mongo
-    Edited: Mango Mongo
+    Author: Mongo
     Description: Finalizes successful traversal, applies stamina cost, and releases the lock.
     Execution: Owning client
     Parameters:

@@ -1,6 +1,6 @@
 /*
     File: fn_updatePriorityZone.sqf
-    Author: Mango Mongo
+    Author: Mongo
     Description: Moves the rectangular priority-zone marker inside the active AO.
     Execution: Server
     Parameters:

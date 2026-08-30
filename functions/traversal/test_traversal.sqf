@@ -1,7 +1,6 @@
 /*
     File: test_traversal.sqf
-    Author: Mango Mongo
-    Edited: Mango Mongo
+    Author: Mongo
     Description: Focused config, classification, animation, input, and networking checks.
     Execution: Hosted or dedicated session after mission functions initialize
     Parameters:

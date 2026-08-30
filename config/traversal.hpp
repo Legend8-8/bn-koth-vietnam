@@ -1,6 +1,6 @@
 /*
     File: traversal.hpp
-    Author: Mango Mongo
+    Author: Mongo
     Description: Mission-owned advanced traversal tuning and diagnostics.
 */
 

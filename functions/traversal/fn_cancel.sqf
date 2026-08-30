@@ -1,6 +1,6 @@
 /*
     File: fn_cancel.sqf
-    Author: Mango Mongo
+    Author: Mongo
     Description: Recovers from interrupted traversal and releases the local movement lock.
     Execution: Owning client
     Parameters:

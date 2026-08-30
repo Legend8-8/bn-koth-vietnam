@@ -1,7 +1,6 @@
 /*
     File: fn_selectAnimation.sqf
-    Author: Mango Mongo
-    Edited: Mango Mongo
+    Author: Mongo
     Description: Selects an available stock Arma 3 or S.O.G. traversal animation
         for the requested start or finish phase.
     Execution: Owning client

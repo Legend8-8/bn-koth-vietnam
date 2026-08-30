@@ -1,7 +1,7 @@
 /*
     File: fn_keybinds_reset.sqf
     Author: tylervip
-    Edited: Mango Mongo
+    Edited: Mongo
     Description: Resets keybinds in the open menu to config defaults.
     Execution: Client
     Parameters:

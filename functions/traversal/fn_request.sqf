@@ -1,6 +1,6 @@
 /*
     File: fn_request.sqf
-    Author: Mango Mongo
+    Author: Mongo
     Description: Validates one local keybind request, probes geometry, and starts traversal.
     Execution: Owning client
     Parameters:

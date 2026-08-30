@@ -1,7 +1,6 @@
 /*
     File: fn_execute.sqf
-    Author: Mango Mongo
-    Edited: Mango Mongo
+    Author: Mongo
     Description: Moves the local unit along the measured cubic traversal path.
     Execution: Owning client in scheduled environment
     Parameters:
