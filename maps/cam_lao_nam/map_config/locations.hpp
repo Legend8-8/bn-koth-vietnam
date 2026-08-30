@@ -18,7 +18,7 @@ class CfgBnKothLocations
     {
         displayName = "Saigon";
         description = "Urban city center. Dense streets and close-quarters fighting.";
-        image = "images\ui\lobby\west_panel.jpg";
+        image = "images\ui\lobby\saigon.jpg";
         // Optional explicit object list for this location.
         // Preferred convention is Eden variable names with prefix "saigon_".
         objects[] = {};
