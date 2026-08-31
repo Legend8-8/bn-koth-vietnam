@@ -5,10 +5,10 @@ class EditorData
 	angleGridStep=0.017453292;
 	scaleGridStep=1;
 	autoGroupingDist=10;
-	toggles=41;
+	toggles=1065;
 	class ItemIDProvider
 	{
-		nextID=410;
+		nextID=429;
 	};
 	class MarkerIDProvider
 	{
@@ -16,10 +16,10 @@ class EditorData
 	};
 	class Camera
 	{
-		pos[]={16268.487,102.6589,3608.7788};
-		dir[]={0.47535044,-0.35532439,0.80500025};
-		up[]={0.18074083,0.93466133,0.30608273};
-		aside[]={0.86116844,-7.9601887e-07,-0.50852531};
+		pos[]={770.22443,39.25621,9181.9355};
+		dir[]={0.76076907,-0.54308367,0.35541233};
+		up[]={0.49203578,0.83968097,0.22986723};
+		aside[]={0.42327115,-3.4052937e-07,-0.90601826};
 	};
 };
 binarizationWanted=0;
@@ -182,7 +182,7 @@ class Mission
 	};
 	class Entities
 	{
-		items=235;
+		items=253;
 		class Item0
 		{
 			dataType="Marker";
@@ -6099,7 +6099,7 @@ class Mission
 			name="saigon_east_free_ground_spawnpoint";
 			type="Empty";
 			colorName="ColorOrange";
-			angle=55.644329;
+			angle=55.644321;
 			id=293;
 		};
 		class Item128
@@ -6108,7 +6108,7 @@ class Mission
 			position[]={16585.176,26.379999,3929.8657};
 			name="saigon_west_free_ground_spawnpoint";
 			type="Empty";
-			angle=209.98877;
+			angle=209.98874;
 			id=294;
 		};
 		class Item129
@@ -6146,7 +6146,7 @@ class Mission
 			position[]={16616.922,26.472284,3981.1145};
 			name="saigon_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=212.73087;
+			angle=212.73083;
 			id=298;
 		};
 		class Item133
@@ -6396,7 +6396,7 @@ class Mission
 			position[]={17140.197,6.2399998,9247.8545};
 			name="hue_west_free_air_spawnpoint";
 			type="Empty";
-			angle=104.92564;
+			angle=104.92562;
 			id=308;
 		};
 		class Item143
@@ -6415,7 +6415,7 @@ class Mission
 			position[]={17110,6.1479955,9266};
 			name="hue_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=55.462624;
+			angle=55.462616;
 			id=310;
 		};
 		class Item145
@@ -7016,7 +7016,7 @@ class Mission
 			name="hanoi_west_command_spawnpoint";
 			type="Empty";
 			colorName="ColorGreen";
-			angle=7.1569963;
+			angle=7.1569953;
 			id=339;
 			atlOffset=6.4373016e-06;
 		};
@@ -9302,6 +9302,418 @@ class Mission
 			id=409;
 			type="Land_Plank_01_8m_F";
 			atlOffset=4.6062469;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item235
+		{
+			dataType="Marker";
+			position[]={12147.283,4.9299998,17680.186};
+			name="son_tay_pow_zone";
+			markerType="RECTANGLE";
+			type="";
+			colorName="ColorBlack";
+			alpha=0.75039381;
+			fillName="SolidBorder";
+			a=150.83716;
+			b=144.44226;
+			angle=0.13397942;
+			drawBorder=1;
+			id=410;
+		};
+		class Item236
+		{
+			dataType="Marker";
+			position[]={12106.812,1.1118311,17427.443};
+			name="son_tay_pow_respawn_east";
+			text="son_tay_pow_respawn_east";
+			type="Empty";
+			angle=194.47096;
+			id=412;
+		};
+		class Item237
+		{
+			dataType="Marker";
+			position[]={12111.093,4.9299998,17916.816};
+			name="son_tay_pow_respawn_west";
+			text="son_tay_pow_respawn_west";
+			type="Empty";
+			angle=120;
+			id=413;
+		};
+		class Item238
+		{
+			dataType="Marker";
+			position[]={12111.094,4.9299998,17916.822};
+			name="son_tay_pow_west_base_zone";
+			markerType="ELLIPSE";
+			type="";
+			colorName="ColorBlue";
+			a=50;
+			b=50;
+			angle=120;
+			id=414;
+		};
+		class Item239
+		{
+			dataType="Marker";
+			position[]={12107.611,1.5785687,17427.58};
+			name="son_tay_pow_east_base_zone";
+			markerType="ELLIPSE";
+			type="";
+			colorName="ColorRed";
+			a=50;
+			b=50;
+			angle=194.47096;
+			id=415;
+			atlOffset=0.50561464;
+		};
+		class Item240
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={12106.761,5.0017829,17917.68};
+				angles[]={0,4.7631779,0};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+				name="son_tay_pow_west_command_mapboard";
+				disableSimulation=1;
+			};
+			id=416;
+			type="Land_vn_b_prop_mapstand_01";
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item241
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={12102.181,1.6897373,17425.23};
+				angles[]={0.19161955,3.589756,6.2392149};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+				name="son_tay_pow_east_command_mapboard";
+				disableSimulation=1;
+			};
+			id=417;
+			type="Land_vn_b_prop_mapstand_01";
+			atlOffset=-0.0026881695;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item242
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={12111.355,6.9357772,17916.703};
+				angles[]={0,0.77617049,0};
+			};
+			side="Empty";
+			flags=5;
+			class Attributes
+			{
+				disableSimulation=1;
+			};
+			id=418;
+			type="Land_vn_tent_02_03";
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item243
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={12105.523,3.0352354,17428.285};
+				angles[]={0.14888987,6.0798812,6.2491984};
+			};
+			side="Empty";
+			flags=5;
+			class Attributes
+			{
+				disableSimulation=1;
+			};
+			id=419;
+			type="Land_vn_tent_02_03";
+			atlOffset=1.1920929e-07;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item244
+		{
+			dataType="Marker";
+			position[]={1044.741,91.415001,9401.124};
+			name="bao_ve_zone";
+			markerType="RECTANGLE";
+			type="";
+			colorName="ColorBlack";
+			alpha=0.75039381;
+			fillName="SolidBorder";
+			a=168.01489;
+			b=149.59349;
+			angle=180.1339;
+			drawBorder=1;
+			id=420;
+			atlOffset=-3.8562927;
+		};
+		class Item245
+		{
+			dataType="Marker";
+			position[]={774.78766,35.501156,9186.7393};
+			name="bao_ve_respawn_west";
+			text="bao_ve_respawn_west";
+			type="Empty";
+			angle=198.00003;
+			id=421;
+			atlOffset=3.8146973e-06;
+		};
+		class Item246
+		{
+			dataType="Marker";
+			position[]={776.24829,35.293022,9184.502};
+			name="bao_ve_west_base_zone";
+			markerType="ELLIPSE";
+			type="";
+			colorName="ColorBlue";
+			a=50;
+			b=50;
+			angle=120;
+			id=422;
+			atlOffset=0.00017166138;
+		};
+		class Item247
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={776.0423,35.678505,9189.0996};
+				angles[]={6.1736259,0.42237946,0.033987202};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+				name="bao_ve_west_command_mapboard";
+				disableSimulation=1;
+			};
+			id=423;
+			type="Land_vn_b_prop_mapstand_01";
+			atlOffset=3.8146973e-05;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item248
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={776.40167,37.324883,9184.6865};
+				angles[]={6.2349873,1.0045052,6.2504597};
+			};
+			side="Empty";
+			flags=5;
+			class Attributes
+			{
+				disableSimulation=1;
+			};
+			id=424;
+			type="Land_vn_tent_02_03";
+			atlOffset=3.8146973e-05;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item249
+		{
+			dataType="Marker";
+			position[]={1059.2133,27.312561,9652.416};
+			name="bao_ve_respawn_east";
+			text="bao_ve_respawn_east";
+			type="Empty";
+			angle=120;
+			id=425;
+			atlOffset=0.00018501282;
+		};
+		class Item250
+		{
+			dataType="Marker";
+			position[]={1060.4823,27.551943,9654.2285};
+			name="bao_ve_east_base_zone";
+			markerType="ELLIPSE";
+			type="";
+			colorName="ColorRed";
+			a=50;
+			b=50;
+			angle=194.47098;
+			id=426;
+			atlOffset=0.50486946;
+		};
+		class Item251
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={1057.7073,27.812618,9649.3604};
+				angles[]={0.16449985,3.807826,0.015998369};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+				name="bao_ve_east_command_mapboard";
+				disableSimulation=1;
+			};
+			id=427;
+			type="Land_vn_b_prop_mapstand_01";
+			atlOffset=4.5776367e-05;
+			class CustomAttributes
+			{
+				class Attribute0
+				{
+					property="allowDamage";
+					expression="_this allowdamage _value;";
+					class Value
+					{
+						class data
+						{
+							singleType="BOOL";
+							value=0;
+						};
+					};
+				};
+				nAttributes=1;
+			};
+		};
+		class Item252
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={1060.3004,29.190006,9653.2949};
+				angles[]={0.14693315,4.7556643,0.0060001095};
+			};
+			side="Empty";
+			flags=5;
+			class Attributes
+			{
+				disableSimulation=1;
+			};
+			id=428;
+			type="Land_vn_tent_02_03";
+			atlOffset=0.00012969971;
 			class CustomAttributes
 			{
 				class Attribute0

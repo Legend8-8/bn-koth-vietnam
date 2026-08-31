@@ -697,3 +697,41 @@ and dedicated servers verify:
   not expose cleanup or fabricate authoritative result data;
 - multiple clients render independently with no cosmetic network traffic and
   no delay to the server round lifecycle.
+
+23. Population-Aware AO and Location Vehicle Capability
+
+Pure population-bound checks:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\round\test_populationEligibility.sqf"
+```
+
+Spawn-role capability checks:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\zone\test_vehicleCapabilities.sqf"
+```
+
+Both return `[]` on success. On a hosted and dedicated server also verify:
+
+- 1-3 connected humans receive only population-eligible choices;
+- 60 humans joining but remaining in LOBBY count immediately for AO sizing;
+- crossing 20/21 invalidates Son Tay, while movement inside the 15-20 overlap
+  does not reset still-valid candidates;
+- high-to-low crossing refreshes full-size candidates;
+- open and closed vote refreshes remove invalid votes and publish consistent totals;
+- resolution cannot select a newly ineligible AO;
+- the deterministic nearest-range fallback logs clearly when no range matches;
+- previous-location exclusion remains effective when an alternative exists;
+- JIP clients receive the current candidates, totals and votes;
+- an AO lacking vehicle roles keeps INFANTRY usable and shows GROUND, ROTARY
+  and FIXED WING as `DISABLED FOR THIS AO`;
+- disabled Store categories cannot be opened and a stale route returns to ROOT;
+- direct rental requests fail before spawn or cash mutation when the paid role
+  is absent;
+- missing free roles construct no managed slots and do not invalidate the AO;
+- missing command spawn roles create no command vehicle or teleport action,
+  while the mapboard's unrelated Open Menu action remains available;
+- direct command-teleport requests remain rejected server-side;
+- enabled-to-disabled AO changes delete old command vehicles/actions and JIP
+  receives the current command availability.

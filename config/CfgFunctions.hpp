@@ -37,11 +37,13 @@ class CfgFunctions
             class round_openVote {file = "functions\round\fn_openVote.sqf";};
             class round_maybeShortenVoteDeadline {file = "functions\round\fn_maybeShortenVoteDeadline.sqf";};
             class round_prepareVoteCandidates {file = "functions\round\fn_prepareVoteCandidates.sqf";};
+            class round_reconcileVoteCandidates {file = "functions\round\fn_reconcileVoteCandidates.sqf";};
             class round_requestVote {file = "functions\round\fn_requestVote.sqf";};
             class round_resolveVote {file = "functions\round\fn_resolveVote.sqf";};
             class round_selectVoteCandidates {file = "functions\round\fn_selectVoteCandidates.sqf";};
             class round_updateVoteTotals {file = "functions\round\fn_updateVoteTotals.sqf";};
             class round_isLocationValid {file = "functions\round\fn_isLocationValid.sqf";};
+            class round_isLocationPopulationEligible {file = "functions\round\fn_isLocationPopulationEligible.sqf";};
         };
 
         class roundStats
@@ -65,6 +67,7 @@ class CfgFunctions
             class teams_requestReturnToLobby {file = "functions\teams\fn_requestReturnToLobby.sqf";};
             class teams_publishState {file = "functions\teams\fn_publishState.sqf";};
             class teams_getEligibleSelectedUids {file = "functions\teams\fn_getEligibleSelectedUids.sqf";};
+            class teams_getConnectedHumanUids {file = "functions\teams\fn_getConnectedHumanUids.sqf";};
             class teams_getPlayerByOwner {file = "functions\teams\fn_getPlayerByOwner.sqf";};
             class teams_getDefaultUnitClass {file = "functions\teams\fn_getDefaultUnitClass.sqf";};
             class teams_transferRepresentation {file = "functions\teams\fn_transferRepresentation.sqf";};
@@ -80,6 +83,7 @@ class CfgFunctions
         {
             class zone_initServer {file = "functions\zone\fn_initServer.sqf";};
             class zone_getLocationData {file = "functions\zone\fn_getLocationData.sqf";};
+            class zone_getVehicleCapabilities {file = "functions\zone\fn_getVehicleCapabilities.sqf";};
             class zone_validateLocation {file = "functions\zone\fn_validateLocation.sqf";};
             class zone_setActiveLocation {file = "functions\zone\fn_setActiveLocation.sqf";};
             class zone_clearActiveLocation {file = "functions\zone\fn_clearActiveLocation.sqf";};

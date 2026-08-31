@@ -26,6 +26,7 @@ A location now only needs the short display metadata in config:
 - image
 - objects[] (optional explicit list; prefix-based detection is preferred)
 - optional explicit override values for exceptional Eden naming breaks
+- optional inclusive minPlayers / maxPlayers AO population bounds (maxPlayers = -1 means unlimited)
 
 The resolver derives the mandatory runtime names from the location ID by convention, for example:
 
@@ -145,12 +146,48 @@ For this mission, the required runtime roles are:
 - AO zone marker
 - west/east respawns
 - west/east base-zone markers
-- west/east command spawnpoints
-- west/east command mapboards
 
-Paid/free vehicle spawnpoints remain optional. If one is missing, the slot builder simply skips that vehicle slot rather than blocking activation of the active location.
+Command mapboards, command vehicle spawnpoints and paid/free vehicle spawnpoints
+remain optional. Missing optional roles disable only the corresponding runtime
+capability and do not block activation of the active location.
 
-9. Dynamic Priority Zone
+9. Population Eligibility and Vehicle Capability
+
+AO suitability uses the server-owned count of registered, currently connected
+human players. Team selection is deliberately not required: lobby players may
+need to fit into the next AO even before choosing a side. Stale records, AI,
+headless clients and server-owned units do not count. Vote/deployment eligibility
+continues to use the separate team-selected participant rules.
+
+Population fields are inclusive and default to unrestricted when omitted:
+
+```cpp
+class son_tay_pow
+{
+    displayName = "Son Tay POW Camp";
+    description = "Compact compound fighting around the Son Tay POW camp.";
+    image = "images\ui\lobby\son_tay_pow.jpg";
+    minPlayers = 0;
+    maxPlayers = 20;
+    objects[] = {};
+};
+```
+
+Published vote candidates are retained while every option remains population
+eligible. If an option becomes invalid, the server rebuilds the list, removes
+votes for removed options and republishes consistent totals. Resolution performs
+the same check. Overlapping ranges provide stable population bands without
+resetting votes for every one-player change. If no range matches, the server logs
+and deterministically uses the configured range nearest to current population,
+while preserving previous-location exclusion when alternatives exist.
+
+Vehicle capability is not authored as location booleans. The shared location
+capability evaluator checks whether convention-resolved WEST/EAST free, paid,
+sea, air and command spawn roles actually exist as markers or mission objects.
+A derived name by itself grants no capability. Store routes, free-slot
+construction, paid rental and command teleport consume that same result.
+
+10. Dynamic Priority Zone
 
 The zone system also supports a moving priority area inside the active AO.
 

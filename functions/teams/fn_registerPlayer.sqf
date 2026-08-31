@@ -75,5 +75,8 @@ if (!_assignedLobby) exitWith {
 
 [format ["Player entered lobby registry UID=%1 owner=%2", _uid, owner _player]] call bn_koth_fnc_common_log;
 [] call bn_koth_fnc_teams_publishState;
+if (([] call bn_koth_fnc_round_getState) isEqualTo "WAITING") then {
+    [count ([] call bn_koth_fnc_teams_getConnectedHumanUids)] call bn_koth_fnc_round_reconcileVoteCandidates;
+};
 
 true

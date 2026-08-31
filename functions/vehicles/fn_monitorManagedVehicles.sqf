@@ -33,7 +33,7 @@ while {missionNamespace getVariable ["BN_KOTH_vehicleMonitorRunning", false]} do
         private _vehicle = _slotData getOrDefault ["vehicle", objNull];
         private _cooldown = (_slotData getOrDefault ["cooldownSeconds", 10]) max 1;
         private _respawnAt = _slotData getOrDefault ["respawnAt", -1];
-        private _markerName = _slotData getOrDefault ["markerName", ""];
+        private _spawnPosition = _slotData getOrDefault ["spawnPosition", []];
 
         if (isNull _vehicle || {!alive _vehicle}) then {
             if (_respawnAt < 0) then {
@@ -66,12 +66,9 @@ while {missionNamespace getVariable ["BN_KOTH_vehicleMonitorRunning", false]} do
             if ((serverTime - _emptySince) >= _abandonmentTimeout) then {
                 private _isAtSpawn = false;
 
-                if !(_markerName isEqualTo "") then {
-                    if !((markerShape _markerName) isEqualTo "") then {
-                        private _spawnPos = markerPos _markerName;
-                        private _spawnTolerance = (missionNamespace getVariable ["BN_KOTH_vehicleSpawnClearRadiusMeters", 8]) max 1;
-                        _isAtSpawn = (_vehicle distance2D _spawnPos) <= _spawnTolerance;
-                    };
+                if ((count _spawnPosition) >= 2) then {
+                    private _spawnTolerance = (missionNamespace getVariable ["BN_KOTH_vehicleSpawnClearRadiusMeters", 8]) max 1;
+                    _isAtSpawn = (_vehicle distance2D _spawnPosition) <= _spawnTolerance;
                 };
 
                 if (_isAtSpawn) then {

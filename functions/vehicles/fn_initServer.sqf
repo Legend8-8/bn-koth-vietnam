@@ -57,17 +57,29 @@ missionNamespace setVariable ["BN_KOTH_vehiclePaidPadReservations", createHashMa
 
 private _paidPads = [];
 {
-    private _name = toLower (vehicleVarName _x);
-    if (_name find "_paid_" < 0 || {_name find "_spawnpoint" < 0}) then {continue};
-    private _category = if (_name find "_paid_ground_" >= 0) then {"GROUND"} else {
-        if (_name find "_paid_air_" >= 0) then {"AIR"} else {if (_name find "_paid_sea_" >= 0) then {"SEA"} else {""}}
-    };
-    private _sideToken = if (_name find "_west_" >= 0) then {"WEST"} else {if (_name find "_east_" >= 0) then {"EAST"} else {""}};
-    private _location = _name select [0, _name find "_"];
-    if !(_category isEqualTo "" || {_sideToken isEqualTo ""}) then {
-        _paidPads pushBack (createHashMapFromArray [["id",_name],["object",_x],["position",getPosATL _x],["direction",getDir _x],["category",_category],["side",_sideToken],["location",_location]]);
-    };
-} forEach (allMissionObjects "Land_vn_helipadsquare_f");
+    private _locationId = configName _x;
+    private _locationData = [_locationId] call bn_koth_fnc_zone_getLocationData;
+    private _capabilities = [_locationData] call bn_koth_fnc_zone_getVehicleCapabilities;
+    private _sides = _capabilities getOrDefault ["sides", createHashMap];
+    {
+        private _sideToken = _x;
+        private _roles = (_sides getOrDefault [_sideToken, createHashMap]) getOrDefault ["roles", createHashMap];
+        {
+            _x params ["_roleName", "_category"];
+            private _role = _roles getOrDefault [_roleName, createHashMap];
+            if !(_role getOrDefault ["exists", false]) then {continue};
+            _paidPads pushBack (createHashMapFromArray [
+                ["id", format ["%1|%2|%3", _locationId, _sideToken, _category]],
+                ["object", _role getOrDefault ["object", objNull]],
+                ["position", _role getOrDefault ["position", []]],
+                ["direction", _role getOrDefault ["direction", 0]],
+                ["roleRef", _role getOrDefault ["ref", ""]],
+                ["category", _category], ["side", _sideToken],
+                ["location", toLower _locationId]
+            ]);
+        } forEach [["PAID_GROUND", "GROUND"], ["PAID_AIR", "AIR"], ["PAID_SEA", "SEA"]];
+    } forEach ["WEST", "EAST"];
+} forEach ("true" configClasses (missionConfigFile >> "CfgBnKothLocations"));
 missionNamespace setVariable ["BN_KOTH_vehiclePaidPads", _paidPads];
 missionNamespace setVariable ["BN_KOTH_vehicleSystemInitialized", true];
 

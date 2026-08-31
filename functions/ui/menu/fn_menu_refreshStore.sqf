@@ -57,13 +57,40 @@ _next ctrlSetPosition [_menuX + _catalogueW * 0.62, _mainY + _mainH - safeZoneH 
 private _route = toUpper (uiNamespace getVariable ["BN_KOTH_menuStoreRoute", "ROOT"]);
 private _validRoutes = ["ROOT", "INFANTRY", "INFANTRY_PRIMARY", "INFANTRY_SIDEARMS", "INFANTRY_LAUNCHERS", "GROUND", "ROTARY", "FIXED_WING"];
 if !(_route in _validRoutes) then {_route = "ROOT"};
+
+private _uid = getPlayerUID player;
+private _assignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
+private _assignedSide = if (_assignments isEqualType createHashMap) then {_assignments getOrDefault [_uid, side player]} else {side player};
+private _sideToken = if (_assignedSide isEqualTo west) then {"WEST"} else {if (_assignedSide isEqualTo east) then {"EAST"} else {""}};
+private _locationId = missionNamespace getVariable ["BN_KOTH_activeLocationId", ""];
+private _capabilityCacheKey = format ["%1|%2", _locationId, _sideToken];
+private _capabilities = uiNamespace getVariable ["BN_KOTH_menuStoreLocationCapabilities", createHashMap];
+if !((uiNamespace getVariable ["BN_KOTH_menuStoreLocationCapabilitiesKey", ""]) isEqualTo _capabilityCacheKey) then {
+    private _locationData = [_locationId] call bn_koth_fnc_zone_getLocationData;
+    _capabilities = [_locationData] call bn_koth_fnc_zone_getVehicleCapabilities;
+    uiNamespace setVariable ["BN_KOTH_menuStoreLocationCapabilities", _capabilities];
+    uiNamespace setVariable ["BN_KOTH_menuStoreLocationCapabilitiesKey", _capabilityCacheKey];
+};
+private _sideCapabilities = (_capabilities getOrDefault ["sides", createHashMap]) getOrDefault [_sideToken, createHashMap];
+private _vehicleFamilies = _sideCapabilities getOrDefault ["families", createHashMap];
+private _vehicleRouteEnabled = {
+    params ["_category"];
+    ((_vehicleFamilies getOrDefault [_category, createHashMap]) getOrDefault ["paid", false])
+};
+
+if (_route in ["GROUND", "ROTARY", "FIXED_WING"] && {!([_route] call _vehicleRouteEnabled)}) then {
+    _route = "ROOT";
+    uiNamespace setVariable ["BN_KOTH_menuStoreSelectedKey", ""];
+    uiNamespace setVariable ["BN_KOTH_menuStorePage", 0];
+    uiNamespace setVariable ["BN_KOTH_menuStoreEntriesRoute", ""];
+};
 uiNamespace setVariable ["BN_KOTH_menuStoreRoute", _route];
 
 private _makeCategory = {
-    params ["_routeId", "_displayName", "_description"];
+    params ["_routeId", "_displayName", "_description", ["_enabled", true, [true]]];
     createHashMapFromArray [
         ["kind", "CATEGORY"], ["key", format ["C|%1", _routeId]], ["route", _routeId],
-        ["displayName", _displayName], ["description", _description], ["picture", ""]
+        ["displayName", _displayName], ["description", _description], ["picture", ""], ["enabled", _enabled]
     ]
 };
 
@@ -79,9 +106,9 @@ switch (_route) do {
     case "ROOT": {
         _entries = [
             ["INFANTRY", "INFANTRY", "Canonical infantry weapons grouped by operational role."] call _makeCategory,
-            ["GROUND", "GROUND VEHICLES", "Curated ground combat and transport progression products."] call _makeCategory,
-            ["ROTARY", "ROTARY WING", "Curated S.O.G. helicopter progression products."] call _makeCategory,
-            ["FIXED_WING", "FIXED WING", "Curated S.O.G. aircraft progression products."] call _makeCategory
+            ["GROUND", "GROUND VEHICLES", if (["GROUND"] call _vehicleRouteEnabled) then {"Curated ground combat and transport progression products."} else {"DISABLED FOR THIS AO"}, ["GROUND"] call _vehicleRouteEnabled] call _makeCategory,
+            ["ROTARY", "ROTARY WING", if (["ROTARY"] call _vehicleRouteEnabled) then {"Curated S.O.G. helicopter progression products."} else {"DISABLED FOR THIS AO"}, ["ROTARY"] call _vehicleRouteEnabled] call _makeCategory,
+            ["FIXED_WING", "FIXED WING", if (["FIXED_WING"] call _vehicleRouteEnabled) then {"Curated S.O.G. aircraft progression products."} else {"DISABLED FOR THIS AO"}, ["FIXED_WING"] call _vehicleRouteEnabled] call _makeCategory
         ];
     };
     case "INFANTRY": {
@@ -191,7 +218,10 @@ if (_selectedOnPage < 0 && {(count _pageEntries) > 0}) then {
         default {format ["V|%1", _entry getOrDefault ["vehicleClass", ""]]};
     };
     private _state = switch (_entryKind) do {
-        case "CATEGORY": {createHashMapFromArray [["stateLabel", _entry getOrDefault ["description", "OPEN CATEGORY"]]]};
+        case "CATEGORY": {createHashMapFromArray [
+            ["stateLabel", _entry getOrDefault ["description", "OPEN CATEGORY"]],
+            ["blocking", !(_entry getOrDefault ["enabled", true])]
+        ]};
         case "WEAPON": {[_entry, _cash] call bn_koth_fnc_menu_projectStoreWeaponState};
         default {[_entry] call bn_koth_fnc_menu_projectStoreVehicleState};
     };
@@ -221,9 +251,12 @@ if (_selectedOnPage < 0 && {(count _pageEntries) > 0}) then {
     _unused ctrlShow false;
     if (_entryKind isEqualTo "CATEGORY") then {
         private _nextRoute = _entry getOrDefault ["route", "ROOT"];
-        _select ctrlSetText "OPEN";
-        _select ctrlEnable true;
-        _select buttonSetAction format ["uiNamespace setVariable ['BN_KOTH_menuStoreRoute',%1]; uiNamespace setVariable ['BN_KOTH_menuStoreSelectedKey','']; uiNamespace setVariable ['BN_KOTH_menuStorePage',0]; [] call bn_koth_fnc_menu_refresh;", str _nextRoute];
+        private _enabled = _entry getOrDefault ["enabled", true];
+        _select ctrlSetText (if (_enabled) then {"OPEN"} else {"DISABLED"});
+        _select ctrlEnable _enabled;
+        _select buttonSetAction (if (_enabled) then {
+            format ["uiNamespace setVariable ['BN_KOTH_menuStoreRoute',%1]; uiNamespace setVariable ['BN_KOTH_menuStoreSelectedKey','']; uiNamespace setVariable ['BN_KOTH_menuStorePage',0]; [] call bn_koth_fnc_menu_refresh;", str _nextRoute]
+        } else {""});
     } else {
         private _selectText = if (_key isEqualTo _selectedKey) then {"SELECTED"} else {"SELECT"};
         _select ctrlSetText _selectText;

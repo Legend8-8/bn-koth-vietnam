@@ -52,6 +52,11 @@ private _padCategory=if (_category isEqualTo "GROUND") then {"GROUND"} else {if 
 if (_padCategory isEqualTo "SEA") exitWith {["NO_SAFE_SPAWN","No curated sea rental products/policy are available."] call _fail};
 
 private _activeLocation=toLower (missionNamespace getVariable ["BN_KOTH_activeLocationId",""]);
+private _locationData=[_activeLocation] call bn_koth_fnc_zone_getLocationData;
+private _capabilities=[_locationData] call bn_koth_fnc_zone_getVehicleCapabilities;
+private _sideCapabilities=(_capabilities getOrDefault ["sides",createHashMap]) getOrDefault [_sideToken,createHashMap];
+private _family=(_sideCapabilities getOrDefault ["families",createHashMap]) getOrDefault [_category,createHashMap];
+if !(_family getOrDefault ["paid",false]) exitWith {["DISABLED_FOR_AO","This vehicle category is disabled for the active AO."] call _fail};
 private _reservations=missionNamespace getVariable ["BN_KOTH_vehiclePaidPadReservations",createHashMap];
 private _radius=(getNumber (missionConfigFile >> "CfgBnKothVehicles" >> "paidSpawnClearanceMeters")) max 1;
 private _pads=(missionNamespace getVariable ["BN_KOTH_vehiclePaidPads",[]]) select {

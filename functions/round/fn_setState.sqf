@@ -55,7 +55,7 @@ switch (_newState) do {
 
         private _selectedLocationId = missionNamespace getVariable ["BN_KOTH_selectedLocationId", ""];
         if (_selectedLocationId isEqualTo "") then {
-            private _fallbackCandidates = [] call bn_koth_fnc_round_selectVoteCandidates;
+            private _fallbackCandidates = [count ([] call bn_koth_fnc_teams_getConnectedHumanUids)] call bn_koth_fnc_round_selectVoteCandidates;
             if ((count _fallbackCandidates) > 0) then {
                 _selectedLocationId = selectRandom _fallbackCandidates;
                 ["BN_KOTH_selectedLocationId", _selectedLocationId] call bn_koth_fnc_common_publicState;

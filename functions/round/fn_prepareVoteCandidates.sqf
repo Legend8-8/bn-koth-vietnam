@@ -12,24 +12,11 @@
 
 if (!isServer) exitWith {[]};
 
-if (missionNamespace getVariable ["BN_KOTH_voteOpen", false]) exitWith {
-    missionNamespace getVariable ["BN_KOTH_voteCandidates", []]
-};
-
-private _existing = missionNamespace getVariable ["BN_KOTH_voteCandidates", []];
-if ((count _existing) > 0) exitWith {
-    _existing
-};
-
-private _candidates = [] call bn_koth_fnc_round_selectVoteCandidates;
+private _population = count ([] call bn_koth_fnc_teams_getConnectedHumanUids);
+private _reconciliation = [_population] call bn_koth_fnc_round_reconcileVoteCandidates;
+private _candidates = _reconciliation getOrDefault ["candidates", []];
 if ((count _candidates) <= 0) exitWith {
     ["Cannot prepare AO vote candidates: no valid locations available.", "ERROR"] call bn_koth_fnc_common_log;
     []
 };
-
-["BN_KOTH_voteCandidates", _candidates] call bn_koth_fnc_common_publicState;
-["BN_KOTH_votesByUid", createHashMap] call bn_koth_fnc_common_publicState;
-[] call bn_koth_fnc_round_updateVoteTotals;
-
-[format ["Prepared upcoming AO vote candidates: %1", _candidates], "INFO"] call bn_koth_fnc_common_log;
 _candidates
