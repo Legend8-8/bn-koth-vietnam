@@ -169,6 +169,21 @@ class CfgFunctions
             class persistence_saveAllDirty {file = "functions\persistence\fn_saveAllDirty.sqf";};
         };
 
+        class career
+        {
+            class career_initServer {file = "functions\career\fn_initServer.sqf";};
+            class career_registerSession {file = "functions\career\fn_registerSession.sqf";};
+            class career_accumulatePlaytime {file = "functions\career\fn_accumulatePlaytime.sqf";};
+            class career_mutate {file = "functions\career\fn_mutate.sqf";};
+            class career_flushPlayer {file = "functions\career\fn_flushPlayer.sqf";};
+            class career_flushAll {file = "functions\career\fn_flushAll.sqf";};
+            class career_recordKill {file = "functions\career\fn_recordKill.sqf";};
+            class career_recordRound {file = "functions\career\fn_recordRound.sqf";};
+            class career_validateLeaderboardRequest {file = "functions\career\fn_validateLeaderboardRequest.sqf";};
+            class career_queryLeaderboard {file = "functions\career\fn_queryLeaderboard.sqf";};
+            class career_test {file = "functions\career\test_career.sqf";};
+        };
+
         class respawn
         {
             class respawn_initServer {file = "functions\respawn\fn_initServer.sqf";};

@@ -19,6 +19,15 @@ if (_uid isEqualTo "") exitWith {};
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 private _record = _records getOrDefault [_uid, createHashMap];
 
+[_uid] call bn_koth_fnc_career_accumulatePlaytime;
+private _careerFlush = [_uid, "disconnect"] call bn_koth_fnc_career_flushPlayer;
+if !(_careerFlush getOrDefault ["success", false]) then {
+    [format ["Disconnect career flush failed UID=%1 code=%2", _uid, _careerFlush getOrDefault ["code", "UNKNOWN"]], "ERROR"] call bn_koth_fnc_common_log;
+};
+private _careerSessions = missionNamespace getVariable ["BN_KOTH_careerSessions", createHashMap];
+_careerSessions deleteAt _uid;
+missionNamespace setVariable ["BN_KOTH_careerSessions", _careerSessions];
+
 private _saveResult = [_uid, "disconnect"] call bn_koth_fnc_persistence_savePlayer;
 if !(_saveResult getOrDefault ["success", false]) then {
     [format ["Disconnect persistence save failed UID=%1 code=%2", _uid, _saveResult getOrDefault ["code", "UNKNOWN"]], "ERROR"] call bn_koth_fnc_common_log;

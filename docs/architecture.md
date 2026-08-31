@@ -282,6 +282,17 @@ malformed records, and backend failures are logged explicitly. Configured sessio
 fallback remains server-authoritative, is write-blocked from durable storage, and
 never treats a failed save as a success.
 
+"functions/career/"
+
+Owns server-only lifetime career delta batching, connected-session playtime,
+paired lifetime/hourly persistence, and bounded semantic leaderboard queries.
+It consumes decisions already made by combat, round statistics, XP and round
+completion owners. It does not detect kills, deaths, objective presence, XP or
+winners independently. Steam UID is identity; profile name is presentation
+metadata updated against the same UID. Leaderboard callers select only approved
+metric/period/mode IDs and bounded result sizes; SQL_CUSTOM statement selection
+and database access remain server-only.
+
 "functions/ui/"
 
 Contains client-side presentation:

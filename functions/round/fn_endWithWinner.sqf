@@ -25,6 +25,8 @@ if !([_winningSide] call bn_koth_fnc_teams_validateSide) exitWith {
     false
 };
 
+[_winningSide] call bn_koth_fnc_career_recordRound;
+
 ["BN_KOTH_winningSide", _winningSide] call bn_koth_fnc_common_publicState;
 ["ENDING"] call bn_koth_fnc_round_setState;
 

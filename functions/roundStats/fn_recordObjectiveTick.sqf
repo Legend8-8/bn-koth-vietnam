@@ -62,6 +62,7 @@ private _credited = 0;
         _stats set [_uid, _playerStats];
 
         ["objective", _uid, _name, _objectivePoints] call bn_koth_fnc_roundStats_updateLeader;
+        [_uid, createHashMapFromArray [["objectiveContribution", _points]], "objective_tick"] call bn_koth_fnc_career_mutate;
         _credited = _credited + 1;
     };
 } forEach _eligibleUids;

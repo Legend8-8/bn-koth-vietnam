@@ -67,6 +67,11 @@ if !(_loadResult getOrDefault ["success", false]) exitWith {
     false
 };
 
+private _careerIdentity = [_uid, name _player] call bn_koth_fnc_career_registerSession;
+if !(_careerIdentity getOrDefault ["success", false]) then {
+    [format ["Career identity unavailable UID=%1 code=%2", _uid, _careerIdentity getOrDefault ["code", "UNKNOWN"]], "WARN"] call bn_koth_fnc_common_log;
+};
+
 private _assignedLobby = [_uid] call bn_koth_fnc_teams_assignLobbyRepresentation;
 if (!_assignedLobby) exitWith {
     [format ["registerPlayer deferred: lobby representation handoff not ready for UID=%1", _uid], "INFO"] call bn_koth_fnc_common_log;
