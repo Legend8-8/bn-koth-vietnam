@@ -117,6 +117,7 @@ _kill set ["killerInVehicle", _killerInVehicle];
 _kill set ["distanceText", _distText];
 _kill set ["roundActive", _roundState isEqualTo "ACTIVE"];
 _kill set ["weaponAttribution", _weaponAttribution];
+_kill set ["eventKey", format ["%1:%2:%3", _victimUid, netId _killed, diag_tickTime]];
 
 [format [
     "combat_handleKill: victim=%1(%2) killer=%3(%4) suicide=%5 teamkill=%6 validPvp=%7 method=%8 weapon=%9 killerInVehicle=%10 dist=%11 round=%12",

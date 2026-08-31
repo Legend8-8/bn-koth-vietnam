@@ -735,3 +735,52 @@ Both return `[]` on success. On a hosted and dedicated server also verify:
 - direct command-teleport requests remain rejected server-side;
 - enabled-to-disabled AO changes delete old command vehicles/actions and JIP
   receives the current command availability.
+Career persistence and leaderboard backend dedicated-server checks
+
+After a full mission restart with extDB3 ready, run on the server:
+
+```sqf
+[] call bn_koth_fnc_career_test
+```
+
+Expected result: `[]`.
+
+Then verify with two human clients and RPT/database inspection:
+
+1. Join with a new Steam UID and confirm `upsertCareerIdentity` creates one
+   career row; reconnect with a changed profile name and confirm the same UID
+   row is updated rather than duplicated.
+2. During `ACTIVE`, perform one valid enemy PvP kill. Confirm exactly one killer
+   kill, one victim death, and the new streak maximum reach both lifetime and
+   the current UTC hourly bucket. Suicide, teamkill, AI and ignored kill records
+   must add no career kill.
+3. Die once and confirm duplicate respawn/lifecycle callbacks do not add another
+   death. Confirm the live round streak still resets while the lifetime maximum
+   never decreases.
+4. Earn one physical objective score tick and confirm the exact team-score
+   points credited by `roundStats_recordObjectiveTick` become career objective
+   contribution. Priority bonus XP must not inflate that counter.
+5. Complete a round. Confirm each UID in the authoritative participant snapshot
+   receives one round played, winners receive one win, losers receive none, and
+   reconnect/reset notifications cannot repeat the result.
+6. Earn each existing XP reward type and confirm `total_xp_earned` increases by
+   the accepted positive award while current progression XP remains independently
+   stored in `bn_koth_player_progression`.
+7. Remain connected across at least two 60-second samples. Confirm playtime is
+   stored in seconds, no per-second DB writes occur, and disconnect performs a
+   final accumulation/flush without counting offline time.
+8. Temporarily make extDB3 unavailable. Confirm gameplay continues, career
+   mutations remain bounded/queued, leaderboard queries return a structured
+   unavailable result, and no fabricated leaderboard rows are returned.
+9. Exercise `bn_koth_fnc_career_queryLeaderboard` for metric IDs `1..9`, periods
+   `0..3` (`0` = all time), and `TOP`, `RANK`, `AROUND`, `COUNT`. Verify limits
+   cap at 25, K/D comes from the database query, ranking uses value descending
+   then UID ascending, and no caller-supplied SQL/query/table/column is accepted.
+10. Confirm hourly pruning runs no more frequently than the configured daily
+    interval and retains approximately 32 days.
+
+The external deployed `bn_koth.ini` must be checked against the parameter order
+used by the semantic adapter before release: UID followed by kills, deaths,
+wins, rounds played, objective contribution, highest streak, total XP earned
+and playtime seconds; rolling queries additionally consume the approved period
+ID as configured by their SQL_CUSTOM statements.

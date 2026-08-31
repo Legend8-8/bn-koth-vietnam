@@ -14,6 +14,7 @@
 #include "config\arsenal\settings.hpp"
 #include "config\arsenal\equipment.hpp"
 #include "config\persistence.hpp"
+#include "config\career.hpp"
 #include "config\traversal.hpp"
 #include "config\esc_menu.hpp"
 #include "ui\ui.hpp"

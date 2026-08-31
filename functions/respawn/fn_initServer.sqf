@@ -60,6 +60,7 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
 
     if (_killRecord isEqualType createHashMap && {count _killRecord > 0}) then {
         [_killRecord] call bn_koth_fnc_roundStats_recordKill;
+        [_killRecord] call bn_koth_fnc_career_recordKill;
     };
 
     if (_isPlayerEntity && {!alive _killed}) then {
