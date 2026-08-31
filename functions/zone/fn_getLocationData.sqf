@@ -53,6 +53,8 @@ _locationData set ["id", _locationId];
 _locationData set ["displayName", getText (_cfg >> "displayName")];
 _locationData set ["description", getText (_cfg >> "description")];
 _locationData set ["image", getText (_cfg >> "image")];
+_locationData set ["minPlayers", if (isNumber (_cfg >> "minPlayers")) then {(getNumber (_cfg >> "minPlayers")) max 0} else {0}];
+_locationData set ["maxPlayers", if (isNumber (_cfg >> "maxPlayers")) then {getNumber (_cfg >> "maxPlayers")} else {-1}];
 
 _locationData set ["zoneMarker", [_cfg, "zoneMarker", _derivedZoneMarker] call _resolveRoleValue];
 _locationData set ["respawnWestMarker", [_cfg, "respawnWestMarker", _derivedWestRespawn] call _resolveRoleValue];

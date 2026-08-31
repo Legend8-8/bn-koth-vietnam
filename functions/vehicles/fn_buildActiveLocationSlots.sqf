@@ -31,6 +31,8 @@ if !(_activeLocationData isEqualType createHashMap) exitWith {
     [format ["Vehicle slot build failed: active location '%1' missing resolver data.", _activeLocationId], "ERROR"] call bn_koth_fnc_common_log;
     0
 };
+private _capabilities = [_activeLocationData] call bn_koth_fnc_zone_getVehicleCapabilities;
+private _capabilitySides = _capabilities getOrDefault ["sides", createHashMap];
 
 [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
 
@@ -60,30 +62,26 @@ private _eastOverrides = createHashMapFromArray [
 ];
 
 private _slotSpecs = [
-    ["east_ground", east, "ground", "eastFreeGround_spawnpoint"],
-    ["east_air", east, "air", "eastFreeAir_spawnpoint"],
-    ["east_sea", east, "sea", "eastFreeSea_spawnpoint"],
-    ["west_ground", west, "ground", "westFreeGround_spawnpoint"],
-    ["west_air", west, "air", "westFreeAir_spawnpoint"],
-    ["west_sea", west, "sea", "westFreeSea_spawnpoint"]
+    ["east_ground", east, "EAST", "ground", "GROUND", "FREE_GROUND"],
+    ["east_air", east, "EAST", "air", "ROTARY", "FREE_AIR"],
+    ["east_sea", east, "EAST", "sea", "SEA", "FREE_SEA"],
+    ["west_ground", west, "WEST", "ground", "GROUND", "FREE_GROUND"],
+    ["west_air", west, "WEST", "air", "ROTARY", "FREE_AIR"],
+    ["west_sea", west, "WEST", "sea", "SEA", "FREE_SEA"]
 ];
 
 private _slots = createHashMap;
 private _slotIds = [];
 
 {
-    _x params ["_slotId", "_side", "_category", "_cfgSpawnpointKey"];
-
-    private _markerName = _activeLocationData getOrDefault [_cfgSpawnpointKey, ""];
-    if (_markerName isEqualTo "") then {
-        [format ["Vehicle slot '%1' skipped: missing marker key '%2' in location '%3'.", _slotId, _cfgSpawnpointKey, _activeLocationId], "WARN"] call bn_koth_fnc_common_log;
-        continue;
-    };
-
-    if ((markerShape _markerName) isEqualTo "") then {
-        [format ["Vehicle slot '%1' skipped: marker '%2' does not exist.", _slotId, _markerName], "WARN"] call bn_koth_fnc_common_log;
-        continue;
-    };
+    _x params ["_slotId", "_side", "_sideToken", "_category", "_familyName", "_roleName"];
+    private _sideCapabilities = _capabilitySides getOrDefault [_sideToken, createHashMap];
+    private _families = _sideCapabilities getOrDefault ["families", createHashMap];
+    private _family = _families getOrDefault [_familyName, createHashMap];
+    if !(_family getOrDefault ["free", false]) then {continue};
+    private _roles = _sideCapabilities getOrDefault ["roles", createHashMap];
+    private _role = _roles getOrDefault [_roleName, createHashMap];
+    if !(_role getOrDefault ["exists", false]) then {continue};
 
     private _defaultClass = _defaultClasses getOrDefault [_category, ""];
     private _overrideClass = if (_side isEqualTo west) then {
@@ -102,8 +100,14 @@ private _slotIds = [];
         ["slotId", _slotId],
         ["enabled", true],
         ["side", _side],
+        ["sideToken", _sideToken],
         ["category", _category],
-        ["markerName", _markerName],
+        ["family", _familyName],
+        ["roleName", _roleName],
+        ["spawnRef", _role getOrDefault ["ref", ""]],
+        ["spawnPosition", _role getOrDefault ["position", []]],
+        ["spawnDirection", _role getOrDefault ["direction", 0]],
+        ["locationId", _activeLocationId],
         ["vehicleClass", _vehicleClass],
         ["cooldownSeconds", _cooldowns getOrDefault [_category, 10]],
         ["vehicle", objNull],

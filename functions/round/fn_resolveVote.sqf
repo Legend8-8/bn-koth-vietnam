@@ -12,7 +12,14 @@
 
 if (!isServer) exitWith {""};
 
-private _candidates = missionNamespace getVariable ["BN_KOTH_voteCandidates", []];
+private _population = count ([] call bn_koth_fnc_teams_getConnectedHumanUids);
+private _reconciliation = [_population] call bn_koth_fnc_round_reconcileVoteCandidates;
+if (_reconciliation getOrDefault ["changed", false]) exitWith {
+    [format ["Vote resolution deferred after population reconciliation (%1 connected humans).", _population], "INFO"] call bn_koth_fnc_common_log;
+    ""
+};
+
+private _candidates = _reconciliation getOrDefault ["candidates", []];
 if ((count _candidates) <= 0) exitWith {
     ["Vote resolution failed: no candidates.", "ERROR"] call bn_koth_fnc_common_log;
     ""

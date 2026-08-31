@@ -19,6 +19,17 @@ The project must remain predictable enough that a developer can identify the loc
 9. Multiplayer locality must be stated in each public function header.
 10. New systems must be documented before they become large.
 
+AO population suitability is server-owned and distinct from vote eligibility.
+The teams system resolves registered, currently connected human players for AO
+sizing regardless of team-selection state; the existing team-selected UID path
+continues to own voting and deployment eligibility. The round system retains
+valid published candidates and reconciles them only when current connected-human
+population invalidates an option, with a final resolution-time defence.
+
+Location vehicle capability is derived centrally from actual convention-resolved
+Eden spawn roles. UI and vehicle systems consume the same side-specific free,
+paid and command capability result; a derivable role name is never authority.
+
 Combat attribution remains server-owned and fail-closed. Bounded event-driven
 collection observes server-visible projectile creation and hit events and
 resolves only generated factual ammo compatibility plus the canonical

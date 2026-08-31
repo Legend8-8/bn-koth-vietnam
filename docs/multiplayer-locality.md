@@ -245,6 +245,13 @@ the mission-local traversal lock and diagnostics remain client-local.
 
 Safe-zone membership is calculated on the server. Player `HandleDamage`, `FiredMan`, `GetInMan` and physical-inventory handlers are installed on each current local player representation, including after respawn or `selectPlayer`. The inventory-open handler uses the published active markers and the shared safe-zone geometry helper to block local UI access when either the actor or container crosses the boundary. Vehicle `allowDamage`, `HandleDamage` and `Fired` enforcement is reapplied whenever the vehicle owner changes. The server independently validates and deletes safe-zone loot holders and corpses. The only safe-zone remote endpoints are server-to-owner ejection and vehicle-protection application; both reject non-server remote callers.
 
+AO population eligibility is calculated only from server-owned player records
+whose owner resolves to a connected human player object. Clients neither report
+nor calculate this count. Vote candidate reconciliation and resolution are
+server-only. Store capability display is client presentation derived from the
+active location, while free slots, rentals and command teleport independently
+enforce the same spawn-role capability on the server.
+
 10. Performance
 
 Do not use "eachFrame" for zone control, scoring or database activity.

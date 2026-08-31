@@ -6,6 +6,12 @@ Bro-Nation KOTH Vietnam is a team-versus-team multiplayer game mode for Arma 3 u
 
 Players fight to control a designated combat zone. A team earns score while it controls the zone. The first team to reach the configured score limit wins the round.
 
+Upcoming AO choices are filtered by inclusive per-location connected-player
+ranges. Registered connected humans count before team selection so a large
+lobby cannot retain a tiny AO merely because players have not chosen teams.
+Optional convention-based vehicle spawn roles determine which free, paid and
+command vehicle capabilities actually exist for each AO.
+
 The initial version uses two teams:
 
 - WEST: United States and allied forces

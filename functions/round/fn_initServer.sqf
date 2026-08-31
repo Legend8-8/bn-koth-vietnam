@@ -53,6 +53,8 @@ missionNamespace setVariable [
         if (_roundState isEqualTo "WAITING") then {
             private _eligibleUids = [] call bn_koth_fnc_teams_getEligibleSelectedUids;
             private _eligibleCount = count _eligibleUids;
+            private _aoPopulation = count ([] call bn_koth_fnc_teams_getConnectedHumanUids);
+            [_aoPopulation] call bn_koth_fnc_round_reconcileVoteCandidates;
             private _requiredEligible = 1;
             private _voteOpen = missionNamespace getVariable ["BN_KOTH_voteOpen", false];
 
