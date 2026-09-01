@@ -107,24 +107,15 @@ if (_requiresInitialization) exitWith {
     missionNamespace setVariable ["BN_KOTH_priorityZoneActive", true];
     missionNamespace setVariable ["BN_KOTH_priorityZoneAoMarker", _activeMarker];
     missionNamespace setVariable ["BN_KOTH_priorityZoneHeading", random 360];
-    missionNamespace setVariable ["BN_KOTH_priorityZoneLastUpdateAt", serverTime];
 
     // One global marker command publishes the complete locally prepared marker state.
     _priorityMarker setMarkerAlpha (missionNamespace getVariable ["BN_KOTH_priorityZoneMarkerAlpha", 0.75]);
     true
 };
 
-private _now = serverTime;
-private _lastUpdateAt = missionNamespace getVariable ["BN_KOTH_priorityZoneLastUpdateAt", _now];
-private _elapsed = (_now - _lastUpdateAt) max 0;
-missionNamespace setVariable ["BN_KOTH_priorityZoneLastUpdateAt", _now];
-
-if (_elapsed <= 0) exitWith {true};
-
-private _moveTickInterval = missionNamespace getVariable ["BN_KOTH_priorityZoneMoveTickInterval", 0.5];
-private _moveDistancePerTick = missionNamespace getVariable ["BN_KOTH_priorityZoneMoveDistancePerTick", 0.25];
-private _moveSpeed = _moveDistancePerTick / (_moveTickInterval max 0.01);
-private _moveDistance = _moveSpeed * _elapsed;
+private _moveDistancePerFrame = missionNamespace getVariable ["BN_KOTH_priorityZoneMoveDistancePerTick", 0.25];
+private _frameDelta = diag_deltaTime max 0.01;
+private _moveDistance = _moveDistancePerFrame * _frameDelta;
 private _currentPos = markerPos _priorityMarker;
 private _heading = missionNamespace getVariable ["BN_KOTH_priorityZoneHeading", random 360];
 private _candidatePos = [
