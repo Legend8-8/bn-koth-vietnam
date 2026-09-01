@@ -23,11 +23,23 @@ if !([_myAssignedSide] call bn_koth_fnc_teams_validateSide) then {
 if !([_myAssignedSide] call bn_koth_fnc_teams_validateSide) exitWith {false};
 
 private _candidate = cursorTarget;
-if (isNull _candidate || {!(_candidate isKindOf "Man")} || {!alive _candidate} || {side group _candidate isEqualTo _myAssignedSide}) then {
+if (isNull _candidate || {!alive _candidate}) then {
     _candidate = objNull;
 };
 
-if (isNull _candidate) exitWith {false};
+if !(isNull _candidate) then {
+    private _validTarget = if (_candidate isKindOf "Man") then {
+        side group _candidate isNotEqualTo _myAssignedSide
+    } else {
+        _candidate isKindOf "AllVehicles" && {
+            ({!isNull _x && {alive _x} && {side group _x isNotEqualTo _myAssignedSide}} count crew _candidate) > 0
+        }
+    };
+
+    if !(_validTarget) then {
+        _candidate = objNull;
+    };
+};
 
 if (isNull _candidate) exitWith {false};
 

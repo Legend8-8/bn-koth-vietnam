@@ -19,7 +19,7 @@ disableSerialization;
 
 private _groundSlider = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_GROUND_SLIDER;
 private _vehicleSlider = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_SLIDER;
-private _player3DCheckBox = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_CHECKBOX;
+private _player3DValueCtrl = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_VALUE;
 private _player3DAlphaSlider = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_ALPHA_SLIDER;
 
 private _groundCfg = missionConfigFile >> "CfgBnKothEscMenuOptions" >> "earplugVolumeGround";
@@ -58,11 +58,10 @@ _vehicleSlider ctrlAddEventHandler ["SliderPosChanged", {
     _this call bn_koth_fnc_escMenu_options_onSliderPosChanged;
 }];
 
-_player3DCheckBox ctrlSetChecked (_player3DValue > 0);
-_player3DCheckBox setVariable ["BN_KOTH_escMenuOption", "player3DIconsEnabled"];
-_player3DCheckBox setVariable ["BN_KOTH_escMenuValueIdc", BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_VALUE];
-_player3DCheckBox ctrlAddEventHandler ["CheckedChanged", {
-    params ["_control", "_checked"];
+_player3DValueCtrl setVariable ["BN_KOTH_escMenuOption", "player3DIconsEnabled"];
+_player3DValueCtrl setVariable ["BN_KOTH_escMenuValueIdc", BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_VALUE];
+_player3DValueCtrl ctrlAddEventHandler ["ButtonClick", {
+    params ["_control"];
     private _display = ctrlParent _control;
     if (isNull _display) exitWith {};
 
@@ -70,16 +69,12 @@ _player3DCheckBox ctrlAddEventHandler ["CheckedChanged", {
     if (_option isEqualTo "") exitWith {};
 
     private _pending = _display getVariable ["BN_KOTH_escMenuPendingOptions", createHashMap];
-    _pending set [_option, if (_checked > 0) then {1} else {0}];
+    private _currentValue = _pending getOrDefault [_option, 1];
+    private _newValue = if (_currentValue > 0.5) then {0} else {1};
+    _pending set [_option, _newValue];
     _display setVariable ["BN_KOTH_escMenuPendingOptions", _pending];
 
-    private _valueCtrlIdc = _control getVariable ["BN_KOTH_escMenuValueIdc", -1];
-    if (_valueCtrlIdc >= 0) then {
-        private _valueCtrl = _display displayCtrl _valueCtrlIdc;
-        if (!isNull _valueCtrl) then {
-            _valueCtrl ctrlSetText (if (_checked > 0) then {"ON"} else {"OFF"});
-        };
-    };
+    _control ctrlSetText (if (_newValue > 0.5) then {"ON"} else {"OFF"});
 }];
 
 _player3DAlphaSlider sliderSetRange _player3DAlphaRange;

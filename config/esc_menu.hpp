@@ -64,7 +64,7 @@ class CfgBnKothEscMenuOptions
     class player3DIconsEnabled
     {
         name = "Player 3D Icons";
-        type = "CheckBox";
+        type = "Toggle";
         default = 1;
         onChange = "missionNamespace setVariable ['BN_KOTH_player3DIconsEnabled', _newValue > 0];";
     };

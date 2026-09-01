@@ -23,6 +23,7 @@ if (_texture isEqualTo "") then {
     _texture = "\A3\ui_f\data\map\markers\military\triangle_CA.paa";
 };
 missionNamespace setVariable ["BN_KOTH_player3DIconsTexture", _texture];
+missionNamespace setVariable ["BN_KOTH_player3DIconsIncludeLocalPlayer", (getNumber (_config >> "includeLocalPlayer")) > 0];
 missionNamespace setVariable ["BN_KOTH_player3DIconsHeight", (getNumber (_config >> "heightAboveUnit")) max 0.1];
 missionNamespace setVariable ["BN_KOTH_player3DIconsSize", (getNumber (_config >> "iconSize")) max 0.1];
 missionNamespace setVariable ["BN_KOTH_player3DIconsNameSize", (getNumber (_config >> "nameSize")) max 0.01];
