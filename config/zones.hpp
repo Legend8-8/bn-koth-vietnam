@@ -15,9 +15,8 @@ class CfgBnKothZone
     battlefieldPickupMaximumSurfaceOffset = 1.5;
     battlefieldPickupSurfaceClearance = 0.08;
 
-    // Ten server-time movement ticks per second, advancing 0.15 metres per tick.
-    priorityMoveTickInterval = 0.1;
-    priorityMoveDistancePerTick = 0.15;
+    // Distance advanced per frame while the priority zone is active.
+    priorityMoveDistancePerTick = 0.5;
 
     // A player in the priority zone contributes this total control weight.
     priorityControlWeight = 2;

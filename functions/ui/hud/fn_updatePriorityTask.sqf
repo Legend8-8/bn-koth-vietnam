@@ -10,6 +10,26 @@
 
 if (!hasInterface) exitWith {false};
 
+if !(uiNamespace getVariable ["BN_KOTH_priorityTaskEhAdded", false]) then {
+    private _taskEh = addMissionEventHandler ["EachFrame", {
+        if !(hasInterface) exitWith {};
+        if !(uiNamespace getVariable ["BN_KOTH_hudVisible", false]) exitWith {};
+        if (isNull player || {!alive player}) exitWith {};
+        if !((missionNamespace getVariable ["BN_KOTH_roundState", ""]) isEqualTo "ACTIVE") exitWith {};
+
+        private _activeAoMarker = missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""];
+        if (_activeAoMarker isEqualTo "" || {(markerShape _activeAoMarker) isEqualTo ""}) exitWith {};
+
+        private _priorityMarker = "BN_KOTH_priorityZoneMarker";
+        if ((markerShape _priorityMarker) isEqualTo "") exitWith {};
+
+        [] call bn_koth_fnc_ui_updatePriorityTask;
+    }];
+
+    uiNamespace setVariable ["BN_KOTH_priorityTaskEhAdded", true];
+    uiNamespace setVariable ["BN_KOTH_priorityTaskEhId", _taskEh];
+};
+
 private _task = uiNamespace getVariable ["BN_KOTH_priorityTask", taskNull];
 private _taskOwner = uiNamespace getVariable ["BN_KOTH_priorityTaskOwner", objNull];
 private _taskExists = !isNull _task;
@@ -55,20 +75,14 @@ if (!_taskExists) then {
     ];
     _task setSimpleTaskType "move";
     _task setSimpleTaskAlwaysVisible true;
-    _task setSimpleTaskDestination _destination;
     _task setTaskState "ASSIGNED";
     _taskOwner = player;
     uiNamespace setVariable ["BN_KOTH_priorityTask", _task];
     uiNamespace setVariable ["BN_KOTH_priorityTaskOwner", _taskOwner];
-    uiNamespace setVariable ["BN_KOTH_priorityTaskNextUpdateAt", diag_tickTime + 0.5];
-    true
-} else {
-    private _nextUpdateAt = uiNamespace getVariable ["BN_KOTH_priorityTaskNextUpdateAt", 0];
-    if (diag_tickTime >= _nextUpdateAt) then {
-        if ((taskDestination _task) distance2D _destination > 0.25) then {
-            _task setSimpleTaskDestination _destination;
-        };
-        uiNamespace setVariable ["BN_KOTH_priorityTaskNextUpdateAt", diag_tickTime + 0.5];
-    };
-    true
-}
+};
+
+if (!isNull _task) then {
+    _task setSimpleTaskDestination _destination;
+};
+
+true
