@@ -36,6 +36,7 @@ private _activeLookup = createHashMap;
 
 private _maxDistance = missionNamespace getVariable ["BN_KOTH_player3DIconsMaxDistance", 250];
 if (_maxDistance <= 0) then {_maxDistance = 250;};
+private _includeLocalPlayer = missionNamespace getVariable ["BN_KOTH_player3DIconsIncludeLocalPlayer", false];
 private _westColor = missionNamespace getVariable ["BN_KOTH_player3DIconsWestColor", [0.2, 0.55, 1.0, 0.95]];
 private _eastColor = missionNamespace getVariable ["BN_KOTH_player3DIconsEastColor", [0.95, 0.2, 0.15, 0.95]];
 private _sameGroupColor = missionNamespace getVariable ["BN_KOTH_player3DIconsSameGroupColor", [0.95, 0.9, 0.3, 0.9]];
@@ -55,13 +56,13 @@ private _eligiblePlayers = allPlayers select {
     private _isActiveState = (_playerStates getOrDefault [_uid, "LOBBY"]) isEqualTo "ACTIVE";
 
     !isNull _unit
-    && {_unit != player}
     && {_uid isNotEqualTo ""}
     && {alive _unit}
     && {[_assignedSide] call bn_koth_fnc_teams_validateSide}
     && {_assignedSide isEqualTo _mySide}
     && {_isActiveParticipant || {_isActiveState}}
     && {player distance2D _unit <= _maxDistance}
+    && {(_unit isNotEqualTo player) || {_includeLocalPlayer}}
 };
 
 {

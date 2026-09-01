@@ -22,8 +22,8 @@ if (_option isEqualTo "") exitWith {false};
 if !(isClass (missionConfigFile >> "CfgBnKothEscMenuOptions" >> _option)) exitWith {false};
 
 private _profileKey = format ["BN_KOTH_escMenuOption_%1", _option];
-profileNamespace setVariable [_profileKey, _value];
 if (_persist) then {
+    profileNamespace setVariable [_profileKey, _value];
     saveProfileNamespace;
 };
 

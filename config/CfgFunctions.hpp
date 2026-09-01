@@ -351,6 +351,7 @@ class CfgFunctions
             class escMenu_options_onSliderPosChanged {file = "functions\ui\esc_menu\fn_options_onSliderPosChanged.sqf";};
             class escMenu_options_onLoad {file = "functions\ui\esc_menu\fn_options_onLoad.sqf";};
             class escMenu_options_onUnload {file = "functions\ui\esc_menu\fn_options_onUnload.sqf";};
+            class escMenu_options_reset {file = "functions\ui\esc_menu\fn_options_reset.sqf";};
             class escMenu_earplugs_init {file = "functions\ui\esc_menu\earplugs\fn_earplugs_init.sqf";};
             class escMenu_earplugs_apply {file = "functions\ui\esc_menu\earplugs\fn_earplugs_apply.sqf";};
             class escMenu_earplugs_toggle {file = "functions\ui\esc_menu\earplugs\fn_earplugs_toggle.sqf";};
