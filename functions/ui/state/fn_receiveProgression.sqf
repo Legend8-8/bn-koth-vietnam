@@ -81,5 +81,8 @@ if (!isNull _menuDisplay) then {
         case "STORE": {
             [_menuDisplay] call bn_koth_fnc_menu_refreshStore;
         };
+        case "PROGRESSION": {
+            [_menuDisplay] call bn_koth_fnc_menu_refreshProgression;
+        };
     };
 };

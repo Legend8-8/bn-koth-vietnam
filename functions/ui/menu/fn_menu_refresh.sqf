@@ -50,6 +50,7 @@ private _validPages = [
 ];
 
 private _activePage = uiNamespace getVariable ["BN_KOTH_menuActivePage", "LOADOUT"];
+private _previousPage = _activePage;
 if !(_requestedPage isEqualTo "") then {
     private _candidate = toUpper _requestedPage;
     if (_candidate in _validPages) then {
@@ -160,6 +161,22 @@ private _ctrlPerksBack = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_BACK;
 private _ctrlPerksPagePrevious = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_PAGE_PREVIOUS;
 private _ctrlPerksPageNext = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_PAGE_NEXT;
 private _ctrlPerksPageLabel = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_PAGE_LABEL;
+private _ctrlMasteryTitle = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_TITLE;
+private _ctrlMasterySubtitle = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_SUBTITLE;
+private _ctrlMasteryBack = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_BACK;
+private _ctrlMasteryRank = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_RANK;
+private _ctrlMasteryLevel = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_LEVEL;
+private _ctrlMasteryXp = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_XP;
+private _ctrlMasteryXpTrack = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_XP_TRACK;
+private _ctrlMasteryXpFill = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_XP_FILL;
+private _ctrlMasteryHelp = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_HELP;
+private _ctrlMasteryFilterProgress = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_FILTER_PROGRESS;
+private _ctrlMasteryFilterCompleted = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_FILTER_COMPLETED;
+private _ctrlMasteryFilterAll = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_FILTER_ALL;
+private _ctrlMasteryEmpty = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_EMPTY;
+private _ctrlMasteryPagePrevious = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_PAGE_PREVIOUS;
+private _ctrlMasteryPageNext = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_PAGE_NEXT;
+private _ctrlMasteryPageLabel = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_PAGE_LABEL;
 
 private _setNavState = {
     params ["_ctrl", "_isActive"];
@@ -374,6 +391,42 @@ private _perkViewControls = [
 // view is the only owner that may reveal or mutate these controls.
 {_x ctrlShow false} forEach _perkViewControls;
 
+private _masteryViewControls = [
+    _ctrlMasteryTitle,
+    _ctrlMasterySubtitle,
+    _ctrlMasteryBack,
+    _ctrlMasteryRank,
+    _ctrlMasteryLevel,
+    _ctrlMasteryXp,
+    _ctrlMasteryXpTrack,
+    _ctrlMasteryXpFill,
+    _ctrlMasteryHelp,
+    _ctrlMasteryFilterProgress,
+    _ctrlMasteryFilterCompleted,
+    _ctrlMasteryFilterAll,
+    _ctrlMasteryEmpty,
+    _ctrlMasteryPagePrevious,
+    _ctrlMasteryPageNext,
+    _ctrlMasteryPageLabel
+];
+{
+    _masteryViewControls append [
+        _display displayCtrl _x,
+        _display displayCtrl (_x + 1),
+        _display displayCtrl (_x + 2),
+        _display displayCtrl (_x + 3),
+        _display displayCtrl (_x + 4),
+        _display displayCtrl (_x + 5),
+        _display displayCtrl (_x + 6)
+    ];
+} forEach [
+    BN_KOTH_IDC_MENU_MASTERY_CARD_1_BG,
+    BN_KOTH_IDC_MENU_MASTERY_CARD_2_BG,
+    BN_KOTH_IDC_MENU_MASTERY_CARD_3_BG,
+    BN_KOTH_IDC_MENU_MASTERY_CARD_4_BG
+];
+{_x ctrlShow false} forEach _masteryViewControls;
+
 private _operatorControls = [
     _ctrlBgLeft,
     _ctrlOperatorTitle,
@@ -391,6 +444,8 @@ private _setDefaultWorkspaceGeometry = {
     private _menuH = safeZoneH * 0.94;
     private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
     private _mainH = _menuH * 0.78;
+    private _bottomY = _mainY + _mainH + safeZoneH * 0.012;
+    private _bottomH = _menuY + _menuH - _bottomY;
     private _gap = safeZoneW * 0.01;
     private _leftW = _menuW * 0.34;
     private _centerW = _menuW * 0.28;
@@ -401,10 +456,10 @@ private _setDefaultWorkspaceGeometry = {
     _ctrlBrowserWorkspace ctrlSetPosition [_browserX, _mainY, _browserW, _mainH];
     _ctrlBrowserTitle ctrlSetPosition [_browserX + safeZoneW * 0.014, _mainY + safeZoneH * 0.016, _browserW * 0.40, safeZoneH * 0.035];
     _ctrlBrowserSubtitle ctrlSetPosition [_browserX + safeZoneW * 0.014, _mainY + safeZoneH * 0.052, _browserW * 0.40, safeZoneH * 0.024];
-    _ctrlBrowserBack ctrlSetPosition [_browserX + _browserW - safeZoneW * 0.128, _mainY + safeZoneH * 0.020, safeZoneW * 0.110, safeZoneH * 0.038];
+    _ctrlBrowserBack ctrlSetPosition [_menuX + _menuW - safeZoneW * 0.132, _bottomY + safeZoneH * 0.014, safeZoneW * 0.12, _bottomH - safeZoneH * 0.028];
     _ctrlPrimaryPreview ctrlSetPosition [_menuX + _leftW * 0.08, _mainY + safeZoneH * 0.215, _leftW * 0.84, safeZoneH * 0.30];
     _ctrlPrimaryDetail ctrlSetPosition [_centerX + safeZoneW * 0.012, _mainY + safeZoneH * 0.404, _centerW * 0.92, safeZoneH * 0.085];
-    _ctrlPrimaryBack ctrlSetPosition [_centerX + safeZoneW * 0.012, _mainY + _mainH - safeZoneH * 0.095, _centerW * 0.44, safeZoneH * 0.04];
+    _ctrlPrimaryBack ctrlSetPosition [_menuX + _menuW - safeZoneW * 0.132, _bottomY + safeZoneH * 0.014, safeZoneW * 0.12, _bottomH - safeZoneH * 0.028];
     _ctrlPrimaryApply ctrlSetPosition [_centerX + _centerW * 0.48, _mainY + _mainH - safeZoneH * 0.095, _centerW * 0.44, safeZoneH * 0.04];
     _ctrlBrowserPagePrevious ctrlSetPosition [_browserX + _browserW * 0.38, _mainY + _mainH - safeZoneH * 0.060, safeZoneW * 0.038, safeZoneH * 0.034];
     _ctrlBrowserPageNext ctrlSetPosition [_browserX + _browserW * 0.58, _mainY + _mainH - safeZoneH * 0.060, safeZoneW * 0.038, safeZoneH * 0.034];
@@ -564,6 +619,32 @@ private _showPerksView = {
     {_x ctrlShow true} forEach _perkViewControls;
 };
 
+private _showProgressionView = {
+    private _menuX = safeZoneX + safeZoneW * 0.02;
+    private _menuY = safeZoneY + safeZoneH * 0.03;
+    private _menuW = safeZoneW * 0.96;
+    private _menuH = safeZoneH * 0.94;
+    private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
+    private _mainH = _menuH * 0.78;
+    private _bottomY = _mainY + _mainH + safeZoneH * 0.012;
+    private _bottomH = _menuY + _menuH - _bottomY;
+    _ctrlBrowserWorkspace ctrlSetPosition [_menuX, _mainY, _menuW, _mainH];
+    _ctrlBrowserWorkspace ctrlCommit 0;
+    {_x ctrlShow false} forEach _operatorControls;
+    _ctrlBrowserWorkspace ctrlShow true;
+    {_x ctrlShow false} forEach _mainViewControls;
+    {_x ctrlShow false} forEach _selectorViewControls;
+    {_x ctrlShow false} forEach _browserViewControls;
+    {_x ctrlShow false} forEach _browserCardControls;
+    {_x ctrlShow false} forEach _configureViewControls;
+    {_x ctrlShow false} forEach _cargoBrowserControls;
+    {_x ctrlShow false} forEach _kitManagerControls;
+    {_x ctrlShow false} forEach _navControls;
+    {_x ctrlShow false} forEach _storeViewControls;
+    {_x ctrlShow false} forEach _perkViewControls;
+    {_x ctrlShow true} forEach _masteryViewControls;
+};
+
 if !(_activePage isEqualTo "LOADOUT_ATTACHMENTS") then {
     uiNamespace setVariable ["BN_KOTH_menuAttachmentSlotFilter", ""];
 };
@@ -594,6 +675,15 @@ if (_activePage isEqualTo "STORE") exitWith {
 if (_activePage isEqualTo "PERKS") exitWith {
     call _showPerksView;
     [_display] call bn_koth_fnc_menu_refreshPerks;
+};
+
+if (_activePage isEqualTo "PROGRESSION") exitWith {
+    if !(_previousPage isEqualTo "PROGRESSION") then {
+        uiNamespace setVariable ["BN_KOTH_menuMasteryFilter", "IN_PROGRESS"];
+        uiNamespace setVariable ["BN_KOTH_menuMasteryPage", 0];
+    };
+    call _showProgressionView;
+    [_display] call bn_koth_fnc_menu_refreshProgression;
 };
 
 if !(_activePage in _loadoutPages) exitWith {

@@ -158,13 +158,8 @@ if ((count _intendedLoadout) > 8) then {
 };
 
 _ctrlSectionTitle ctrlSetText "LOADOUT";
-_ctrlNotice ctrlSetText (
-    if (_arsenalEnabled) then {
-        "SERVER-AUTHORITATIVE INTENDED KIT"
-    } else {
-        "ARSENAL LOCKED - USE YOUR TEAM MAPBOARD"
-    }
-);
+_ctrlNotice ctrlSetText (if (_arsenalEnabled) then {""} else {"ARSENAL LOCKED - USE YOUR TEAM MAPBOARD"});
+_ctrlNotice ctrlShow (!_arsenalEnabled);
 
 {
     _x ctrlShow false;

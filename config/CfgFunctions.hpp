@@ -365,6 +365,8 @@ class CfgFunctions
             class menu_refreshLoadout {file = "functions\ui\menu\fn_menu_refreshLoadout.sqf";};
             class menu_refreshStore {file = "functions\ui\menu\fn_menu_refreshStore.sqf";};
             class menu_refreshPerks {file = "functions\ui\menu\fn_menu_refreshPerks.sqf";};
+            class menu_refreshProgression {file = "functions\ui\menu\fn_menu_refreshProgression.sqf";};
+            class menu_projectMasteryEntries {file = "functions\ui\menu\fn_menu_projectMasteryEntries.sqf";};
             class menu_requestPerk {file = "functions\ui\menu\fn_menu_requestPerk.sqf";};
             class menu_buildStoreWeaponEntries {file = "functions\ui\menu\fn_menu_buildStoreWeaponEntries.sqf";};
             class menu_projectStoreWeaponState {file = "functions\ui\menu\fn_menu_projectStoreWeaponState.sqf";};
