@@ -41,7 +41,9 @@ private _detailW = _menuX + _menuW - _padX - _detailX;
 
 _title ctrlSetPosition [_menuX + _padX, _mainY + safeZoneH * 0.016, _catalogueW, safeZoneH * 0.040];
 _subtitle ctrlSetPosition [_menuX + _padX, _mainY + safeZoneH * 0.054, _catalogueW, safeZoneH * 0.026];
-_back ctrlSetPosition [_detailX, _mainY + safeZoneH * 0.016, _detailW, safeZoneH * 0.040];
+private _bottomY = _mainY + _mainH + safeZoneH * 0.012;
+private _bottomH = _menuY + _menuH - _bottomY;
+_back ctrlSetPosition [_menuX + _menuW - safeZoneW * 0.132, _bottomY + safeZoneH * 0.014, safeZoneW * 0.12, _bottomH - safeZoneH * 0.028];
 _preview ctrlSetPosition [_detailX, _mainY + safeZoneH * 0.088, _detailW, safeZoneH * 0.285];
 _detail ctrlSetPosition [_detailX, _mainY + safeZoneH * 0.388, _detailW, safeZoneH * 0.260];
 private _actionGap = safeZoneW * 0.008;

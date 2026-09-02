@@ -26,8 +26,20 @@
 #define BN_KOTH_MENU_BROWSER_CARD_W ((BN_KOTH_MENU_BROWSER_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 3) / 2)
 #define BN_KOTH_MENU_BROWSER_CARD_H (safeZoneH * 0.275)
 #define BN_KOTH_MENU_LOADOUT_ROW_Y (safeZoneH * 0.078)
-#define BN_KOTH_MENU_LOADOUT_ROW_STEP (safeZoneH * 0.072)
 #define BN_KOTH_MENU_LOADOUT_ROW_H (safeZoneH * 0.069)
+#define BN_KOTH_MENU_LOADOUT_ROW_GAP (safeZoneH * 0.006)
+#define BN_KOTH_MENU_LOADOUT_ROW_STEP (BN_KOTH_MENU_LOADOUT_ROW_H + BN_KOTH_MENU_LOADOUT_ROW_GAP)
+#define BN_KOTH_MENU_MASTERY_CARD_W ((BN_KOTH_MENU_W - safeZoneW * 0.048) * 0.5)
+#define BN_KOTH_MENU_MASTERY_CARD_INSET (safeZoneW * 0.012)
+
+class BN_KOTH_Menu_BackButton: BN_KOTH_Menu_ExitButton
+{
+    text = "BACK";
+    x = BN_KOTH_MENU_X + BN_KOTH_MENU_W - safeZoneW * 0.132;
+    y = BN_KOTH_MENU_BOTTOM_Y + safeZoneH * 0.014;
+    w = safeZoneW * 0.12;
+    h = BN_KOTH_MENU_BOTTOM_H - safeZoneH * 0.028;
+};
 
 class BN_KOTH_RscMenu
 {
@@ -35,7 +47,7 @@ class BN_KOTH_RscMenu
     movingEnable = 0;
     enableSimulation = 1;
     onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_menuDisplay', _display]; _display displayAddEventHandler ['KeyDown', 'if ((_this select 1) isEqualTo 1) exitWith {[] call bn_koth_fnc_menu_close; true}; false']; ['LOADOUT'] call bn_koth_fnc_menu_refresh;";
-    onUnload = "[] call bn_koth_fnc_menu_stopPlayerPreview; uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuArsenalEnabled', false]; uiNamespace setVariable ['BN_KOTH_menuIntendedLoadout', []]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuLauncherEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingLauncher', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuUniformEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingUniform', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuVestEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingVest', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBackpackEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBackpack', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHeadgearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHeadgear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuFacewearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingFacewear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBinocularEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBinocular', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAssignedEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAttachmentEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAttachment', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuCargoEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureDrafts', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0]; uiNamespace setVariable ['BN_KOTH_menuKitEditId', '']; uiNamespace setVariable ['BN_KOTH_menuKitEditName', '']; uiNamespace setVariable ['BN_KOTH_menuPendingKitOperation', '']; uiNamespace setVariable ['BN_KOTH_menuPendingKitId', '']; uiNamespace setVariable ['BN_KOTH_menuPendingKitName', ''];";
+    onUnload = "[] call bn_koth_fnc_menu_stopPlayerPreview; uiNamespace setVariable ['BN_KOTH_menuDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_menuArsenalEnabled', false]; uiNamespace setVariable ['BN_KOTH_menuIntendedLoadout', []]; uiNamespace setVariable ['BN_KOTH_menuActivePage', 'LOADOUT']; uiNamespace setVariable ['BN_KOTH_menuMasteryFilter', 'IN_PROGRESS']; uiNamespace setVariable ['BN_KOTH_menuMasteryPage', 0]; uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; uiNamespace setVariable ['BN_KOTH_menuPrimaryEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingPrimary', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHandgunEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHandgun', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuLauncherEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingLauncher', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuUniformEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingUniform', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuVestEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingVest', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBackpackEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBackpack', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuHeadgearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingHeadgear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuFacewearEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingFacewear', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuBinocularEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingBinocular', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAssignedEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuAttachmentEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingAttachment', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuCargoEntries', []]; uiNamespace setVariable ['BN_KOTH_menuPendingCargo', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigureDrafts', createHashMap]; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0]; uiNamespace setVariable ['BN_KOTH_menuKitEditId', '']; uiNamespace setVariable ['BN_KOTH_menuKitEditName', '']; uiNamespace setVariable ['BN_KOTH_menuPendingKitOperation', '']; uiNamespace setVariable ['BN_KOTH_menuPendingKitId', '']; uiNamespace setVariable ['BN_KOTH_menuPendingKitName', ''];";
 
     class controlsBackground
     {
@@ -634,14 +646,10 @@ class BN_KOTH_RscMenu
             sizeEx = "0.017 * safeZoneH";
         };
 
-        class PrimaryBack: BN_KOTH_Menu_ActionButton
+        class PrimaryBack: BN_KOTH_Menu_BackButton
         {
             idc = BN_KOTH_IDC_MENU_PRIMARY_BACK;
             text = "BACK";
-            x = BN_KOTH_MENU_CENTER_X + safeZoneW * 0.012;
-            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H - safeZoneH * 0.095;
-            w = BN_KOTH_MENU_CENTER_W * 0.44;
-            h = safeZoneH * 0.04;
             action = "if (((uiNamespace getVariable ['BN_KOTH_menuActivePage', '']) isEqualTo 'LOADOUT_EQUIPMENT') && {(uiNamespace getVariable ['BN_KOTH_menuAssignedStage', 1]) isEqualTo 2}) then {uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; ['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;} else {['LOADOUT'] call bn_koth_fnc_menu_refresh;};";
         };
 
@@ -729,14 +737,10 @@ class BN_KOTH_RscMenu
             action = "['', uiNamespace getVariable ['BN_KOTH_menuKitSelectedId', '']] call bn_koth_fnc_menu_saveSessionKit;";
         };
 
-        class BrowserBack: BN_KOTH_Menu_ActionButton
+        class BrowserBack: BN_KOTH_Menu_BackButton
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_BACK;
             text = "BACK";
-            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_W - safeZoneW * 0.128;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.020;
-            w = safeZoneW * 0.110;
-            h = safeZoneH * 0.038;
             action = "['LOADOUT'] call bn_koth_fnc_menu_refresh;";
         };
 
@@ -807,7 +811,7 @@ class BN_KOTH_RscMenu
             action = "uiNamespace setVariable ['BN_KOTH_menuCargoCategory','EQUIPMENT']; uiNamespace setVariable ['BN_KOTH_menuCargoPage',0]; ['LOADOUT_CARGO'] call bn_koth_fnc_menu_refresh;";
         };
 
-        class BrowserPagePrevious: BrowserBack
+        class BrowserPagePrevious: BN_KOTH_Menu_ActionButton
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_PAGE_PREVIOUS;
             text = "<";
@@ -998,14 +1002,10 @@ class BN_KOTH_RscMenu
             colorText[] = {0.94, 0.80, 0.34, 1};
         };
 
-        class PerksBack: BN_KOTH_Menu_ActionButton
+        class PerksBack: BN_KOTH_Menu_BackButton
         {
             idc = BN_KOTH_IDC_MENU_PERKS_BACK;
             text = "BACK";
-            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W - safeZoneW * 0.128;
-            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.020;
-            w = safeZoneW * 0.110;
-            h = safeZoneH * 0.038;
             action = "['LOADOUT'] call bn_koth_fnc_menu_refresh;";
         };
 
@@ -1093,7 +1093,7 @@ class BN_KOTH_RscMenu
         class PerksCard4Price: PerksCard2Price {idc = BN_KOTH_IDC_MENU_PERKS_CARD_4_PRICE; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.520;};
         class PerksCard4Action: PerksCard2Action {idc = BN_KOTH_IDC_MENU_PERKS_CARD_4_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.574;};
 
-        class PerksPagePrevious: PerksBack
+        class PerksPagePrevious: BN_KOTH_Menu_ActionButton
         {
             idc = BN_KOTH_IDC_MENU_PERKS_PAGE_PREVIOUS;
             text = "<";
@@ -1114,6 +1114,252 @@ class BN_KOTH_RscMenu
         class PerksPageLabel: BN_KOTH_Menu_Subtitle
         {
             idc = BN_KOTH_IDC_MENU_PERKS_PAGE_LABEL;
+            text = "PAGE 1 / 1";
+            style = 2;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.455;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H - safeZoneH * 0.056;
+            w = BN_KOTH_MENU_W * 0.09;
+            h = safeZoneH * 0.028;
+        };
+
+        class MasteryTitle: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_TITLE;
+            text = "WEAPON MASTERY";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.016;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.015;
+            w = BN_KOTH_MENU_W * 0.42;
+            h = safeZoneH * 0.040;
+            sizeEx = safeZoneH * 0.030;
+        };
+
+        class MasterySubtitle: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_SUBTITLE;
+            text = "TRACK YOUR WEAPON MASTERY";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.016;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.052;
+            w = BN_KOTH_MENU_W * 0.42;
+            h = safeZoneH * 0.024;
+        };
+
+        class MasteryBack: BN_KOTH_Menu_BackButton
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_BACK;
+            text = "BACK";
+            action = "['LOADOUT'] call bn_koth_fnc_menu_refresh;";
+        };
+
+        class MasteryRank: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_RANK;
+            x = BN_KOTH_MENU_X + safeZoneW * 0.018;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.083;
+            w = safeZoneW * 0.055;
+            h = safeZoneH * 0.080;
+            style = 48;
+        };
+
+        class MasteryLevel: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_LEVEL;
+            text = "LEVEL 1";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.083;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.088;
+            w = safeZoneW * 0.180;
+            h = safeZoneH * 0.034;
+            sizeEx = safeZoneH * 0.027;
+        };
+
+        class MasteryXp: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_XP;
+            text = "0 / 0 XP";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.083;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.122;
+            w = safeZoneW * 0.200;
+            h = safeZoneH * 0.024;
+        };
+
+        class MasteryXpTrack: BN_KOTH_Menu_Background
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_XP_TRACK;
+            x = BN_KOTH_MENU_X + safeZoneW * 0.083;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.151;
+            w = safeZoneW * 0.200;
+            h = safeZoneH * 0.007;
+            colorBackground[] = {0.16, 0.15, 0.12, 1};
+        };
+
+        class MasteryXpFill: MasteryXpTrack
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_XP_FILL;
+            w = 0;
+            colorBackground[] = {0.76, 0.58, 0.20, 1};
+        };
+
+        class MasteryHelp: BN_KOTH_RscStructuredText
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_HELP;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.695;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.080;
+            w = BN_KOTH_MENU_W * 0.285;
+            h = safeZoneH * 0.090;
+            colorBackground[] = {0.075, 0.075, 0.065, 0.96};
+            text = "";
+        };
+
+        class MasteryFilterProgress: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_FILTER_PROGRESS;
+            text = "IN PROGRESS";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.335;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.105;
+            w = BN_KOTH_MENU_W * 0.105;
+            h = safeZoneH * 0.040;
+            action = "uiNamespace setVariable ['BN_KOTH_menuMasteryFilter','IN_PROGRESS']; uiNamespace setVariable ['BN_KOTH_menuMasteryPage',0]; [uiNamespace getVariable ['BN_KOTH_menuDisplay',displayNull]] call bn_koth_fnc_menu_refreshProgression;";
+        };
+
+        class MasteryFilterCompleted: MasteryFilterProgress
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_FILTER_COMPLETED;
+            text = "COMPLETED";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.445;
+            action = "uiNamespace setVariable ['BN_KOTH_menuMasteryFilter','COMPLETED']; uiNamespace setVariable ['BN_KOTH_menuMasteryPage',0]; [uiNamespace getVariable ['BN_KOTH_menuDisplay',displayNull]] call bn_koth_fnc_menu_refreshProgression;";
+        };
+
+        class MasteryFilterAll: MasteryFilterProgress
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_FILTER_ALL;
+            text = "ALL";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.555;
+            action = "uiNamespace setVariable ['BN_KOTH_menuMasteryFilter','ALL']; uiNamespace setVariable ['BN_KOTH_menuMasteryPage',0]; [uiNamespace getVariable ['BN_KOTH_menuDisplay',displayNull]] call bn_koth_fnc_menu_refreshProgression;";
+        };
+
+        class MasteryCardBackground: BN_KOTH_Menu_Background
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_CARD_1_BG;
+            x = BN_KOTH_MENU_X + safeZoneW * 0.016;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.190;
+            w = BN_KOTH_MENU_MASTERY_CARD_W;
+            h = safeZoneH * 0.225;
+            colorBackground[] = {0.075, 0.075, 0.065, 0.96};
+        };
+
+        class MasteryCardImage: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_CARD_1_IMAGE;
+            x = BN_KOTH_MENU_X + safeZoneW * 0.028;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.215;
+            w = BN_KOTH_MENU_W * 0.185;
+            h = safeZoneH * 0.125;
+            style = 48;
+        };
+
+        class MasteryCardName: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_CARD_1_NAME;
+            text = "WEAPON";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.225;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.215;
+            w = BN_KOTH_MENU_W * 0.240;
+            h = safeZoneH * 0.035;
+            sizeEx = safeZoneH * 0.024;
+        };
+
+        class MasteryCardStatus: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_CARD_1_STATUS;
+            text = "0 / 50 KILLS";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.225;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.263;
+            w = BN_KOTH_MENU_W * 0.205;
+            h = safeZoneH * 0.030;
+        };
+
+        class MasteryCardTrack: BN_KOTH_Menu_Background
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_CARD_1_TRACK;
+            x = BN_KOTH_MENU_X + safeZoneW * 0.028;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.370;
+            w = BN_KOTH_MENU_MASTERY_CARD_W - BN_KOTH_MENU_MASTERY_CARD_INSET * 2;
+            h = safeZoneH * 0.009;
+            colorBackground[] = {0.16, 0.15, 0.12, 1};
+        };
+
+        class MasteryCardFill: MasteryCardTrack
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_CARD_1_FILL;
+            w = 0;
+            colorBackground[] = {0.76, 0.58, 0.20, 1};
+        };
+
+        class MasteryCardPercent: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_CARD_1_PERCENT;
+            text = "0%";
+            style = 1;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.400;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.335;
+            w = BN_KOTH_MENU_W * 0.065;
+            h = safeZoneH * 0.026;
+        };
+
+        class MasteryCard2Background: MasteryCardBackground {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_2_BG; x = BN_KOTH_MENU_X + safeZoneW * 0.032 + BN_KOTH_MENU_MASTERY_CARD_W;};
+        class MasteryCard2Image: MasteryCardImage {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_2_IMAGE; x = BN_KOTH_MENU_X + safeZoneW * 0.044 + BN_KOTH_MENU_MASTERY_CARD_W;};
+        class MasteryCard2Name: MasteryCardName {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_2_NAME; x = BN_KOTH_MENU_X + safeZoneW * 0.016 + BN_KOTH_MENU_W * 0.225 + BN_KOTH_MENU_MASTERY_CARD_W;};
+        class MasteryCard2Status: MasteryCardStatus {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_2_STATUS; x = BN_KOTH_MENU_X + safeZoneW * 0.016 + BN_KOTH_MENU_W * 0.225 + BN_KOTH_MENU_MASTERY_CARD_W;};
+        class MasteryCard2Track: MasteryCardTrack {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_2_TRACK; x = BN_KOTH_MENU_X + safeZoneW * 0.044 + BN_KOTH_MENU_MASTERY_CARD_W;};
+        class MasteryCard2Fill: MasteryCardFill {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_2_FILL; x = BN_KOTH_MENU_X + safeZoneW * 0.044 + BN_KOTH_MENU_MASTERY_CARD_W;};
+        class MasteryCard2Percent: MasteryCardPercent {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_2_PERCENT; x = BN_KOTH_MENU_X + safeZoneW * 0.016 + BN_KOTH_MENU_W * 0.400 + BN_KOTH_MENU_MASTERY_CARD_W;};
+
+        class MasteryCard3Background: MasteryCardBackground {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_3_BG; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.435;};
+        class MasteryCard3Image: MasteryCardImage {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_3_IMAGE; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.460;};
+        class MasteryCard3Name: MasteryCardName {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_3_NAME; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.460;};
+        class MasteryCard3Status: MasteryCardStatus {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_3_STATUS; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.508;};
+        class MasteryCard3Track: MasteryCardTrack {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_3_TRACK; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.615;};
+        class MasteryCard3Fill: MasteryCardFill {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_3_FILL; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.615;};
+        class MasteryCard3Percent: MasteryCardPercent {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_3_PERCENT; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.580;};
+
+        class MasteryCard4Background: MasteryCard2Background {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_4_BG; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.435;};
+        class MasteryCard4Image: MasteryCard2Image {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_4_IMAGE; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.460;};
+        class MasteryCard4Name: MasteryCard2Name {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_4_NAME; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.460;};
+        class MasteryCard4Status: MasteryCard2Status {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_4_STATUS; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.508;};
+        class MasteryCard4Track: MasteryCard2Track {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_4_TRACK; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.615;};
+        class MasteryCard4Fill: MasteryCard2Fill {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_4_FILL; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.615;};
+        class MasteryCard4Percent: MasteryCard2Percent {idc = BN_KOTH_IDC_MENU_MASTERY_CARD_4_PERCENT; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.580;};
+
+        class MasteryEmpty: BN_KOTH_RscStructuredText
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_EMPTY;
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.25;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.340;
+            w = BN_KOTH_MENU_W * 0.50;
+            h = safeZoneH * 0.110;
+            text = "";
+        };
+
+        class MasteryPagePrevious: BN_KOTH_Menu_ActionButton
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_PAGE_PREVIOUS;
+            text = "<";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.41;
+            y = BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H - safeZoneH * 0.060;
+            w = safeZoneW * 0.038;
+            h = safeZoneH * 0.034;
+            action = "";
+        };
+
+        class MasteryPageNext: MasteryPagePrevious
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_PAGE_NEXT;
+            text = ">";
+            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.55;
+        };
+
+        class MasteryPageLabel: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_MASTERY_PAGE_LABEL;
             text = "PAGE 1 / 1";
             style = 2;
             x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.455;

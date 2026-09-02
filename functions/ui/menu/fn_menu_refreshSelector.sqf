@@ -52,7 +52,13 @@ _ctrlPrimaryTitle ctrlSetPosition [_centerX + safeZoneW * 0.012, _centerY + safe
 _ctrlPrimaryCurrent ctrlSetPosition [_centerX + safeZoneW * 0.012, _centerY + safeZoneH * 0.054, _centerW * 0.92, safeZoneH * 0.03];
 _ctrlPrimaryList ctrlSetPosition [_centerX + safeZoneW * 0.012, _centerY + safeZoneH * 0.092, _centerW * 0.92, safeZoneH * 0.30];
 _ctrlPrimaryDetail ctrlSetPosition [_centerX + safeZoneW * 0.012, _centerY + safeZoneH * 0.404, _centerW * 0.92, safeZoneH * 0.085];
-_ctrlPrimaryBack ctrlSetPosition [_centerX + safeZoneW * 0.012, _centerY + _centerH - safeZoneH * 0.095, _centerW * 0.44, safeZoneH * 0.04];
+private _menuX = safeZoneX + safeZoneW * 0.02;
+private _menuY = safeZoneY + safeZoneH * 0.03;
+private _menuW = safeZoneW * 0.96;
+private _menuH = safeZoneH * 0.94;
+private _bottomY = _centerY + _centerH + safeZoneH * 0.012;
+private _bottomH = _menuY + _menuH - _bottomY;
+_ctrlPrimaryBack ctrlSetPosition [_menuX + _menuW - safeZoneW * 0.132, _bottomY + safeZoneH * 0.014, safeZoneW * 0.12, _bottomH - safeZoneH * 0.028];
 _ctrlPrimaryApply ctrlSetPosition [_centerX + _centerW * 0.48, _centerY + _centerH - safeZoneH * 0.095, _centerW * 0.44, safeZoneH * 0.04];
 {
     _x ctrlCommit 0;
@@ -275,27 +281,13 @@ _ctrlCargoPlus ctrlShow _isCargoMode;
 _ctrlPrimaryApply ctrlShow (!_isCargoMode);
 
 if (_isCargoMode) then {
-    private _backPos = ctrlPosition _ctrlPrimaryBack;
     private _applyPos = ctrlPosition _ctrlPrimaryApply;
 
     // Intentional visual rhythm:
-    // BACK  [gap]  -  [gap]  +
+    // -  [gap]  +
     private _cargoGap = safeZoneW * 0.004;
-
-    private _cargoStartX =
-        (_backPos select 0) +
-        (_backPos select 2) +
-        _cargoGap;
-
-    private _cargoRightX =
-        (_applyPos select 0) +
-        (_applyPos select 2);
-
-    private _cargoWidth =
-        (_cargoRightX - _cargoStartX) max 0;
-
-    private _buttonWidth =
-        ((_cargoWidth - _cargoGap) / 2) max 0;
+    private _cargoStartX = _applyPos select 0;
+    private _buttonWidth = (((_applyPos select 2) - _cargoGap) / 2) max 0;
 
     _ctrlCargoMinus ctrlSetPosition [
         _cargoStartX,

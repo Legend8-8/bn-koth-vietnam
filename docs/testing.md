@@ -784,3 +784,45 @@ used by the semantic adapter before release: UID followed by kills, deaths,
 wins, rounds played, objective contribution, highest streak, total XP earned
 and playtime seconds; rolling queries additionally consume the approved period
 ID as configured by their SQL_CUSTOM statements.
+
+24. Deployed Weapon Mastery Progression Page
+
+Run the focused catalogue/projection check in a client debug context:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\ui\menu\test_progressionMasteryUi.sqf"
+```
+
+Expected result: `[]`. With the deployed menu open, the same check also verifies
+that its dedicated fixed-control pool exists.
+
+For visual/runtime acceptance, use a hosted session with representative
+authoritative `weaponKills` values and verify:
+
+- opening `PROGRESSION` freshly always selects `IN PROGRESS`;
+- zero-progress weapons are absent from `IN PROGRESS`, partial progress shows
+  the exact kill count/requirement, and the most progressed entries
+  sort first;
+- `COMPLETED` contains only completed weapons with the `MASTERED` treatment;
+- `ALL` contains every mastery-capable weapon exactly once, with no structural-variant duplicates;
+- zero, tiny, near-complete and over-complete values render bars within 0-100%;
+- missing pictures leave a neutral image area, and long display names remain
+  within their card;
+- all empty states are intentional, filtering/paging creates no controls or
+  event handlers, and closing/reopening resets the filter;
+- `PROGRESSION -> LOADOUT/STORE/PERKS -> PROGRESSION` leaks no controls or
+  actions between views;
+- a received progression update refreshes the open page without mutating XP,
+  Level, weapon kills, ownership, rental, Perks or entitlement;
+- no script/config errors appear in RPT.
+
+Also exercise every deployed-menu return path: selector, configure,
+magazine/attachment, cargo/container, saved kits, Store, Perks and Progression.
+Each visible `BACK` control must retain its existing destination while matching
+the `EXIT BASE` control's size and bottom alignment at the opposite (bottom-right)
+edge. Repeatedly switch between those views and confirm only one `BACK` control
+is visible, no control overlaps it, and `ESC`/menu reopen behaviour is unchanged.
+
+No dedicated-server acceptance is claimed by this presentation test. A normal
+dedicated progression award should still be observed on a client to confirm
+the existing bounded projection refreshes the open page end to end.

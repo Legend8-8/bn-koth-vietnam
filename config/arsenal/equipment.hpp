@@ -124,107 +124,849 @@ class CfgBnKothArsenal
             {
                 // Canonical logical-weapon side policy. Structural variants
                 // inherit these entries through canonical metadata lookup.
-                class vn_ak_01 {allowedSides[] = {"EAST"}; minLevel = 30; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_dp28 {allowedSides[] = {"EAST"}; minLevel = 45; purchasePrice = 2500; rentalPrice = 500;};
-                class vn_f1_smg {allowedSides[] = {"WEST"}; minLevel = 20; purchasePrice = 1000; rentalPrice = 200;};
-                // vn_fkb1_pm remains unconfigured pending manual review.
-                class vn_gau5a {allowedSides[] = {"WEST"}; minLevel = 55; purchasePrice = 2500; rentalPrice = 500;};
-                class vn_hd {allowedSides[] = {"WEST"}; minLevel = 85; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_hp {allowedSides[] = {"WEST"}; minLevel = 12; purchasePrice = 500; rentalPrice = 100;};
-                class vn_izh54 {allowedSides[] = {"EAST"}; minLevel = 25; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_k50m {allowedSides[] = {"EAST"}; minLevel = 20; purchasePrice = 1000; rentalPrice = 200;};
-                class vn_k98k {allowedSides[] = {"EAST"}; minLevel = 1;};
-                class vn_kbkg {allowedSides[] = {"EAST"}; minLevel = 38; purchasePrice = 2500; rentalPrice = 500;};
-                class vn_l1a1_01
+                //
+                // Mastery targets are deliberately coarse, round-number goals:
+                // higher-level weapons generally require more kills, while
+                // pistols/precision/specialist launchers are adjusted for kill rate
+                // and high-volume support weapons are slightly more demanding.
+
+                class vn_ak_01
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 30;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1500;
+                    rentalPrice = 300;
+                };
+
+                class vn_dp28
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 45;
+                    masteryKillsRequired = 120;
+                    purchasePrice = 2500;
+                    rentalPrice = 500;
+                };
+
+                class vn_f1_smg
                 {
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 20;
-                    masteryKillsRequired = 50;
-                    requiredPerks[] = {};
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1000;
+                    rentalPrice = 200;
+                };
+
+                // vn_fkb1_pm remains unconfigured pending manual review.
+                class vn_gau5a
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 55;
+                    masteryKillsRequired = 90;
+                    purchasePrice = 2500;
+                    rentalPrice = 500;
+                };
+
+                class vn_hd
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 85;
+                    masteryKillsRequired = 120;
                     purchasePrice = 1500;
                     rentalPrice = 300;
                 };
-                class vn_l2a1_01 {allowedSides[] = {"WEST"}; minLevel = 65; purchasePrice = 3500; rentalPrice = 700;};
-                class vn_l2a3 {allowedSides[] = {"WEST"}; minLevel = 22; purchasePrice = 1250; rentalPrice = 250;};
-                class vn_l34a1 {allowedSides[] = {"WEST"}; minLevel = 70; purchasePrice = 3000; rentalPrice = 600;};
-                class vn_l4 {allowedSides[] = {"WEST"}; minLevel = 80; purchasePrice = 4000; rentalPrice = 800;};
-                class vn_m10 {allowedSides[] = {"WEST"}; minLevel = 8; purchasePrice = 500; rentalPrice = 100;};
-                class vn_m127 {allowedSides[] = {"WEST"}; minLevel = 25; purchasePrice = 1000; rentalPrice = 200;};
-                class vn_m14 {allowedSides[] = {"WEST"}; minLevel = 40; purchasePrice = 2000; rentalPrice = 400;};
-                class vn_m14a1 {allowedSides[] = {"WEST"}; minLevel = 58; purchasePrice = 3000; rentalPrice = 600;};
-                class vn_m16 {allowedSides[] = {"WEST"}; minLevel = 35; purchasePrice = 1750; rentalPrice = 350;};
-                class vn_m16_usaf {allowedSides[] = {"WEST"}; minLevel = 45; purchasePrice = 2000; rentalPrice = 400;};
-                class vn_m1891 {allowedSides[] = {"EAST"}; minLevel = 12; purchasePrice = 750; rentalPrice = 150;};
-                class vn_m1895 {allowedSides[] = {"EAST"}; minLevel = 12; purchasePrice = 500; rentalPrice = 100;};
-                class vn_m1897 {allowedSides[] = {"WEST"}; minLevel = 30; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_m1903 {allowedSides[] = {"WEST"}; minLevel = 1;};
-                class vn_m1911 {allowedSides[] = {"WEST"}; minLevel = 1;};
-                class vn_m1918 {allowedSides[] = {"WEST"}; minLevel = 40; purchasePrice = 2500; rentalPrice = 500;};
-                class vn_m1928_tommy {allowedSides[] = {"WEST"}; minLevel = 18; purchasePrice = 1000; rentalPrice = 200;};
-                class vn_m1928a1_tommy {allowedSides[] = {"WEST"}; minLevel = 30; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_m1_garand {allowedSides[] = {"WEST"}; minLevel = 18; purchasePrice = 1000; rentalPrice = 200;};
-                class vn_m1a1_tommy {allowedSides[] = {"WEST"}; minLevel = 42; purchasePrice = 2000; rentalPrice = 400;};
-                class vn_m1carbine {allowedSides[] = {"WEST", "EAST"}; minLevel = 10; purchasePrice = 750; rentalPrice = 150;};
-                class vn_m1carbine_shorty {allowedSides[] = {"WEST"}; minLevel = 90; purchasePrice = 3000; rentalPrice = 600;};
-                class vn_m20a1b1_01 {allowedSides[] = {"WEST"}; minLevel = 180; purchasePrice = 6500; rentalPrice = 1300;};
-                class vn_m21 {allowedSides[] = {"WEST"}; minLevel = 150; purchasePrice = 6000; rentalPrice = 1200;};
-                class vn_m2carbine {allowedSides[] = {"WEST"}; minLevel = 25; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_m36 {allowedSides[] = {"EAST"}; minLevel = 18; purchasePrice = 1000; rentalPrice = 200;};
-                class vn_m38 {allowedSides[] = {"EAST"}; minLevel = 15; purchasePrice = 750; rentalPrice = 150;};
-                class vn_m3a1 {allowedSides[] = {"WEST"}; minLevel = 1;};
-                class vn_m3carbine {allowedSides[] = {"WEST"}; minLevel = 175; purchasePrice = 6500; rentalPrice = 1300;};
-                class vn_m40a1 {allowedSides[] = {"WEST"}; minLevel = 125; purchasePrice = 5000; rentalPrice = 1000;};
-                class vn_m45 {allowedSides[] = {"WEST"}; minLevel = 30; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_m4956 {allowedSides[] = {"EAST"}; minLevel = 35; purchasePrice = 1750; rentalPrice = 350;};
-                class vn_m60 {allowedSides[] = {"WEST"}; minLevel = 120; purchasePrice = 5000; rentalPrice = 1000;};
-                class vn_m63a {allowedSides[] = {"WEST"}; minLevel = 65; purchasePrice = 3000; rentalPrice = 600;};
-                class vn_m63a_cdo {allowedSides[] = {"WEST"}; minLevel = 100; purchasePrice = 4000; rentalPrice = 800;};
-                class vn_m63a_lmg {allowedSides[] = {"WEST"}; minLevel = 135; purchasePrice = 5500; rentalPrice = 1100;};
-                class vn_m712 {allowedSides[] = {"EAST"}; minLevel = 32; purchasePrice = 750; rentalPrice = 150;};
-                class vn_m72 {allowedSides[] = {"WEST"}; minLevel = 70; purchasePrice = 3500; rentalPrice = 700;};
-                class vn_m79 {allowedSides[] = {"WEST", "EAST"}; minLevel = 45; purchasePrice = 2500; rentalPrice = 500;};
-                class vn_m9130 {allowedSides[] = {"EAST"}; minLevel = 32; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_mat49 {allowedSides[] = {"WEST"}; minLevel = 28; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_mat49_vc {allowedSides[] = {"EAST"}; minLevel = 28; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_mc10 {allowedSides[] = {"WEST"}; minLevel = 45; purchasePrice = 2500; rentalPrice = 500;};
-                class vn_mg42 {allowedSides[] = {"EAST"}; minLevel = 95; purchasePrice = 4500; rentalPrice = 900;};
-                class vn_mk1_udg {allowedSides[] = {"WEST"}; minLevel = 160; purchasePrice = 6000; rentalPrice = 1200;};
-                class vn_mk22 {allowedSides[] = {"WEST"}; minLevel = 85; purchasePrice = 3500; rentalPrice = 700;};
-                class vn_mp40 {allowedSides[] = {"EAST"}; minLevel = 18; purchasePrice = 1000; rentalPrice = 200;};
-                class vn_mpu {allowedSides[] = {"WEST"}; minLevel = 50; purchasePrice = 2500; rentalPrice = 500;};
-                class vn_mx991_m1911 {allowedSides[] = {"WEST"}; minLevel = 25; purchasePrice = 750; rentalPrice = 150;};
-                class vn_p38 {allowedSides[] = {"EAST"}; minLevel = 25; purchasePrice = 1250; rentalPrice = 250;};
-                class vn_p38s {allowedSides[] = {"WEST"}; minLevel = 6; purchasePrice = 500; rentalPrice = 100;};
-                class vn_pk {allowedSides[] = {"EAST"}; minLevel = 115; purchasePrice = 5000; rentalPrice = 1000;};
-                class vn_pm {allowedSides[] = {"EAST"}; minLevel = 1;};
-                class vn_ppk {allowedSides[] = {"EAST"}; minLevel = 8; purchasePrice = 500; rentalPrice = 100;};
-                class vn_pps43 {allowedSides[] = {"EAST"}; minLevel = 1;};
-                class vn_pps52 {allowedSides[] = {"EAST"}; minLevel = 18; purchasePrice = 1000; rentalPrice = 200;};
-                class vn_ppsh41 {allowedSides[] = {"EAST"}; minLevel = 22; purchasePrice = 1250; rentalPrice = 250;};
-                class vn_rpd {allowedSides[] = {"WEST", "EAST"}; minLevel = 70; purchasePrice = 3500; rentalPrice = 700;};
-                class vn_rpg2 {allowedSides[] = {"WEST", "EAST"}; minLevel = 55; purchasePrice = 3000; rentalPrice = 600;};
-                class vn_rpg7 {allowedSides[] = {"EAST"}; minLevel = 75; purchasePrice = 4000; rentalPrice = 800;};
-                class vn_sa7 {allowedSides[] = {"EAST"}; minLevel = 170; purchasePrice = 7000; rentalPrice = 1400;};
-                class vn_sa7b {allowedSides[] = {"EAST"}; minLevel = 210; purchasePrice = 8000; rentalPrice = 1600;};
-                class vn_sks {allowedSides[] = {"EAST"}; minLevel = 20; purchasePrice = 1000; rentalPrice = 200;};
-                class vn_sten {allowedSides[] = {"WEST"}; minLevel = 15; purchasePrice = 750; rentalPrice = 150;};
-                class vn_svd {allowedSides[] = {"EAST"}; minLevel = 110; purchasePrice = 4500; rentalPrice = 900;};
-                class vn_tt33 {allowedSides[] = {"EAST"}; minLevel = 5; purchasePrice = 500; rentalPrice = 100;};
-                class vn_type56 {allowedSides[] = {"WEST", "EAST"}; minLevel = 28; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_type64 {allowedSides[] = {"EAST"}; minLevel = 80; purchasePrice = 1250; rentalPrice = 250;};
+
+                class vn_hp
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 12;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 500;
+                    rentalPrice = 100;
+                };
+
+                class vn_izh54
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 25;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1500;
+                    rentalPrice = 300;
+                };
+
+                class vn_k50m
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 20;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1000;
+                    rentalPrice = 200;
+                };
+
+                class vn_k98k
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 1;
+                    masteryKillsRequired = 30;
+                };
+
+                class vn_kbkg
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 38;
+                    masteryKillsRequired = 90;
+                    purchasePrice = 2500;
+                    rentalPrice = 500;
+                };
+
+                class vn_l1a1_01
+                {
+                };
+
+                class vn_l2a1_01
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 65;
+                    masteryKillsRequired = 150;
+                    purchasePrice = 3500;
+                    rentalPrice = 700;
+                };
+
+                class vn_l2a3
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 22;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1250;
+                    rentalPrice = 250;
+                };
+
+                class vn_l34a1
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 70;
+                    masteryKillsRequired = 90;
+                    purchasePrice = 3000;
+                    rentalPrice = 600;
+                };
+
+                class vn_l4
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 80;
+                    masteryKillsRequired = 180;
+                    purchasePrice = 4000;
+                    rentalPrice = 800;
+                };
+
+                class vn_m10
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 8;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 500;
+                    rentalPrice = 100;
+                };
+
+                class vn_m127
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 25;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1000;
+                    rentalPrice = 200;
+                };
+
+                class vn_m14
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 40;
+                    masteryKillsRequired = 90;
+                    purchasePrice = 2000;
+                    rentalPrice = 400;
+                };
+
+                class vn_m14a1
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 58;
+                    masteryKillsRequired = 90;
+                    purchasePrice = 3000;
+                    rentalPrice = 600;
+                };
+
+                class vn_m16
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 35;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1750;
+                    rentalPrice = 350;
+                };
+
+                class vn_m16_usaf
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 45;
+                    masteryKillsRequired = 90;
+                    purchasePrice = 2000;
+                    rentalPrice = 400;
+                };
+
+                class vn_m1891
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 12;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 750;
+                    rentalPrice = 150;
+                };
+
+                class vn_m1895
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 12;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 500;
+                    rentalPrice = 100;
+                };
+
+                class vn_m1897
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 30;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1500;
+                    rentalPrice = 300;
+                };
+
+                class vn_m1903
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 1;
+                    masteryKillsRequired = 30;
+                };
+
+                class vn_m1911
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 1;
+                    masteryKillsRequired = 30;
+                };
+
+                class vn_m1918
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 40;
+                    masteryKillsRequired = 120;
+                    purchasePrice = 2500;
+                    rentalPrice = 500;
+                };
+
+                class vn_m1928_tommy
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 18;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 1000;
+                    rentalPrice = 200;
+                };
+
+                class vn_m1928a1_tommy
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 30;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1500;
+                    rentalPrice = 300;
+                };
+
+                class vn_m1_garand
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 18;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 1000;
+                    rentalPrice = 200;
+                };
+
+                class vn_m1a1_tommy
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 42;
+                    masteryKillsRequired = 90;
+                    purchasePrice = 2000;
+                    rentalPrice = 400;
+                };
+
+                class vn_m1carbine
+                {
+                    allowedSides[] = {"WEST", "EAST"};
+                    minLevel = 10;
+                    purchasePrice = 750;
+                    rentalPrice = 150;
+                };
+
+                class vn_m1carbine_shorty
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 90;
+                    masteryKillsRequired = 150;
+                    purchasePrice = 3000;
+                    rentalPrice = 600;
+                };
+
+                class vn_m20a1b1_01
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 180;
+                    masteryKillsRequired = 270;
+                    purchasePrice = 6500;
+                    rentalPrice = 1300;
+                };
+
+                class vn_m21
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 150;
+                    masteryKillsRequired = 210;
+                    purchasePrice = 6000;
+                    rentalPrice = 1200;
+                };
+
+                class vn_m2carbine
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 25;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1500;
+                    rentalPrice = 300;
+                };
+
+                class vn_m36
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 18;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 1000;
+                    rentalPrice = 200;
+                };
+
+                class vn_m38
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 15;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 750;
+                    rentalPrice = 150;
+                };
+
+                class vn_m3a1
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 1;
+                    masteryKillsRequired = 30;
+                };
+
+                class vn_m3carbine
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 175;
+                    masteryKillsRequired = 240;
+                    purchasePrice = 6500;
+                    rentalPrice = 1300;
+                };
+
+                class vn_m40a1
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 125;
+                    masteryKillsRequired = 180;
+                    purchasePrice = 5000;
+                    rentalPrice = 1000;
+                };
+
+                class vn_m45
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 30;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 1500;
+                    rentalPrice = 300;
+                };
+
+                class vn_m4956
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 35;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1750;
+                    rentalPrice = 350;
+                };
+
+                class vn_m60
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 120;
+                    masteryKillsRequired = 240;
+                    purchasePrice = 5000;
+                    rentalPrice = 1000;
+                };
+
+                class vn_m63a
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 65;
+                    masteryKillsRequired = 120;
+                    purchasePrice = 3000;
+                    rentalPrice = 600;
+                };
+
+                class vn_m63a_cdo
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 100;
+                    masteryKillsRequired = 180;
+                    purchasePrice = 4000;
+                    rentalPrice = 800;
+                };
+
+                class vn_m63a_lmg
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 135;
+                    masteryKillsRequired = 240;
+                    purchasePrice = 5500;
+                    rentalPrice = 1100;
+                };
+
+                class vn_m712
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 32;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 750;
+                    rentalPrice = 150;
+                };
+
+                class vn_m72
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 70;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 3500;
+                    rentalPrice = 700;
+                };
+
+                class vn_m79
+                {
+                    allowedSides[] = {"WEST", "EAST"};
+                    minLevel = 45;
+                    purchasePrice = 2500;
+                    rentalPrice = 500;
+                };
+
+                class vn_m9130
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 32;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 1500;
+                    rentalPrice = 300;
+                };
+
+                class vn_mat49
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 28;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1500;
+                    rentalPrice = 300;
+                };
+
+                class vn_mat49_vc
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 28;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1500;
+                    rentalPrice = 300;
+                };
+
+                class vn_mc10
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 45;
+                    masteryKillsRequired = 90;
+                    purchasePrice = 2500;
+                    rentalPrice = 500;
+                };
+
+                class vn_mg42
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 95;
+                    masteryKillsRequired = 180;
+                    purchasePrice = 4500;
+                    rentalPrice = 900;
+                };
+
+                class vn_mk1_udg
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 160;
+                    masteryKillsRequired = 240;
+                    purchasePrice = 6000;
+                    rentalPrice = 1200;
+                };
+
+                class vn_mk22
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 85;
+                    masteryKillsRequired = 150;
+                    purchasePrice = 3500;
+                    rentalPrice = 700;
+                };
+
+                class vn_mp40
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 18;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 1000;
+                    rentalPrice = 200;
+                };
+
+                class vn_mpu
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 50;
+                    masteryKillsRequired = 90;
+                    purchasePrice = 2500;
+                    rentalPrice = 500;
+                };
+
+                class vn_mx991_m1911
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 25;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 750;
+                    rentalPrice = 150;
+                };
+
+                class vn_p38
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 25;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 1250;
+                    rentalPrice = 250;
+                };
+
+                class vn_p38s
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 6;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 500;
+                    rentalPrice = 100;
+                };
+
+                class vn_pk
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 115;
+                    masteryKillsRequired = 210;
+                    purchasePrice = 5000;
+                    rentalPrice = 1000;
+                };
+
+                class vn_pm
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 1;
+                    masteryKillsRequired = 30;
+                };
+
+                class vn_ppk
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 8;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 500;
+                    rentalPrice = 100;
+                };
+
+                class vn_pps43
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 1;
+                    masteryKillsRequired = 30;
+                };
+
+                class vn_pps52
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 18;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 1000;
+                    rentalPrice = 200;
+                };
+
+                class vn_ppsh41
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 22;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1250;
+                    rentalPrice = 250;
+                };
+
+                class vn_rpd
+                {
+                    allowedSides[] = {"WEST", "EAST"};
+                    minLevel = 70;
+                    purchasePrice = 3500;
+                    rentalPrice = 700;
+                };
+
+                class vn_rpg2
+                {
+                    allowedSides[] = {"WEST", "EAST"};
+                    minLevel = 55;
+                    purchasePrice = 3000;
+                    rentalPrice = 600;
+                };
+
+                class vn_rpg7
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 75;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 4000;
+                    rentalPrice = 800;
+                };
+
+                class vn_sa7
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 170;
+                    masteryKillsRequired = 180;
+                    purchasePrice = 7000;
+                    rentalPrice = 1400;
+                };
+
+                class vn_sa7b
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 210;
+                    masteryKillsRequired = 210;
+                    purchasePrice = 8000;
+                    rentalPrice = 1600;
+                };
+
+                class vn_sks
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 20;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1000;
+                    rentalPrice = 200;
+                };
+
+                class vn_sten
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 15;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 750;
+                    rentalPrice = 150;
+                };
+
+                class vn_svd
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 110;
+                    masteryKillsRequired = 150;
+                    purchasePrice = 4500;
+                    rentalPrice = 900;
+                };
+
+                class vn_tt33
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 5;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 500;
+                    rentalPrice = 100;
+                };
+
+                class vn_type56
+                {
+                    allowedSides[] = {"WEST", "EAST"};
+                    minLevel = 28;
+                    purchasePrice = 1500;
+                    rentalPrice = 300;
+                };
+
+                class vn_type64
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 80;
+                    masteryKillsRequired = 150;
+                    purchasePrice = 1250;
+                    rentalPrice = 250;
+                };
+
                 // Intentional KOTH balance override: the factual catalogue
                 // reports WEST provenance, while gameplay assigns this
                 // integral-suppressed Chinese SMG to EAST for capability parity.
-                class vn_type64_smg {allowedSides[] = {"EAST"}; minLevel = 70; purchasePrice = 3000; rentalPrice = 600;};
-                class vn_vz54 {allowedSides[] = {"EAST"}; minLevel = 75; purchasePrice = 3500; rentalPrice = 700;};
-                class vn_vz61 {allowedSides[] = {"EAST"}; minLevel = 35; purchasePrice = 1000; rentalPrice = 200;};
-                class vn_welrod {allowedSides[] = {"WEST"}; minLevel = 95; purchasePrice = 2000; rentalPrice = 400;};
-                class vn_xm16e1 {allowedSides[] = {"WEST"}; minLevel = 28; purchasePrice = 1500; rentalPrice = 300;};
-                class vn_xm177 {allowedSides[] = {"WEST"}; minLevel = 60; purchasePrice = 2500; rentalPrice = 500;};
-                class vn_xm177e1 {allowedSides[] = {"WEST"}; minLevel = 50; purchasePrice = 2250; rentalPrice = 450;};
-            };
+                class vn_type64_smg
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 70;
+                    masteryKillsRequired = 120;
+                    purchasePrice = 3000;
+                    rentalPrice = 600;
+                };
 
+                class vn_vz54
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 75;
+                    masteryKillsRequired = 90;
+                    purchasePrice = 3500;
+                    rentalPrice = 700;
+                };
+
+                class vn_vz61
+                {
+                    allowedSides[] = {"EAST"};
+                    crossSideAllowed = 1;
+                    minLevel = 35;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1000;
+                    rentalPrice = 200;
+                };
+
+                class vn_welrod
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 95;
+                    masteryKillsRequired = 120;
+                    purchasePrice = 2000;
+                    rentalPrice = 400;
+                };
+
+                class vn_xm16e1
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 28;
+                    masteryKillsRequired = 60;
+                    purchasePrice = 1500;
+                    rentalPrice = 300;
+                };
+
+                class vn_xm177
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 60;
+                    masteryKillsRequired = 120;
+                    purchasePrice = 2500;
+                    rentalPrice = 500;
+                };
+
+                class vn_xm177e1
+                {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 50;
+                    masteryKillsRequired = 90;
+                    purchasePrice = 2250;
+                    rentalPrice = 450;
+                };
+
+            };
             class Attachments
             {
                 class vn_b_camo_k98k {minLevel = 6;};
