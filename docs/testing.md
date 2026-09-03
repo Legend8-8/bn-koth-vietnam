@@ -819,7 +819,7 @@ authoritative `weaponKills` values and verify:
 Also exercise every deployed-menu return path: selector, configure,
 magazine/attachment, cargo/container, saved kits, Store, Perks and Progression.
 Each visible `BACK` control must retain its existing destination while matching
-the `EXIT BASE` control's size and bottom alignment at the opposite (bottom-right)
+the `EXIT MENU` control's size and bottom alignment at the opposite (bottom-right)
 edge. Repeatedly switch between those views and confirm only one `BACK` control
 is visible, no control overlaps it, and `ESC`/menu reopen behaviour is unchanged.
 
@@ -847,7 +847,7 @@ between legitimate zero values and unavailable data. Runtime menu acceptance
 must additionally verify fresh-entry defaults (`KILLS`, `ALL TIME`, `TOP`),
 clickable metric cards, all period/mode controls, local-row highlighting,
 loading/empty/unavailable states, control cleanup across every deployed-menu
-route, and the fixed `EXIT BASE` left / `BACK` right layout.
+route, and the fixed `EXIT MENU` left / `BACK` right layout.
 
 Live persisted totals and leaderboard windows remain dedicated-server database
 acceptance and must not be claimed by the focused UI checks.
