@@ -55,7 +55,7 @@ class BN_KOTH_RscEscMenuKeybindings
             y = safeZoneY + safeZoneH * 0.75;
             w = safeZoneW * 0.12;
             h = safeZoneH * 0.04;
-            action = "[_this select 0] call bn_koth_fnc_escMenu_keybinds_reset;";
+            onButtonClick = "_this call bn_koth_fnc_escMenu_keybinds_reset;";
         };
 
         class Confirm: BN_KOTH_RscButton
