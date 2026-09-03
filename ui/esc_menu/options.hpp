@@ -160,7 +160,7 @@ class BN_KOTH_RscEscMenuOptions
             y = safeZoneY + safeZoneH * 0.88;
             w = safeZoneW * 0.12;
             h = safeZoneH * 0.04;
-            action = "closeDialog 3;";
+            onButtonClick = "_this call bn_koth_fnc_escMenu_options_reset;";
         };
 
         class Confirm: BN_KOTH_RscButton
