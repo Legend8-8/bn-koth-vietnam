@@ -835,6 +835,12 @@ Run the focused contract/formatting checks from the debug console:
 call compile preprocessFileLineNumbers "functions\ui\menu\test_stats.sqf"
 ```
 
+Run the server-side single-row career-summary projection checks separately:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\career\test_careerSummary.sqf"
+```
+
 Expected result: `[]`. These checks cover the semantic metric/period/mode
 allowlists, bounded limits, K/D safety, duration formatting, and the distinction
 between legitimate zero values and unavailable data. Runtime menu acceptance
