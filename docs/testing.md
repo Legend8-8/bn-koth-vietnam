@@ -826,3 +826,22 @@ is visible, no control overlaps it, and `ESC`/menu reopen behaviour is unchanged
 No dedicated-server acceptance is claimed by this presentation test. A normal
 dedicated progression award should still be observed on a client to confirm
 the existing bounded projection refreshes the open page end to end.
+
+25. Stats And Leaderboard Page
+
+Run the focused contract/formatting checks from the debug console:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\ui\menu\test_stats.sqf"
+```
+
+Expected result: `[]`. These checks cover the semantic metric/period/mode
+allowlists, bounded limits, K/D safety, duration formatting, and the distinction
+between legitimate zero values and unavailable data. Runtime menu acceptance
+must additionally verify fresh-entry defaults (`KILLS`, `ALL TIME`, `TOP`),
+clickable metric cards, all period/mode controls, local-row highlighting,
+loading/empty/unavailable states, control cleanup across every deployed-menu
+route, and the fixed `EXIT BASE` left / `BACK` right layout.
+
+Live persisted totals and leaderboard windows remain dedicated-server database
+acceptance and must not be claimed by the focused UI checks.
