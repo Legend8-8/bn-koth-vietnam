@@ -45,6 +45,10 @@ _record set ["lastCareerStatsRequestAt", _now];
 _records set [_uid, _record];
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
+// Summary failure is independent of the leaderboard: either half may remain
+// available without fabricating or suppressing the other half's data.
+private _summary = [_uid] call bn_koth_fnc_career_querySummary;
+
 // AROUND's contract treats limit as a radius. Keep the returned neighbourhood
 // within the same ten-row UI bound while retaining the local row.
 private _queryLimit = if (_mode isEqualTo "MY_POSITION") then {floor (((_valid get "limit") - 1) / 2) max 1} else {_valid get "limit"};
@@ -79,5 +83,6 @@ if (_mode isEqualTo "MY_POSITION") then {
     ["requestId", _requestId],
     ["metric", _valid get "metric"], ["period", _valid get "period"], ["mode", _mode],
     ["rows", _safeRows], ["localRank", _localRank], ["rankedCount", _rankedCount],
-    ["careerAvailable", false], ["career", createHashMap]
+    ["careerAvailable", _summary getOrDefault ["success", false]],
+    ["career", _summary getOrDefault ["stats", createHashMap]]
 ]] call _reply;

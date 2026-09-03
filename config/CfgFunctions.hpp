@@ -181,8 +181,10 @@ class CfgFunctions
             class career_recordRound {file = "functions\career\fn_recordRound.sqf";};
             class career_validateLeaderboardRequest {file = "functions\career\fn_validateLeaderboardRequest.sqf";};
             class career_queryLeaderboard {file = "functions\career\fn_queryLeaderboard.sqf";};
+            class career_querySummary {file = "functions\career\fn_querySummary.sqf";};
             class career_requestStats {file = "functions\career\fn_requestStats.sqf";};
             class career_test {file = "functions\career\test_career.sqf";};
+            class career_testSummary {file = "functions\career\test_careerSummary.sqf";};
         };
 
         class respawn
