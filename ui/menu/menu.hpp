@@ -1520,7 +1520,7 @@ class BN_KOTH_RscMenu
         class ExitButton: BN_KOTH_Menu_ExitButton
         {
             idc = BN_KOTH_IDC_MENU_EXIT;
-            text = "EXIT BASE";
+            text = "EXIT MENU";
             x = BN_KOTH_MENU_X + safeZoneW * 0.012;
             y = BN_KOTH_MENU_BOTTOM_Y + safeZoneH * 0.014;
             w = safeZoneW * 0.12;
