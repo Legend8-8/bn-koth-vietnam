@@ -35,6 +35,18 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_career_requestStats
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_menu_receiveStats
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_progression_perks_request
         {
             allowedTargets = 2;

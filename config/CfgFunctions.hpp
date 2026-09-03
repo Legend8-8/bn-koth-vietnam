@@ -181,6 +181,7 @@ class CfgFunctions
             class career_recordRound {file = "functions\career\fn_recordRound.sqf";};
             class career_validateLeaderboardRequest {file = "functions\career\fn_validateLeaderboardRequest.sqf";};
             class career_queryLeaderboard {file = "functions\career\fn_queryLeaderboard.sqf";};
+            class career_requestStats {file = "functions\career\fn_requestStats.sqf";};
             class career_test {file = "functions\career\test_career.sqf";};
         };
 
@@ -366,6 +367,11 @@ class CfgFunctions
             class menu_refreshStore {file = "functions\ui\menu\fn_menu_refreshStore.sqf";};
             class menu_refreshPerks {file = "functions\ui\menu\fn_menu_refreshPerks.sqf";};
             class menu_refreshProgression {file = "functions\ui\menu\fn_menu_refreshProgression.sqf";};
+            class menu_refreshStats {file = "functions\ui\menu\fn_menu_refreshStats.sqf";};
+            class menu_requestStats {file = "functions\ui\menu\fn_menu_requestStats.sqf";};
+            class menu_receiveStats {file = "functions\ui\menu\fn_menu_receiveStats.sqf";};
+            class menu_formatCareerValue {file = "functions\ui\menu\fn_menu_formatCareerValue.sqf";};
+            class menu_testStats {file = "functions\ui\menu\test_stats.sqf";};
             class menu_projectMasteryEntries {file = "functions\ui\menu\fn_menu_projectMasteryEntries.sqf";};
             class menu_requestPerk {file = "functions\ui\menu\fn_menu_requestPerk.sqf";};
             class menu_buildStoreWeaponEntries {file = "functions\ui\menu\fn_menu_buildStoreWeaponEntries.sqf";};

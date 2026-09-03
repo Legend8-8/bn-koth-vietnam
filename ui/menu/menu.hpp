@@ -1368,6 +1368,112 @@ class BN_KOTH_RscMenu
             h = safeZoneH * 0.028;
         };
 
+        class StatsTitle: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_STATS_TITLE;
+            text = "STATS";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.016;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.014;
+            w = BN_KOTH_MENU_W * 0.30;
+            h = safeZoneH * 0.040;
+            sizeEx = safeZoneH * 0.030;
+        };
+        class StatsSubtitle: BN_KOTH_Menu_Subtitle
+        {
+            idc = BN_KOTH_IDC_MENU_STATS_SUBTITLE;
+            text = "YOUR CAREER & COMPETITIVE RANKINGS";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.016;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.052;
+            w = BN_KOTH_MENU_W * 0.45;
+            h = safeZoneH * 0.024;
+        };
+        class StatsBack: BN_KOTH_Menu_BackButton
+        {
+            idc = BN_KOTH_IDC_MENU_STATS_BACK;
+            action = "['LOADOUT'] call bn_koth_fnc_menu_refresh;";
+        };
+        class StatsCareerBackground: BN_KOTH_Menu_Background
+        {
+            idc = BN_KOTH_IDC_MENU_STATS_CAREER_BG;
+            x = BN_KOTH_MENU_X + safeZoneW * 0.016;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.085;
+            w = BN_KOTH_MENU_W * 0.47;
+            h = BN_KOTH_MENU_MAIN_H - safeZoneH * 0.105;
+            colorBackground[] = {0.055,0.055,0.048,0.98};
+        };
+        class StatsCareerTitle: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_STATS_CAREER_TITLE;
+            text = "YOUR CAREER";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.032;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.102;
+            w = BN_KOTH_MENU_W * 0.20;
+            h = safeZoneH * 0.032;
+            sizeEx = safeZoneH * 0.024;
+        };
+        class StatsRank: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_MENU_STATS_RANK;
+            x = BN_KOTH_MENU_X + safeZoneW * 0.032;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.142;
+            w = safeZoneW * 0.050;
+            h = safeZoneH * 0.072;
+            style = 48;
+        };
+        class StatsLevel: BN_KOTH_Menu_Title
+        {
+            idc = BN_KOTH_IDC_MENU_STATS_LEVEL;
+            text = "LEVEL 1";
+            x = BN_KOTH_MENU_X + safeZoneW * 0.094;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.145;
+            w = safeZoneW * 0.14;
+            h = safeZoneH * 0.030;
+            sizeEx = safeZoneH * 0.025;
+        };
+        class StatsXp: BN_KOTH_Menu_Subtitle {idc=BN_KOTH_IDC_MENU_STATS_XP; text="0 / 0 XP"; x=BN_KOTH_MENU_X + safeZoneW * 0.094; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.178; w=safeZoneW * 0.16; h=safeZoneH * 0.024;};
+        class StatsCash: BN_KOTH_Menu_Title {idc=BN_KOTH_IDC_MENU_STATS_CASH; text="$0"; style=1; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.33; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.150; w=BN_KOTH_MENU_W * 0.13; h=safeZoneH * 0.040; sizeEx=safeZoneH * 0.027; colorText[]={0.90,0.72,0.28,1};};
+        class StatsCareerState: BN_KOTH_RscStructuredText {idc=BN_KOTH_IDC_MENU_STATS_CAREER_STATE; x=BN_KOTH_MENU_X + safeZoneW * 0.032; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.215; w=BN_KOTH_MENU_W * 0.435; h=safeZoneH * 0.060; text="";};
+        class StatsTile: BN_KOTH_RscStructuredText
+        {
+            idc = BN_KOTH_IDC_MENU_STATS_TILE_1;
+            x = BN_KOTH_MENU_X + safeZoneW * 0.032;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.285;
+            w = BN_KOTH_MENU_W * 0.135;
+            h = safeZoneH * 0.105;
+            colorBackground[] = {0.085,0.082,0.068,0.98};
+            text = "";
+        };
+        class StatsTile2: StatsTile {idc=BN_KOTH_IDC_MENU_STATS_TILE_2; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.175;};
+        class StatsTile3: StatsTile {idc=BN_KOTH_IDC_MENU_STATS_TILE_3; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.318;};
+        class StatsTile4: StatsTile {idc=BN_KOTH_IDC_MENU_STATS_TILE_4; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.400;};
+        class StatsTile5: StatsTile2 {idc=BN_KOTH_IDC_MENU_STATS_TILE_5; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.400;};
+        class StatsTile6: StatsTile3 {idc=BN_KOTH_IDC_MENU_STATS_TILE_6; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.400;};
+        class StatsTile7: StatsTile {idc=BN_KOTH_IDC_MENU_STATS_TILE_7; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.515;};
+        class StatsTile8: StatsTile2 {idc=BN_KOTH_IDC_MENU_STATS_TILE_8; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.515;};
+        class StatsTile9: StatsTile3 {idc=BN_KOTH_IDC_MENU_STATS_TILE_9; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.515;};
+
+        class StatsLeaderBackground: StatsCareerBackground {idc=BN_KOTH_IDC_MENU_STATS_LEADER_BG; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.505; w=BN_KOTH_MENU_W * 0.479;};
+        class StatsLeaderTitle: StatsCareerTitle {idc=BN_KOTH_IDC_MENU_STATS_LEADER_TITLE; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.522; w=BN_KOTH_MENU_W * 0.44; text="LEADERBOARD — KILLS";};
+        class StatsPeriod24: BN_KOTH_Menu_ActionButton {idc=BN_KOTH_IDC_MENU_STATS_PERIOD_24H; text="24 HOURS"; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.522; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.145; w=BN_KOTH_MENU_W * 0.10; h=safeZoneH * 0.036; action="uiNamespace setVariable ['BN_KOTH_menuStatsPeriod',1]; [] call bn_koth_fnc_menu_requestStats;";};
+        class StatsPeriod7: StatsPeriod24 {idc=BN_KOTH_IDC_MENU_STATS_PERIOD_7D; text="7 DAYS"; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.628; action="uiNamespace setVariable ['BN_KOTH_menuStatsPeriod',2]; [] call bn_koth_fnc_menu_requestStats;";};
+        class StatsPeriod30: StatsPeriod24 {idc=BN_KOTH_IDC_MENU_STATS_PERIOD_30D; text="30 DAYS"; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.734; action="uiNamespace setVariable ['BN_KOTH_menuStatsPeriod',3]; [] call bn_koth_fnc_menu_requestStats;";};
+        class StatsPeriodAll: StatsPeriod24 {idc=BN_KOTH_IDC_MENU_STATS_PERIOD_ALL; text="ALL TIME"; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.840; action="uiNamespace setVariable ['BN_KOTH_menuStatsPeriod',0]; [] call bn_koth_fnc_menu_requestStats;";};
+        class StatsModeTop: StatsPeriod24 {idc=BN_KOTH_IDC_MENU_STATS_MODE_TOP; text="TOP"; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.522; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.193; w=BN_KOTH_MENU_W * 0.205; action="uiNamespace setVariable ['BN_KOTH_menuStatsMode','TOP']; [] call bn_koth_fnc_menu_requestStats;";};
+        class StatsModeAround: StatsModeTop {idc=BN_KOTH_IDC_MENU_STATS_MODE_AROUND; text="MY POSITION"; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.735; action="uiNamespace setVariable ['BN_KOTH_menuStatsMode','MY_POSITION']; [] call bn_koth_fnc_menu_requestStats;";};
+        class StatsTableHeader: BN_KOTH_Menu_Label {idc=BN_KOTH_IDC_MENU_STATS_TABLE_HEADER; text="RANK       PLAYER                                      VALUE"; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.522; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.245; w=BN_KOTH_MENU_W * 0.44; h=safeZoneH * 0.025; colorText[]={0.76,0.58,0.20,1};};
+        class StatsRow: BN_KOTH_RscStructuredText {idc=BN_KOTH_IDC_MENU_STATS_ROW_1; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.522; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.275; w=BN_KOTH_MENU_W * 0.44; h=safeZoneH * 0.041; colorBackground[]={0.075,0.075,0.068,0.86}; text="";};
+        class StatsRow2: StatsRow {idc=BN_KOTH_IDC_MENU_STATS_ROW_2; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.318; colorBackground[]={0.055,0.055,0.05,0.86};};
+        class StatsRow3: StatsRow {idc=BN_KOTH_IDC_MENU_STATS_ROW_3; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.361;};
+        class StatsRow4: StatsRow2 {idc=BN_KOTH_IDC_MENU_STATS_ROW_4; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.404;};
+        class StatsRow5: StatsRow {idc=BN_KOTH_IDC_MENU_STATS_ROW_5; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.447;};
+        class StatsRow6: StatsRow2 {idc=BN_KOTH_IDC_MENU_STATS_ROW_6; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.490;};
+        class StatsRow7: StatsRow {idc=BN_KOTH_IDC_MENU_STATS_ROW_7; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.533;};
+        class StatsRow8: StatsRow2 {idc=BN_KOTH_IDC_MENU_STATS_ROW_8; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.576;};
+        class StatsRow9: StatsRow {idc=BN_KOTH_IDC_MENU_STATS_ROW_9; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.619;};
+        class StatsRow10: StatsRow2 {idc=BN_KOTH_IDC_MENU_STATS_ROW_10; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.662;};
+        class StatsLeaderState: BN_KOTH_RscStructuredText {idc=BN_KOTH_IDC_MENU_STATS_LEADER_STATE; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.555; y=BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.350; w=BN_KOTH_MENU_W * 0.37; h=safeZoneH * 0.14; text="";};
+        class StatsPosition: BN_KOTH_Menu_Subtitle {idc=BN_KOTH_IDC_MENU_STATS_POSITION; text=""; style=2; x=BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.60; y=BN_KOTH_MENU_MAIN_Y + BN_KOTH_MENU_MAIN_H - safeZoneH * 0.048; w=BN_KOTH_MENU_W * 0.28; h=safeZoneH * 0.026; colorText[]={0.90,0.72,0.28,1};};
+
         class NavLoadout: BN_KOTH_Menu_NavButton
         {
             idc = BN_KOTH_IDC_MENU_NAV_LOADOUT;

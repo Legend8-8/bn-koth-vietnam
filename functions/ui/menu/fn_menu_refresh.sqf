@@ -58,6 +58,14 @@ if !(_requestedPage isEqualTo "") then {
         uiNamespace setVariable ["BN_KOTH_menuActivePage", _activePage];
     };
 };
+if (_previousPage isEqualTo "STATS" && {!(_activePage isEqualTo "STATS")}) then {
+    private _deferredScript = uiNamespace getVariable ["BN_KOTH_menuStatsDeferredScript", scriptNull];
+    if !(scriptDone _deferredScript) then {terminate _deferredScript};
+    uiNamespace setVariable ["BN_KOTH_menuStatsLifecycle", (uiNamespace getVariable ["BN_KOTH_menuStatsLifecycle", 0]) + 1];
+    uiNamespace setVariable ["BN_KOTH_menuStatsDeferred", false];
+    uiNamespace setVariable ["BN_KOTH_menuStatsDeferredScript", scriptNull];
+    uiNamespace setVariable ["BN_KOTH_menuStatsLatestRequestId", -1];
+};
 
 private _ctrlServer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_SERVER;
 private _ctrlHeaderPlayer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_PLAYER;
@@ -427,6 +435,24 @@ private _masteryViewControls = [
 ];
 {_x ctrlShow false} forEach _masteryViewControls;
 
+private _statsViewControls = [];
+{_statsViewControls pushBack (_display displayCtrl _x)} forEach [
+    BN_KOTH_IDC_MENU_STATS_TITLE, BN_KOTH_IDC_MENU_STATS_SUBTITLE, BN_KOTH_IDC_MENU_STATS_BACK,
+    BN_KOTH_IDC_MENU_STATS_CAREER_BG, BN_KOTH_IDC_MENU_STATS_CAREER_TITLE, BN_KOTH_IDC_MENU_STATS_RANK,
+    BN_KOTH_IDC_MENU_STATS_LEVEL, BN_KOTH_IDC_MENU_STATS_XP, BN_KOTH_IDC_MENU_STATS_CASH, BN_KOTH_IDC_MENU_STATS_CAREER_STATE,
+    BN_KOTH_IDC_MENU_STATS_TILE_1, BN_KOTH_IDC_MENU_STATS_TILE_2, BN_KOTH_IDC_MENU_STATS_TILE_3,
+    BN_KOTH_IDC_MENU_STATS_TILE_4, BN_KOTH_IDC_MENU_STATS_TILE_5, BN_KOTH_IDC_MENU_STATS_TILE_6,
+    BN_KOTH_IDC_MENU_STATS_TILE_7, BN_KOTH_IDC_MENU_STATS_TILE_8, BN_KOTH_IDC_MENU_STATS_TILE_9,
+    BN_KOTH_IDC_MENU_STATS_LEADER_BG, BN_KOTH_IDC_MENU_STATS_LEADER_TITLE,
+    BN_KOTH_IDC_MENU_STATS_PERIOD_24H, BN_KOTH_IDC_MENU_STATS_PERIOD_7D, BN_KOTH_IDC_MENU_STATS_PERIOD_30D, BN_KOTH_IDC_MENU_STATS_PERIOD_ALL,
+    BN_KOTH_IDC_MENU_STATS_MODE_TOP, BN_KOTH_IDC_MENU_STATS_MODE_AROUND, BN_KOTH_IDC_MENU_STATS_TABLE_HEADER,
+    BN_KOTH_IDC_MENU_STATS_ROW_1, BN_KOTH_IDC_MENU_STATS_ROW_2, BN_KOTH_IDC_MENU_STATS_ROW_3,
+    BN_KOTH_IDC_MENU_STATS_ROW_4, BN_KOTH_IDC_MENU_STATS_ROW_5, BN_KOTH_IDC_MENU_STATS_ROW_6,
+    BN_KOTH_IDC_MENU_STATS_ROW_7, BN_KOTH_IDC_MENU_STATS_ROW_8, BN_KOTH_IDC_MENU_STATS_ROW_9,
+    BN_KOTH_IDC_MENU_STATS_ROW_10, BN_KOTH_IDC_MENU_STATS_LEADER_STATE, BN_KOTH_IDC_MENU_STATS_POSITION
+];
+{_x ctrlShow false} forEach _statsViewControls;
+
 private _operatorControls = [
     _ctrlBgLeft,
     _ctrlOperatorTitle,
@@ -645,6 +671,31 @@ private _showProgressionView = {
     {_x ctrlShow true} forEach _masteryViewControls;
 };
 
+private _showStatsView = {
+    private _menuX = safeZoneX + safeZoneW * 0.02;
+    private _menuY = safeZoneY + safeZoneH * 0.03;
+    private _menuW = safeZoneW * 0.96;
+    private _menuH = safeZoneH * 0.94;
+    private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
+    private _mainH = _menuH * 0.78;
+    _ctrlBrowserWorkspace ctrlSetPosition [_menuX, _mainY, _menuW, _mainH];
+    _ctrlBrowserWorkspace ctrlCommit 0;
+    {_x ctrlShow false} forEach _operatorControls;
+    _ctrlBrowserWorkspace ctrlShow true;
+    {_x ctrlShow false} forEach _mainViewControls;
+    {_x ctrlShow false} forEach _selectorViewControls;
+    {_x ctrlShow false} forEach _browserViewControls;
+    {_x ctrlShow false} forEach _browserCardControls;
+    {_x ctrlShow false} forEach _configureViewControls;
+    {_x ctrlShow false} forEach _cargoBrowserControls;
+    {_x ctrlShow false} forEach _kitManagerControls;
+    {_x ctrlShow false} forEach _navControls;
+    {_x ctrlShow false} forEach _storeViewControls;
+    {_x ctrlShow false} forEach _perkViewControls;
+    {_x ctrlShow false} forEach _masteryViewControls;
+    {_x ctrlShow true} forEach _statsViewControls;
+};
+
 if !(_activePage isEqualTo "LOADOUT_ATTACHMENTS") then {
     uiNamespace setVariable ["BN_KOTH_menuAttachmentSlotFilter", ""];
 };
@@ -684,6 +735,23 @@ if (_activePage isEqualTo "PROGRESSION") exitWith {
     };
     call _showProgressionView;
     [_display] call bn_koth_fnc_menu_refreshProgression;
+};
+
+if (_activePage isEqualTo "STATS") exitWith {
+    if !(_previousPage isEqualTo "STATS") then {
+        uiNamespace setVariable ["BN_KOTH_menuStatsLifecycle", (uiNamespace getVariable ["BN_KOTH_menuStatsLifecycle", 0]) + 1];
+        uiNamespace setVariable ["BN_KOTH_menuStatsDeferred", false];
+        uiNamespace setVariable ["BN_KOTH_menuStatsLastRequest", -100];
+        uiNamespace setVariable ["BN_KOTH_menuStatsLatestRequestId", -1];
+        uiNamespace setVariable ["BN_KOTH_menuStatsMetric", 1];
+        uiNamespace setVariable ["BN_KOTH_menuStatsPeriod", 0];
+        uiNamespace setVariable ["BN_KOTH_menuStatsMode", "TOP"];
+        uiNamespace setVariable ["BN_KOTH_menuStatsResponse", createHashMap];
+        uiNamespace setVariable ["BN_KOTH_menuStatsLoading", true];
+    };
+    call _showStatsView;
+    [_display] call bn_koth_fnc_menu_refreshStats;
+    if !(_previousPage isEqualTo "STATS") then {[] call bn_koth_fnc_menu_requestStats};
 };
 
 if !(_activePage in _loadoutPages) exitWith {
