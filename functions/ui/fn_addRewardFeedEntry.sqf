@@ -1,8 +1,8 @@
 /*
     File: fn_addRewardFeedEntry.sqf
     Author: Tylervip
-    Description: Renders one reward feed entry above the main HUD, showing
-        XP or cash gains with their source reason label. Presentation only;
+    Description: Renders one reward feed entry to the left of the main HUD,
+        showing XP or cash gains with their source reason label. Presentation only;
         authoritative award amounts are issued elsewhere.
     Execution: Client
     Parameters:
@@ -32,7 +32,7 @@ if !(_type in ["xp", "cash"]) exitWith {};
 #define BN_KOTH_RF_ENTRY_H     0.020
 #define BN_KOTH_RF_SPACING     0.0015
 #define BN_KOTH_RF_MARGIN      0.012
-#define BN_KOTH_RF_BOTTOM_GAP  0.008
+#define BN_KOTH_RF_BOTTOM_GAP  0.025
 
 private _display = uiNamespace getVariable ["BN_KOTH_rewardFeedDisplay", displayNull];
 if (isNull _display) then {
@@ -75,8 +75,8 @@ private _hudY = safeZoneY + safeZoneH - _hudH - (safeZoneH * 0.025);
 
 private _w = BN_KOTH_RF_ENTRY_W * safeZoneW;
 private _h = BN_KOTH_RF_ENTRY_H * safeZoneH;
-private _posX = _hudX + _hudW - _w;
-private _baseY = _hudY - (BN_KOTH_RF_BOTTOM_GAP * safeZoneH) - _h;
+private _posX = _hudX - _w - (BN_KOTH_RF_MARGIN * safeZoneW);
+private _baseY = (safeZoneY + safeZoneH) - (BN_KOTH_RF_BOTTOM_GAP * safeZoneH) - _h;
 
 private _fncReposition = {
     params ["_list", "_baseY", "_posX", "_w", "_h"];
