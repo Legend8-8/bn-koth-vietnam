@@ -11,3 +11,5 @@ class RscTitles
     #include "hud\rewardfeed.hpp"
     #include "hud\killfeed.hpp"
 };
+
+#include "build\build.hpp"

@@ -16,6 +16,7 @@
 #include "config\persistence.hpp"
 #include "config\career.hpp"
 #include "config\traversal.hpp"
+#include "config\build.hpp"
 #include "config\esc_menu.hpp"
 #include "ui\ui.hpp"
 #include "config\CfgFunctions.hpp"

@@ -37,6 +37,18 @@ class CfgBnKothEscMenuKeybinds
         displayName = "Spot Enemy";
         access = 1;
     };
+
+    class bn_koth_build_open
+    {
+        defaultKey = DIK_N;
+        shift = "false";
+        ctrl = "false";
+        alt = "false";
+        down = 1;
+        function = "bn_koth_fnc_build_openMenu";
+        displayName = "Open Build Menu";
+        access = 1;
+    };
 };
 
 class CfgBnKothEscMenuOptions
