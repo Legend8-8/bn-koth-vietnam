@@ -82,8 +82,8 @@ private _earplugsTexture = if (_earplugsEnabled) then {
     ""
 };
 
-private _spottedUntil = if (!isNull player) then {player getVariable ["BN_KOTH_spottedUntil", -1]} else {-1};
-private _spottedBySide = if (!isNull player) then {player getVariable ["BN_KOTH_spottedBySide", sideUnknown]} else {sideUnknown};
+private _spottedUntil = if (!isNull player) then {player getVariable ["BN_KOTH_spottedWarningUntil", -1]} else {-1};
+private _spottedBySide = if (!isNull player) then {player getVariable ["BN_KOTH_spottedWarningBySide", sideUnknown]} else {sideUnknown};
 private _playerSpotted = !isNull player
     && {alive player}
     && {time < _spottedUntil}

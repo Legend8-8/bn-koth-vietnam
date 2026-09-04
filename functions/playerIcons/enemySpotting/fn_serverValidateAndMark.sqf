@@ -22,6 +22,8 @@ if (!alive _requester) exitWith {false};
 private _requesterUid = getPlayerUID _requester;
 if (_requesterUid isEqualTo "") exitWith {false};
 
+private _silentSpot = [_requesterUid, "cloak"] call bn_koth_fnc_progression_perks_isActive;
+
 private _playerAssignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
 if !(_playerAssignments isEqualType createHashMap) then {
     _playerAssignments = createHashMap;
@@ -79,6 +81,10 @@ if (_requester distance2D _contextDistance > _maxDistance) exitWith {false};
     _spotMap set [_targetUid, [_expireTime, _requesterUid, _requesterSide]];
     _targetUnit setVariable ["BN_KOTH_spottedUntil", _expireTime, true];
     _targetUnit setVariable ["BN_KOTH_spottedBySide", _requesterSide, true];
+    if (!_silentSpot) then {
+        _targetUnit setVariable ["BN_KOTH_spottedWarningUntil", _expireTime, true];
+        _targetUnit setVariable ["BN_KOTH_spottedWarningBySide", _requesterSide, true];
+    };
 } forEach _targets;
 
 missionNamespace setVariable ["BN_KOTH_enemySpots", _spotMap];
