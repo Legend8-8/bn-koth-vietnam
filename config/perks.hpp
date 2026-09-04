@@ -22,6 +22,16 @@ class CfgBnKothPerks
             restrictionMessage = "Activate the Suppressor perk before applying a managed loadout containing suppressors.";
         };
 
+        class cloak
+        {
+            id = "cloak";
+            displayName = "Cloak";
+            description = "Enemies are not notified when you successfully spot them.";
+            purchaseCost = 1;
+            purchasable = 1;
+            available = 1;
+        };
+
         class field_medic_placeholder
         {
             id = "field_medic_placeholder";

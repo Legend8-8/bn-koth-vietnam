@@ -36,6 +36,8 @@ private _activeMap = createHashMap;
         if (!isNull _targetUnit) then {
             _targetUnit setVariable ["BN_KOTH_spottedUntil", nil, true];
             _targetUnit setVariable ["BN_KOTH_spottedBySide", nil, true];
+            _targetUnit setVariable ["BN_KOTH_spottedWarningUntil", nil, true];
+            _targetUnit setVariable ["BN_KOTH_spottedWarningBySide", nil, true];
         };
         continue;
     };

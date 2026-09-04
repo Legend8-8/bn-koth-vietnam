@@ -596,6 +596,15 @@ Run on hosted and dedicated servers with the extDB schema-v2 migration applied:
 
 Focused server tests: `call compile preprocessFileLineNumbers "functions\progression\perks\test_perks.sqf"`. Expected result: `[]`.
 
+## Cloak spotting matrix
+
+- With `cloak` absent from the authoritative requester's `activePerks`, a valid infantry or vehicle-crew spot writes the normal mark and target warning deadlines.
+- With `cloak` active, the same valid spot writes the identical mark deadline and side but does not write a target warning deadline.
+- A Cloak spot followed by a valid non-Cloak spot warns the target; a non-Cloak warning is not cleared by a later Cloak spot.
+- Friendly, dead, out-of-range, cooldown, invalid-owner, and invalid-side requests remain rejected by the existing server path.
+- Client-local or presentation-state perk edits do not affect the server-only active-perk query.
+- Verify the marked target remains visible through the existing 3D and map paths for the configured duration, and that a Cloak user can still be spotted normally.
+
 21. Advanced Traversal Checks
 
 After mission functions and S.O.G. configuration initialize, run:

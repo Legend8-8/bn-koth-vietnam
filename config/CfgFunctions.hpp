@@ -134,6 +134,7 @@ class CfgFunctions
             class progression_evaluateItemEntitlement {file = "functions\progression\fn_evaluateItemEntitlement.sqf";};
             class progression_evaluateItemEntitlementRules {file = "functions\progression\fn_evaluateItemEntitlementRules.sqf";};
             class progression_perks_getConfig {file = "functions\progression\perks\fn_getConfig.sqf";};
+            class progression_perks_isActive {file = "functions\progression\perks\fn_isActive.sqf";};
             class progression_perks_purchase {file = "functions\progression\perks\fn_purchase.sqf";};
             class progression_perks_setActive {file = "functions\progression\perks\fn_setActive.sqf";};
             class progression_perks_completeCleanup {file = "functions\progression\perks\fn_completeCleanup.sqf";};

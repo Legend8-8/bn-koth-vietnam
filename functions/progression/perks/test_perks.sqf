@@ -8,7 +8,7 @@
 if (!isServer) exitWith {["Perk tests must run on the server."]};
 private _failures = [];
 private _assert = {params ["_condition", "_message"]; if (!_condition) then {_failures pushBack _message}};
-private _vars = ["BN_KOTH_playerProgression", "BN_KOTH_playerLoadoutState", "BN_KOTH_playerRecords", "BN_KOTH_pendingPerkCleanup", "BN_KOTH_perkCleanupCounter", "BN_KOTH_persistenceDirtyPlayers", "BN_KOTH_persistenceScheduledSaves", "BN_KOTH_persistenceSaveDebounceSeconds"];
+private _vars = ["BN_KOTH_playerProgression", "BN_KOTH_playerProgressionLocal", "BN_KOTH_playerLoadoutState", "BN_KOTH_playerRecords", "BN_KOTH_pendingPerkCleanup", "BN_KOTH_perkCleanupCounter", "BN_KOTH_persistenceDirtyPlayers", "BN_KOTH_persistenceScheduledSaves", "BN_KOTH_persistenceSaveDebounceSeconds"];
 private _backup = createHashMap;
 {
     _backup set [_x, if (isNil {missionNamespace getVariable _x}) then {[false, 0]} else {[true, missionNamespace getVariable _x]}];
@@ -26,6 +26,18 @@ missionNamespace setVariable ["BN_KOTH_pendingPerkCleanup", createHashMap];
 private _config = ["suppressor"] call bn_koth_fnc_progression_perks_getConfig;
 [_config getOrDefault ["success", false] && {(_config getOrDefault ["purchaseCost", -1]) isEqualTo 1} && {(_config getOrDefault ["maxActivePerks", -1]) isEqualTo 3}, "Suppressor config or active limit is incorrect."] call _assert;
 ["suppressor" in (_config getOrDefault ["restrictedTraits", []]), "Suppressor restriction trait is not config-authored."] call _assert;
+private _cloakConfig = ["cloak"] call bn_koth_fnc_progression_perks_getConfig;
+[_cloakConfig getOrDefault ["success", false]
+    && {_cloakConfig getOrDefault ["available", false]}
+    && {_cloakConfig getOrDefault ["purchasable", false]}
+    && {(_cloakConfig getOrDefault ["purchaseCost", -1]) isEqualTo 1},
+    "Cloak config is not available through the canonical perk catalogue."] call _assert;
+[!([_uid, "cloak"] call bn_koth_fnc_progression_perks_isActive), "Unowned Cloak was reported active."] call _assert;
+_state set ["activePerks", ["cloak"]];
+[([_uid, "cloak"] call bn_koth_fnc_progression_perks_isActive), "Authoritative active Cloak was not detected."] call _assert;
+missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", createHashMapFromArray [["activePerks", ["cloak"]]]];
+_state set ["activePerks", []];
+[!([_uid, "cloak"] call bn_koth_fnc_progression_perks_isActive), "Client presentation state granted authoritative Cloak."] call _assert;
 [["vn_s_m1911"] call bn_koth_fnc_progression_perks_isSuppressor, "Generated suppressor classification failed."] call _assert;
 [!(["vn_o_4x_m16"] call bn_koth_fnc_progression_perks_isSuppressor), "Non-suppressor was classified as suppressor."] call _assert;
 
