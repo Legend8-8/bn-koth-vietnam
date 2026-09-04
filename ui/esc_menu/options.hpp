@@ -38,9 +38,9 @@ class BN_KOTH_RscEscMenuOptions
         {
             idc = 8724;
             x = safeZoneX + safeZoneW * 0.305;
-            y = safeZoneY + safeZoneH * 0.35;
+            y = safeZoneY + safeZoneH * 0.33;
             w = safeZoneW * 0.37;
-            h = safeZoneH * 0.44;
+            h = safeZoneH * 0.42;
 
             class controls
             {
@@ -69,7 +69,7 @@ class BN_KOTH_RscEscMenuOptions
                 {
                     idc = BN_KOTH_IDC_ESC_OPTIONS_GROUND_SLIDER;
                     x = 0;
-                    y = safeZoneH * 0.05;
+                    y = safeZoneH * 0.04;
                     w = safeZoneW * 0.38;
                     h = safeZoneH * 0.03;
                 };
@@ -78,20 +78,20 @@ class BN_KOTH_RscEscMenuOptions
                 {
                     idc = BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_LABEL;
                     text = "Earplug Volume (In Vehicle)";
-                    y = safeZoneH * 0.14;
+                    y = safeZoneH * 0.12;
                 };
 
                 class VehicleValue: GroundValue
                 {
                     idc = BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_VALUE;
-                    y = safeZoneH * 0.14;
+                    y = safeZoneH * 0.12;
                 };
 
                 class VehicleSlider: BN_KOTH_RscSlider
                 {
                     idc = BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_SLIDER;
                     x = 0;
-                    y = safeZoneH * 0.19;
+                    y = safeZoneH * 0.16;
                     w = safeZoneW * 0.38;
                     h = safeZoneH * 0.03;
                 };
@@ -101,30 +101,23 @@ class BN_KOTH_RscEscMenuOptions
                     idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_LABEL;
                     text = "Player 3D Icons";
                     x = 0;
-                    y = safeZoneH * 0.28;
+                    y = safeZoneH * 0.24;
                     w = safeZoneW * 0.22;
                     h = safeZoneH * 0.035;
                 };
 
-                class Player3DValue: BN_KOTH_RscText
+                class Player3DValue: BN_KOTH_RscButton
                 {
                     idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_VALUE;
                     text = "ON";
                     x = 0.23;
-                    y = safeZoneH * 0.28;
+                    y = safeZoneH * 0.24;
                     w = safeZoneW * 0.08;
                     h = safeZoneH * 0.035;
-                    style = 1;
-                };
-
-                class Player3DCheckbox: BN_KOTH_RscCheckBox
-                {
-                    idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_CHECKBOX;
-                    x = 0.31;
-                    y = safeZoneH * 0.287;
-                    w = safeZoneW * 0.02;
-                    h = safeZoneH * 0.02;
-                    checked = 1;
+                    style = 2;
+                    colorBackground[] = {0.08, 0.08, 0.08, 0.85};
+                    colorBackgroundActive[] = {0.15, 0.15, 0.15, 1};
+                    colorFocused[] = {0.15, 0.15, 0.15, 1};
                 };
 
                 class Player3DAlphaLabel: BN_KOTH_RscText
@@ -132,7 +125,7 @@ class BN_KOTH_RscEscMenuOptions
                     idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_ALPHA_LABEL;
                     text = "Player 3D Icons Alpha";
                     x = 0;
-                    y = safeZoneH * 0.36;
+                    y = safeZoneH * 0.31;
                     w = safeZoneW * 0.25;
                     h = safeZoneH * 0.035;
                 };
@@ -142,7 +135,7 @@ class BN_KOTH_RscEscMenuOptions
                     idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_ALPHA_VALUE;
                     text = "100%";
                     x = safeZoneW * 0.24;
-                    y = safeZoneH * 0.36;
+                    y = safeZoneH * 0.31;
                     w = safeZoneW * 0.11;
                     h = safeZoneH * 0.035;
                     style = 1;
@@ -152,7 +145,7 @@ class BN_KOTH_RscEscMenuOptions
                 {
                     idc = BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_ALPHA_SLIDER;
                     x = 0;
-                    y = safeZoneH * 0.41;
+                    y = safeZoneH * 0.36;
                     w = safeZoneW * 0.38;
                     h = safeZoneH * 0.03;
                 };
@@ -167,7 +160,7 @@ class BN_KOTH_RscEscMenuOptions
             y = safeZoneY + safeZoneH * 0.88;
             w = safeZoneW * 0.12;
             h = safeZoneH * 0.04;
-            action = "closeDialog 3;";
+            onButtonClick = "_this call bn_koth_fnc_escMenu_options_reset;";
         };
 
         class Confirm: BN_KOTH_RscButton

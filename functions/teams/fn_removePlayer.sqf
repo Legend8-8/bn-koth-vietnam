@@ -19,6 +19,20 @@ if (_uid isEqualTo "") exitWith {};
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 private _record = _records getOrDefault [_uid, createHashMap];
 
+[_uid] call bn_koth_fnc_career_accumulatePlaytime;
+private _careerFlush = [_uid, "disconnect"] call bn_koth_fnc_career_flushPlayer;
+if !(_careerFlush getOrDefault ["success", false]) then {
+    [format ["Disconnect career flush failed UID=%1 code=%2", _uid, _careerFlush getOrDefault ["code", "UNKNOWN"]], "ERROR"] call bn_koth_fnc_common_log;
+};
+private _careerSessions = missionNamespace getVariable ["BN_KOTH_careerSessions", createHashMap];
+_careerSessions deleteAt _uid;
+missionNamespace setVariable ["BN_KOTH_careerSessions", _careerSessions];
+
+private _saveResult = [_uid, "disconnect"] call bn_koth_fnc_persistence_savePlayer;
+if !(_saveResult getOrDefault ["success", false]) then {
+    [format ["Disconnect persistence save failed UID=%1 code=%2", _uid, _saveResult getOrDefault ["code", "UNKNOWN"]], "ERROR"] call bn_koth_fnc_common_log;
+};
+
 if (_record isEqualType createHashMap) then {
     private _unit = _record getOrDefault ["currentUnit", objNull];
     if (!isNull _unit) then {
@@ -33,6 +47,14 @@ if (_record isEqualType createHashMap) then {
 
 _records deleteAt _uid;
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+
+private _handoffs = missionNamespace getVariable ["BN_KOTH_transferHandoffPending", createHashMap];
+if (_handoffs isEqualType createHashMap) then {
+    _handoffs deleteAt _uid;
+    missionNamespace setVariable ["BN_KOTH_transferHandoffPending", _handoffs];
+};
+private _returns = missionNamespace getVariable ["BN_KOTH_returnToLobbyPending", []];
+missionNamespace setVariable ["BN_KOTH_returnToLobbyPending", _returns - [_uid]];
 
 [_uid] call bn_koth_fnc_loadouts_clearPlayerState;
 
@@ -49,5 +71,8 @@ if (_votesByUid isEqualType createHashMap) then {
 [] call bn_koth_fnc_round_updateVoteTotals;
 [] call bn_koth_fnc_round_maybeShortenVoteDeadline;
 [] call bn_koth_fnc_teams_publishState;
+if (([] call bn_koth_fnc_round_getState) isEqualTo "WAITING") then {
+    [count ([] call bn_koth_fnc_teams_getConnectedHumanUids)] call bn_koth_fnc_round_reconcileVoteCandidates;
+};
 
 [format ["Removed disconnected player UID=%1 from lobby/team/vote state", _uid]] call bn_koth_fnc_common_log;

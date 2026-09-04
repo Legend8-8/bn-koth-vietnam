@@ -33,16 +33,16 @@ private _readText = {
 
 private _maximumControlHeight = ["maximumControlHeight", 50] call _readNumber;
 missionNamespace setVariable ["BN_KOTH_maximumControlHeight", _maximumControlHeight max 0];
-private _prioritySizeRatio = (["prioritySizeRatio", 0.14142136] call _readNumber) max 0;
-private _priorityMinimumHalfSize = (["priorityMinimumHalfSize", 8.4852814] call _readNumber) max 0;
-private _priorityMoveTickInterval = (["priorityMoveTickInterval", 0.5] call _readNumber) max 0.01;
+private _priorityAreaRatio = ((["priorityAreaRatio", 0.10] call _readNumber) max 0) min 1;
+private _prioritySizeRatio = sqrt _priorityAreaRatio;
+private _priorityMinimumHalfSize = (["priorityMinimumHalfSize", 1] call _readNumber) max 0;
 private _priorityMoveDistancePerTick = (["priorityMoveDistancePerTick", 0.25] call _readNumber) max 0;
 private _priorityControlWeight = (["priorityControlWeight", 2] call _readNumber) max 1;
 private _priorityMarkerAlpha = ((["priorityMarkerAlpha", 0.75] call _readNumber) max 0) min 1;
 
 missionNamespace setVariable ["BN_KOTH_priorityZoneRatio", _prioritySizeRatio];
+missionNamespace setVariable ["BN_KOTH_priorityZoneAreaRatio", _priorityAreaRatio];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMinimumHalfSize", _priorityMinimumHalfSize];
-missionNamespace setVariable ["BN_KOTH_priorityZoneMoveTickInterval", _priorityMoveTickInterval];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMoveDistancePerTick", _priorityMoveDistancePerTick];
 missionNamespace setVariable ["BN_KOTH_priorityZoneControlWeight", _priorityControlWeight];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMarkerAlpha", _priorityMarkerAlpha];
@@ -56,23 +56,25 @@ missionNamespace setVariable ["BN_KOTH_priorityZoneMarkerTieBrush", ["priorityMa
 [] call bn_koth_fnc_zone_cacheStaticObjects;
 [] call bn_koth_fnc_zone_clearActiveLocation;
 
-[] spawn {
+if !(missionNamespace getVariable ["BN_KOTH_priorityZoneUpdateLoopAdded", false]) then {
     private _controlInterval = 1;
-    private _nextControlAt = serverTime;
+    missionNamespace setVariable ["BN_KOTH_priorityZoneControlInterval", _controlInterval];
+    missionNamespace setVariable ["BN_KOTH_priorityZoneNextControlAt", serverTime + _controlInterval];
 
-    while {missionNamespace getVariable ["BN_KOTH_zoneManagerRunning", false]} do {
-        if (([] call bn_koth_fnc_round_getState) isEqualTo "ACTIVE") then {
-            [] call bn_koth_fnc_zone_updatePriorityZone;
-        };
+    private _handler = addMissionEventHandler ["EachFrame", {
+        if !(missionNamespace getVariable ["BN_KOTH_zoneManagerRunning", false]) exitWith {};
+        if !(([] call bn_koth_fnc_round_getState) isEqualTo "ACTIVE") exitWith {};
+
+        [] call bn_koth_fnc_zone_updatePriorityZone;
 
         private _now = serverTime;
+        private _nextControlAt = missionNamespace getVariable ["BN_KOTH_priorityZoneNextControlAt", _now];
         if (_now >= _nextControlAt) then {
             [] call bn_koth_fnc_zone_evaluateControl;
-            _nextControlAt = _now + _controlInterval;
+            missionNamespace setVariable ["BN_KOTH_priorityZoneNextControlAt", _now + _controlInterval];
         };
+    }];
 
-        sleep (missionNamespace getVariable ["BN_KOTH_priorityZoneMoveTickInterval", 0.5]);
-    };
-
-    missionNamespace setVariable ["BN_KOTH_zoneManagerRunning", false];
+    missionNamespace setVariable ["BN_KOTH_priorityZoneUpdateLoopAdded", true];
+    missionNamespace setVariable ["BN_KOTH_priorityZoneUpdateHandlerId", _handler];
 };

@@ -16,23 +16,33 @@ params [["_locationId", "", [""]]];
 
 if (!isServer) exitWith {false};
 
-if !([_locationId] call bn_koth_fnc_round_isLocationValid) exitWith {
-    [format ["Rejected setActiveLocation for invalid location '%1'", _locationId], "ERROR"] call bn_koth_fnc_common_log;
-    false
-};
-
 private _locationsCfg = missionConfigFile >> "CfgBnKothLocations";
 if !(isClass _locationsCfg) exitWith {
     ["CfgBnKothLocations missing.", "ERROR"] call bn_koth_fnc_common_log;
     false
 };
 
-private _activeCfg = _locationsCfg >> _locationId;
-private _activeZoneMarker = getText (_activeCfg >> "zoneMarker");
-private _activeWestRespawn = getText (_activeCfg >> "respawnWestMarker");
-private _activeEastRespawn = getText (_activeCfg >> "respawnEastMarker");
-private _activeWestBaseZone = getText (_activeCfg >> "westBaseZoneMarker");
-private _activeEastBaseZone = getText (_activeCfg >> "eastBaseZoneMarker");
+if !([_locationId] call bn_koth_fnc_round_isLocationValid) exitWith {
+    [format ["Rejected setActiveLocation for unconfigured location '%1'", _locationId], "ERROR"] call bn_koth_fnc_common_log;
+    false
+};
+
+private _activeLocationData = [_locationId] call bn_koth_fnc_zone_getLocationData;
+if !(_activeLocationData isEqualType createHashMap) exitWith {
+    [format ["Rejected setActiveLocation for location '%1': resolver returned invalid data.", _locationId], "ERROR"] call bn_koth_fnc_common_log;
+    false
+};
+
+if !([_locationId] call bn_koth_fnc_zone_validateLocation) exitWith {
+    [format ["Rejected setActiveLocation for unsafe location '%1'", _locationId], "ERROR"] call bn_koth_fnc_common_log;
+    false
+};
+
+private _activeZoneMarker = _activeLocationData get "zoneMarker";
+private _activeWestRespawn = _activeLocationData get "respawnWestMarker";
+private _activeEastRespawn = _activeLocationData get "respawnEastMarker";
+private _activeWestBaseZone = _activeLocationData get "westBaseZoneMarker";
+private _activeEastBaseZone = _activeLocationData get "eastBaseZoneMarker";
 
 private _nativeWestRespawnMarker = "respawn_west";
 private _nativeEastRespawnMarker = "respawn_east";
@@ -95,18 +105,18 @@ if (_westApplied && _eastApplied) then {
 {
     private _cfg = _x;
     private _cfgName = configName _cfg;
-    private _zoneMarker = getText (_cfg >> "zoneMarker");
-    private _westRespawn = getText (_cfg >> "respawnWestMarker");
-    private _eastRespawn = getText (_cfg >> "respawnEastMarker");
-    private _westBaseZone = getText (_cfg >> "westBaseZoneMarker");
-    private _eastBaseZone = getText (_cfg >> "eastBaseZoneMarker");
+    private _resolved = [_cfgName] call bn_koth_fnc_zone_getLocationData;
+    private _zoneMarker = _resolved get "zoneMarker";
+    private _westRespawn = _resolved get "respawnWestMarker";
+    private _eastRespawn = _resolved get "respawnEastMarker";
+    private _westBaseZone = _resolved get "westBaseZoneMarker";
+    private _eastBaseZone = _resolved get "eastBaseZoneMarker";
     private _isActive = (_cfgName isEqualTo _locationId);
 
     if !(_zoneMarker isEqualTo "") then {
         _zoneMarker setMarkerAlpha (if (_isActive) then {1} else {0});
     };
 
-    // Respawn markers are logical markers, but hiding inactive ones helps editor debug clarity.
     if !(_westRespawn isEqualTo "") then {
         _westRespawn setMarkerAlpha (if (_isActive) then {1} else {0});
     };
@@ -146,6 +156,7 @@ if (_roundState in ["PREPARING", "ACTIVE"]) then {
 };
 
 [] call bn_koth_fnc_respawn_sweepSafeZoneGroundItems;
+[] call bn_koth_fnc_zone_spawnBattlefieldPickups;
 
 [format ["Active location set: %1 (%2)", _locationId, _activeZoneMarker]] call bn_koth_fnc_common_log;
 

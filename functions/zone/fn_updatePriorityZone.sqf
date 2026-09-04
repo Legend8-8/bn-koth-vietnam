@@ -1,6 +1,6 @@
 /*
     File: fn_updatePriorityZone.sqf
-    Author: Mango Mongo
+    Author: Mongo
     Description: Moves the rectangular priority-zone marker inside the active AO.
     Execution: Server
     Parameters:
@@ -42,8 +42,8 @@ missionNamespace setVariable ["BN_KOTH_warnedUnsupportedPriorityAoShape", false]
 private _aoSize = markerSize _activeMarker;
 private _aoHalfWidth = if ((count _aoSize) > 0) then {_aoSize select 0} else {40};
 private _aoHalfHeight = if ((count _aoSize) > 1) then {_aoSize select 1} else {30};
-private _priorityRatio = missionNamespace getVariable ["BN_KOTH_priorityZoneRatio", 0.14142136];
-private _priorityMinimumHalfSize = missionNamespace getVariable ["BN_KOTH_priorityZoneMinimumHalfSize", 8.4852814];
+private _priorityRatio = missionNamespace getVariable ["BN_KOTH_priorityZoneRatio", sqrt 0.10];
+private _priorityMinimumHalfSize = missionNamespace getVariable ["BN_KOTH_priorityZoneMinimumHalfSize", 1];
 private _priorityHalfWidth = (_aoHalfWidth * _priorityRatio) max _priorityMinimumHalfSize;
 private _priorityHalfHeight = (_aoHalfHeight * _priorityRatio) max _priorityMinimumHalfSize;
 private _aoDirection = markerDir _activeMarker;
@@ -107,24 +107,15 @@ if (_requiresInitialization) exitWith {
     missionNamespace setVariable ["BN_KOTH_priorityZoneActive", true];
     missionNamespace setVariable ["BN_KOTH_priorityZoneAoMarker", _activeMarker];
     missionNamespace setVariable ["BN_KOTH_priorityZoneHeading", random 360];
-    missionNamespace setVariable ["BN_KOTH_priorityZoneLastUpdateAt", serverTime];
 
     // One global marker command publishes the complete locally prepared marker state.
     _priorityMarker setMarkerAlpha (missionNamespace getVariable ["BN_KOTH_priorityZoneMarkerAlpha", 0.75]);
     true
 };
 
-private _now = serverTime;
-private _lastUpdateAt = missionNamespace getVariable ["BN_KOTH_priorityZoneLastUpdateAt", _now];
-private _elapsed = (_now - _lastUpdateAt) max 0;
-missionNamespace setVariable ["BN_KOTH_priorityZoneLastUpdateAt", _now];
-
-if (_elapsed <= 0) exitWith {true};
-
-private _moveTickInterval = missionNamespace getVariable ["BN_KOTH_priorityZoneMoveTickInterval", 0.5];
-private _moveDistancePerTick = missionNamespace getVariable ["BN_KOTH_priorityZoneMoveDistancePerTick", 0.25];
-private _moveSpeed = _moveDistancePerTick / (_moveTickInterval max 0.01);
-private _moveDistance = _moveSpeed * _elapsed;
+private _moveDistancePerFrame = missionNamespace getVariable ["BN_KOTH_priorityZoneMoveDistancePerTick", 0.25];
+private _frameDelta = diag_deltaTime max 0.01;
+private _moveDistance = _moveDistancePerFrame * _frameDelta;
 private _currentPos = markerPos _priorityMarker;
 private _heading = missionNamespace getVariable ["BN_KOTH_priorityZoneHeading", random 360];
 private _candidatePos = [

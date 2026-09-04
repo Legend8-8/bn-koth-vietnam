@@ -14,6 +14,7 @@
 */
 
 params [["_level", 1, [0]]];
+if !(_level isEqualType 0 && {finite _level}) then {_level = 1};
 
 private _progressionCfg = missionConfigFile >> "CfgBnKothScoring" >> "progression";
 private _baseXp = if (isNumber (_progressionCfg >> "xpLevelBase")) then {
@@ -37,6 +38,12 @@ private _maxLevel = if (isNumber (_progressionCfg >> "maxLevel")) then {
     270
 };
 
+// Config-sourced curve constants must fail soft to their defaults rather than propagate a non-finite value.
+if !(finite _baseXp) then {_baseXp = 500};
+if !(finite _linearStep) then {_linearStep = 75};
+if !(finite _quadraticStep) then {_quadraticStep = 0.12};
+if !(finite _maxLevel) then {_maxLevel = 270};
+
 _baseXp = _baseXp max 1;
 _linearStep = _linearStep max 0;
 _quadraticStep = _quadraticStep max 0;
@@ -50,8 +57,10 @@ private _n = _completedLevels;
 private _linearSum = (_n * (_n - 1)) / 2;
 private _squareSum = ((_n - 1) * _n * ((2 * _n) - 1)) / 6;
 
-round (
+private _threshold = round (
     (_n * _baseXp)
     + (_linearStep * _linearSum)
     + (_quadraticStep * _squareSum)
-)
+);
+
+if (finite _threshold) then {_threshold} else {0}

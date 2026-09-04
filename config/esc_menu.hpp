@@ -2,6 +2,18 @@
 
 class CfgBnKothEscMenuKeybinds
 {
+    class traversal
+    {
+        defaultKey = DIK_SPACE;
+        shift = "true";
+        ctrl = "false";
+        alt = "false";
+        down = 0;
+        function = "bn_koth_fnc_traversal_request";
+        displayName = "Advanced Climb (Vanilla/SOG)";
+        access = 1;
+    };
+
     class earplugs_toggle
     {
         defaultKey = DIK_F1;
@@ -11,6 +23,18 @@ class CfgBnKothEscMenuKeybinds
         down = 0;
         function = "bn_koth_fnc_escMenu_earplugs_toggle";
         displayName = "Toggle Earplugs";
+        access = 1;
+    };
+
+    class enemySpotting_mark
+    {
+        defaultKey = DIK_T;
+        shift = "false";
+        ctrl = "false";
+        alt = "false";
+        down = 1;
+        function = "bn_koth_fnc_enemySpotting_requestSpot";
+        displayName = "Spot Enemy";
         access = 1;
     };
 
@@ -52,7 +76,7 @@ class CfgBnKothEscMenuOptions
     class player3DIconsEnabled
     {
         name = "Player 3D Icons";
-        type = "CheckBox";
+        type = "Toggle";
         default = 1;
         onChange = "missionNamespace setVariable ['BN_KOTH_player3DIconsEnabled', _newValue > 0];";
     };

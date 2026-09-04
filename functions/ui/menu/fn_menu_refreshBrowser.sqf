@@ -179,6 +179,17 @@ private _entries = [];
         }
     };
 
+    // The Arsenal is the currently usable equipment surface. Cross-faction
+    // discovery remains in Store until shared entitlement says it is usable.
+    // Same-side progression locks remain visible as normal Arsenal cards.
+    private _crossSideUnusable =
+        (_entitlement getOrDefault ["crossSide", false])
+        && {!(_entitlement getOrDefault ["entitled", false])};
+    if (
+        ((_entitlement getOrDefault ["code", ""]) isEqualTo "LOCKED_SIDE")
+        || {_crossSideUnusable}
+    ) then {continue;};
+
     _entries pushBack (createHashMapFromArray [
         ["weaponClass", _weaponClass],
         ["displayName", _x getOrDefault ["displayName", toUpper _weaponClass]],
@@ -195,8 +206,15 @@ _pageCount = _pageCount max 1;
 
 private _page = uiNamespace getVariable ["BN_KOTH_menuBrowserPage", 0];
 if (uiNamespace getVariable ["BN_KOTH_menuBrowserSnapPending", false]) then {
-    private _appliedIndex = _entries findIf {(_x getOrDefault ["weaponClass", ""]) isEqualTo _intendedWeaponClass};
-    if (_appliedIndex >= 0) then {_page = floor (_appliedIndex / _pageSize)};
+    private _targetClass = toLower (uiNamespace getVariable ["BN_KOTH_menuBrowserTargetClass", ""]);
+    private _targetIndex = if !(_targetClass isEqualTo "") then {
+        _entries findIf {(_x getOrDefault ["weaponClass", ""]) isEqualTo _targetClass}
+    } else {
+        _entries findIf {(_x getOrDefault ["weaponClass", ""]) isEqualTo _intendedWeaponClass}
+    };
+    if (_targetIndex >= 0) then {_page = floor (_targetIndex / _pageSize)};
+    uiNamespace setVariable ["BN_KOTH_menuBrowserHighlightClass", if (_targetIndex >= 0) then {_targetClass} else {""}];
+    uiNamespace setVariable ["BN_KOTH_menuBrowserTargetClass", ""];
     uiNamespace setVariable ["BN_KOTH_menuBrowserSnapPending", false];
 };
 if !(_page isEqualType 0) then {_page = 0};
@@ -332,10 +350,19 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
     };
     private _primaryActionText = if (_isApplied) then {"APPLIED"} else {"APPLY"};
     private _lockText = if (_lockedByLevel) then {
-        format ["LOCKED UNTIL LEVEL %1", _metadata getOrDefault ["minLevel", 1]]
+        format ["LOCKED · LEVEL %1", _metadata getOrDefault ["minLevel", 1]]
     } else {
         ""
     };
+
+    // Native-side weapons acquire directly from this card; cross-faction
+    // discovery/acquisition still routes through Store only (see fn_menu_buildBrowserWeaponEntries.sqf).
+    private _canAcquire = _entitlementCode isEqualTo "REQUIRES_ACQUISITION";
+    private _canPurchase = _canAcquire && {_entitlement getOrDefault ["canPurchase", false]};
+    private _canRent = _canAcquire && {_entitlement getOrDefault ["canRent", false]};
+    private _purchasePrice = _metadata getOrDefault ["purchasePrice", -1];
+    private _rentalPrice = _metadata getOrDefault ["rentalPrice", -1];
+    private _cash = (_progression getOrDefault ["cash", 0]) max 0;
 
     private _status = if (_clearSlot) then {
         if (_isApplied) then {"NO LAUNCHER SELECTED"} else {"REMOVE CURRENT LAUNCHER"}
@@ -346,14 +373,14 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
             case "UNCONTROLLED": {"AVAILABLE - NO KOTH RESTRICTION"};
             default {
                 if (_lockedByLevel) then {
-                    format ["LOCKED UNTIL LEVEL %1", _metadata getOrDefault ["minLevel", 1]]
+                    _lockText
                 } else {
                     if (_hasPendingAttachmentDraft) then {
                         "ATTACHMENT APPLY PENDING"
                     } else {
                         switch (_entitlementCode) do {
-                            case "REQUIRES_ACQUISITION": {"ACQUISITION REQUIRED"};
-                            case "LOCKED_SIDE_LICENSE": {"CROSS-FACTION LICENSE REQUIRED"};
+                            case "REQUIRES_ACQUISITION": {"AVAILABLE TO ACQUIRE"};
+                            case "LOCKED_MASTERY": {"CROSS-FACTION MASTERY REQUIRED"};
                             case "LOCKED_PERK": {"REQUIRED PERK MISSING"};
                             default {"PRESENTATION STATE UNAVAILABLE"};
                         }
@@ -381,6 +408,9 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
         _x ctrlShow true;
     } forEach [_background, _imageArea, _image, _nameCtrl, _statusCtrl];
 
+    private _highlightClass = uiNamespace getVariable ["BN_KOTH_menuBrowserHighlightClass", ""];
+    private _backgroundColor = if (_entryWeaponClass isEqualTo _highlightClass) then {[0.20, 0.15, 0.08, 0.96]} else {[0.08, 0.08, 0.07, 0.92]};
+    _background ctrlSetBackgroundColor _backgroundColor;
     _imageArea ctrlSetBackgroundColor [0.025, 0.025, 0.022, 0.92];
     _image ctrlSetText (_entry getOrDefault ["picture", ""]);
     _nameCtrl ctrlSetText (_entry getOrDefault ["displayName", "UNKNOWN"]);
@@ -389,35 +419,76 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
     _lockCtrl ctrlSetText _lockText;
     _lockCtrl ctrlShow _lockedByLevel;
 
-    _primaryAction ctrlSetText _primaryActionText;
-    _secondaryAction ctrlSetText "CONFIGURE";
+    _primaryAction ctrlSetText "";
+    _secondaryAction ctrlSetText "";
     _primaryAction buttonSetAction "";
     _secondaryAction buttonSetAction "";
-    _primaryAction ctrlShow _hasAccess;
-    _secondaryAction ctrlShow (_hasAccess && {!_clearSlot});
-    _primaryAction ctrlEnable (_canApply && {!_isApplied});
-    _secondaryAction ctrlEnable (_hasAccess && {!_clearSlot});
+    _primaryAction ctrlShow false;
+    _secondaryAction ctrlShow false;
+    _primaryAction ctrlEnable false;
+    _secondaryAction ctrlEnable false;
 
-    private _applyArguments = if (_clearSlot) then {
-        [_weaponSlot, "", "", []]
-    } else {
-        [_weaponSlot, _draftWeaponClass, _draftMagazineClass, _draftAttachments]
-    };
-    private _applyAction = if (_canApply && {!_isApplied}) then {
-        format [
-            "%1 call bn_koth_fnc_menu_applyWeaponComposition;",
-            str _applyArguments
-        ]
-    } else {
-        ""
-    };
-    _primaryAction buttonSetAction _applyAction;
+    if (_hasAccess) then {
+        _primaryAction ctrlSetText _primaryActionText;
+        _secondaryAction ctrlSetText "CONFIGURE";
+        _primaryAction ctrlShow true;
+        _secondaryAction ctrlShow (!_clearSlot);
+        _primaryAction ctrlEnable (_canApply && {!_isApplied});
+        _secondaryAction ctrlEnable (!_clearSlot);
 
-    if (_hasAccess && {!_clearSlot}) then {
-        _secondaryAction buttonSetAction format [
-            "uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMapFromArray [['weaponClass', '%1'], ['weaponSlot', '%2'], ['browserPage', uiNamespace getVariable ['BN_KOTH_menuBrowserPage', 0]]]]; uiNamespace setVariable ['BN_KOTH_menuConfigureView', 'MAGAZINES']; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0]; uiNamespace setVariable ['BN_KOTH_menuConfigureAttachmentPage', 0]; ['LOADOUT_CONFIGURE'] call bn_koth_fnc_menu_refresh;",
-            _entryWeaponClass,
-            _weaponSlot
-        ];
+        private _applyArguments = if (_clearSlot) then {
+            [_weaponSlot, "", "", []]
+        } else {
+            [_weaponSlot, _draftWeaponClass, _draftMagazineClass, _draftAttachments]
+        };
+        private _applyAction = if (_canApply && {!_isApplied}) then {
+            format [
+                "%1 call bn_koth_fnc_menu_applyWeaponComposition;",
+                str _applyArguments
+            ]
+        } else {
+            ""
+        };
+        _primaryAction buttonSetAction _applyAction;
+
+        if (!_clearSlot) then {
+            _secondaryAction buttonSetAction format [
+                "uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMapFromArray [['weaponClass', '%1'], ['weaponSlot', '%2'], ['browserPage', uiNamespace getVariable ['BN_KOTH_menuBrowserPage', 0]]]]; uiNamespace setVariable ['BN_KOTH_menuConfigureView', 'MAGAZINES']; uiNamespace setVariable ['BN_KOTH_menuConfigurePage', 0]; uiNamespace setVariable ['BN_KOTH_menuConfigureAttachmentPage', 0]; ['LOADOUT_CONFIGURE'] call bn_koth_fnc_menu_refresh;",
+                _entryWeaponClass,
+                _weaponSlot
+            ];
+        };
+    } else {
+        if (_canPurchase || _canRent) then {
+            private _acquireActions = [];
+            if (_canPurchase) then {
+                _acquireActions pushBack [
+                    format ["BUY %1", [_purchasePrice] call bn_koth_fnc_ui_formatCash],
+                    (_purchasePrice <= _cash),
+                    format ["['PURCHASE',%1] call bn_koth_fnc_progression_requestWeaponAcquisition;", str _entryWeaponClass]
+                ];
+            };
+            if (_canRent) then {
+                _acquireActions pushBack [
+                    format ["RENT %1", [_rentalPrice] call bn_koth_fnc_ui_formatCash],
+                    (_rentalPrice <= _cash),
+                    format ["['RENT',%1] call bn_koth_fnc_progression_requestWeaponAcquisition;", str _entryWeaponClass]
+                ];
+            };
+
+            (_acquireActions select 0) params ["_primaryText", "_primaryEnabled", "_primaryScript"];
+            _primaryAction ctrlSetText _primaryText;
+            _primaryAction ctrlShow true;
+            _primaryAction ctrlEnable _primaryEnabled;
+            _primaryAction buttonSetAction _primaryScript;
+
+            if ((count _acquireActions) > 1) then {
+                (_acquireActions select 1) params ["_secondaryText", "_secondaryEnabled", "_secondaryScript"];
+                _secondaryAction ctrlSetText _secondaryText;
+                _secondaryAction ctrlShow true;
+                _secondaryAction ctrlEnable _secondaryEnabled;
+                _secondaryAction buttonSetAction _secondaryScript;
+            };
+        };
     };
 } forEach _cardIdcs;

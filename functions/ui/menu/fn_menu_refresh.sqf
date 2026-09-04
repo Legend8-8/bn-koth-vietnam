@@ -50,6 +50,7 @@ private _validPages = [
 ];
 
 private _activePage = uiNamespace getVariable ["BN_KOTH_menuActivePage", "LOADOUT"];
+private _previousPage = _activePage;
 if !(_requestedPage isEqualTo "") then {
     private _candidate = toUpper _requestedPage;
     if (_candidate in _validPages) then {
@@ -57,17 +58,25 @@ if !(_requestedPage isEqualTo "") then {
         uiNamespace setVariable ["BN_KOTH_menuActivePage", _activePage];
     };
 };
+if (_previousPage isEqualTo "STATS" && {!(_activePage isEqualTo "STATS")}) then {
+    private _deferredScript = uiNamespace getVariable ["BN_KOTH_menuStatsDeferredScript", scriptNull];
+    if !(scriptDone _deferredScript) then {terminate _deferredScript};
+    uiNamespace setVariable ["BN_KOTH_menuStatsLifecycle", (uiNamespace getVariable ["BN_KOTH_menuStatsLifecycle", 0]) + 1];
+    uiNamespace setVariable ["BN_KOTH_menuStatsDeferred", false];
+    uiNamespace setVariable ["BN_KOTH_menuStatsDeferredScript", scriptNull];
+    uiNamespace setVariable ["BN_KOTH_menuStatsLatestRequestId", -1];
+};
 
 private _ctrlServer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_SERVER;
 private _ctrlHeaderPlayer = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_PLAYER;
-private _ctrlHeaderLevel = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_LEVEL;
-private _ctrlHeaderXp = _display displayCtrl BN_KOTH_IDC_MENU_HEADER_XP;
-private _ctrlHeaderXpTrack = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_TRACK;
-private _ctrlHeaderXpFill = _display displayCtrl BN_KOTH_IDC_MENU_BG_XP_FILL;
+private _ctrlBgLeft = _display displayCtrl BN_KOTH_IDC_MENU_BG_LEFT;
 private _ctrlBrowserWorkspace = _display displayCtrl BN_KOTH_IDC_MENU_BG_BROWSER_WORKSPACE;
+private _ctrlOperatorTitle = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_TITLE;
 private _ctrlOperatorName = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_NAME;
 private _ctrlOperatorTeam = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_TEAM;
+private _ctrlOperatorRoleLabel = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_ROLE_LABEL;
 private _ctrlOperatorRole = _display displayCtrl BN_KOTH_IDC_MENU_OPERATOR_ROLE_VALUE;
+private _ctrlPlayerPreview = _display displayCtrl BN_KOTH_IDC_MENU_PLAYER_PREVIEW;
 private _ctrlSectionTitle = _display displayCtrl BN_KOTH_IDC_MENU_SECTION_TITLE;
 private _ctrlNotice = _display displayCtrl BN_KOTH_IDC_MENU_NOTICE;
 private _ctrlFooter = _display displayCtrl BN_KOTH_IDC_MENU_FOOTER_TEXT;
@@ -153,6 +162,29 @@ private _ctrlKitSave = _display displayCtrl BN_KOTH_IDC_MENU_KIT_SAVE;
 private _ctrlKitRename = _display displayCtrl BN_KOTH_IDC_MENU_KIT_RENAME;
 private _ctrlKitManage = _display displayCtrl BN_KOTH_IDC_MENU_KIT_MANAGE;
 private _ctrlKitSaveCurrent = _display displayCtrl BN_KOTH_IDC_MENU_KIT_SAVE_CURRENT;
+private _ctrlPerksTitle = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_TITLE;
+private _ctrlPerksSubtitle = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_SUBTITLE;
+private _ctrlPerksActive = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_ACTIVE;
+private _ctrlPerksBack = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_BACK;
+private _ctrlPerksPagePrevious = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_PAGE_PREVIOUS;
+private _ctrlPerksPageNext = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_PAGE_NEXT;
+private _ctrlPerksPageLabel = _display displayCtrl BN_KOTH_IDC_MENU_PERKS_PAGE_LABEL;
+private _ctrlMasteryTitle = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_TITLE;
+private _ctrlMasterySubtitle = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_SUBTITLE;
+private _ctrlMasteryBack = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_BACK;
+private _ctrlMasteryRank = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_RANK;
+private _ctrlMasteryLevel = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_LEVEL;
+private _ctrlMasteryXp = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_XP;
+private _ctrlMasteryXpTrack = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_XP_TRACK;
+private _ctrlMasteryXpFill = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_XP_FILL;
+private _ctrlMasteryHelp = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_HELP;
+private _ctrlMasteryFilterProgress = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_FILTER_PROGRESS;
+private _ctrlMasteryFilterCompleted = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_FILTER_COMPLETED;
+private _ctrlMasteryFilterAll = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_FILTER_ALL;
+private _ctrlMasteryEmpty = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_EMPTY;
+private _ctrlMasteryPagePrevious = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_PAGE_PREVIOUS;
+private _ctrlMasteryPageNext = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_PAGE_NEXT;
+private _ctrlMasteryPageLabel = _display displayCtrl BN_KOTH_IDC_MENU_MASTERY_PAGE_LABEL;
 
 private _setNavState = {
     params ["_ctrl", "_isActive"];
@@ -176,37 +208,7 @@ private _playerNameUpper = toUpper _playerName;
 _ctrlOperatorName ctrlSetText _playerNameUpper;
 _ctrlHeaderPlayer ctrlSetText _playerNameUpper;
 
-private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
-if !(_progression isEqualType createHashMap) then {
-    _progression = createHashMap;
-};
-
-private _level = (_progression getOrDefault ["level", 1]) max 1;
-private _xp = (_progression getOrDefault ["xp", 0]) max 0;
-
-private _levelProgress = [_xp, _level] call bn_koth_fnc_progression_xp_getLevelProgress;
-_level = _levelProgress getOrDefault ["level", 1];
-private _maxLevel = _levelProgress getOrDefault ["maxLevel", 270];
-private _xpIntoLevel = _levelProgress getOrDefault ["xpIntoLevel", 0];
-private _xpRequired = _levelProgress getOrDefault ["xpRequired", 0];
-private _xpRatio = _levelProgress getOrDefault ["ratio", 1];
-
-_ctrlHeaderLevel ctrlSetText format ["LEVEL %1", _level];
-
-if (_level >= _maxLevel) then {
-    _ctrlHeaderXp ctrlSetText format ["MAX LEVEL  |  %1 XP", _xp];
-} else {
-    _ctrlHeaderXp ctrlSetText format ["%1 / %2 XP", round _xpIntoLevel, round _xpRequired];
-};
-
-private _trackPos = ctrlPosition _ctrlHeaderXpTrack;
-_ctrlHeaderXpFill ctrlSetPosition [
-    _trackPos select 0,
-    _trackPos select 1,
-    (_trackPos select 2) * _xpRatio,
-    _trackPos select 3
-];
-_ctrlHeaderXpFill ctrlCommit 0;
+[_display] call bn_koth_fnc_menu_refreshProgressionHeader;
 
 private _sideLabel = "UNASSIGNED";
 if (!isNull player) then {
@@ -258,7 +260,7 @@ private _loadoutPages = [
 [_ctrlNavStats, _activePage isEqualTo "STATS"] call _setNavState;
 [_ctrlNavProgression, _activePage isEqualTo "PROGRESSION"] call _setNavState;
 
-private _mainViewControls = [
+private _loadoutContentControls = [
     _ctrlLoadoutBgPrimary,
     _ctrlLoadoutBgHandgun,
     _ctrlLoadoutBgLauncher,
@@ -304,11 +306,14 @@ private _mainViewControls = [
     _ctrlBinocularButton,
     _ctrlEquipmentButton,
     _ctrlCargoButton,
-    _ctrlSectionTitle,
-    _ctrlNotice,
-    _ctrlFooter,
     _ctrlKitManage,
     _ctrlKitSaveCurrent
+];
+
+private _mainViewControls = _loadoutContentControls + [
+    _ctrlSectionTitle,
+    _ctrlNotice,
+    _ctrlFooter
 ];
 
 private _selectorViewControls = [
@@ -350,6 +355,166 @@ private _cargoBrowserControls = [
 
 private _kitManagerControls = [_ctrlKitName, _ctrlKitSave, _ctrlKitRename];
 
+// Store V1 deliberately reuses these fixed controls, but owns their
+// visibility, geometry, text, and actions while STORE is active.
+private _storeViewControls = [
+    _ctrlPrimaryPreview,
+    _ctrlPrimaryDetail,
+    _ctrlPrimaryBack,
+    _ctrlPrimaryApply,
+    _ctrlBrowserTitle,
+    _ctrlBrowserSubtitle,
+    _ctrlBrowserBack,
+    _ctrlBrowserPagePrevious,
+    _ctrlBrowserPageNext,
+    _ctrlBrowserPageLabel
+];
+
+private _perkViewControls = [
+    _ctrlPerksTitle,
+    _ctrlPerksSubtitle,
+    _ctrlPerksActive,
+    _ctrlPerksBack,
+    _ctrlPerksPagePrevious,
+    _ctrlPerksPageNext,
+    _ctrlPerksPageLabel
+];
+{
+    _perkViewControls append [
+        _display displayCtrl _x,
+        _display displayCtrl (_x + 1),
+        _display displayCtrl (_x + 2),
+        _display displayCtrl (_x + 3),
+        _display displayCtrl (_x + 4),
+        _display displayCtrl (_x + 5)
+    ];
+} forEach [
+    BN_KOTH_IDC_MENU_PERKS_CARD_1_BG,
+    BN_KOTH_IDC_MENU_PERKS_CARD_2_BG,
+    BN_KOTH_IDC_MENU_PERKS_CARD_3_BG,
+    BN_KOTH_IDC_MENU_PERKS_CARD_4_BG
+];
+
+// Every route begins with PERKS' independently owned pool hidden. The PERKS
+// view is the only owner that may reveal or mutate these controls.
+{_x ctrlShow false} forEach _perkViewControls;
+
+private _masteryViewControls = [
+    _ctrlMasteryTitle,
+    _ctrlMasterySubtitle,
+    _ctrlMasteryBack,
+    _ctrlMasteryRank,
+    _ctrlMasteryLevel,
+    _ctrlMasteryXp,
+    _ctrlMasteryXpTrack,
+    _ctrlMasteryXpFill,
+    _ctrlMasteryHelp,
+    _ctrlMasteryFilterProgress,
+    _ctrlMasteryFilterCompleted,
+    _ctrlMasteryFilterAll,
+    _ctrlMasteryEmpty,
+    _ctrlMasteryPagePrevious,
+    _ctrlMasteryPageNext,
+    _ctrlMasteryPageLabel
+];
+{
+    _masteryViewControls append [
+        _display displayCtrl _x,
+        _display displayCtrl (_x + 1),
+        _display displayCtrl (_x + 2),
+        _display displayCtrl (_x + 3),
+        _display displayCtrl (_x + 4),
+        _display displayCtrl (_x + 5),
+        _display displayCtrl (_x + 6)
+    ];
+} forEach [
+    BN_KOTH_IDC_MENU_MASTERY_CARD_1_BG,
+    BN_KOTH_IDC_MENU_MASTERY_CARD_2_BG,
+    BN_KOTH_IDC_MENU_MASTERY_CARD_3_BG,
+    BN_KOTH_IDC_MENU_MASTERY_CARD_4_BG
+];
+{_x ctrlShow false} forEach _masteryViewControls;
+
+private _statsViewControls = [];
+{_statsViewControls pushBack (_display displayCtrl _x)} forEach [
+    BN_KOTH_IDC_MENU_STATS_TITLE, BN_KOTH_IDC_MENU_STATS_SUBTITLE, BN_KOTH_IDC_MENU_STATS_BACK,
+    BN_KOTH_IDC_MENU_STATS_CAREER_BG, BN_KOTH_IDC_MENU_STATS_CAREER_TITLE, BN_KOTH_IDC_MENU_STATS_RANK,
+    BN_KOTH_IDC_MENU_STATS_LEVEL, BN_KOTH_IDC_MENU_STATS_XP, BN_KOTH_IDC_MENU_STATS_CASH, BN_KOTH_IDC_MENU_STATS_CAREER_STATE,
+    BN_KOTH_IDC_MENU_STATS_TILE_1, BN_KOTH_IDC_MENU_STATS_TILE_2, BN_KOTH_IDC_MENU_STATS_TILE_3,
+    BN_KOTH_IDC_MENU_STATS_TILE_4, BN_KOTH_IDC_MENU_STATS_TILE_5, BN_KOTH_IDC_MENU_STATS_TILE_6,
+    BN_KOTH_IDC_MENU_STATS_TILE_7, BN_KOTH_IDC_MENU_STATS_TILE_8, BN_KOTH_IDC_MENU_STATS_TILE_9,
+    BN_KOTH_IDC_MENU_STATS_LEADER_BG, BN_KOTH_IDC_MENU_STATS_LEADER_TITLE,
+    BN_KOTH_IDC_MENU_STATS_PERIOD_24H, BN_KOTH_IDC_MENU_STATS_PERIOD_7D, BN_KOTH_IDC_MENU_STATS_PERIOD_30D, BN_KOTH_IDC_MENU_STATS_PERIOD_ALL,
+    BN_KOTH_IDC_MENU_STATS_MODE_TOP, BN_KOTH_IDC_MENU_STATS_MODE_AROUND, BN_KOTH_IDC_MENU_STATS_TABLE_HEADER,
+    BN_KOTH_IDC_MENU_STATS_ROW_1, BN_KOTH_IDC_MENU_STATS_ROW_2, BN_KOTH_IDC_MENU_STATS_ROW_3,
+    BN_KOTH_IDC_MENU_STATS_ROW_4, BN_KOTH_IDC_MENU_STATS_ROW_5, BN_KOTH_IDC_MENU_STATS_ROW_6,
+    BN_KOTH_IDC_MENU_STATS_ROW_7, BN_KOTH_IDC_MENU_STATS_ROW_8, BN_KOTH_IDC_MENU_STATS_ROW_9,
+    BN_KOTH_IDC_MENU_STATS_ROW_10, BN_KOTH_IDC_MENU_STATS_LEADER_STATE, BN_KOTH_IDC_MENU_STATS_POSITION
+];
+{_x ctrlShow false} forEach _statsViewControls;
+
+private _operatorControls = [
+    _ctrlBgLeft,
+    _ctrlOperatorTitle,
+    _ctrlOperatorName,
+    _ctrlOperatorTeam,
+    _ctrlOperatorRoleLabel,
+    _ctrlOperatorRole,
+    _ctrlPlayerPreview
+];
+
+private _setDefaultWorkspaceGeometry = {
+    private _menuX = safeZoneX + safeZoneW * 0.02;
+    private _menuY = safeZoneY + safeZoneH * 0.03;
+    private _menuW = safeZoneW * 0.96;
+    private _menuH = safeZoneH * 0.94;
+    private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
+    private _mainH = _menuH * 0.78;
+    private _bottomY = _mainY + _mainH + safeZoneH * 0.012;
+    private _bottomH = _menuY + _menuH - _bottomY;
+    private _gap = safeZoneW * 0.01;
+    private _leftW = _menuW * 0.34;
+    private _centerW = _menuW * 0.28;
+    private _centerX = _menuX + _leftW + _gap;
+    private _browserX = _menuX + _leftW + _gap;
+    private _browserW = _menuW - _leftW - _gap;
+
+    _ctrlBrowserWorkspace ctrlSetPosition [_browserX, _mainY, _browserW, _mainH];
+    _ctrlBrowserTitle ctrlSetPosition [_browserX + safeZoneW * 0.014, _mainY + safeZoneH * 0.016, _browserW * 0.40, safeZoneH * 0.035];
+    _ctrlBrowserSubtitle ctrlSetPosition [_browserX + safeZoneW * 0.014, _mainY + safeZoneH * 0.052, _browserW * 0.40, safeZoneH * 0.024];
+    _ctrlBrowserBack ctrlSetPosition [_menuX + _menuW - safeZoneW * 0.132, _bottomY + safeZoneH * 0.014, safeZoneW * 0.12, _bottomH - safeZoneH * 0.028];
+    _ctrlPrimaryPreview ctrlSetPosition [_menuX + _leftW * 0.08, _mainY + safeZoneH * 0.215, _leftW * 0.84, safeZoneH * 0.30];
+    _ctrlPrimaryDetail ctrlSetPosition [_centerX + safeZoneW * 0.012, _mainY + safeZoneH * 0.404, _centerW * 0.92, safeZoneH * 0.085];
+    _ctrlPrimaryBack ctrlSetPosition [_menuX + _menuW - safeZoneW * 0.132, _bottomY + safeZoneH * 0.014, safeZoneW * 0.12, _bottomH - safeZoneH * 0.028];
+    _ctrlPrimaryApply ctrlSetPosition [_centerX + _centerW * 0.48, _mainY + _mainH - safeZoneH * 0.095, _centerW * 0.44, safeZoneH * 0.04];
+    _ctrlBrowserPagePrevious ctrlSetPosition [_browserX + _browserW * 0.38, _mainY + _mainH - safeZoneH * 0.060, safeZoneW * 0.038, safeZoneH * 0.034];
+    _ctrlBrowserPageNext ctrlSetPosition [_browserX + _browserW * 0.58, _mainY + _mainH - safeZoneH * 0.060, safeZoneW * 0.038, safeZoneH * 0.034];
+    _ctrlBrowserPageLabel ctrlSetPosition [_browserX + _browserW * 0.43, _mainY + _mainH - safeZoneH * 0.056, _browserW * 0.15, safeZoneH * 0.028];
+    {
+        _x ctrlCommit 0;
+    } forEach [
+        _ctrlBrowserWorkspace,
+        _ctrlBrowserTitle,
+        _ctrlBrowserSubtitle,
+        _ctrlBrowserBack,
+        _ctrlPrimaryPreview,
+        _ctrlPrimaryDetail,
+        _ctrlPrimaryBack,
+        _ctrlPrimaryApply,
+        _ctrlBrowserPagePrevious,
+        _ctrlBrowserPageNext,
+        _ctrlBrowserPageLabel
+    ];
+
+    _ctrlBrowserBack buttonSetAction "['LOADOUT'] call bn_koth_fnc_menu_refresh;";
+    _ctrlPrimaryBack buttonSetAction "if (((uiNamespace getVariable ['BN_KOTH_menuActivePage', '']) isEqualTo 'LOADOUT_EQUIPMENT') && {(uiNamespace getVariable ['BN_KOTH_menuAssignedStage', 1]) isEqualTo 2}) then {uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 1]; uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', -1]; ['LOADOUT_EQUIPMENT'] call bn_koth_fnc_menu_refresh;} else {['LOADOUT'] call bn_koth_fnc_menu_refresh;};";
+    _ctrlPrimaryApply buttonSetAction "[] call bn_koth_fnc_menu_applyPrimary;";
+    _ctrlBrowserPagePrevious buttonSetAction "";
+    _ctrlBrowserPageNext buttonSetAction "";
+
+    [_display, _browserX + safeZoneW * 0.010, _mainY + safeZoneH * 0.105, _browserW - safeZoneW * 0.020, _mainH - safeZoneH * 0.170] call bn_koth_fnc_menu_layoutItemCards;
+};
+
 {
     _browserCardControls append [
         _display displayCtrl _x,
@@ -378,6 +543,8 @@ private _navControls = [
 ];
 
 private _showMainView = {
+    call _setDefaultWorkspaceGeometry;
+    {_x ctrlShow true} forEach _operatorControls;
     _ctrlBrowserWorkspace ctrlShow false;
     { _x ctrlShow true; } forEach _mainViewControls;
     { _x ctrlShow false; } forEach _selectorViewControls;
@@ -390,6 +557,8 @@ private _showMainView = {
 };
 
 private _showSelectorView = {
+    call _setDefaultWorkspaceGeometry;
+    {_x ctrlShow true} forEach _operatorControls;
     _ctrlBrowserWorkspace ctrlShow false;
     { _x ctrlShow false; } forEach _mainViewControls;
     { _x ctrlShow true; } forEach _selectorViewControls;
@@ -402,6 +571,8 @@ private _showSelectorView = {
 };
 
 private _showBrowserView = {
+    call _setDefaultWorkspaceGeometry;
+    {_x ctrlShow true} forEach _operatorControls;
     _ctrlBrowserWorkspace ctrlShow true;
     { _x ctrlShow false; } forEach _mainViewControls;
     { _x ctrlShow false; } forEach _selectorViewControls;
@@ -421,42 +592,108 @@ private _showConfigureView = {
 private _showComingSoon = {
     params ["_pageName"];
     call _showMainView;
+    { _x ctrlShow false; } forEach _loadoutContentControls;
 
     _ctrlSectionTitle ctrlSetText _pageName;
     _ctrlNotice ctrlSetText "FEATURE COMING SOON";
     _ctrlFooter ctrlSetText "This section is planned but not implemented in this slice.";
 
-    {
-        (_x select 0) ctrlSetText format ["%1: --", _x select 1];
-    } forEach [
-        [_ctrlPrimary, "PRIMARY"],
-        [_ctrlHandgun, "HANDGUN"],
-        [_ctrlLauncher, "LAUNCHER"],
-        [_ctrlUniform, "UNIFORM"],
-        [_ctrlVest, "VEST"],
-        [_ctrlHeadgear, "HEADGEAR"],
-        [_ctrlBackpack, "BACKPACK"],
-        [_ctrlFacewear, "FACEWEAR"],
-        [_ctrlBinocular, "BINOCULAR"],
-        [_ctrlEquipment, "EQUIPMENT"]
-    ];
+};
 
-    {
-        _x ctrlSetText "";
-        _x ctrlEnable false;
-    } forEach [
-        _ctrlPrimaryButton,
-        _ctrlHandgunButton,
-        _ctrlLauncherButton,
-        _ctrlUniformButton,
-        _ctrlVestButton,
-        _ctrlBackpackButton,
-        _ctrlHeadgearButton,
-        _ctrlFacewearButton,
-        _ctrlBinocularButton,
-        _ctrlEquipmentButton,
-        _ctrlCargoButton
-    ];
+private _showStoreView = {
+    private _menuX = safeZoneX + safeZoneW * 0.02;
+    private _menuY = safeZoneY + safeZoneH * 0.03;
+    private _menuW = safeZoneW * 0.96;
+    private _menuH = safeZoneH * 0.94;
+    private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
+    private _mainH = _menuH * 0.78;
+    _ctrlBrowserWorkspace ctrlSetPosition [_menuX, _mainY, _menuW, _mainH];
+    _ctrlBrowserWorkspace ctrlCommit 0;
+    {_x ctrlShow false} forEach _operatorControls;
+    _ctrlBrowserWorkspace ctrlShow true;
+    { _x ctrlShow false; } forEach _mainViewControls;
+    { _x ctrlShow false; } forEach _selectorViewControls;
+    { _x ctrlShow false; } forEach _browserViewControls;
+    { _x ctrlShow false; } forEach _browserCardControls;
+    { _x ctrlShow false; } forEach _configureViewControls;
+    { _x ctrlShow false; } forEach _cargoBrowserControls;
+    { _x ctrlShow false; } forEach _kitManagerControls;
+    { _x ctrlShow false; } forEach _navControls;
+    { _x ctrlShow true; } forEach _storeViewControls;
+};
+
+private _showPerksView = {
+    private _menuX = safeZoneX + safeZoneW * 0.02;
+    private _menuY = safeZoneY + safeZoneH * 0.03;
+    private _menuW = safeZoneW * 0.96;
+    private _menuH = safeZoneH * 0.94;
+    private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
+    private _mainH = _menuH * 0.78;
+    _ctrlBrowserWorkspace ctrlSetPosition [_menuX, _mainY, _menuW, _mainH];
+    _ctrlBrowserWorkspace ctrlCommit 0;
+    {_x ctrlShow false} forEach _operatorControls;
+    _ctrlBrowserWorkspace ctrlShow true;
+    {_x ctrlShow false} forEach _mainViewControls;
+    {_x ctrlShow false} forEach _selectorViewControls;
+    {_x ctrlShow false} forEach _browserViewControls;
+    {_x ctrlShow false} forEach _browserCardControls;
+    {_x ctrlShow false} forEach _configureViewControls;
+    {_x ctrlShow false} forEach _cargoBrowserControls;
+    {_x ctrlShow false} forEach _kitManagerControls;
+    {_x ctrlShow false} forEach _navControls;
+    {_x ctrlShow false} forEach _storeViewControls;
+    {_x ctrlShow true} forEach _perkViewControls;
+};
+
+private _showProgressionView = {
+    private _menuX = safeZoneX + safeZoneW * 0.02;
+    private _menuY = safeZoneY + safeZoneH * 0.03;
+    private _menuW = safeZoneW * 0.96;
+    private _menuH = safeZoneH * 0.94;
+    private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
+    private _mainH = _menuH * 0.78;
+    private _bottomY = _mainY + _mainH + safeZoneH * 0.012;
+    private _bottomH = _menuY + _menuH - _bottomY;
+    _ctrlBrowserWorkspace ctrlSetPosition [_menuX, _mainY, _menuW, _mainH];
+    _ctrlBrowserWorkspace ctrlCommit 0;
+    {_x ctrlShow false} forEach _operatorControls;
+    _ctrlBrowserWorkspace ctrlShow true;
+    {_x ctrlShow false} forEach _mainViewControls;
+    {_x ctrlShow false} forEach _selectorViewControls;
+    {_x ctrlShow false} forEach _browserViewControls;
+    {_x ctrlShow false} forEach _browserCardControls;
+    {_x ctrlShow false} forEach _configureViewControls;
+    {_x ctrlShow false} forEach _cargoBrowserControls;
+    {_x ctrlShow false} forEach _kitManagerControls;
+    {_x ctrlShow false} forEach _navControls;
+    {_x ctrlShow false} forEach _storeViewControls;
+    {_x ctrlShow false} forEach _perkViewControls;
+    {_x ctrlShow true} forEach _masteryViewControls;
+};
+
+private _showStatsView = {
+    private _menuX = safeZoneX + safeZoneW * 0.02;
+    private _menuY = safeZoneY + safeZoneH * 0.03;
+    private _menuW = safeZoneW * 0.96;
+    private _menuH = safeZoneH * 0.94;
+    private _mainY = _menuY + (_menuH * 0.095) + safeZoneH * 0.012;
+    private _mainH = _menuH * 0.78;
+    _ctrlBrowserWorkspace ctrlSetPosition [_menuX, _mainY, _menuW, _mainH];
+    _ctrlBrowserWorkspace ctrlCommit 0;
+    {_x ctrlShow false} forEach _operatorControls;
+    _ctrlBrowserWorkspace ctrlShow true;
+    {_x ctrlShow false} forEach _mainViewControls;
+    {_x ctrlShow false} forEach _selectorViewControls;
+    {_x ctrlShow false} forEach _browserViewControls;
+    {_x ctrlShow false} forEach _browserCardControls;
+    {_x ctrlShow false} forEach _configureViewControls;
+    {_x ctrlShow false} forEach _cargoBrowserControls;
+    {_x ctrlShow false} forEach _kitManagerControls;
+    {_x ctrlShow false} forEach _navControls;
+    {_x ctrlShow false} forEach _storeViewControls;
+    {_x ctrlShow false} forEach _perkViewControls;
+    {_x ctrlShow false} forEach _masteryViewControls;
+    {_x ctrlShow true} forEach _statsViewControls;
 };
 
 if !(_activePage isEqualTo "LOADOUT_ATTACHMENTS") then {
@@ -479,6 +716,42 @@ private _showKitManagerView = {
 private _showCargoBrowserView = {
     call _showBrowserView;
     { _x ctrlShow true; } forEach _cargoBrowserControls;
+};
+
+if (_activePage isEqualTo "STORE") exitWith {
+    call _showStoreView;
+    [_display] call bn_koth_fnc_menu_refreshStore;
+};
+
+if (_activePage isEqualTo "PERKS") exitWith {
+    call _showPerksView;
+    [_display] call bn_koth_fnc_menu_refreshPerks;
+};
+
+if (_activePage isEqualTo "PROGRESSION") exitWith {
+    if !(_previousPage isEqualTo "PROGRESSION") then {
+        uiNamespace setVariable ["BN_KOTH_menuMasteryFilter", "IN_PROGRESS"];
+        uiNamespace setVariable ["BN_KOTH_menuMasteryPage", 0];
+    };
+    call _showProgressionView;
+    [_display] call bn_koth_fnc_menu_refreshProgression;
+};
+
+if (_activePage isEqualTo "STATS") exitWith {
+    if !(_previousPage isEqualTo "STATS") then {
+        uiNamespace setVariable ["BN_KOTH_menuStatsLifecycle", (uiNamespace getVariable ["BN_KOTH_menuStatsLifecycle", 0]) + 1];
+        uiNamespace setVariable ["BN_KOTH_menuStatsDeferred", false];
+        uiNamespace setVariable ["BN_KOTH_menuStatsLastRequest", -100];
+        uiNamespace setVariable ["BN_KOTH_menuStatsLatestRequestId", -1];
+        uiNamespace setVariable ["BN_KOTH_menuStatsMetric", 1];
+        uiNamespace setVariable ["BN_KOTH_menuStatsPeriod", 0];
+        uiNamespace setVariable ["BN_KOTH_menuStatsMode", "TOP"];
+        uiNamespace setVariable ["BN_KOTH_menuStatsResponse", createHashMap];
+        uiNamespace setVariable ["BN_KOTH_menuStatsLoading", true];
+    };
+    call _showStatsView;
+    [_display] call bn_koth_fnc_menu_refreshStats;
+    if !(_previousPage isEqualTo "STATS") then {[] call bn_koth_fnc_menu_requestStats};
 };
 
 if !(_activePage in _loadoutPages) exitWith {

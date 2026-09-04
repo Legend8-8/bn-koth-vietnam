@@ -6,18 +6,20 @@
         sides, suicide/teamkill/valid-PvP, and round state. Method and weapon
         fields are currently display-grade kill-feed attribution only and
         must not be used for weapon progression or other authoritative
-        progression decisions until dedicated combat attribution exists.
+        progression decisions. The separate weaponAttribution field contains
+        the fail-closed server evidence used by weapon mastery.
     Execution: Server
     Parameters:
         0: Dead unit <OBJECT>
         1: Engine-reported killer <OBJECT>
         2: Engine-reported instigator <OBJECT> (optional, e.g. a vehicle's gunner)
+        3: Fail-closed weapon attribution result <HASHMAP>
     Returns:
         Canonical kill record, or an empty HashMap if the kill was ignored <HASHMAP>
     Public: Yes
 */
 
-params ["_killed", "_killer", ["_instigator", objNull]];
+params ["_killed", "_killer", ["_instigator", objNull], ["_weaponAttribution", createHashMap, [createHashMap]]];
 
 if (!isServer) exitWith {createHashMap};
 if (isNull _killed) exitWith {createHashMap};
@@ -58,9 +60,12 @@ private _validPvp = _hasIdentifiedKiller && {!_suicide} && {!_teamkill};
 // weapon progression, unlocks, rewards, or persisted statistics.
 private _method = "other";
 private _weaponDisplay = "";
+private _killerInVehicle = false;
 if (_hasIdentifiedKiller) then {
     private _killerVeh = vehicle _effKiller;
-    _method = if (_killerVeh isEqualTo _effKiller) then {
+    _killerInVehicle = !(_killerVeh isEqualTo _effKiller);
+
+    _method = if (!_killerInVehicle) then {
         "direct"
     } else {
         if (_killerVeh isKindOf "Air") then {
@@ -72,10 +77,17 @@ if (_hasIdentifiedKiller) then {
         };
     };
 
-    private _weaponClass = currentWeapon _effKiller;
-    if !(_weaponClass isEqualTo "") then {
-        _weaponDisplay = getText (configFile >> "CfgWeapons" >> _weaponClass >> "displayName");
-        if (_weaponDisplay isEqualTo "") then { _weaponDisplay = _weaponClass };
+    if (_killerInVehicle) then {
+        // Kill feed shows the mount, not the specific weapon/turret fired -
+        // register the vehicle itself as the credited weapon.
+        _weaponDisplay = getText (configFile >> "CfgVehicles" >> typeOf _killerVeh >> "displayName");
+        if (_weaponDisplay isEqualTo "") then { _weaponDisplay = typeOf _killerVeh };
+    } else {
+        private _weaponClass = currentWeapon _effKiller;
+        if !(_weaponClass isEqualTo "") then {
+            _weaponDisplay = getText (configFile >> "CfgWeapons" >> _weaponClass >> "displayName");
+            if (_weaponDisplay isEqualTo "") then { _weaponDisplay = _weaponClass };
+        };
     };
 };
 
@@ -101,18 +113,20 @@ _kill set ["teamkill", _teamkill];
 _kill set ["validPvp", _validPvp];
 _kill set ["method", _method];
 _kill set ["weapon", _weaponDisplay];
+_kill set ["killerInVehicle", _killerInVehicle];
 _kill set ["distanceText", _distText];
 _kill set ["roundActive", _roundState isEqualTo "ACTIVE"];
+_kill set ["weaponAttribution", _weaponAttribution];
+_kill set ["eventKey", format ["%1:%2:%3", _victimUid, netId _killed, diag_tickTime]];
 
 [format [
-    "combat_handleKill: victim=%1(%2) killer=%3(%4) suicide=%5 teamkill=%6 validPvp=%7 method=%8 weapon=%9 dist=%10 round=%11",
-    _victimUid, _victimSide, _killerUid, _killerSide, _suicide, _teamkill, _validPvp, _method, _weaponDisplay, _distText, _roundState
+    "combat_handleKill: victim=%1(%2) killer=%3(%4) suicide=%5 teamkill=%6 validPvp=%7 method=%8 weapon=%9 killerInVehicle=%10 dist=%11 round=%12",
+    _victimUid, _victimSide, _killerUid, _killerSide, _suicide, _teamkill, _validPvp, _method, _weaponDisplay, _killerInVehicle, _distText, _roundState
 ], "INFO"] call bn_koth_fnc_common_log;
 
-// Future progression/reward/stat consumers may use the authoritative identity
-// fields in this record, but must not use the current method/weapon fields for
-// weapon-specific progression until a dedicated combat attribution layer
-// provides authoritative source/weapon/ammo attribution.
+// Progression/reward/stat consumers may use the authoritative identity fields.
+// Weapon mastery must use weaponAttribution only, never the display-grade
+// method/weapon fields above.
 
 [_kill] call bn_koth_fnc_combat_publishKillFeed;
 

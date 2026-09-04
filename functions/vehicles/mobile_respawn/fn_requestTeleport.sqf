@@ -38,14 +38,21 @@ if ((serverTime - _lastRequestAt) < _teleportCooldownSeconds) exitWith {
 };
 
 private _activeLocationId = missionNamespace getVariable ["BN_KOTH_activeLocationId", ""];
-private _activeCfg = missionConfigFile >> "CfgBnKothLocations" >> _activeLocationId;
-if !(isClass _activeCfg) exitWith {
+private _locationData = [_activeLocationId] call bn_koth_fnc_zone_getLocationData;
+if !(_locationData isEqualType createHashMap) exitWith {
     ["The active command board is unavailable."] remoteExecCall ["bn_koth_fnc_ui_notify", owner _player];
 };
 
+private _capabilities = [_locationData] call bn_koth_fnc_zone_getVehicleCapabilities;
+private _sideCapabilities = (_capabilities getOrDefault ["sides", createHashMap]) getOrDefault [_sideToken, createHashMap];
+private _commandCapability = (_sideCapabilities getOrDefault ["families", createHashMap]) getOrDefault ["COMMAND", createHashMap];
+if !(_commandCapability getOrDefault ["spawn", false]) exitWith {
+    ["Command vehicle teleport is disabled for this AO."] remoteExecCall ["bn_koth_fnc_ui_notify", owner _player];
+};
+
 private _boardRef = switch (_requestedSide) do {
-    case west: {getText (_activeCfg >> "westCommand_mapboard")};
-    case east: {getText (_activeCfg >> "eastCommand_mapboard")};
+    case west: {_locationData getOrDefault ["westCommand_mapboard", ""]};
+    case east: {_locationData getOrDefault ["eastCommand_mapboard", ""]};
     default {""};
 };
 

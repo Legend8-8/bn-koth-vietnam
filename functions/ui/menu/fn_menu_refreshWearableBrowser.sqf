@@ -30,6 +30,16 @@ if ((count _catalogue) isEqualTo 0) then {
 
 private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
 if !(_progression isEqualType createHashMap) then {_progression = createHashMap};
+private _uid = getPlayerUID player;
+private _assignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
+if !(_assignments isEqualType createHashMap) then {_assignments = createHashMap};
+private _assignedSide = _assignments getOrDefault [_uid, sideUnknown];
+private _sideToken = switch (_assignedSide) do {
+    case west: {"WEST"};
+    case east: {"EAST"};
+    default {""};
+};
+private _requiresAppearance = _slotLower in ["uniform", "vest", "backpack", "headgear", "facewear"];
 private _intendedLoadout = uiNamespace getVariable ["BN_KOTH_menuIntendedLoadout", []];
 private _appliedClass = "";
 private _loadoutIndex = switch (_slotLower) do {case "uniform": {3}; case "vest": {4}; case "backpack": {5}; case "headgear": {6}; case "facewear": {7}; default {8};};
@@ -40,11 +50,36 @@ if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) > _loadoutInd
     };
 };
 
+private _entries = [];
+{
+    private _entry = _x;
+    private _metadata = _entry getOrDefault ["metadata", createHashMap];
+    private _class = _entry getOrDefault ["itemClass", ""];
+    private _entitlement = if (_class isEqualTo "") then {
+        createHashMapFromArray [["entitled", true], ["code", "ENTITLED_CLEAR"]]
+    } else {
+        [_progression, _metadata, _class, _sideToken, _requiresAppearance] call bn_koth_fnc_progression_evaluateItemEntitlementRules
+    };
+    private _code = _entitlement getOrDefault ["code", "LOCKED_STATE"];
+
+    // Appearance-sensitive Arsenal pages expose only reviewed equipment for
+    // the player's faction. The server remains the authority for any intent.
+    if (
+        _requiresAppearance &&
+        {_code in ["LOCKED_SIDE", "LOCKED_APPEARANCE_SIDE", "LOCKED_APPEARANCE_METADATA"]}
+    ) then {continue;};
+
+    private _presentedEntry = createHashMap;
+    {_presentedEntry set [_x, _entry get _x];} forEach (keys _entry);
+    _presentedEntry set ["entitlement", _entitlement];
+    _entries pushBack _presentedEntry;
+} forEach _catalogue;
+
 private _pageSize = count _cardIdcs;
-private _pageCount = (ceil ((count _catalogue) / _pageSize)) max 1;
+private _pageCount = (ceil ((count _entries) / _pageSize)) max 1;
 private _page = uiNamespace getVariable ["BN_KOTH_menuBrowserPage", 0];
 if (uiNamespace getVariable ["BN_KOTH_menuBrowserSnapPending", false]) then {
-    private _appliedIndex = _catalogue findIf {(_x getOrDefault ["itemClass", ""]) isEqualTo _appliedClass};
+    private _appliedIndex = _entries findIf {(_x getOrDefault ["itemClass", ""]) isEqualTo _appliedClass};
     if (_appliedIndex >= 0) then {_page = floor (_appliedIndex / _pageSize)};
     uiNamespace setVariable ["BN_KOTH_menuBrowserSnapPending", false];
 };
@@ -77,15 +112,11 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
 
 {
     private _entryIndex = _forEachIndex + (_page * _pageSize);
-    if (_entryIndex >= (count _catalogue)) then {continue;};
-    private _entry = _catalogue select _entryIndex;
+    if (_entryIndex >= (count _entries)) then {continue;};
+    private _entry = _entries select _entryIndex;
     private _metadata = _entry getOrDefault ["metadata", createHashMap];
     private _class = _entry getOrDefault ["itemClass", ""];
-    private _entitlement = if (_class isEqualTo "") then {
-        createHashMapFromArray [["entitled", true], ["code", "ENTITLED_CLEAR"]]
-    } else {
-        [_progression, _metadata, _class] call bn_koth_fnc_progression_evaluateItemEntitlementRules
-    };
+    private _entitlement = _entry getOrDefault ["entitlement", createHashMap];
     private _entitled = _entitlement getOrDefault ["entitled", false];
     private _code = _entitlement getOrDefault ["code", "LOCKED_STATE"];
     private _isApplied = _class isEqualTo _appliedClass;
@@ -95,6 +126,11 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
             private _missing = _entitlement getOrDefault ["missingPerks", []];
             if ((count _missing) > 0) then {format ["REQUIRES PERK: %1", toUpper (_missing joinString ", ")]} else {"REQUIRED PERK MISSING"}
         };
+        case "LOCKED_SIDE": {"NOT AVAILABLE TO YOUR SIDE"};
+        case "LOCKED_APPEARANCE_SIDE": {"OPPOSING FACTION APPEARANCE"};
+        case "LOCKED_APPEARANCE_METADATA": {"APPEARANCE REVIEW REQUIRED"};
+        case "LOCKED_SIDE_METADATA": {"SIDE POLICY REVIEW REQUIRED"};
+        case "LOCKED_SIDE_STATE": {"SIDE ASSIGNMENT REQUIRED"};
         default {if (_entitled) then {""} else {"ENTITLEMENT UNAVAILABLE"}};
     };
     _x params ["_bg", "_area", "_pic", "_name", "_status", "_overlay", "_lock", "_primary", "_secondary"];

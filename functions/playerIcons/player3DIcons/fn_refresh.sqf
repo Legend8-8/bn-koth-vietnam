@@ -36,25 +36,13 @@ private _activeLookup = createHashMap;
 
 private _maxDistance = missionNamespace getVariable ["BN_KOTH_player3DIconsMaxDistance", 250];
 if (_maxDistance <= 0) then {_maxDistance = 250;};
+private _includeLocalPlayer = missionNamespace getVariable ["BN_KOTH_player3DIconsIncludeLocalPlayer", false];
 private _westColor = missionNamespace getVariable ["BN_KOTH_player3DIconsWestColor", [0.2, 0.55, 1.0, 0.95]];
 private _eastColor = missionNamespace getVariable ["BN_KOTH_player3DIconsEastColor", [0.95, 0.2, 0.15, 0.95]];
 private _sameGroupColor = missionNamespace getVariable ["BN_KOTH_player3DIconsSameGroupColor", [0.95, 0.9, 0.3, 0.9]];
 private _friendlyTexture = missionNamespace getVariable ["BN_KOTH_player3DIconsTexture", "\A3\ui_f\data\map\markers\military\triangle_CA.paa"];
 private _height = missionNamespace getVariable ["BN_KOTH_player3DIconsHeight", 2.2];
 private _drawEntries = [];
-private _debugLocalSelf = missionNamespace getVariable ["BN_KOTH_player3DIconsDebugLocalSelf", false];
-
-if (_debugLocalSelf && {!isNull player} && {alive player}) then {
-    private _playerHeadPos = player modelToWorldVisual (player selectionPosition "neck");
-    _drawEntries pushBack [
-        _playerHeadPos,
-        180,
-        "",
-        _friendlyTexture,
-        [1, 1, 1, 1],
-        false
-    ];
-};
 
 private _eligiblePlayers = allPlayers select {
     private _unit = _x;
@@ -74,6 +62,7 @@ private _eligiblePlayers = allPlayers select {
     && {_assignedSide isEqualTo _mySide}
     && {_isActiveParticipant || {_isActiveState}}
     && {player distance2D _unit <= _maxDistance}
+    && {(_unit isNotEqualTo player) || {_includeLocalPlayer}}
 };
 
 {
@@ -94,6 +83,39 @@ private _eligiblePlayers = allPlayers select {
         false
     ];
 } forEach _eligiblePlayers;
+
+{
+    private _unit = _x;
+    private _markedUntil = _unit getVariable ["BN_KOTH_spottedUntil", -1];
+    private _markedBySide = _unit getVariable ["BN_KOTH_spottedBySide", sideUnknown];
+
+    if (isNull _unit || {!alive _unit} || {_unit isEqualTo player}) then {
+        continue;
+    };
+    if (time >= _markedUntil) then {
+        continue;
+    };
+    if !([_markedBySide] call bn_koth_fnc_teams_validateSide) then {
+        continue;
+    };
+    if (_markedBySide isNotEqualTo _mySide) then {
+        continue;
+    };
+    if (player distance2D _unit > _maxDistance) then {
+        continue;
+    };
+
+    private _unitPos = _unit modelToWorldVisual (_unit selectionPosition "neck");
+    private _color = if (side group _unit isEqualTo west) then {_westColor} else {_eastColor};
+    _drawEntries pushBack [
+        _unitPos,
+        180,
+        "",
+        _friendlyTexture,
+        _color,
+        false
+    ];
+} forEach allPlayers;
 
 uiNamespace setVariable ["BN_KOTH_player3DIconsDrawData", _drawEntries];
 count _drawEntries

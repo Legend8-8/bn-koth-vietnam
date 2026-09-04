@@ -227,6 +227,65 @@ if !(isClass _arsenalCfg) exitWith {
 
 private _compatibilityCfg = _arsenalCfg >> "Equipment" >> "Compatibility";
 
+private _enforceManagedPerks = {
+    params [["_result", createHashMap, [createHashMap]]];
+    if !(_result getOrDefault ["success", false]) exitWith {_result};
+
+    private _loadout = _result getOrDefault ["validatedLoadout", []];
+    private _progressionRegistry = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
+    private _progression = _progressionRegistry getOrDefault [_uid, createHashMap];
+    private _activePerks = if (_progression isEqualType createHashMap) then {
+        _progression getOrDefault ["activePerks", []]
+    } else {
+        []
+    };
+    if !(_activePerks isEqualType []) then {_activePerks = []};
+
+    private _perkRoot = missionConfigFile >> "CfgBnKothPerks" >> "Perks";
+    private _failure = createHashMap;
+
+    if (isClass _perkRoot) then {
+        {
+            private _metadata = [configName _x] call bn_koth_fnc_progression_perks_getConfig;
+            private _perkId = _metadata getOrDefault ["perkId", ""];
+            private _restrictedTraits = _metadata getOrDefault ["restrictedTraits", []];
+            private _restrictedClasses = _metadata getOrDefault ["restrictedClasses", []];
+
+            if (
+                (_metadata getOrDefault ["success", false]) &&
+                {_metadata getOrDefault ["available", false]} &&
+                {!(_perkId in _activePerks)} &&
+                {((count _restrictedTraits) > 0) || {(count _restrictedClasses) > 0}}
+            ) then {
+                private _restrictedItems = [_loadout, _perkId] call bn_koth_fnc_progression_perks_findRestrictedItems;
+                if ((count _restrictedItems) > 0) then {
+                    private _code = _metadata getOrDefault ["restrictionCode", "ERR_PERK_RESTRICTION_INACTIVE"];
+                    private _message = _metadata getOrDefault [
+                        "restrictionMessage",
+                        format ["Activate perk '%1' before applying this managed loadout.", _perkId]
+                    ];
+                    if (_code isEqualTo "") then {_code = "ERR_PERK_RESTRICTION_INACTIVE"};
+                    if (_message isEqualTo "") then {
+                        _message = format ["Activate perk '%1' before applying this managed loadout.", _perkId];
+                    };
+
+                    _failure = [
+                        _code,
+                        _message,
+                        _result getOrDefault ["loadoutId", ""],
+                        _authoritativeSideToken
+                    ] call _fail;
+                };
+            };
+
+            if ((count _failure) > 0) exitWith {};
+        } forEach ("true" configClasses _perkRoot);
+    };
+
+    if ((count _failure) > 0) exitWith {_failure};
+    _result
+};
+
 private _validateWeaponEntitlement = {
     params ["_validatedWeapon"];
 
@@ -362,7 +421,7 @@ if (_requestMode isEqualTo "primary") exitWith {
         ] call _fail
     };
 
-    createHashMapFromArray [
+    [createHashMapFromArray [
         ["success", true],
         ["code", "OK"],
         ["message", "Primary composition request validated and built."],
@@ -372,7 +431,7 @@ if (_requestMode isEqualTo "primary") exitWith {
         ["validatedPrimary", _validatedPrimary],
         ["validatedWeapons", _validatedWeapons],
         ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
-    ]
+    ]] call _enforceManagedPerks
 };
 
 
@@ -608,7 +667,8 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                         private _uniformEntitlement = [
                                             _uid,
                                             "Wearables",
-                                            _uniformClass
+                                            _uniformClass,
+                                            true
                                         ] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                         if !(_uniformEntitlement getOrDefault ["entitled", false]) then {
                                             _slotFailure = createHashMapFromArray [
@@ -699,7 +759,7 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                             ["message", format ["Class '%1' is not a vest item.", _vestClass]]
                                         ];
                                     } else {
-                                        private _entitlement = [_uid,"Wearables",_vestClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        private _entitlement = [_uid,"Wearables",_vestClass,true] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                         if !(_entitlement getOrDefault ["entitled",false]) then {
                                             _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Vest is not entitled for this player."]]];
                                         } else {
@@ -773,7 +833,8 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                     private _backpackEntitlement = [
                                         _uid,
                                         "Wearables",
-                                        _backpackClass
+                                        _backpackClass,
+                                        true
                                     ] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                     if !(_backpackEntitlement getOrDefault ["entitled", false]) then {
                                         _slotFailure = createHashMapFromArray [
@@ -860,7 +921,7 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                             ["message", format ["Class '%1' is not a headgear item.", _headgearClass]]
                                         ];
                                     } else {
-                                        private _entitlement = [_uid,"Wearables",_headgearClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        private _entitlement = [_uid,"Wearables",_headgearClass,true] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                         if !(_entitlement getOrDefault ["entitled",false]) then {
                                             _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Headgear is not entitled for this player."]]];
                                         } else {
@@ -924,7 +985,7 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                     ["message", format ["Facewear '%1' is not publicly available.", _facewearClass]]
                                 ];
                             } else {
-                                private _entitlement = [_uid,"Wearables",_facewearClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                private _entitlement = [_uid,"Wearables",_facewearClass,true] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                 if !(_entitlement getOrDefault ["entitled",false]) then {
                                     _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Facewear is not entitled for this player."]]];
                                 } else {
@@ -962,7 +1023,7 @@ if (_requestMode isEqualTo "weapons") exitWith {
         ] call _fail
     };
 
-    createHashMapFromArray [
+    [createHashMapFromArray [
         ["success", true],
         ["code", "OK"],
         ["message", "Weapon composition request validated and built."],
@@ -972,11 +1033,11 @@ if (_requestMode isEqualTo "weapons") exitWith {
         ["validatedPrimary", _validatedWeapons getOrDefault ["primary", createHashMap]],
         ["validatedWeapons", _validatedWeapons],
         ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
-    ]
+    ]] call _enforceManagedPerks
 };
 
 if (_requestMode isEqualTo "mutation") exitWith {
-    [
+    [[
         _player,
         _mutationRequest,
         _compatibilityCfg,
@@ -984,7 +1045,7 @@ if (_requestMode isEqualTo "mutation") exitWith {
         _assignedSide,
         _authoritativeSideToken,
         _authoritativeBaselineLoadout
-    ] call bn_koth_fnc_loadouts_validateMutation
+    ] call bn_koth_fnc_loadouts_validateMutation] call _enforceManagedPerks
 };
 
 private _definition = _definitions getOrDefault [_requestedLoadoutId, objNull];
@@ -1024,7 +1085,7 @@ if ((count _validatedLoadout) <= 0) exitWith {
 // progression entitlement will be checked here via an explicit registered
 // progression API function owned by functions/progression when implemented.
 
-createHashMapFromArray [
+[createHashMapFromArray [
     ["success", true],
     ["code", "OK"],
     ["message", "Loadout request validated."],
@@ -1034,4 +1095,4 @@ createHashMapFromArray [
     ["validatedPrimary", createHashMap],
     ["validatedWeapons", createHashMap],
     ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
-]
+]] call _enforceManagedPerks

@@ -21,6 +21,8 @@ if ((count _playableSides) < 2) then {
 private _stateMap = createHashMap;
 private _assignmentMap = createHashMap;
 private _nameMap = createHashMap;
+private _levelMap = createHashMap;
+private _progressionByUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
 private _countsMap = createHashMapFromArray [[_playableSides select 0, 0], [_playableSides select 1, 0]];
 
 {
@@ -35,6 +37,14 @@ private _countsMap = createHashMapFromArray [[_playableSides select 0, 0], [_pla
         _stateMap set [_uid, _state];
         _assignmentMap set [_uid, _assignedSide];
         _nameMap set [_uid, _name];
+        private _progression = if (_progressionByUid isEqualType createHashMap) then {
+            _progressionByUid getOrDefault [_uid, createHashMap]
+        } else {
+            createHashMap
+        };
+        private _level = if (_progression isEqualType createHashMap) then {_progression getOrDefault ["level", 1]} else {1};
+        if !(_level isEqualType 0) then {_level = 1};
+        _levelMap set [_uid, floor (_level max 1)];
 
         if (_assignedSide in _playableSides) then {
             private _currentCount = _countsMap getOrDefault [_assignedSide, 0];
@@ -46,4 +56,5 @@ private _countsMap = createHashMapFromArray [[_playableSides select 0, 0], [_pla
 ["BN_KOTH_playerStates", _stateMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_playerTeamAssignments", _assignmentMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_playerNames", _nameMap] call bn_koth_fnc_common_publicState;
+["BN_KOTH_playerLevels", _levelMap] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_teamCounts", _countsMap] call bn_koth_fnc_common_publicState;

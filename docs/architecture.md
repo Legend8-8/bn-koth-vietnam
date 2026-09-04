@@ -19,6 +19,26 @@ The project must remain predictable enough that a developer can identify the loc
 9. Multiplayer locality must be stated in each public function header.
 10. New systems must be documented before they become large.
 
+AO population suitability is server-owned and distinct from vote eligibility.
+The teams system resolves registered, currently connected human players for AO
+sizing regardless of team-selection state; the existing team-selected UID path
+continues to own voting and deployment eligibility. The round system retains
+valid published candidates and reconciles them only when current connected-human
+population invalidates an option, with a final resolution-time defence.
+
+Location vehicle capability is derived centrally from actual convention-resolved
+Eden spawn roles. UI and vehicle systems consume the same side-specific free,
+paid and command capability result; a derivable role name is never authority.
+
+Combat attribution remains server-owned and fail-closed. Bounded event-driven
+collection observes server-visible projectile creation and hit events and
+resolves only generated factual ammo compatibility plus the canonical
+`variantOf` graph. Verbose `CfgBnKothCombat.attributionDiagnostics` RPT output
+is optional. Only one `ATTRIBUTED` canonical infantry root attached to the
+canonical valid-PvP kill record may award weapon mastery; `UNKNOWN`,
+`AMBIGUOUS`, explosive, and non-infantry evidence awards none. Client-reported
+weapon classnames and `currentWeapon` are never authoritative attribution.
+
 3. Function Prefix
 
 All KOTH mission functions use:
@@ -48,6 +68,7 @@ bn-koth-vietnam/
 │   ├── zone/
 │   ├── scoring/
 │   ├── respawn/
+│   ├── traversal/
 │   ├── loadouts/
 │   ├── vehicles/
 │   ├── progression/
@@ -184,6 +205,20 @@ Contains:
 - server-owned safe-zone ground-loot and corpse cleanup;
 - valid spawn selection.
 
+"functions/traversal/"
+
+Contains owning-client traversal behaviour:
+
+- local player-state validation;
+- obstacle, ledge, destination and clearance probing;
+- stock Arma 3/S.O.G. animation selection;
+- local cubic movement execution and interruption recovery;
+- optional client-only RPT and Draw3D diagnostics.
+
+Traversal owns no authoritative game-mode state and exposes no RemoteExec
+endpoint. Its tuning is owned by `CfgBnKothTraversal`, and its input action is
+registered through the existing mission-local gamemode keybinding system.
+
 "functions/loadouts/"
 
 Contains:
@@ -209,17 +244,27 @@ Contains player progression systems:
 
 - `xp/` owns server-authoritative XP awards, level calculation, level progress,
   and Priority-zone, control, and combat reward hooks;
-- `cash/` remains reserved for the future cash/economy system;
+- `cash/` owns server-authoritative session cash initialization, reads, awards,
+  and atomic spending. It consumes the same validated kill/control/Priority
+  reward events as XP and creates no independent eligibility loop;
+- `acquisition/` owns canonical weapon purchase and server-session rental
+  transactions. It calculates the combined cash/entitlement transition once,
+  commits it once, and publishes only the affected player's targeted state;
+- `mastery/` owns the canonical lowercase `weaponKills` map and awards exactly
+  once from fail-closed server attribution on a valid active-round PvP kill;
 - progression entitlement evaluation consumes authoritative level/rule data;
-- future persistent unlocks, perks, licences and reward multipliers belong to
-  progression/persistence boundaries rather than client UI.
+- persistent unlocks and mastery storage cross the progression/persistence
+  boundary; future perks and reward multipliers belong there rather than in UI.
 
-Current progression state is stored in the server-owned
-`BN_KOTH_playerProgression` map keyed by UID. It is session-scoped for now and
-is not yet database-backed. Cumulative XP is the stable progression value;
-level is derived from the config-owned curve so future persistence can load XP
-without duplicating balance rules into the database layer. Clients receive only
-presentation state required for UI.
+Current authoritative progression state is stored in the server-owned
+`BN_KOTH_playerProgression` map keyed by UID. Registration establishes it through
+`functions/persistence/`: load by validated UID, normalize the persistent schema,
+or deliberately create a session fallback/first-time state. Persistent fields are
+`schemaVersion`, `uid`, `xp`, `cash`, `ownedWeapons`, and `weaponKills`. Level is
+always derived from XP. `rentedWeapons` remains server-session-only and resets on
+server restart. Clients receive only
+their own presentation state, including cash, through the existing initial
+snapshot and targeted progression-update path.
 
 Round-only competitive statistics do not belong to progression. They are owned
 by `functions/roundStats/` and reset on the next `ACTIVE` round without changing
@@ -227,14 +272,26 @@ persistent/session progression values.
 
 "functions/persistence/"
 
-Contains future:
+Owns the server-only persistence service boundary, schema normalization,
+first-time defaults, dirty/save scheduling, reconnect recovery, and backend
+adapter calls. The production adapter uses extDB3 SQL_CUSTOM prepared statements;
+the in-memory adapter remains for focused contract tests only. Gameplay systems
+never issue SQL or call extDB3 directly. Numbered files under
+`database/migrations/` own the durable schema. Unsupported future schemas,
+malformed records, and backend failures are logged explicitly. Configured session
+fallback remains server-authoritative, is write-blocked from durable storage, and
+never treats a failed save as a success.
 
-- database loading;
-- database saving;
-- data migration;
-- reconnect recovery.
+"functions/career/"
 
-No other system may communicate directly with the database.
+Owns server-only lifetime career delta batching, connected-session playtime,
+paired lifetime/hourly persistence, and bounded semantic leaderboard queries.
+It consumes decisions already made by combat, round statistics, XP and round
+completion owners. It does not detect kills, deaths, objective presence, XP or
+winners independently. Steam UID is identity; profile name is presentation
+metadata updated against the same UID. Leaderboard callers select only approved
+metric/period/mode IDs and bounded result sizes; SQL_CUSTOM statement selection
+and database access remain server-only.
 
 "functions/ui/"
 
@@ -363,13 +420,16 @@ Initial required dependencies:
 - Arma 3;
 - S.O.G. Prairie Fire.
 
-The project does not initially depend on:
+The project does not depend on:
 
 - Paradigm;
 - Mike Force;
 - CBA;
-- extDB3;
 - another KOTH mission or framework.
+
+Dedicated production persistence additionally requires the documented extDB3
+and MariaDB/MySQL server deployment. extDB3 remains an adapter dependency, not a
+gameplay or client dependency.
 
 External dependencies must not be introduced without a documented reason and agreement from the project maintainers.
 
@@ -386,3 +446,44 @@ A feature is complete only when:
 - no unrelated system behaviour is duplicated;
 - it has been tested on a dedicated server;
 - relevant documentation has been updated.
+
+13. Store Transaction Boundary
+
+The deployed Store is a global canonical-weapon discovery and acquisition
+client. It reads targeted progression state for presentation and submits only
+operation/classname intent. A narrow server endpoint derives the caller from
+`remoteExecutedOwner`, delegates to the existing acquisition owner, returns
+the structured result only to that requester, and relies on the existing
+targeted progression update for cash/ownership/rental repaint. Store
+transactions never auto-equip a weapon.
+
+14. Vehicle Progression Boundary
+
+`CfgBnKothVehicles >> Metadata >> Vehicles` owns human-authored vehicle
+progression and provisional economy policy. Canonical roots own side, level,
+price, Store category and role fields; an explicitly authored structural
+variant may contain only `variantOf` and inherits the root policy. Runtime must
+not infer relationships or Store grouping from classnames.
+
+The one-time factual source audit is stored in `data/vehicle_inventory.csv`.
+It records public physical EAST/WEST S.O.G. classes and official table facts
+only. It is not runtime configuration and owns no KOTH entitlement or balance
+policy. Because the official tables do not prove vehicle inheritance, the
+current metadata authors only a curated combat-progression surface and
+declares no vehicle `variantOf` relationships. Paint, faction and support-only
+copies remain audit rows, not progression products.
+
+`functions/vehicles/` owns config lookup, pure side/level/perk eligibility and
+the authoritative one-life rental lifecycle. RENT is the complete transaction:
+it validates eligibility and affordability, reserves an authored paid pad,
+creates and sanitizes the exact curated vehicle, registers UID-owned access
+state, and only then charges cash exactly once. One UID may hold at most one
+active rented vehicle at a time; there is no pending/requisition stage. Rental
+state never persists. The managed free-vehicle and command-vehicle lifecycles
+remain separate, and a
+rented M577 receives no managed command capability.
+# Perk ownership and activation
+
+Perks extend the existing progression/persistence boundary. `ownedPerks` is permanent purchase state; `activePerks` is the persisted, bounded subset whose gameplay effects are enabled. The server owns both arrays, purchase transactions, active-slot validation, and managed-loadout enforcement. Clients receive only a targeted presentation projection and submit narrow perk intents.
+
+The Suppressor perk is enforced only when constructing or applying a managed loadout. Battlefield pickups remain ordinary Arma inventory state and are not polled or deleted. Confirmed deactivation first replaces the server-owned intended loadout with a catalogue-derived suppressor-free loadout, applies that server-derived loadout through the existing local application path, and only then finalizes deactivation.

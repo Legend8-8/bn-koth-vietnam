@@ -84,6 +84,13 @@ private _setLine = {
     _ctrl ctrlSetText format ["%1: %2", _label, _value];
 };
 
+private _fitRowValue = {
+    params ["_value"];
+    private _maximumLength = 34;
+    if ((count _value) <= _maximumLength) exitWith {_value};
+    format ["%1...", _value select [0, _maximumLength - 3]]
+};
+
 private _ctrlTextPrimary = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_PRIMARY;
 private _ctrlTextHandgun = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_HANDGUN;
 private _ctrlTextLauncher = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_TEXT_LAUNCHER;
@@ -103,6 +110,8 @@ private _ctrlPicEquipment = _display displayCtrl BN_KOTH_IDC_MENU_LOADOUT_PIC_EQ
 private _ctrlSectionTitle = _display displayCtrl BN_KOTH_IDC_MENU_SECTION_TITLE;
 private _ctrlNotice = _display displayCtrl BN_KOTH_IDC_MENU_NOTICE;
 private _ctrlFooter = _display displayCtrl BN_KOTH_IDC_MENU_FOOTER_TEXT;
+private _ctrlKitManage = _display displayCtrl BN_KOTH_IDC_MENU_KIT_MANAGE;
+private _ctrlKitSaveCurrent = _display displayCtrl BN_KOTH_IDC_MENU_KIT_SAVE_CURRENT;
 
 private _ctrlPrimary = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_PRIMARY;
 private _ctrlHandgun = _display displayCtrl BN_KOTH_IDC_MENU_SLOT_HANDGUN;
@@ -149,13 +158,8 @@ if ((count _intendedLoadout) > 8) then {
 };
 
 _ctrlSectionTitle ctrlSetText "LOADOUT";
-_ctrlNotice ctrlSetText (
-    if (_arsenalEnabled) then {
-        "SERVER-AUTHORITATIVE INTENDED KIT"
-    } else {
-        "ARSENAL LOCKED - USE YOUR TEAM MAPBOARD"
-    }
-);
+_ctrlNotice ctrlSetText (if (_arsenalEnabled) then {""} else {"ARSENAL LOCKED - USE YOUR TEAM MAPBOARD"});
+_ctrlNotice ctrlShow (!_arsenalEnabled);
 
 {
     _x ctrlShow false;
@@ -215,10 +219,11 @@ private _rowDefs = [
     _x params ["_textCtrl", "_buttonCtrl", "_label", "_value"];
 
     _textCtrl ctrlShow true;
+    private _displayValue = [_value] call _fitRowValue;
     _textCtrl ctrlSetStructuredText parseText format [
-        "<t font='RobotoCondensed' size='0.70' color='#A29D90'>%1</t><br/><t font='PuristaSemiBold' size='1.02' color='#E9E5DB'>%2</t>",
+        "<t font='RobotoCondensed' size='0.66' color='#A29D90'>%1</t><br/><t font='PuristaSemiBold' size='0.88' color='#E9E5DB'>%2</t>",
         _label,
-        _value
+        _displayValue
     ];
 
     _buttonCtrl ctrlSetText "";
@@ -268,4 +273,19 @@ _ctrlPicEquipment ctrlSetText "";
     _x ctrlEnable (!isNull player && {_arsenalEnabled});
 } forEach [_ctrlPrimaryButton, _ctrlHandgunButton, _ctrlLauncherButton, _ctrlUniformButton, _ctrlVestButton, _ctrlBackpackButton, _ctrlHeadgearButton, _ctrlEquipmentButton];
 
-_ctrlFooter ctrlSetText "";
+private _editKitId = uiNamespace getVariable ["BN_KOTH_menuKitEditId", ""];
+if !(_editKitId isEqualTo "") then {
+    _ctrlFooter ctrlSetText "";
+    _ctrlFooter ctrlShow false;
+    _ctrlKitManage ctrlSetText "CANCEL EDIT";
+    _ctrlKitManage buttonSetAction "uiNamespace setVariable ['BN_KOTH_menuKitEditId','']; uiNamespace setVariable ['BN_KOTH_menuKitEditName','']; ['LOADOUT'] call bn_koth_fnc_menu_refresh;";
+    _ctrlKitSaveCurrent ctrlSetText "SAVE CHANGES";
+    _ctrlKitSaveCurrent buttonSetAction format ["%1 call bn_koth_fnc_menu_saveSessionKit;", str ["", _editKitId, "UPDATE"]];
+} else {
+    _ctrlFooter ctrlSetText "";
+    _ctrlFooter ctrlShow false;
+    _ctrlKitManage ctrlSetText "MANAGE LOADOUTS";
+    _ctrlKitManage buttonSetAction "uiNamespace setVariable ['BN_KOTH_menuKitPage',0]; ['LOADOUT_KITS'] call bn_koth_fnc_menu_refresh;";
+    _ctrlKitSaveCurrent ctrlSetText "SAVE CURRENT KIT";
+    _ctrlKitSaveCurrent buttonSetAction "uiNamespace setVariable ['BN_KOTH_menuKitSelectedId','']; ['LOADOUT_KITS'] call bn_koth_fnc_menu_refresh;";
+};

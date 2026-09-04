@@ -2,7 +2,7 @@ class CfgBnKothScoring
 {
 	scoreLimit = 100;
 	scoreTick = 1;
-	scoreTickInterval = 15;
+	scoreTickInterval = 30;
 
 	class progression
 	{
@@ -18,6 +18,15 @@ class CfgBnKothScoring
 		xpLevelLinearStep = 75;
 		xpLevelQuadraticStep = 0.12;
 		maxLevel = 270;
+	};
+
+	class economy
+	{
+		// Provisional session-economy values. Rebalance after economy playtesting.
+		startingCash = 1000;
+		cashPerKill = 50;
+		cashPerControlTick = 10;
+		cashPerPriorityTick = 20;
 	};
 
 	prepareDuration = 10;

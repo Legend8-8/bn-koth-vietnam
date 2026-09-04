@@ -24,9 +24,11 @@ private _keyMap = createHashMapFromArray [
     ["roundState", "BN_KOTH_roundState"],
     ["liveLeaders", "BN_KOTH_liveLeaders"],
     ["playerProgression", "BN_KOTH_playerProgressionLocal"],
+    ["vehicleRentalState", "BN_KOTH_vehicleRentalStateLocal"],
     ["playerStates", "BN_KOTH_playerStates"],
     ["playerTeamAssignments", "BN_KOTH_playerTeamAssignments"],
     ["playerNames", "BN_KOTH_playerNames"],
+    ["playerLevels", "BN_KOTH_playerLevels"],
     ["teamCounts", "BN_KOTH_teamCounts"],
     ["activeParticipants", "BN_KOTH_activeParticipants"],
     ["selectedLocationId", "BN_KOTH_selectedLocationId"],
@@ -68,6 +70,8 @@ private _keyMap = createHashMapFromArray [
 } forEach (keys _payload);
 
 [] call bn_koth_fnc_ui_evaluateStateReadiness;
+[] call bn_koth_fnc_ui_results_update;
+[] call bn_koth_fnc_ui_transition_update;
 [] call bn_koth_fnc_ui_updateLobbyBlackout;
 [] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;
 
@@ -77,5 +81,8 @@ private _keyMap = createHashMapFromArray [
 
 private _menuDisplay = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
 if (!isNull _menuDisplay) then {
+    if ((uiNamespace getVariable ["BN_KOTH_menuActivePage", ""]) isEqualTo "STORE") then {
+        uiNamespace setVariable ["BN_KOTH_menuStoreEntriesRoute", ""];
+    };
     [] call bn_koth_fnc_menu_refresh;
 };

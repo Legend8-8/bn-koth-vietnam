@@ -149,6 +149,26 @@ private _vehicleGroups = createHashMap;
     if (_isTalking) then {_micDrawEntries pushBack [getPosVisual _vehicle];};
 } forEach (keys _vehicleGroups);
 
+{
+    private _unit = _x;
+    if (isNull _unit || {!alive _unit} || {_unit isEqualTo player}) then {
+        continue;
+    };
+
+    private _markedUntil = _unit getVariable ["BN_KOTH_spottedUntil", -1];
+    private _markedBySide = _unit getVariable ["BN_KOTH_spottedBySide", sideUnknown];
+    if (time >= _markedUntil) then {
+        continue;
+    };
+    if (_markedBySide isNotEqualTo _mySide) then {
+        continue;
+    };
+
+    private _markerKey = format ["enemy_%1", netId _unit];
+    private _enemyColor = if (side group _unit isEqualTo west) then {"ColorBlue"} else {"ColorRed"};
+    _markerEntries pushBack [_markerKey, getPosVisual _unit, getDir _unit, "", _markerType, _enemyColor];
+} forEach allPlayers;
+
 private _activeKeys = [];
 {
     _x params ["_key", "_position", "_direction", "_label", "_type", "_color"];

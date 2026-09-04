@@ -18,11 +18,13 @@ private _locationsCfg = missionConfigFile >> "CfgBnKothLocations";
 if (isClass _locationsCfg) then {
     {
         private _cfg = _x;
-        private _zoneMarker = getText (_cfg >> "zoneMarker");
-        private _westRespawn = getText (_cfg >> "respawnWestMarker");
-        private _eastRespawn = getText (_cfg >> "respawnEastMarker");
-        private _westBaseZone = getText (_cfg >> "westBaseZoneMarker");
-        private _eastBaseZone = getText (_cfg >> "eastBaseZoneMarker");
+        private _locationId = configName _cfg;
+        private _locationData = [_locationId] call bn_koth_fnc_zone_getLocationData;
+        private _zoneMarker = _locationData get "zoneMarker";
+        private _westRespawn = _locationData get "respawnWestMarker";
+        private _eastRespawn = _locationData get "respawnEastMarker";
+        private _westBaseZone = _locationData get "westBaseZoneMarker";
+        private _eastBaseZone = _locationData get "eastBaseZoneMarker";
 
         if !(_zoneMarker isEqualTo "") then {
             _zoneMarker setMarkerAlpha 0;
@@ -85,5 +87,10 @@ missionNamespace setVariable ["BN_KOTH_priorityZonePosition", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMarker", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneSize", nil];
 [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
+private _pickupCleanupCount = [] call bn_koth_fnc_zone_cleanupBattlefieldPickups;
 private _runtimeCleanupCount = [] call bn_koth_fnc_zone_cleanupRuntimeObjects;
-[format ["Active AO cleared and runtime content cleaned up: %1 object(s).", _runtimeCleanupCount]] call bn_koth_fnc_common_log;
+[format [
+    "Active AO cleared and runtime content cleaned up: %1 battlefield pickup(s), %2 other object(s).",
+    _pickupCleanupCount,
+    _runtimeCleanupCount
+]] call bn_koth_fnc_common_log;

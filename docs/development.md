@@ -38,3 +38,81 @@ Run build.py to export trimmed mission folders for all maps under maps/<map_name
 When adding or modifying player-representation transitions, use the locality lifecycle documented in docs/multiplayer-locality.md section 4.1 (Representation handoff lifecycle).
 
 Short rule: initPlayerLocal.sqf is client startup only, while bn_koth_fnc_teams_transferRepresentation is the server-owned handoff path for moving a player to a new representation unit.
+
+7. Rank And Equipment Side Metadata
+
+Account rank presentation is configured only under `CfgBnKothRanks` in
+`config/ranks.hpp`. It is insignia-only: there are no player-facing rank names
+or abbreviations. Each band owns `minLevel`, a built-in Arma 3 rank-insignia
+`icon`, and a presentation-only bronze/silver/gold `grade`; grade colours are
+also config-owned. Runtime selects the highest valid threshold not greater than
+the derived account level. Levels below the first configured threshold are the
+recruit period and show no insignia while continuing to show `LEVEL N`.
+
+One shared resolver supplies the lobby local-player card, both WEST/EAST lobby
+rosters, the shared deployed-menu header, and the pause-menu panel. Rank is not
+persisted separately, does not mutate progression, and must never call Arma's
+`setRank`/`setUnitRank`. Do not add mission-owned rank artwork.
+
+Generated `sourceAffiliations[]` is factual S.O.G. provenance only. KOTH
+gameplay availability is human-authored as `allowedSides[]`; visual faction
+identity is separately human-authored as `appearanceSide`; progression fields
+such as `minLevel` remain independent. Never derive one of these policy fields
+from another, and never author policy on a structural weapon variant instead
+of its canonical logical root.
+
+For weapons only, `crossSideAllowed = 1` explicitly opens a cross-side mastery
+path. `allowedSides[]` remains native/default availability and factual
+`sourceAffiliations[]` never enables the path. `masteryKillsRequired` is evaluated
+against the server-owned canonical `weaponKills` map after level passes.
+
+Progression and economy balance values belong in mission config. XP reward and
+curve values are under `CfgBnKothScoring.progression`; provisional session cash
+starting/reward values are under `CfgBnKothScoring.economy`. Server functions
+own cash mutation. Clients may display targeted cash state and submit future
+purchase intent, but must never set or award cash.
+
+Canonical weapon ownership and rental state are server-owned under
+`functions/progression/acquisition/`. Purchase and rent validate the player,
+canonical metadata, side, level, perks, configured price, and cash before one
+combined state commit. Neither operation equips a weapon. Rentals currently
+last for the server session. Store V1 exposes those existing transactions for
+canonical weapons. Provisional playtest prices are human-authored only on
+canonical roots; structural variants inherit them. Rental is currently 20% of
+purchase price. Final price balancing remains future work.
+Cross-side mastery is server-authoritative: level,
+mastery, and perks pass before purchase/rent, and ownership never bypasses them.
+
+Persistent player data is accessed only through `functions/persistence/`.
+Gameplay mutations update `BN_KOTH_playerProgression` and mark the UID dirty;
+the service coalesces saves and flushes at disconnect and mission end. Its schema
+persists XP, cash, canonical ownership, and weapon mastery, while deriving level
+and excluding rentals and round statistics. Production uses the server-only
+`EXTDB3` adapter; `MEMORY` remains a contract-test backend. SQL, SQL_CUSTOM
+protocol strings, serialization, and extension calls stay inside persistence.
+Apply numbered `database/migrations/` files and follow
+`docs/deployment-extdb3.md`; never put database credentials in mission config.
+
+Vehicle progression metadata is separately human-authored under
+`CfgBnKothVehicles >> Metadata >> Vehicles`. Its explicit `storeCategory`
+(`GROUND`, `SEA`, `ROTARY`, or `FIXED_WING`) and `vehicleRole` fields prepare
+future Store grouping without classname heuristics. Vehicle progression does
+not use weapon mastery. Levels and prices are provisional; an authoritative
+one-life RENT transaction exists (see `functions/vehicles/fn_rentVehicle.sqf`),
+but persistence does not. The existing managed free-vehicle system is
+unchanged and does not treat these prices as a spawn requirement.
+
+`data/vehicle_inventory.csv` is a one-time factual audit of the official S.O.G.
+EAST/WEST CfgVehicles tables, not a maintained scraper output. Factual side,
+faction, subcategory and vehicle weapons in that file must never be treated as
+KOTH policy. Human-authored side, level, price, Store category and role remain
+in `config/vehicles.hpp`, which intentionally selects only the combat-relevant
+progression products planned for the Store. No vehicle relationship may be
+inferred from a classname or from a similar display name.
+
+Unclassified combat equipment may temporarily remain uncontrolled. Visual
+equipment (uniforms, vests, backpacks, headgear, and facewear) must have a
+valid matching `appearanceSide` before it can enter an authoritative loadout.
+# Adding perks
+
+Author perk identity, display text, availability, and price under `CfgBnKothPerks`; runtime code must not infer effects from display names. Persistent IDs are lowercase stable tokens. New effects should consume `activePerks`, never ownership alone, and must attach to an existing authoritative gameplay boundary rather than introduce inventory polling or client authority.

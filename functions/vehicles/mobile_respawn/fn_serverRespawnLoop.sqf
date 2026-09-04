@@ -50,24 +50,10 @@ private _trackVehicle = {
     }];
 };
 
-private _resolveSpawnTransform = {
-    params ["_spawnRef"];
-
-    if (_spawnRef isEqualTo "") exitWith {[]};
-
-    if !((markerShape _spawnRef) isEqualTo "") exitWith {
-        [markerPos _spawnRef, markerDir _spawnRef]
-    };
-
-    private _spawnObj = missionNamespace getVariable [_spawnRef, objNull];
-    if (isNull _spawnObj) exitWith {[]};
-
-    [getPosATL _spawnObj, getDir _spawnObj]
-};
-
 private _respawnAtBySide = createHashMapFromArray [["WEST", -1], ["EAST", -1]];
 private _pendingCommandWrecks = createHashMapFromArray [["WEST", objNull], ["EAST", objNull]];
 private _lastActiveLocationId = "";
+private _activeCapabilities = createHashMap;
 
 while {missionNamespace getVariable ["BN_KOTH_commandTeleportMonitorRunning", false]} do {
     private _activeLocationId = missionNamespace getVariable ["BN_KOTH_activeLocationId", ""];
@@ -79,10 +65,14 @@ while {missionNamespace getVariable ["BN_KOTH_commandTeleportMonitorRunning", fa
             if (!isNull _oldVehicle) then {
                 deleteVehicle _oldVehicle;
             };
+            private _oldWreck = _pendingCommandWrecks getOrDefault [_x, objNull];
+            if (!isNull _oldWreck) then {deleteVehicle _oldWreck};
         } forEach ["WEST", "EAST"];
 
         _respawnAtBySide = createHashMapFromArray [["WEST", -1], ["EAST", -1]];
+        _pendingCommandWrecks = createHashMapFromArray [["WEST", objNull], ["EAST", objNull]];
         _lastActiveLocationId = _activeLocationId;
+        _activeCapabilities = createHashMap;
     };
 
     if (_activeLocationId isEqualTo "") then {
@@ -92,37 +82,56 @@ while {missionNamespace getVariable ["BN_KOTH_commandTeleportMonitorRunning", fa
         continue;
     };
 
-    private _locationsCfg = missionConfigFile >> "CfgBnKothLocations";
-    private _activeCfg = _locationsCfg >> _activeLocationId;
-    if !(isClass _activeCfg) then {
+    private _locationData = [_activeLocationId] call bn_koth_fnc_zone_getLocationData;
+    if !(_locationData isEqualType createHashMap) then {
         missionNamespace setVariable ["BN_KOTH_commandBoardDefs", [], true];
         missionNamespace setVariable ["BN_KOTH_commandVehicles", createHashMap, true];
         uiSleep 2;
         continue;
     };
 
-    private _westSpawnRef = getText (_activeCfg >> "westCommand_spawnpoint");
-    private _eastSpawnRef = getText (_activeCfg >> "eastCommand_spawnpoint");
-    private _westBoardRef = getText (_activeCfg >> "westCommand_mapboard");
-    private _eastBoardRef = getText (_activeCfg >> "eastCommand_mapboard");
+    private _westBoardRef = _locationData getOrDefault ["westCommand_mapboard", ""];
+    private _eastBoardRef = _locationData getOrDefault ["eastCommand_mapboard", ""];
+    if ((count _activeCapabilities) <= 0) then {
+        _activeCapabilities = [_locationData] call bn_koth_fnc_zone_getVehicleCapabilities;
+        private _resolvedSides = _activeCapabilities getOrDefault ["sides", createHashMap];
+        {
+            private _command = (((_resolvedSides getOrDefault [_x, createHashMap]) getOrDefault ["families", createHashMap]) getOrDefault ["COMMAND", createHashMap]);
+            if !(_command getOrDefault ["spawn", false]) then {
+                [format ["Command vehicle disabled for location '%1' side=%2: optional command spawn role is unavailable.", _activeLocationId, _x], "WARN"] call bn_koth_fnc_common_log;
+            };
+        } forEach ["WEST", "EAST"];
+    };
+    private _capabilitySides = _activeCapabilities getOrDefault ["sides", createHashMap];
+    private _westCapabilities = _capabilitySides getOrDefault ["WEST", createHashMap];
+    private _eastCapabilities = _capabilitySides getOrDefault ["EAST", createHashMap];
+    private _westCommandEnabled = (((_westCapabilities getOrDefault ["families", createHashMap]) getOrDefault ["COMMAND", createHashMap]) getOrDefault ["spawn", false]) && {!(_westCommandClass isEqualTo "")};
+    private _eastCommandEnabled = (((_eastCapabilities getOrDefault ["families", createHashMap]) getOrDefault ["COMMAND", createHashMap]) getOrDefault ["spawn", false]) && {!(_eastCommandClass isEqualTo "")};
+    private _westCommandRole = (_westCapabilities getOrDefault ["roles", createHashMap]) getOrDefault ["COMMAND", createHashMap];
+    private _eastCommandRole = (_eastCapabilities getOrDefault ["roles", createHashMap]) getOrDefault ["COMMAND", createHashMap];
 
     private _vehiclesBySide = createHashMap;
     private _currentVehiclesBySide = missionNamespace getVariable ["BN_KOTH_commandVehicles", createHashMap];
     private _specs = [
-        [west, "WEST", _westSpawnRef, _westCommandClass],
-        [east, "EAST", _eastSpawnRef, _eastCommandClass]
+        [west, "WEST", _westCommandEnabled, _westCommandRole, _westCommandClass],
+        [east, "EAST", _eastCommandEnabled, _eastCommandRole, _eastCommandClass]
     ];
 
     {
-        _x params ["_side", "_sideToken", "_spawnRef", "_vehicleClass"];
+        _x params ["_side", "_sideToken", "_commandEnabled", "_commandRole", "_vehicleClass"];
 
-        if (_spawnRef isEqualTo "" || {_vehicleClass isEqualTo ""}) then {
+        if (!_commandEnabled) then {
+            private _disabledVehicle = _currentVehiclesBySide getOrDefault [_sideToken, objNull];
+            if (!isNull _disabledVehicle) then {deleteVehicle _disabledVehicle};
             _vehiclesBySide set [_sideToken, objNull];
             continue;
         };
 
-        private _spawnTransform = [_spawnRef] call _resolveSpawnTransform;
-        if (_spawnTransform isEqualTo []) then {
+        private _spawnTransform = [
+            _commandRole getOrDefault ["position", []],
+            _commandRole getOrDefault ["direction", 0]
+        ];
+        if ((count (_spawnTransform select 0)) < 2) then {
             _vehiclesBySide set [_sideToken, objNull];
             continue;
         };
@@ -208,7 +217,7 @@ while {missionNamespace getVariable ["BN_KOTH_commandTeleportMonitorRunning", fa
         missionNamespace setVariable ["BN_KOTH_commandVehicles", _vehiclesBySide, true];
     };
 
-    private _boardDefs = [["WEST", _westBoardRef], ["EAST", _eastBoardRef]];
+    private _boardDefs = [["WEST", _westBoardRef, _westCommandEnabled], ["EAST", _eastBoardRef, _eastCommandEnabled]];
     private _currentBoardDefs = missionNamespace getVariable ["BN_KOTH_commandBoardDefs", []];
     if !(_currentBoardDefs isEqualTo _boardDefs) then {
         missionNamespace setVariable ["BN_KOTH_commandBoardDefs", _boardDefs, true];

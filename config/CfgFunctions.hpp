@@ -13,8 +13,13 @@ class CfgFunctions
 
         class combat
         {
+            class combat_evaluateWeaponAttribution {file = "functions\combat\fn_evaluateWeaponAttribution.sqf";};
+            class combat_evaluateKillAttributionEvidence {file = "functions\combat\fn_evaluateKillAttributionEvidence.sqf";};
+            class combat_finalizeAttributionDiagnostic {file = "functions\combat\fn_finalizeAttributionDiagnostic.sqf";};
             class combat_handleKill {file = "functions\combat\fn_handleKill.sqf";};
+            class combat_initAttributionDiagnostics {file = "functions\combat\fn_initAttributionDiagnostics.sqf";};
             class combat_publishKillFeed {file = "functions\combat\fn_publishKillFeed.sqf";};
+            class combat_recordAttributionHit {file = "functions\combat\fn_recordAttributionHit.sqf";};
         };
 
         class curator
@@ -32,11 +37,13 @@ class CfgFunctions
             class round_openVote {file = "functions\round\fn_openVote.sqf";};
             class round_maybeShortenVoteDeadline {file = "functions\round\fn_maybeShortenVoteDeadline.sqf";};
             class round_prepareVoteCandidates {file = "functions\round\fn_prepareVoteCandidates.sqf";};
+            class round_reconcileVoteCandidates {file = "functions\round\fn_reconcileVoteCandidates.sqf";};
             class round_requestVote {file = "functions\round\fn_requestVote.sqf";};
             class round_resolveVote {file = "functions\round\fn_resolveVote.sqf";};
             class round_selectVoteCandidates {file = "functions\round\fn_selectVoteCandidates.sqf";};
             class round_updateVoteTotals {file = "functions\round\fn_updateVoteTotals.sqf";};
             class round_isLocationValid {file = "functions\round\fn_isLocationValid.sqf";};
+            class round_isLocationPopulationEligible {file = "functions\round\fn_isLocationPopulationEligible.sqf";};
         };
 
         class roundStats
@@ -56,11 +63,15 @@ class CfgFunctions
             class teams_removePlayer {file = "functions\teams\fn_removePlayer.sqf";};
             class teams_requestSelection {file = "functions\teams\fn_requestSelection.sqf";};
             class teams_returnSelectedPlayerToLobby {file = "functions\teams\fn_returnSelectedPlayerToLobby.sqf";};
+            class teams_returnDeployedPlayerToLobby {file = "functions\teams\fn_returnDeployedPlayerToLobby.sqf";};
+            class teams_requestReturnToLobby {file = "functions\teams\fn_requestReturnToLobby.sqf";};
             class teams_publishState {file = "functions\teams\fn_publishState.sqf";};
             class teams_getEligibleSelectedUids {file = "functions\teams\fn_getEligibleSelectedUids.sqf";};
+            class teams_getConnectedHumanUids {file = "functions\teams\fn_getConnectedHumanUids.sqf";};
             class teams_getPlayerByOwner {file = "functions\teams\fn_getPlayerByOwner.sqf";};
             class teams_getDefaultUnitClass {file = "functions\teams\fn_getDefaultUnitClass.sqf";};
             class teams_transferRepresentation {file = "functions\teams\fn_transferRepresentation.sqf";};
+            class teams_receiveTransferHandoffAck {file = "functions\teams\fn_receiveTransferHandoffAck.sqf";};
             class teams_assignLobbyRepresentation {file = "functions\teams\fn_assignLobbyRepresentation.sqf";};
             class teams_deployRoundParticipants {file = "functions\teams\fn_deployRoundParticipants.sqf";};
             class teams_deploySelectedPlayer {file = "functions\teams\fn_deploySelectedPlayer.sqf";};
@@ -71,10 +82,15 @@ class CfgFunctions
         class zone
         {
             class zone_initServer {file = "functions\zone\fn_initServer.sqf";};
+            class zone_getLocationData {file = "functions\zone\fn_getLocationData.sqf";};
+            class zone_getVehicleCapabilities {file = "functions\zone\fn_getVehicleCapabilities.sqf";};
+            class zone_validateLocation {file = "functions\zone\fn_validateLocation.sqf";};
             class zone_setActiveLocation {file = "functions\zone\fn_setActiveLocation.sqf";};
             class zone_clearActiveLocation {file = "functions\zone\fn_clearActiveLocation.sqf";};
             class zone_cacheStaticObjects {file = "functions\zone\fn_cacheStaticObjects.sqf";};
             class zone_cleanupRuntimeObjects {file = "functions\zone\fn_cleanupRuntimeObjects.sqf";};
+            class zone_cleanupBattlefieldPickups {file = "functions\zone\fn_cleanupBattlefieldPickups.sqf";};
+            class zone_spawnBattlefieldPickups {file = "functions\zone\fn_spawnBattlefieldPickups.sqf";};
             class zone_evaluateControl {file = "functions\zone\fn_evaluateControl.sqf";};
             class zone_updatePriorityZone {file = "functions\zone\fn_updatePriorityZone.sqf";};
         };
@@ -95,12 +111,80 @@ class CfgFunctions
             class progression_xp_addXp {file = "functions\progression\xp\fn_addXp.sqf";};
             class progression_xp_awardControlTick {file = "functions\progression\xp\fn_awardControlTick.sqf";};
             class progression_xp_awardKill {file = "functions\progression\xp\fn_awardKill.sqf";};
+            class progression_mastery_initPlayer {file = "functions\progression\mastery\fn_initPlayer.sqf";};
+            class progression_mastery_awardKill {file = "functions\progression\mastery\fn_awardKill.sqf";};
+            class progression_cash_initServer {file = "functions\progression\cash\fn_initServer.sqf";};
+            class progression_cash_initPlayer {file = "functions\progression\cash\fn_initPlayer.sqf";};
+            class progression_cash_getCash {file = "functions\progression\cash\fn_getCash.sqf";};
+            class progression_cash_addCash {file = "functions\progression\cash\fn_addCash.sqf";};
+            class progression_cash_spendCash {file = "functions\progression\cash\fn_spendCash.sqf";};
+            class progression_acquisition_initPlayer {file = "functions\progression\acquisition\fn_initPlayer.sqf";};
+            class progression_acquisition_evaluateRules {file = "functions\progression\acquisition\fn_evaluateRules.sqf";};
+            class progression_acquisition_acquireWeapon {file = "functions\progression\acquisition\fn_acquireWeapon.sqf";};
+            class progression_purchaseWeapon {file = "functions\progression\acquisition\fn_purchaseWeapon.sqf";};
+            class progression_rentWeapon {file = "functions\progression\acquisition\fn_rentWeapon.sqf";};
+            class progression_requestWeaponAcquisition {file = "functions\progression\acquisition\fn_requestWeapon.sqf";};
+            class progression_publishUpdate {file = "functions\progression\fn_publishUpdate.sqf";};
             class progression_buildPresentationState {file = "functions\progression\fn_buildPresentationState.sqf";};
+            class progression_resolveRankPresentation {file = "functions\progression\fn_resolveRankPresentation.sqf";};
+            class progression_evaluateEquipmentSidePolicyRules {file = "functions\progression\fn_evaluateEquipmentSidePolicyRules.sqf";};
             class progression_evaluateWeaponEntitlement {file = "functions\progression\fn_evaluateWeaponEntitlement.sqf";};
             class progression_evaluateWeaponEntitlementRules {file = "functions\progression\fn_evaluateWeaponEntitlementRules.sqf";};
             class progression_evaluateAttachmentEntitlement {file = "functions\progression\fn_evaluateAttachmentEntitlement.sqf";};
             class progression_evaluateItemEntitlement {file = "functions\progression\fn_evaluateItemEntitlement.sqf";};
             class progression_evaluateItemEntitlementRules {file = "functions\progression\fn_evaluateItemEntitlementRules.sqf";};
+            class progression_perks_getConfig {file = "functions\progression\perks\fn_getConfig.sqf";};
+            class progression_perks_purchase {file = "functions\progression\perks\fn_purchase.sqf";};
+            class progression_perks_setActive {file = "functions\progression\perks\fn_setActive.sqf";};
+            class progression_perks_completeCleanup {file = "functions\progression\perks\fn_completeCleanup.sqf";};
+            class progression_perks_ackCleanup {file = "functions\progression\perks\fn_ackCleanup.sqf";};
+            class progression_perks_request {file = "functions\progression\perks\fn_request.sqf";};
+            class progression_perks_isSuppressor {file = "functions\progression\perks\fn_isSuppressor.sqf";};
+            class progression_perks_findRestrictedItems {file = "functions\progression\perks\fn_findRestrictedItems.sqf";};
+            class progression_perks_findSuppressors {file = "functions\progression\perks\fn_findSuppressors.sqf";};
+            class progression_perks_removeSuppressors {file = "functions\progression\perks\fn_removeSuppressors.sqf";};
+            class progression_perks_test_perks {file = "functions\progression\perks\test_perks.sqf";};
+        };
+
+        class persistence
+        {
+            class persistence_initServer {file = "functions\persistence\fn_initServer.sqf";};
+            class persistence_createDefaultState {file = "functions\persistence\fn_createDefaultState.sqf";};
+            class persistence_normalizePlayerState {file = "functions\persistence\fn_normalizePlayerState.sqf";};
+            class persistence_projectPlayerState {file = "functions\persistence\fn_projectPlayerState.sqf";};
+            class persistence_serializeOwnedWeapons {file = "functions\persistence\fn_serializeOwnedWeapons.sqf";};
+            class persistence_deserializeOwnedWeapons {file = "functions\persistence\fn_deserializeOwnedWeapons.sqf";};
+            class persistence_serializePerkIds {file = "functions\persistence\fn_serializePerkIds.sqf";};
+            class persistence_deserializePerkIds {file = "functions\persistence\fn_deserializePerkIds.sqf";};
+            class persistence_serializeWeaponKills {file = "functions\persistence\fn_serializeWeaponKills.sqf";};
+            class persistence_deserializeWeaponKills {file = "functions\persistence\fn_deserializeWeaponKills.sqf";};
+            class persistence_parseExtdbResponse {file = "functions\persistence\fn_parseExtdbResponse.sqf";};
+            class persistence_extdbCall {file = "functions\persistence\fn_extdbCall.sqf";};
+            class persistence_extdbInitialize {file = "functions\persistence\fn_extdbInitialize.sqf";};
+            class persistence_backendLoadPlayer {file = "functions\persistence\fn_backendLoadPlayer.sqf";};
+            class persistence_backendSavePlayer {file = "functions\persistence\fn_backendSavePlayer.sqf";};
+            class persistence_loadPlayer {file = "functions\persistence\fn_loadPlayer.sqf";};
+            class persistence_markDirty {file = "functions\persistence\fn_markDirty.sqf";};
+            class persistence_savePlayer {file = "functions\persistence\fn_savePlayer.sqf";};
+            class persistence_saveAllDirty {file = "functions\persistence\fn_saveAllDirty.sqf";};
+        };
+
+        class career
+        {
+            class career_initServer {file = "functions\career\fn_initServer.sqf";};
+            class career_registerSession {file = "functions\career\fn_registerSession.sqf";};
+            class career_accumulatePlaytime {file = "functions\career\fn_accumulatePlaytime.sqf";};
+            class career_mutate {file = "functions\career\fn_mutate.sqf";};
+            class career_flushPlayer {file = "functions\career\fn_flushPlayer.sqf";};
+            class career_flushAll {file = "functions\career\fn_flushAll.sqf";};
+            class career_recordKill {file = "functions\career\fn_recordKill.sqf";};
+            class career_recordRound {file = "functions\career\fn_recordRound.sqf";};
+            class career_validateLeaderboardRequest {file = "functions\career\fn_validateLeaderboardRequest.sqf";};
+            class career_queryLeaderboard {file = "functions\career\fn_queryLeaderboard.sqf";};
+            class career_querySummary {file = "functions\career\fn_querySummary.sqf";};
+            class career_requestStats {file = "functions\career\fn_requestStats.sqf";};
+            class career_test {file = "functions\career\test_career.sqf";};
+            class career_testSummary {file = "functions\career\test_careerSummary.sqf";};
         };
 
         class respawn
@@ -122,6 +206,21 @@ class CfgFunctions
             class respawn_handlePlayerRespawn {file = "functions\respawn\fn_handlePlayerRespawn.sqf";};
         };
 
+        class traversal
+        {
+            class traversal_initPlayerLocal {file = "functions\traversal\fn_initPlayerLocal.sqf";};
+            class traversal_canTraverse {file = "functions\traversal\fn_canTraverse.sqf";};
+            class traversal_request {file = "functions\traversal\fn_request.sqf";};
+            class traversal_classify {file = "functions\traversal\fn_classify.sqf";};
+            class traversal_probe {file = "functions\traversal\fn_probe.sqf";};
+            class traversal_selectAnimation {file = "functions\traversal\fn_selectAnimation.sqf";};
+            class traversal_execute {file = "functions\traversal\fn_execute.sqf";};
+            class traversal_finish {file = "functions\traversal\fn_finish.sqf";};
+            class traversal_cancel {file = "functions\traversal\fn_cancel.sqf";};
+            class traversal_debugDraw {file = "functions\traversal\fn_debugDraw.sqf";};
+            class traversal_log {file = "functions\traversal\fn_log.sqf";};
+        };
+
         class loadouts
         {
             class loadouts_initServer {file = "functions\loadouts\fn_initServer.sqf";};
@@ -135,6 +234,8 @@ class CfgFunctions
             class loadouts_validateLoadout {file = "functions\loadouts\fn_validateLoadout.sqf";};
             class loadouts_validateMutation {file = "functions\loadouts\fn_validateMutation.sqf";};
             class loadouts_validateWeaponComposition {file = "functions\loadouts\fn_validateWeaponComposition.sqf";};
+            class loadouts_validateAssignedItemSlot {file = "functions\loadouts\fn_validateAssignedItemSlot.sqf";};
+            class loadouts_buildWeaponSlot {file = "functions\loadouts\fn_buildWeaponSlot.sqf";};
             class loadouts_buildValidatedLoadout {file = "functions\loadouts\fn_buildValidatedLoadout.sqf";};
             class loadouts_applyLoadout {file = "functions\loadouts\fn_applyLoadout.sqf";};
             class loadouts_request {file = "functions\loadouts\fn_request.sqf";};
@@ -170,6 +271,15 @@ class CfgFunctions
             class player3DIcons_draw {file = "functions\playerIcons\player3DIcons\fn_draw.sqf";};
         };
 
+        class enemySpotting
+        {
+            class enemySpotting_initServer {file = "functions\playerIcons\enemySpotting\fn_initServer.sqf";};
+            class enemySpotting_initPlayerLocal {file = "functions\playerIcons\enemySpotting\fn_initPlayerLocal.sqf";};
+            class enemySpotting_requestSpot {file = "functions\playerIcons\enemySpotting\fn_requestSpot.sqf";};
+            class enemySpotting_serverValidateAndMark {file = "functions\playerIcons\enemySpotting\fn_serverValidateAndMark.sqf";};
+            class enemySpotting_serverExpireMarks {file = "functions\playerIcons\enemySpotting\fn_serverExpireMarks.sqf";};
+        };
+
         class vehicles
         {
             class vehicles_addVehicleInventory {file = "functions\vehicles\fn_addVehicleInventory.sqf";};
@@ -182,6 +292,16 @@ class CfgFunctions
             class vehicles_cleanupManagedVehicles {file = "functions\vehicles\fn_cleanupManagedVehicles.sqf";};
             class vehicles_monitorManagedVehicles {file = "functions\vehicles\fn_monitorManagedVehicles.sqf";};
             class vehicles_requestSpawn {file = "functions\vehicles\fn_requestSpawn.sqf";};
+            class vehicles_getProgressionMetadata {file = "functions\vehicles\fn_getProgressionMetadata.sqf";};
+            class vehicles_evaluateProgressionRules {file = "functions\vehicles\fn_evaluateProgressionRules.sqf";};
+            class vehicles_getRentalState {file = "functions\vehicles\fn_getRentalState.sqf";};
+            class vehicles_requestRental {file = "functions\vehicles\fn_requestRental.sqf";};
+            class vehicles_rentVehicle {file = "functions\vehicles\fn_rentVehicle.sqf";};
+            class vehicles_setRentalAccess {file = "functions\vehicles\fn_setRentalAccess.sqf";};
+            class vehicles_endRentalLife {file = "functions\vehicles\fn_endRentalLife.sqf";};
+            class vehicles_receiveRentalResult {file = "functions\vehicles\fn_receiveRentalResult.sqf";};
+            class vehicles_forceOutRentalVehicle {file = "functions\vehicles\fn_forceOutRentalVehicle.sqf";};
+            class vehicles_addRentalOwnerActions {file = "functions\vehicles\fn_addRentalOwnerActions.sqf";};
             class vehicles_mobileRespawn_init {file = "functions\vehicles\mobile_respawn\fn_init.sqf";};
             class vehicles_mobileRespawn_monitor {file = "functions\vehicles\mobile_respawn\fn_serverRespawnLoop.sqf";};
             class vehicles_mobileRespawn_initTeleport {file = "functions\vehicles\mobile_respawn\fn_initTeleport.sqf";};
@@ -197,6 +317,7 @@ class CfgFunctions
             class ui_evaluateStateReadiness {file = "functions\ui\state\fn_evaluateStateReadiness.sqf";};
             class ui_updateHudLifecycle {file = "functions\ui\hud\fn_updateHudLifecycle.sqf";};
             class ui_refreshHud {file = "functions\ui\hud\fn_refreshHud.sqf";};
+            class ui_updatePriorityTask {file = "functions\ui\hud\fn_updatePriorityTask.sqf";};
             class ui_updateLobbyBlackout {file = "functions\ui\lobby\fn_updateLobbyBlackout.sqf";};
             class ui_updateLobbyRepresentationContainment {file = "functions\ui\lobby\fn_updateLobbyRepresentationContainment.sqf";};
             class ui_handleLobbyKeyDown {file = "functions\ui\lobby\fn_handleLobbyKeyDown.sqf";};
@@ -205,14 +326,24 @@ class CfgFunctions
             class ui_refreshLobby {file = "functions\ui\lobby\fn_refreshLobby.sqf";};
             class ui_refreshLobbyHeader {file = "functions\ui\lobby\fn_refreshLobbyHeader.sqf";};
             class ui_refreshLobbyTeams {file = "functions\ui\lobby\fn_refreshLobbyTeams.sqf";};
+            class ui_fitLobbyName {file = "functions\ui\lobby\fn_fitLobbyName.sqf";};
             class ui_refreshLobbyCenter {file = "functions\ui\lobby\fn_refreshLobbyCenter.sqf";};
             class ui_refreshLobbyVote {file = "functions\ui\lobby\fn_refreshLobbyVote.sqf";};
             class ui_refreshLobbyLeaders {file = "functions\ui\lobby\fn_refreshLobbyLeaders.sqf";};
             class ui_updateLobbyLifecycle {file = "functions\ui\lobby\fn_updateLobbyLifecycle.sqf";};
+            class ui_transition_update {file = "functions\ui\transition\fn_update.sqf";};
+            class ui_transition_runTypewriter {file = "functions\ui\transition\fn_runTypewriter.sqf";};
+            class ui_transition_hide {file = "functions\ui\transition\fn_hide.sqf";};
+            class ui_results_update {file = "functions\ui\results\fn_update.sqf";};
+            class ui_results_runPresentation {file = "functions\ui\results\fn_runPresentation.sqf";};
+            class ui_results_hide {file = "functions\ui\results\fn_hide.sqf";};
             class ui_requestState {file = "functions\ui\state\fn_requestState.sqf";};
             class ui_sendStateToClient {file = "functions\ui\state\fn_sendStateToClient.sqf";};
             class ui_receiveState {file = "functions\ui\state\fn_receiveState.sqf";};
             class ui_receiveProgression {file = "functions\ui\state\fn_receiveProgression.sqf";};
+            class ui_receiveWeaponAcquisitionResult {file = "functions\ui\state\fn_receiveWeaponAcquisitionResult.sqf";};
+            class ui_receivePerkResult {file = "functions\ui\state\fn_receivePerkResult.sqf";};
+            class ui_formatCash {file = "functions\ui\state\fn_formatCash.sqf";};
             class ui_toggleDebugDisplay {file = "functions\ui\debug\fn_toggleDebugDisplay.sqf";};
             class ui_debugDisplayLoop {file = "functions\ui\debug\fn_debugDisplayLoop.sqf";};
             class ui_selectControlledUnit {file = "functions\ui\state\fn_selectControlledUnit.sqf";};
@@ -237,6 +368,7 @@ class CfgFunctions
             class escMenu_options_onSliderPosChanged {file = "functions\ui\esc_menu\fn_options_onSliderPosChanged.sqf";};
             class escMenu_options_onLoad {file = "functions\ui\esc_menu\fn_options_onLoad.sqf";};
             class escMenu_options_onUnload {file = "functions\ui\esc_menu\fn_options_onUnload.sqf";};
+            class escMenu_options_reset {file = "functions\ui\esc_menu\fn_options_reset.sqf";};
             class escMenu_earplugs_init {file = "functions\ui\esc_menu\earplugs\fn_earplugs_init.sqf";};
             class escMenu_earplugs_apply {file = "functions\ui\esc_menu\earplugs\fn_earplugs_apply.sqf";};
             class escMenu_earplugs_toggle {file = "functions\ui\esc_menu\earplugs\fn_earplugs_toggle.sqf";};
@@ -246,7 +378,23 @@ class CfgFunctions
             class menu_startPlayerPreview {file = "functions\ui\menu\fn_menu_startPlayerPreview.sqf";};
             class menu_stopPlayerPreview {file = "functions\ui\menu\fn_menu_stopPlayerPreview.sqf";};
             class menu_refresh {file = "functions\ui\menu\fn_menu_refresh.sqf";};
+            class menu_refreshProgressionHeader {file = "functions\ui\menu\fn_menu_refreshProgressionHeader.sqf";};
             class menu_refreshLoadout {file = "functions\ui\menu\fn_menu_refreshLoadout.sqf";};
+            class menu_refreshStore {file = "functions\ui\menu\fn_menu_refreshStore.sqf";};
+            class menu_refreshPerks {file = "functions\ui\menu\fn_menu_refreshPerks.sqf";};
+            class menu_refreshProgression {file = "functions\ui\menu\fn_menu_refreshProgression.sqf";};
+            class menu_refreshStats {file = "functions\ui\menu\fn_menu_refreshStats.sqf";};
+            class menu_requestStats {file = "functions\ui\menu\fn_menu_requestStats.sqf";};
+            class menu_receiveStats {file = "functions\ui\menu\fn_menu_receiveStats.sqf";};
+            class menu_formatCareerValue {file = "functions\ui\menu\fn_menu_formatCareerValue.sqf";};
+            class menu_testStats {file = "functions\ui\menu\test_stats.sqf";};
+            class menu_projectMasteryEntries {file = "functions\ui\menu\fn_menu_projectMasteryEntries.sqf";};
+            class menu_requestPerk {file = "functions\ui\menu\fn_menu_requestPerk.sqf";};
+            class menu_buildStoreWeaponEntries {file = "functions\ui\menu\fn_menu_buildStoreWeaponEntries.sqf";};
+            class menu_projectStoreWeaponState {file = "functions\ui\menu\fn_menu_projectStoreWeaponState.sqf";};
+            class menu_buildStoreVehicleEntries {file = "functions\ui\menu\fn_menu_buildStoreVehicleEntries.sqf";};
+            class menu_projectStoreVehicleState {file = "functions\ui\menu\fn_menu_projectStoreVehicleState.sqf";};
+            class menu_layoutItemCards {file = "functions\ui\menu\fn_menu_layoutItemCards.sqf";};
             class menu_refreshBrowser {file = "functions\ui\menu\fn_menu_refreshBrowser.sqf";};
             class menu_refreshConfigure {file = "functions\ui\menu\fn_menu_refreshConfigure.sqf";};
             class menu_refreshConfigureAttachments {file = "functions\ui\menu\fn_menu_refreshConfigureAttachments.sqf";};

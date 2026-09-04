@@ -51,19 +51,23 @@ private _sourceItemsCfg = _compatibilityCfg >> "SourceItems";
 if !(isClass (_sourceItemsCfg >> _attachmentClass)) exitWith {false};
 if !(isClass (configFile >> "CfgWeapons" >> _attachmentClass)) exitWith {false};
 
-private _attachmentMetadataCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment" >> "Metadata" >> "Attachments" >> _attachmentClass;
-private _isLocked = false;
-if (isClass _attachmentMetadataCfg && {isNumber (_attachmentMetadataCfg >> "minLevel")}) then {
-    private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
-    if !(_progression isEqualType createHashMap) then {
-        _progression = createHashMap;
-    };
-
-    private _playerLevel = (_progression getOrDefault ["level", 1]) max 1;
-    private _minLevel = (getNumber (_attachmentMetadataCfg >> "minLevel")) max 1;
-    _isLocked = _playerLevel < _minLevel;
+private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
+if !(_progression isEqualType createHashMap) then {_progression = createHashMap};
+private _assignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
+if !(_assignments isEqualType createHashMap) then {_assignments = createHashMap};
+private _assignedSide = _assignments getOrDefault [getPlayerUID player, sideUnknown];
+private _sideToken = if (_assignedSide isEqualTo west) then {"WEST"} else {
+    if (_assignedSide isEqualTo east) then {"EAST"} else {""}
 };
-if (_isLocked) exitWith {false};
+private _attachmentEntitlementMetadata = ["Attachments", _attachmentClass] call bn_koth_fnc_loadouts_getItemMetadata;
+private _entitlement = [
+    _progression,
+    _attachmentEntitlementMetadata,
+    _attachmentClass,
+    _sideToken,
+    false
+] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+if !(_entitlement getOrDefault ["entitled", false]) exitWith {false};
 
 private _drafts = uiNamespace getVariable ["BN_KOTH_menuConfigureDrafts", createHashMap];
 if !(_drafts isEqualType createHashMap) then {

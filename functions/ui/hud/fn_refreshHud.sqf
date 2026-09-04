@@ -18,6 +18,8 @@ if (!hasInterface) exitWith {};
 private _display = uiNamespace getVariable ["BN_KOTH_hudDisplay", displayNull];
 if (isNull _display) exitWith {};
 
+[] call bn_koth_fnc_ui_updatePriorityTask;
+
 private _scoringCfg = missionConfigFile >> "CfgBnKothScoring";
 private _teamScores = missionNamespace getVariable [
     "BN_KOTH_teamScores",
@@ -70,6 +72,59 @@ private _enemySafeZoneText = if (_enemySafeZoneVisible) then {
     "ENEMY SAFE ZONE LEAVE NOW"
 } else {
     ""
+};
+
+private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
+private _progressionAvailable = _progression isEqualType createHashMap
+    && {"level" in _progression}
+    && {"xp" in _progression};
+private _playerProgressText = "LEVEL --   XP SYNCING";
+private _rankIcon = "";
+private _rankColor = [1, 1, 1, 0];
+private _rankVisible = false;
+if (_progressionAvailable) then {
+    private _levelProgress = [
+        _progression getOrDefault ["xp", 0],
+        _progression getOrDefault ["level", 1]
+    ] call bn_koth_fnc_progression_xp_getLevelProgress;
+    private _level = _levelProgress getOrDefault ["level", 1];
+    private _xp = _levelProgress getOrDefault ["xp", 0];
+    private _maxLevel = _levelProgress getOrDefault ["maxLevel", 270];
+    if (_level >= _maxLevel) then {
+        _playerProgressText = format ["LEVEL %1   MAX LEVEL  %2 XP", _level, round _xp];
+    } else {
+        _playerProgressText = format [
+            "LEVEL %1   %2 / %3 XP",
+            _level,
+            round (_levelProgress getOrDefault ["xpIntoLevel", 0]),
+            round (_levelProgress getOrDefault ["xpRequired", 0])
+        ];
+    };
+    private _rank = [_level] call bn_koth_fnc_progression_resolveRankPresentation;
+    _rankIcon = _rank getOrDefault ["icon", ""];
+    _rankColor = _rank getOrDefault ["color", [1, 1, 1, 0]];
+    _rankVisible = _rank getOrDefault ["hasIcon", false];
+};
+
+private _roundActive = (missionNamespace getVariable ["BN_KOTH_roundState", ""]) isEqualTo "ACTIVE";
+private _activeAoMarker = missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""];
+private _aoVisible = _roundActive
+    && {!(_activeAoMarker isEqualTo "")}
+    && {!((markerShape _activeAoMarker) isEqualTo "")};
+private _priorityMarker = "BN_KOTH_priorityZoneMarker";
+private _priorityVisible = _aoVisible && {!((markerShape _priorityMarker) isEqualTo "")};
+private _priorityCounts = [0, 0];
+private _aoCounts = [0, 0];
+private _zonePopulation = missionNamespace getVariable ["BN_KOTH_zonePopulation", createHashMap];
+if (_zonePopulation isEqualType createHashMap) then {
+    private _publishedAoCounts = _zonePopulation getOrDefault ["raw", [0, 0]];
+    if (_publishedAoCounts isEqualType [] && {(count _publishedAoCounts) >= 2}) then {
+        _aoCounts = [(_publishedAoCounts select 0) max 0, (_publishedAoCounts select 1) max 0];
+    };
+    private _publishedCounts = _zonePopulation getOrDefault ["priority", [0, 0]];
+    if (_publishedCounts isEqualType [] && {(count _publishedCounts) >= 2}) then {
+        _priorityCounts = [(_publishedCounts select 0) max 0, (_publishedCounts select 1) max 0];
+    };
 };
 
 private _safeZoneProtected = !isNull player
@@ -133,7 +188,15 @@ private _staticKey = [
     _safeZoneText,
     _safeZoneVisible,
     _enemySafeZoneText,
-    _enemySafeZoneVisible
+    _enemySafeZoneVisible,
+    _playerProgressText,
+    _rankIcon,
+    _rankColor,
+    _rankVisible,
+    _aoCounts,
+    _priorityCounts,
+    _aoVisible,
+    _priorityVisible
 ];
 
 if !((uiNamespace getVariable ["BN_KOTH_hudStaticKey", []]) isEqualTo _staticKey) then {
@@ -150,6 +213,28 @@ if !((uiNamespace getVariable ["BN_KOTH_hudStaticKey", []]) isEqualTo _staticKey
     private _enemySafeZoneCtrl = _display displayCtrl BN_KOTH_IDC_HUD_ENEMY_SAFE_ZONE;
     _enemySafeZoneCtrl ctrlSetText _enemySafeZoneText;
     _enemySafeZoneCtrl ctrlShow _enemySafeZoneVisible;
+
+    private _rankCtrl = _display displayCtrl BN_KOTH_IDC_HUD_RANK_ICON;
+    _rankCtrl ctrlSetText _rankIcon;
+    _rankCtrl ctrlSetTextColor _rankColor;
+    _rankCtrl ctrlShow _rankVisible;
+    (_display displayCtrl BN_KOTH_IDC_HUD_PLAYER_PROGRESS) ctrlSetText _playerProgressText;
+
+    private _aoCtrl = _display displayCtrl BN_KOTH_IDC_HUD_AO_POPULATION;
+    _aoCtrl ctrlSetStructuredText parseText format [
+        "<t align='center' color='#E0DBCC'>AO  </t><t color='#73C4FF'>WEST %1</t><t color='#E0DBCC'> - </t><t color='#FF7A7A'>%2 EAST</t>",
+        round (_aoCounts select 0),
+        round (_aoCounts select 1)
+    ];
+    _aoCtrl ctrlShow _aoVisible;
+
+    private _priorityCtrl = _display displayCtrl BN_KOTH_IDC_HUD_PRIORITY_POPULATION;
+    _priorityCtrl ctrlSetStructuredText parseText format [
+        "<t align='center' color='#F5C742'>PRIORITY BONUS  </t><t color='#73C4FF'>+%1</t><t color='#F5C742'> - </t><t color='#FF7A7A'>+%2</t>",
+        round (_priorityCounts select 0),
+        round (_priorityCounts select 1)
+    ];
+    _priorityCtrl ctrlShow _priorityVisible;
     uiNamespace setVariable ["BN_KOTH_hudStaticKey", _staticKey];
 };
 

@@ -1165,10 +1165,12 @@
       ],
       "unlockableAttachments": [],
       "family": "izh54",
-      "variantOf": null,
+      "variantOf": "vn_izh54",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -1247,10 +1249,12 @@
       ],
       "unlockableAttachments": [],
       "family": "izh54",
-      "variantOf": null,
+      "variantOf": "vn_izh54",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -1647,7 +1651,6 @@
       "family": "k98k",
       "variantOf": "vn_k98k_mrk",
       "variantTraits": [
-        "bayonet",
         "camo"
       ],
       "derivedRequirements": [
@@ -1658,6 +1661,7 @@
         "shared primary magazines with vn_k98k_mrk",
         "additional accessories: vn_b_camo_k98k",
         "source row links explicit accessory classnames",
+        "description/name mentions accessory traits: camo",
         "description references base weapon naming",
         "class stem matches structural variant pattern",
         "explicit source evidence supports base-plus-accessory relationship"
@@ -4531,10 +4535,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l2a3",
-      "variantOf": null,
+      "variantOf": "vn_l2a3",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -4659,10 +4665,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l34a1",
-      "variantOf": null,
+      "variantOf": "vn_l34a1",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -4787,10 +4795,12 @@
       ],
       "unlockableAttachments": [],
       "family": "l34a1",
-      "variantOf": null,
+      "variantOf": "vn_l34a1",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -5566,10 +5576,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m14",
-      "variantOf": null,
+      "variantOf": "vn_m14",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -5663,7 +5675,7 @@
       "family": "m14",
       "variantOf": "vn_m14",
       "variantTraits": [
-        "bayonet",
+        "camo",
         "suppressed"
       ],
       "derivedRequirements": [
@@ -5675,7 +5687,7 @@
         "shared primary magazines with vn_m14",
         "additional accessories: vn_b_camo_m14, vn_s_m14",
         "source row links explicit accessory classnames",
-        "description/name mentions accessory traits: suppressor",
+        "description/name mentions accessory traits: camo, suppressor",
         "class stem matches structural variant pattern",
         "explicit source evidence supports base-plus-accessory relationship"
       ],
@@ -5967,7 +5979,6 @@
       "family": "m14a1",
       "variantOf": "vn_m14a1",
       "variantTraits": [
-        "bayonet",
         "camo",
         "suppressed"
       ],
@@ -5980,6 +5991,7 @@
         "shared primary magazines with vn_m14a1",
         "additional accessories: vn_b_camo_m14a1, vn_s_m14",
         "source row links explicit accessory classnames",
+        "description/name mentions accessory traits: camo",
         "description references base weapon naming",
         "class stem matches structural variant pattern",
         "explicit source evidence supports base-plus-accessory relationship"
@@ -6181,10 +6193,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m14a1",
-      "variantOf": null,
+      "variantOf": "vn_m14a1",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -6974,10 +6988,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m16",
-      "variantOf": null,
+      "variantOf": "vn_m16",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -7168,10 +7184,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m16",
-      "variantOf": null,
+      "variantOf": "vn_m16",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -7361,10 +7379,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m16",
-      "variantOf": null,
+      "variantOf": "vn_m16",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -7781,10 +7801,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m16_muzzle",
-      "variantOf": null,
+      "variantOf": "vn_m16",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -9441,10 +9463,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m16",
-      "variantOf": null,
+      "variantOf": "vn_m16",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -10195,10 +10219,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m1903",
-      "variantOf": null,
+      "variantOf": "vn_m1903",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -11258,10 +11284,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m1_garand",
-      "variantOf": null,
+      "variantOf": "vn_m1_garand",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -11341,7 +11369,7 @@
       "family": "m1_garand",
       "variantOf": "vn_m1_garand",
       "variantTraits": [
-        "bayonet",
+        "camo",
         "optic"
       ],
       "derivedRequirements": [
@@ -11555,10 +11583,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m1a1_tommy_so",
-      "variantOf": null,
+      "variantOf": "vn_m1a1_tommy",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -11894,10 +11924,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m1carbine",
-      "variantOf": null,
+      "variantOf": "vn_m1carbine",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -12351,10 +12383,15 @@
         "vn_o_anpvs2_m14"
       ],
       "family": "m21",
-      "variantOf": null,
+      "variantOf": "vn_m21",
       "variantTraits": [],
-      "derivedRequirements": [],
-      "variantEvidence": [],
+      "derivedRequirements": [
+        "vn_m21",
+        "vn_o_anpvs2_m14"
+      ],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -12563,7 +12600,7 @@
       "family": "m21",
       "variantOf": "vn_m21",
       "variantTraits": [
-        "bayonet",
+        "camo",
         "suppressed"
       ],
       "derivedRequirements": [
@@ -12575,7 +12612,7 @@
         "shared primary magazines with vn_m21",
         "additional accessories: vn_b_camo_m14, vn_s_m14",
         "source row links explicit accessory classnames",
-        "description/name mentions accessory traits: suppressor",
+        "description/name mentions accessory traits: camo, suppressor",
         "description references base weapon naming",
         "class stem matches structural variant pattern",
         "explicit source evidence supports base-plus-accessory relationship"
@@ -12919,10 +12956,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m2carbine",
-      "variantOf": null,
+      "variantOf": "vn_m2carbine",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -13256,18 +13295,25 @@
         "vn_b_camo_m36"
       ],
       "family": "m36",
-      "variantOf": null,
-      "variantTraits": [],
-      "derivedRequirements": [],
-      "variantEvidence": [],
-      "variantCandidateOf": "vn_m36",
-      "variantCandidateEvidence": [
-        "shared primary magazines with vn_m36",
+      "variantOf": "vn_m36",
+      "variantTraits": [
+        "camo"
+      ],
+      "derivedRequirements": [
+        "vn_m36",
+        "vn_b_camo_m36"
+      ],
+      "variantEvidence": [
         "additional accessories: vn_b_camo_m36",
-        "source row links explicit accessory classnames",
         "class stem matches structural variant pattern",
-        "explicit source evidence is insufficient for confirmed derived relationship"
-      ]
+        "description/name mentions accessory traits: camo",
+        "explicit source evidence supports base-plus-accessory relationship",
+        "manual override",
+        "shared primary magazines with vn_m36",
+        "source row links explicit accessory classnames"
+      ],
+      "variantCandidateOf": null,
+      "variantCandidateEvidence": []
     },
     {
       "class": "vn_m38",
@@ -13825,10 +13871,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m40a1",
-      "variantOf": null,
+      "variantOf": "vn_m40a1",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -14155,7 +14203,7 @@
       "family": "m40a1",
       "variantOf": "vn_m40a1_sniper",
       "variantTraits": [
-        "bayonet",
+        "camo",
         "suppressed"
       ],
       "derivedRequirements": [
@@ -14167,7 +14215,7 @@
         "shared primary magazines with vn_m40a1_sniper",
         "additional accessories: vn_b_camo_m40a1, vn_s_m14",
         "source row links explicit accessory classnames",
-        "description/name mentions accessory traits: suppressor",
+        "description/name mentions accessory traits: camo, suppressor",
         "description references base weapon naming",
         "class stem matches structural variant pattern",
         "explicit source evidence supports base-plus-accessory relationship"
@@ -14304,10 +14352,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m45",
-      "variantOf": null,
+      "variantOf": "vn_m45",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -14372,10 +14422,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m45",
-      "variantOf": null,
+      "variantOf": "vn_m45",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -14706,10 +14758,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m4956",
-      "variantOf": null,
+      "variantOf": "vn_m4956",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -14946,10 +15000,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m60",
-      "variantOf": null,
+      "variantOf": "vn_m60",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -15015,10 +15071,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m60",
-      "variantOf": null,
+      "variantOf": "vn_m60",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -16273,10 +16331,12 @@
       ],
       "unlockableAttachments": [],
       "family": "m79",
-      "variantOf": null,
+      "variantOf": "vn_m79",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -16653,10 +16713,12 @@
       ],
       "unlockableAttachments": [],
       "family": "mat49",
-      "variantOf": null,
+      "variantOf": "vn_mat49",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -18739,10 +18801,12 @@
       ],
       "unlockableAttachments": [],
       "family": "rpd",
-      "variantOf": null,
+      "variantOf": "vn_rpd",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -18817,10 +18881,12 @@
       ],
       "unlockableAttachments": [],
       "family": "rpd_shorty",
-      "variantOf": null,
+      "variantOf": "vn_rpd",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -19399,10 +19465,12 @@
       ],
       "unlockableAttachments": [],
       "family": "sks",
-      "variantOf": null,
+      "variantOf": "vn_sks",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -19865,22 +19933,19 @@
         "vn_o_4x_svd"
       ],
       "family": "svd",
-      "variantOf": "vn_svd",
+      "variantOf": "vn_svd_sniper",
       "variantTraits": [
-        "bayonet",
-        "camo",
-        "optic"
+        "camo"
       ],
       "derivedRequirements": [
-        "vn_svd",
-        "vn_b_camo_svd",
-        "vn_o_4x_svd"
+        "vn_svd_sniper",
+        "vn_b_camo_svd"
       ],
       "variantEvidence": [
-        "shared primary magazines with vn_svd",
-        "additional accessories: vn_b_camo_svd, vn_o_4x_svd",
+        "shared primary magazines with vn_svd_sniper",
+        "additional accessories: vn_b_camo_svd",
         "source row links explicit accessory classnames",
-        "description/name mentions accessory traits: optic",
+        "description/name mentions accessory traits: camo",
         "class stem matches structural variant pattern",
         "explicit source evidence supports base-plus-accessory relationship"
       ],
@@ -20339,10 +20404,12 @@
       ],
       "unlockableAttachments": [],
       "family": "type64_f_smg",
-      "variantOf": null,
+      "variantOf": "vn_type64_smg",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -20630,7 +20697,6 @@
       "family": "vz54",
       "variantOf": "vn_vz54_sniper",
       "variantTraits": [
-        "bayonet",
         "camo"
       ],
       "derivedRequirements": [
@@ -20641,6 +20707,7 @@
         "shared primary magazines with vn_vz54_sniper",
         "additional accessories: vn_b_camo_vz54",
         "source row links explicit accessory classnames",
+        "description/name mentions accessory traits: camo",
         "description references base weapon naming",
         "class stem matches structural variant pattern",
         "explicit source evidence supports base-plus-accessory relationship"
@@ -20765,10 +20832,12 @@
       ],
       "unlockableAttachments": [],
       "family": "vz61",
-      "variantOf": null,
+      "variantOf": "vn_vz61",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -21766,10 +21835,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm16e1",
-      "variantOf": null,
+      "variantOf": "vn_xm16e1",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -22039,10 +22110,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm177",
-      "variantOf": null,
+      "variantOf": "vn_xm177",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -22170,10 +22243,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm177_fg",
-      "variantOf": null,
+      "variantOf": "vn_xm177",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -22357,10 +22432,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm177",
-      "variantOf": null,
+      "variantOf": "vn_xm177",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -22549,10 +22626,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm177",
-      "variantOf": null,
+      "variantOf": "vn_xm177",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -22818,10 +22897,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm177_muzzle",
-      "variantOf": null,
+      "variantOf": "vn_xm177",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -23103,10 +23184,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm177",
-      "variantOf": null,
+      "variantOf": "vn_xm177",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -23380,10 +23463,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm177",
-      "variantOf": null,
+      "variantOf": "vn_xm177",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -23505,10 +23590,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm177",
-      "variantOf": null,
+      "variantOf": "vn_xm177",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -23701,10 +23788,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm177",
-      "variantOf": null,
+      "variantOf": "vn_xm177",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -23894,10 +23983,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm177",
-      "variantOf": null,
+      "variantOf": "vn_xm177",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -24153,10 +24244,12 @@
       ],
       "unlockableAttachments": [],
       "family": "xm177e1",
-      "variantOf": null,
+      "variantOf": "vn_xm177e1",
       "variantTraits": [],
       "derivedRequirements": [],
-      "variantEvidence": [],
+      "variantEvidence": [
+        "manual override"
+      ],
       "variantCandidateOf": null,
       "variantCandidateEvidence": []
     },
@@ -32536,6 +32629,20 @@
   ],
   "items": [
     {
+      "class": "ItemGPS",
+      "displayName": "GPS",
+      "description": "Arma 3 GPS assigned item.",
+      "source": "arma3",
+      "sourcePage": "CfgWeapons",
+      "version": "",
+      "itemType": "item",
+      "magazines": [],
+      "compatibleWeapons": [],
+      "traits": [],
+      "usedBy": [],
+      "sourceAffiliations": []
+    },
+    {
       "class": "vn_anpvs2_binoc",
       "displayName": "Starlight ANPVS2 (NV)",
       "description": "Starlight ANPVS2 (NV)",
@@ -32558,13 +32665,12 @@
       "source": "sog_pf",
       "sourcePage": "items",
       "version": "1.3",
-      "itemType": "bayonet",
+      "itemType": "camo",
       "magazines": [],
       "compatibleWeapons": [
         "vn_k98k_mrk_camo"
       ],
       "traits": [
-        "bayonet",
         "camo"
       ],
       "usedBy": [],
@@ -32577,14 +32683,13 @@
       "source": "sog_pf",
       "sourcePage": "items",
       "version": "1.0",
-      "itemType": "bayonet",
+      "itemType": "camo",
       "magazines": [],
       "compatibleWeapons": [
         "vn_m14_sd",
         "vn_m21_sd"
       ],
       "traits": [
-        "bayonet",
         "camo"
       ],
       "usedBy": [],
@@ -32597,14 +32702,13 @@
       "source": "sog_pf",
       "sourcePage": "items",
       "version": "1.2",
-      "itemType": "bayonet",
+      "itemType": "camo",
       "magazines": [],
       "compatibleWeapons": [
         "vn_m14a1_camo",
         "vn_m14a1_nvg"
       ],
       "traits": [
-        "bayonet",
         "camo"
       ],
       "usedBy": [],
@@ -32617,11 +32721,10 @@
       "source": "sog_pf",
       "sourcePage": "items",
       "version": "1.3",
-      "itemType": "bayonet",
+      "itemType": "camo",
       "magazines": [],
       "compatibleWeapons": [],
       "traits": [
-        "bayonet",
         "camo"
       ],
       "usedBy": [],
@@ -32634,13 +32737,12 @@
       "source": "sog_pf",
       "sourcePage": "items",
       "version": "1.2",
-      "itemType": "bayonet",
+      "itemType": "camo",
       "magazines": [],
       "compatibleWeapons": [
         "vn_m1_garand_sniper"
       ],
       "traits": [
-        "bayonet",
         "camo"
       ],
       "usedBy": [],
@@ -32653,13 +32755,12 @@
       "source": "sog_pf",
       "sourcePage": "items",
       "version": "1.3",
-      "itemType": "bayonet",
+      "itemType": "camo",
       "magazines": [],
       "compatibleWeapons": [
         "vn_m36_camo"
       ],
       "traits": [
-        "bayonet",
         "camo"
       ],
       "usedBy": [],
@@ -32672,13 +32773,12 @@
       "source": "sog_pf",
       "sourcePage": "items",
       "version": "1.0",
-      "itemType": "bayonet",
+      "itemType": "camo",
       "magazines": [],
       "compatibleWeapons": [
         "vn_m40a1_sniper_sd"
       ],
       "traits": [
-        "bayonet",
         "camo"
       ],
       "usedBy": [],
@@ -32691,11 +32791,10 @@
       "source": "sog_pf",
       "sourcePage": "items",
       "version": "1.0",
-      "itemType": "bayonet",
+      "itemType": "camo",
       "magazines": [],
       "compatibleWeapons": [],
       "traits": [
-        "bayonet",
         "camo"
       ],
       "usedBy": [],
@@ -32708,13 +32807,12 @@
       "source": "sog_pf",
       "sourcePage": "items",
       "version": "1.3",
-      "itemType": "bayonet",
+      "itemType": "camo",
       "magazines": [],
       "compatibleWeapons": [
         "vn_svd_sniper_camo"
       ],
       "traits": [
-        "bayonet",
         "camo"
       ],
       "usedBy": [],
@@ -32727,13 +32825,12 @@
       "source": "sog_pf",
       "sourcePage": "items",
       "version": "1.2",
-      "itemType": "bayonet",
+      "itemType": "camo",
       "magazines": [],
       "compatibleWeapons": [
         "vn_vz54_sniper_camo"
       ],
       "traits": [
-        "bayonet",
         "camo"
       ],
       "usedBy": [],
@@ -40182,7 +40279,7 @@
     "filtering": {
       "accepted": {
         "weapons": 227,
-        "items": 80,
+        "items": 81,
         "magazines": 340
       },
       "rejectedReasons": {
@@ -40208,8 +40305,21 @@
     },
     "warnings": [],
     "overridesApplied": [
+      "additionalItem:ItemGPS",
       "weaponType:vn_mc10->smg",
       "weaponType:vn_mc10_sd->smg",
+      "itemType:vn_b_camo_k98k->camo",
+      "itemType:vn_b_camo_m14->camo",
+      "itemType:vn_b_camo_m14a1->camo",
+      "itemType:vn_b_camo_m1903->camo",
+      "itemType:vn_b_camo_m1_garand->camo",
+      "itemType:vn_b_camo_m36->camo",
+      "itemType:vn_b_camo_m40a1->camo",
+      "itemType:vn_b_camo_m9130->camo",
+      "itemType:vn_b_camo_svd->camo",
+      "itemType:vn_b_camo_vz54->camo",
+      "variantOf:vn_izh54_p->vn_izh54",
+      "variantOf:vn_izh54_shorty->vn_izh54",
       "variantOf:vn_kbkg_gl->vn_kbkg",
       "variantOf:vn_l1a1_01_camo->vn_l1a1_01",
       "variantOf:vn_l1a1_01_gl->vn_l1a1_01",
@@ -40219,7 +40329,51 @@
       "variantOf:vn_l1a1_03->vn_l1a1_01",
       "variantOf:vn_l1a1_03_camo->vn_l1a1_01",
       "variantOf:vn_l1a1_xm148->vn_l1a1_01",
-      "variantOf:vn_l1a1_xm148_camo->vn_l1a1_01"
+      "variantOf:vn_l1a1_xm148_camo->vn_l1a1_01",
+      "variantOf:vn_l2a3_f->vn_l2a3",
+      "variantOf:vn_l34a1_f->vn_l34a1",
+      "variantOf:vn_l34a1_xm148->vn_l34a1",
+      "variantOf:vn_m14_camo->vn_m14",
+      "variantOf:vn_m14a1_shorty->vn_m14a1",
+      "variantOf:vn_m16_camo->vn_m16",
+      "variantOf:vn_m16_m203->vn_m16",
+      "variantOf:vn_m16_m203_camo->vn_m16",
+      "variantOf:vn_m16_muzzle->vn_m16",
+      "variantOf:vn_m16_xm148->vn_m16",
+      "variantOf:vn_m1903_gl->vn_m1903",
+      "variantOf:vn_m1_garand_gl->vn_m1_garand",
+      "variantOf:vn_m1a1_tommy_so->vn_m1a1_tommy",
+      "variantOf:vn_m1carbine_gl->vn_m1carbine",
+      "variantOf:vn_m2carbine_gl->vn_m2carbine",
+      "variantOf:vn_m21_nvg->vn_m21",
+      "variantOf:vn_m36_camo->vn_m36",
+      "variantOf:vn_m40a1_camo->vn_m40a1",
+      "variantOf:vn_m45_camo->vn_m45",
+      "variantOf:vn_m45_fold->vn_m45",
+      "variantOf:vn_m4956_gl->vn_m4956",
+      "variantOf:vn_m60_shorty->vn_m60",
+      "variantOf:vn_m60_shorty_camo->vn_m60",
+      "variantOf:vn_m79_p->vn_m79",
+      "variantOf:vn_mat49_f->vn_mat49",
+      "variantOf:vn_rpd_shorty->vn_rpd",
+      "variantOf:vn_rpd_shorty_01->vn_rpd",
+      "variantOf:vn_sks_gl->vn_sks",
+      "variantOf:vn_type64_f_smg->vn_type64_smg",
+      "variantOf:vn_vz61_p->vn_vz61",
+      "variantOf:vn_xm16e1_xm148->vn_xm16e1",
+      "variantOf:vn_xm177_camo->vn_xm177",
+      "variantOf:vn_xm177_fg->vn_xm177",
+      "variantOf:vn_xm177_m203->vn_xm177",
+      "variantOf:vn_xm177_m203_camo->vn_xm177",
+      "variantOf:vn_xm177_muzzle->vn_xm177",
+      "variantOf:vn_xm177_short->vn_xm177",
+      "variantOf:vn_xm177_stock->vn_xm177",
+      "variantOf:vn_xm177_stock_camo->vn_xm177",
+      "variantOf:vn_xm177_xm148->vn_xm177",
+      "variantOf:vn_xm177_xm148_camo->vn_xm177",
+      "variantOf:vn_xm177e1_camo->vn_xm177e1",
+      "derivedRequirements:vn_m21_nvg->vn_m21,vn_o_anpvs2_m14",
+      "derivedRequirements:vn_m36_camo->vn_m36,vn_b_camo_m36"
     ],
     "weaponExclusionReasons": {
       "vn_melee_base": "non_magazine_weapon_record",
@@ -40284,10 +40438,10 @@
     },
     "variants": {
       "families": 92,
-      "candidates": 97,
-      "derived": 86,
-      "ambiguous": 1,
-      "overrides": 10
+      "candidates": 140,
+      "derived": 88,
+      "ambiguous": 0,
+      "overrides": 54
     },
     "sourceAffiliations": {
       "weaponBuckets": {
@@ -40309,12 +40463,12 @@
     },
     "progression": {
       "weapons": 227,
-      "progressionWeapons": 131,
+      "progressionWeapons": 87,
       "includedBaseMagazines": 40,
       "extraMagazines": 113,
       "attachments": 57,
-      "derivedClasses": 86,
-      "totalFutureProgressionAssets": 301,
+      "derivedClasses": 88,
+      "totalFutureProgressionAssets": 257,
       "weaponMagazineRelationships": 999,
       "weaponAttachmentRelationships": 111
     }

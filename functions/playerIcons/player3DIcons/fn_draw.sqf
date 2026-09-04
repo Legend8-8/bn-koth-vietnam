@@ -17,6 +17,7 @@ private _shadow = missionNamespace getVariable ["BN_KOTH_player3DIconsShadow", t
 private _texture = missionNamespace getVariable ["BN_KOTH_player3DIconsTexture", "\A3\ui_f\data\map\markers\military\triangle_CA.paa"];
 private _nameSize = missionNamespace getVariable ["BN_KOTH_player3DIconsNameSize", 0.035];
 private _alpha = missionNamespace getVariable ["BN_KOTH_player3DIconsAlpha", 1];
+private _proximityDistance = missionNamespace getVariable ["BN_KOTH_player3DIconsProximityVisibilityDistance", 25];
 private _drawData = uiNamespace getVariable ["BN_KOTH_player3DIconsDrawData", []];
 
 {
@@ -25,6 +26,21 @@ private _drawData = uiNamespace getVariable ["BN_KOTH_player3DIconsDrawData", []
         private _drawPosition = [_position select 0, _position select 1, (_position select 2) + _height];
         private _screenPosition = worldToScreen _drawPosition;
         if (_screenPosition isEqualTo []) then {
+            continue;
+        };
+
+        private _withinProximity = player distance _drawPosition <= _proximityDistance;
+        private _lineOfSightBlocked = !_withinProximity && {!((lineIntersectsSurfaces [
+            eyePos player,
+            AGLToASL _drawPosition,
+            player,
+            objNull,
+            true,
+            1,
+            "GEOM",
+            "NONE"
+        ]) isEqualTo [])};
+        if (_lineOfSightBlocked) then {
             continue;
         };
 

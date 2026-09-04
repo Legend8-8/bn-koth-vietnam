@@ -2,13 +2,21 @@ class CfgBnKothZone
 {
     maximumControlHeight = 50;
 
-    // sqrt(2) linear scaling makes the footprint area twice the original size.
-    prioritySizeRatio = 0.14142136;
-    priorityMinimumHalfSize = 8.4852814;
+    // 0.10 means the Priority footprint occupies ten percent of the AO area.
+    priorityAreaRatio = 0.10;
+    // Degenerate-AO safety floor only; normal AOs remain governed by area ratio.
+    priorityMinimumHalfSize = 1;
 
-    // Two server-time movement ticks per second, advancing 0.25 metres per tick.
-    priorityMoveTickInterval = 0.1;
-    priorityMoveDistancePerTick = 0.15;
+    battlefieldPickupWeapons[] = {"vn_rpg2", "vn_rpg7", "vn_m72"};
+    battlefieldPickupCount = 5;
+    battlefieldPickupMagazineCount = 1;
+    battlefieldPickupPlacementAttemptsPerItem = 20;
+    battlefieldPickupMinimumSeparation = 15;
+    battlefieldPickupMaximumSurfaceOffset = 1.5;
+    battlefieldPickupSurfaceClearance = 0.08;
+
+    // Distance advanced per frame while the priority zone is active.
+    priorityMoveDistancePerTick = 0.5;
 
     // A player in the priority zone contributes this total control weight.
     priorityControlWeight = 2;
@@ -20,4 +28,5 @@ class CfgBnKothZone
     priorityMarkerEastColor = "ColorRed";
     priorityMarkerTieColor = "ColorCIV";
     priorityMarkerTieBrush = "FDiagonal";
+
 };

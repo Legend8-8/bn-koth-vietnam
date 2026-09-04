@@ -29,33 +29,44 @@ if (!isNull _existingVehicle && {!alive _existingVehicle}) then {
     missionNamespace setVariable ["BN_KOTH_vehicleManagedSlots", _slots];
 };
 
-private _markerName = _slotData getOrDefault ["markerName", ""];
 private _vehicleClass = _slotData getOrDefault ["vehicleClass", ""];
 private _side = _slotData getOrDefault ["side", sideUnknown];
 private _category = _slotData getOrDefault ["category", ""];
+private _sideToken = _slotData getOrDefault ["sideToken", ""];
+private _familyName = _slotData getOrDefault ["family", ""];
+private _roleName = _slotData getOrDefault ["roleName", ""];
+private _locationId = _slotData getOrDefault ["locationId", ""];
 
-if (_markerName isEqualTo "" || {_vehicleClass isEqualTo ""}) exitWith {
+if (_vehicleClass isEqualTo "" || {_locationId isEqualTo ""}) exitWith {
     _slotData set ["enabled", false];
     _slotData set ["respawnAt", -1];
     _slots set [_slotId, _slotData];
     missionNamespace setVariable ["BN_KOTH_vehicleManagedSlots", _slots];
 
-    [format ["Managed slot '%1' spawn blocked: invalid marker/class.", _slotId], "ERROR"] call bn_koth_fnc_common_log;
+    [format ["Managed slot '%1' spawn blocked: invalid location/class.", _slotId], "ERROR"] call bn_koth_fnc_common_log;
     false
 };
 
-if ((markerShape _markerName) isEqualTo "") exitWith {
+private _activeLocationId = missionNamespace getVariable ["BN_KOTH_activeLocationId", ""];
+private _locationData = [_activeLocationId] call bn_koth_fnc_zone_getLocationData;
+private _capabilities = [_locationData] call bn_koth_fnc_zone_getVehicleCapabilities;
+private _sideCapabilities = (_capabilities getOrDefault ["sides", createHashMap]) getOrDefault [_sideToken, createHashMap];
+private _family = (_sideCapabilities getOrDefault ["families", createHashMap]) getOrDefault [_familyName, createHashMap];
+private _role = (_sideCapabilities getOrDefault ["roles", createHashMap]) getOrDefault [_roleName, createHashMap];
+if !(_activeLocationId isEqualTo _locationId && {_family getOrDefault ["free", false]} && {_role getOrDefault ["exists", false]}) exitWith {
     _slotData set ["enabled", false];
     _slotData set ["respawnAt", -1];
     _slots set [_slotId, _slotData];
     missionNamespace setVariable ["BN_KOTH_vehicleManagedSlots", _slots];
 
-    [format ["Managed slot '%1' skipped: marker '%2' missing (optional slot disabled).", _slotId, _markerName], "INFO"] call bn_koth_fnc_common_log;
+    [format ["Managed slot '%1' disabled: active location or free spawn capability changed.", _slotId], "INFO"] call bn_koth_fnc_common_log;
     false
 };
 
-private _spawnPos = markerPos _markerName;
-private _spawnDir = markerDir _markerName;
+private _spawnRef = _role getOrDefault ["ref", ""];
+private _spawnPos = _role getOrDefault ["position", []];
+private _spawnDir = _role getOrDefault ["direction", 0];
+if ((count _spawnPos) < 2) exitWith {false};
 private _clearRadius = missionNamespace getVariable ["BN_KOTH_vehicleSpawnClearRadiusMeters", 8];
 private _retrySeconds = (missionNamespace getVariable ["BN_KOTH_vehicleSpawnBlockedRetrySeconds", 5]) max 1;
 private _includePlayerBlockers = missionNamespace getVariable ["BN_KOTH_vehicleSpawnIncludePlayers", true];
@@ -104,7 +115,7 @@ if !(_spawnCheck getOrDefault ["isClear", true]) exitWith {
     [format [
         "Managed slot '%1' spawn blocked at marker '%2' category=%3 radius=%4 retry=%5s players=%6 vehicles=%7 playerSamples=[%8] vehicleSamples=[%9]",
         _slotId,
-        _markerName,
+        _spawnRef,
         _category,
         _clearRadius,
         _retrySeconds,
@@ -136,5 +147,5 @@ _slotData set ["emptySince", -1];
 _slots set [_slotId, _slotData];
 missionNamespace setVariable ["BN_KOTH_vehicleManagedSlots", _slots];
 
-[format ["Managed slot '%1' spawned class=%2 marker=%3.", _slotId, _vehicleClass, _markerName], "INFO"] call bn_koth_fnc_common_log;
+[format ["Managed slot '%1' spawned class=%2 role=%3.", _slotId, _vehicleClass, _spawnRef], "INFO"] call bn_koth_fnc_common_log;
 true

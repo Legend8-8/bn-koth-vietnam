@@ -179,6 +179,10 @@ if (!_hasExistingDraft) then {
 };
 uiNamespace setVariable ["BN_KOTH_menuConfigureDrafts", _existingDrafts];
 
+private _back = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_BACK;
+_back buttonSetAction "private _context = uiNamespace getVariable ['BN_KOTH_menuConfigureContext', createHashMap]; private _returnPage = _context getOrDefault ['browserPage', 0]; if !(_returnPage isEqualType 0) then {_returnPage = 0}; private _returnSlot = toLower (_context getOrDefault ['weaponSlot', 'primary']); private _returnClass = toLower (_context getOrDefault ['weaponClass', '']); uiNamespace setVariable ['BN_KOTH_menuBrowserSlot', _returnSlot]; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', _returnPage max 0]; uiNamespace setVariable ['BN_KOTH_menuBrowserHighlightClass', _returnClass]; uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMap]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
+
+// BACK must be bound before the ATTACHMENTS exitWith below, since that view never reaches the MAGAZINES-only rendering.
 if (_configureView isEqualTo "ATTACHMENTS") exitWith {
     [_display, _canonicalClass, _compatibilityCfg] call bn_koth_fnc_menu_refreshConfigureAttachments
 };
@@ -328,9 +332,6 @@ private _configureSubtitle = if (_selectedMagazine isEqualTo "") then {
 (_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_TITLE) ctrlSetText _weaponName;
 (_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_SUBTITLE) ctrlSetText _configureSubtitle;
 (_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL) ctrlSetText format ["PAGE %1 / %2", _page + 1, _pageCount];
-
-private _back = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_BACK;
-_back buttonSetAction "private _context = uiNamespace getVariable ['BN_KOTH_menuConfigureContext', createHashMap]; private _returnPage = _context getOrDefault ['browserPage', 0]; if !(_returnPage isEqualType 0) then {_returnPage = 0}; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', _returnPage max 0]; uiNamespace setVariable ['BN_KOTH_menuConfigureContext', createHashMap]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";
 
 private _previous = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_PREVIOUS;
 private _next = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_NEXT;

@@ -18,6 +18,13 @@ The server calculates gameplay truth.
 
 Clients display information and send requests.
 
+Combat-attribution collection registers only on the server. Projectile facts
+and bounded victim hit records remain server-local and are not broadcast;
+optional diagnostics only control RPT verbosity. `EntityKilled` owns lethality,
+`combat_handleKill` owns valid PvP, and progression mastery consumes only the
+attached unique `ATTRIBUTED` canonical infantry root. Clients have no mastery
+mutation or weapon-attribution request endpoint.
+
 A client must not be trusted to determine:
 
 - zone ownership;
@@ -53,6 +60,7 @@ Database access| Server
 Gameplay vehicle creation| Server
 Local player loadout interface| Owning client
 Loadout entitlement validation| Server
+Traversal input, geometry probing and movement| Owning client
 Named kit profile storage and management| Owning client; stored data remains untrusted intent
 Arsenal physical-loadout reconciliation| Server reads the owned player object
 Arsenal preview framework| Owning client; currently disabled
@@ -103,7 +111,7 @@ Examples:
 - validating the player;
 - assigning initial server-side player state;
 - sending the current round state to the joining player;
-- loading future persistent data.
+- loading and normalizing persistent data through the server-only persistence service.
 
 "init.sqf"
 
@@ -230,7 +238,19 @@ Commands that require local execution must be sent to the machine that owns the 
 
 Locality must not be guessed from where a function happened to be called.
 
+Traversal runs only for the current local player representation. It publishes
+no authoritative state, sends no remote request, and creates no JIP payload.
+The engine continues to replicate the owning client's unit transform normally;
+the mission-local traversal lock and diagnostics remain client-local.
+
 Safe-zone membership is calculated on the server. Player `HandleDamage`, `FiredMan`, `GetInMan` and physical-inventory handlers are installed on each current local player representation, including after respawn or `selectPlayer`. The inventory-open handler uses the published active markers and the shared safe-zone geometry helper to block local UI access when either the actor or container crosses the boundary. Vehicle `allowDamage`, `HandleDamage` and `Fired` enforcement is reapplied whenever the vehicle owner changes. The server independently validates and deletes safe-zone loot holders and corpses. The only safe-zone remote endpoints are server-to-owner ejection and vehicle-protection application; both reject non-server remote callers.
+
+AO population eligibility is calculated only from server-owned player records
+whose owner resolves to a connected human player object. Clients neither report
+nor calculate this count. Vote candidate reconciliation and resolution are
+server-only. Store capability display is client presentation derived from the
+active location, while free slots, rentals and command teleport independently
+enforce the same spawn-role capability on the server.
 
 10. Performance
 
@@ -244,7 +264,15 @@ Suggested initial intervals:
 - safe-zone ground cleanup: entity events plus one activation-time sweep, never a recurring world scan;
 - score awarding: configurable, such as once every five seconds;
 - HUD refresh: only when values change, or at a controlled client-side interval;
-- database saving: event-based and periodic, not every score tick.
+- persistence saving: mutation-driven dirty state with one coalesced delayed save,
+  plus disconnect/mission-end flushes; never every frame or every score tick.
+
+Clients have no persistence endpoint. They cannot load, save, or submit XP, cash,
+ownership, or mastery values. Registration supplies only a server-observed Steam
+UID to `functions/persistence/`; the existing targeted progression snapshot is the
+sole client presentation path. extDB3 calls remain server-local behind the backend
+adapter. No persistence function is remotely exposed and no database result is
+accepted from a client.
 
 All players do not need to calculate the same authoritative zone result independently.
 
@@ -272,3 +300,25 @@ Before merging a multiplayer feature, answer:
 6. What happens if the player disconnects midway?
 7. Is the same work unnecessarily running on every client?
 8. Does the server remain authoritative?
+
+13. Store Weapon Requests
+
+The client sends only `PURCHASE`/`RENT` plus a canonical weapon classname. The
+server resolves the player and UID from `remoteExecutedOwner`, invokes the
+existing server-only acquisition API, targets the result to that owner, and
+publishes changed cash/ownership/rental state through the existing player-only
+progression update. Store requests never broadcast and never equip equipment.
+
+14. Vehicle Rental Requests
+
+Clients submit only RENT or owner access-mode intent. The server derives the
+UID from `remoteExecutedOwner`, validates current side/level/perks, cash and
+active-rental state, selects/reserves a cached authored paid pad, creates the
+vehicle server-local, and only then deducts cash — all as one transaction with
+no separate requisition step. The active rental map is server-only; only the
+requesting client receives their projected state. Get-in authorization is
+checked from server-owned UID/access data. A narrowly allowlisted
+server-to-owner endpoint performs locality-sensitive ejection.
+# Perk requests
+
+Perk purchase and activation requests are client intent only. The server derives the player from `remoteExecutedOwner`, reads configured price and authoritative progression, commits atomically, marks persistence dirty, and publishes only to that owner. Suppressor cleanup is server-derived; the owning client only applies the server-signed Unit Loadout because `setUnitLoadout` must execute where the player unit is local.

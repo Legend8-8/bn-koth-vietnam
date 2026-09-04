@@ -1,7 +1,7 @@
 #include "idcs.hpp"
 
 #define BN_KOTH_HUD_W (safeZoneW * 0.19)
-#define BN_KOTH_HUD_H (safeZoneH * 0.07)
+#define BN_KOTH_HUD_H (safeZoneH * 0.12)
 
 #define BN_KOTH_HUD_X (safeZoneX + safeZoneW - BN_KOTH_HUD_W - safeZoneW * 0.012)
 #define BN_KOTH_HUD_Y (safeZoneY + safeZoneH - BN_KOTH_HUD_H - safeZoneH * 0.025)
@@ -87,9 +87,59 @@ class BN_KOTH_RscHud
             style = 2;
             font = "PuristaSemiBold";
             x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
-            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.34;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.25;
             w = BN_KOTH_HUD_W * 0.90;
-            h = BN_KOTH_HUD_H * 0.24;
+            h = BN_KOTH_HUD_H * 0.14;
+            sizeEx = "0.011 * safeZoneH";
+            colorText[] = {0.88, 0.86, 0.80, 0.95};
+            colorBackground[] = {0, 0, 0, 0};
+        };
+
+        class HudAoPopulation: BN_KOTH_RscStructuredText
+        {
+            idc = BN_KOTH_IDC_HUD_AO_POPULATION;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.40;
+            w = BN_KOTH_HUD_W * 0.90;
+            h = BN_KOTH_HUD_H * 0.14;
+            size = "0.0105 * safeZoneH";
+            colorBackground[] = {0, 0, 0, 0};
+        };
+
+        class HudPriorityPopulation: BN_KOTH_RscStructuredText
+        {
+            idc = BN_KOTH_IDC_HUD_PRIORITY_POPULATION;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.52;
+            w = BN_KOTH_HUD_W * 0.90;
+            h = BN_KOTH_HUD_H * 0.14;
+            size = "0.0105 * safeZoneH";
+            colorBackground[] = {0, 0, 0, 0};
+        };
+
+        class HudRankIcon: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_HUD_RANK_ICON;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.68;
+            w = BN_KOTH_HUD_H * 0.18;
+            h = BN_KOTH_HUD_H * 0.18;
+            colorText[] = {1, 1, 1, 1};
+        };
+
+        class HudPlayerProgress: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_PLAYER_PROGRESS;
+            text = "LEVEL --   XP SYNCING";
+            style = 0;
+            font = "PuristaSemiBold";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.16;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.67;
+            w = BN_KOTH_HUD_W * 0.79;
+            h = BN_KOTH_HUD_H * 0.20;
             sizeEx = "0.011 * safeZoneH";
             colorText[] = {0.88, 0.86, 0.80, 0.95};
             colorBackground[] = {0, 0, 0, 0};
@@ -100,9 +150,9 @@ class BN_KOTH_RscHud
             idc = BN_KOTH_IDC_HUD_PROGRESS_BG;
             text = "";
             x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
-            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.68;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.88;
             w = BN_KOTH_HUD_W * 0.90;
-            h = BN_KOTH_HUD_H * 0.15;
+            h = BN_KOTH_HUD_H * 0.10;
             colorBackground[] = {0.08, 0.08, 0.08, 0.92};
         };
 
@@ -111,9 +161,9 @@ class BN_KOTH_RscHud
             idc = BN_KOTH_IDC_HUD_PROGRESS_FILL;
             text = "";
             x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
-            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.68;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.88;
             w = 0;
-            h = BN_KOTH_HUD_H * 0.15;
+            h = BN_KOTH_HUD_H * 0.10;
             colorBackground[] = {0.45, 0.77, 1, 0.95};
         };
 

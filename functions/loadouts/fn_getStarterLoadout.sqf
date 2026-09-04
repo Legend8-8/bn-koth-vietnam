@@ -120,6 +120,17 @@ if ((count _loadout) <= 0) exitWith {
     ]
 };
 
+if ((count ([_loadout] call bn_koth_fnc_progression_perks_findSuppressors)) > 0) exitWith {
+    createHashMapFromArray [
+        ["success", false],
+        ["code", "ERR_STARTER_REQUIRES_PERK"],
+        ["message", format ["Starter loadout '%1' contains perk-restricted suppressors.", _starterId]],
+        ["loadoutId", _starterId],
+        ["sideToken", _sideToken],
+        ["loadout", []]
+    ]
+};
+
 createHashMapFromArray [
     ["success", true],
     ["code", "OK"],

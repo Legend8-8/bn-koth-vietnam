@@ -1,6 +1,8 @@
 /*
     File: fn_keybindings_onLoad.sqf
     Author: tylervip
+    Edited: Legend
+    Edited: Mongo
     Description: Populates keybindings menu rows and event handlers.
     Execution: Client
     Parameters:
@@ -34,7 +36,7 @@ private _usedBinds = [];
     private _ctrl = _bind param [2, false];
     private _alt = _bind param [3, false];
 
-    private _keyName = keyName _keyId;
+    private _keyName = if (_keyId <= 0) then {"UNBOUND"} else {keyName _keyId};
     if (_keyName isEqualTo "") then {
         _keyName = str _keyId;
     };

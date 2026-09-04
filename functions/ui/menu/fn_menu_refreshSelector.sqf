@@ -33,6 +33,37 @@ private _ctrlPrimaryList = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_LIST;
 private _ctrlPrimaryDetail = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_DETAIL;
 private _ctrlPrimaryApply = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_APPLY;
 private _ctrlPrimaryBack = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_BACK;
+private _ctrlLeftBackground = _display displayCtrl BN_KOTH_IDC_MENU_BG_LEFT;
+private _ctrlCenterBackground = _display displayCtrl BN_KOTH_IDC_MENU_BG_CENTER;
+
+// Store V1 reuses this fixed control pool in wide mode. The selector renderer
+// restores its complete narrow/left-column geometry before owning the pool.
+private _leftPosition = ctrlPosition _ctrlLeftBackground;
+private _centerPosition = ctrlPosition _ctrlCenterBackground;
+private _leftX = _leftPosition select 0;
+private _leftW = _leftPosition select 2;
+private _centerX = _centerPosition select 0;
+private _centerY = _centerPosition select 1;
+private _centerW = _centerPosition select 2;
+private _centerH = _centerPosition select 3;
+
+_ctrlPrimaryPreview ctrlSetPosition [_leftX + _leftW * 0.08, _centerY + safeZoneH * 0.215, _leftW * 0.84, safeZoneH * 0.30];
+_ctrlPrimaryTitle ctrlSetPosition [_centerX + safeZoneW * 0.012, _centerY + safeZoneH * 0.016, _centerW * 0.90, safeZoneH * 0.04];
+_ctrlPrimaryCurrent ctrlSetPosition [_centerX + safeZoneW * 0.012, _centerY + safeZoneH * 0.054, _centerW * 0.92, safeZoneH * 0.03];
+_ctrlPrimaryList ctrlSetPosition [_centerX + safeZoneW * 0.012, _centerY + safeZoneH * 0.092, _centerW * 0.92, safeZoneH * 0.30];
+_ctrlPrimaryDetail ctrlSetPosition [_centerX + safeZoneW * 0.012, _centerY + safeZoneH * 0.404, _centerW * 0.92, safeZoneH * 0.085];
+private _menuX = safeZoneX + safeZoneW * 0.02;
+private _menuY = safeZoneY + safeZoneH * 0.03;
+private _menuW = safeZoneW * 0.96;
+private _menuH = safeZoneH * 0.94;
+private _bottomY = _centerY + _centerH + safeZoneH * 0.012;
+private _bottomH = _menuY + _menuH - _bottomY;
+_ctrlPrimaryBack ctrlSetPosition [_menuX + _menuW - safeZoneW * 0.132, _bottomY + safeZoneH * 0.014, safeZoneW * 0.12, _bottomH - safeZoneH * 0.028];
+_ctrlPrimaryApply ctrlSetPosition [_centerX + _centerW * 0.48, _centerY + _centerH - safeZoneH * 0.095, _centerW * 0.44, safeZoneH * 0.04];
+{
+    _x ctrlCommit 0;
+} forEach [_ctrlPrimaryPreview, _ctrlPrimaryTitle, _ctrlPrimaryCurrent, _ctrlPrimaryList, _ctrlPrimaryDetail, _ctrlPrimaryBack, _ctrlPrimaryApply];
+
 private _ctrlCargoMinus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_MINUS;
 private _ctrlCargoPlus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_PLUS;
 
@@ -250,27 +281,13 @@ _ctrlCargoPlus ctrlShow _isCargoMode;
 _ctrlPrimaryApply ctrlShow (!_isCargoMode);
 
 if (_isCargoMode) then {
-    private _backPos = ctrlPosition _ctrlPrimaryBack;
     private _applyPos = ctrlPosition _ctrlPrimaryApply;
 
     // Intentional visual rhythm:
-    // BACK  [gap]  -  [gap]  +
+    // -  [gap]  +
     private _cargoGap = safeZoneW * 0.004;
-
-    private _cargoStartX =
-        (_backPos select 0) +
-        (_backPos select 2) +
-        _cargoGap;
-
-    private _cargoRightX =
-        (_applyPos select 0) +
-        (_applyPos select 2);
-
-    private _cargoWidth =
-        (_cargoRightX - _cargoStartX) max 0;
-
-    private _buttonWidth =
-        ((_cargoWidth - _cargoGap) / 2) max 0;
+    private _cargoStartX = _applyPos select 0;
+    private _buttonWidth = (((_applyPos select 2) - _cargoGap) / 2) max 0;
 
     _ctrlCargoMinus ctrlSetPosition [
         _cargoStartX,
@@ -375,11 +392,11 @@ lbClear _ctrlPrimaryList;
                 case "LOCKED_LEVEL": {
                     format ["LVL %1", _x getOrDefault ["minLevel", 1]]
                 };
-                case "LOCKED_SIDE_LICENSE": {
+                case "LOCKED_MASTERY": {
                     format [
                         "%1/%2 KILLS",
                         _x getOrDefault ["weaponKills", 0],
-                        _x getOrDefault ["licenseKills", 0]
+                        _x getOrDefault ["masteryKillsRequired", 0]
                     ]
                 };
                 case "LOCKED_PERK": {"PERK"};
@@ -610,11 +627,11 @@ if (_selectedAvailable) then {
                     _selected getOrDefault ["minLevel", 1]
                 ]
             };
-            case "LOCKED_SIDE_LICENSE": {
+            case "LOCKED_MASTERY": {
                 format [
-                    "LICENCE KILLS %1 / %2",
+                    "MASTERY %1 / %2",
                     _selected getOrDefault ["weaponKills", 0],
-                    _selected getOrDefault ["licenseKills", 0]
+                    _selected getOrDefault ["masteryKillsRequired", 0]
                 ]
             };
             case "LOCKED_PERK": {

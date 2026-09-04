@@ -39,7 +39,17 @@
     "itemType": {
       "_description": "Override an item's catalogue category when automatic classification is wrong or ambiguous.",
       "vn_example_item": "optic"
-    }
+    },
+    "additionalItems": [
+      {
+        "_description": "Explicit factual base-game items required by BN KOTH but absent from the S.O.G. wiki item table.",
+        "class": "ExampleItem",
+        "displayName": "Example Item",
+        "source": "arma3",
+        "sourcePage": "CfgWeapons",
+        "itemType": "item"
+      }
+    ]
   },
   "exclude": {
     "weapons": [],
@@ -49,6 +59,8 @@
   "baseMagazine": {},
   "family": {},
   "variantOf": {
+    "vn_izh54_p": "vn_izh54",
+    "vn_izh54_shorty": "vn_izh54",
     "vn_kbkg_gl": "vn_kbkg",
     "vn_l1a1_01_camo": "vn_l1a1_01",
     "vn_l1a1_01_gl": "vn_l1a1_01",
@@ -58,14 +70,87 @@
     "vn_l1a1_03": "vn_l1a1_01",
     "vn_l1a1_03_camo": "vn_l1a1_01",
     "vn_l1a1_xm148": "vn_l1a1_01",
-    "vn_l1a1_xm148_camo": "vn_l1a1_01"
+    "vn_l1a1_xm148_camo": "vn_l1a1_01",
+    "vn_l2a3_f": "vn_l2a3",
+    "vn_l34a1_f": "vn_l34a1",
+    "vn_l34a1_xm148": "vn_l34a1",
+    "vn_m14_camo": "vn_m14",
+    "vn_m14a1_shorty": "vn_m14a1",
+    "vn_m16_camo": "vn_m16",
+    "vn_m16_m203": "vn_m16",
+    "vn_m16_m203_camo": "vn_m16",
+    "vn_m16_muzzle": "vn_m16",
+    "vn_m16_xm148": "vn_m16",
+    "vn_m1903_gl": "vn_m1903",
+    "vn_m1_garand_gl": "vn_m1_garand",
+    "vn_m1a1_tommy_so": "vn_m1a1_tommy",
+    "vn_m1carbine_gl": "vn_m1carbine",
+    "vn_m2carbine_gl": "vn_m2carbine",
+    "vn_m21_nvg": "vn_m21",
+    "vn_m36_camo": "vn_m36",
+    "vn_m40a1_camo": "vn_m40a1",
+    "vn_m45_camo": "vn_m45",
+    "vn_m45_fold": "vn_m45",
+    "vn_m4956_gl": "vn_m4956",
+    "vn_m60_shorty": "vn_m60",
+    "vn_m60_shorty_camo": "vn_m60",
+    "vn_m79_p": "vn_m79",
+    "vn_mat49_f": "vn_mat49",
+    "vn_rpd_shorty": "vn_rpd",
+    "vn_rpd_shorty_01": "vn_rpd",
+    "vn_sks_gl": "vn_sks",
+    "vn_type64_f_smg": "vn_type64_smg",
+    "vn_vz61_p": "vn_vz61",
+    "vn_xm16e1_xm148": "vn_xm16e1",
+    "vn_xm177_camo": "vn_xm177",
+    "vn_xm177_fg": "vn_xm177",
+    "vn_xm177_m203": "vn_xm177",
+    "vn_xm177_m203_camo": "vn_xm177",
+    "vn_xm177_muzzle": "vn_xm177",
+    "vn_xm177_short": "vn_xm177",
+    "vn_xm177_stock": "vn_xm177",
+    "vn_xm177_stock_camo": "vn_xm177",
+    "vn_xm177_xm148": "vn_xm177",
+    "vn_xm177_xm148_camo": "vn_xm177",
+    "vn_xm177e1_camo": "vn_xm177e1"
   },
-  "derivedRequirements": {},
+  "derivedRequirements": {
+    "vn_m21_nvg": [
+      "vn_m21",
+      "vn_o_anpvs2_m14"
+    ],
+    "vn_m36_camo": [
+      "vn_m36",
+      "vn_b_camo_m36"
+    ]
+  },
   "weaponType": {
     "vn_mc10": "smg",
     "vn_mc10_sd": "smg"
   },
-  "itemType": {},
+  "itemType": {
+    "vn_b_camo_k98k": "camo",
+    "vn_b_camo_m14": "camo",
+    "vn_b_camo_m14a1": "camo",
+    "vn_b_camo_m1903": "camo",
+    "vn_b_camo_m1_garand": "camo",
+    "vn_b_camo_m36": "camo",
+    "vn_b_camo_m40a1": "camo",
+    "vn_b_camo_m9130": "camo",
+    "vn_b_camo_svd": "camo",
+    "vn_b_camo_vz54": "camo"
+  },
+  "additionalItems": [
+    {
+      "class": "ItemGPS",
+      "displayName": "GPS",
+      "description": "Arma 3 GPS assigned item.",
+      "source": "arma3",
+      "sourcePage": "CfgWeapons",
+      "itemType": "item",
+      "traits": []
+    }
+  ],
   "notes": [
     "Use this file for explicit manual corrections when the source data is ambiguous or automatic classification is unsuitable.",
     "Generated catalogue files must not be edited by hand; make factual/manual corrections here and regenerate.",

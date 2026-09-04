@@ -5,7 +5,7 @@ SOURCE COVERAGE
 
 FILTERING
 - accepted weapons: 227
-- accepted items: 80
+- accepted items: 81
 - accepted magazines: 340
 - rejected weapons: {'non_sog_class': 3, 'non_magazine_weapon_record': 35, 'helper_or_fake_weapon': 2}
 - rejected items: {'range_placeholder': 2, 'non_player_item': 7}
@@ -46,10 +46,10 @@ BASE MAGAZINES
 
 VARIANTS
 - families detected: 92
-- variant candidates: 97
-- confidently derived relationships: 86
-- ambiguous relationships: 1
-- overrides applied: 10
+- variant candidates: 140
+- confidently derived relationships: 88
+- ambiguous relationships: 0
+- overrides applied: 54
 
 ORPHANS / ERRORS
 - referenced magazine missing from catalogue: 0
@@ -57,12 +57,12 @@ ORPHANS / ERRORS
 
 PROGRESSION WORK
 - weapon count: 227
-- unique progression-weapon count: 131
+- unique progression-weapon count: 87
 - unique included base-mag count: 40
 - unique extra-mag count: 113
 - unique attachment count: 57
-- unique confirmed derived-class count: 86
-- total unique future progression assets: 301
+- unique confirmed derived-class count: 88
+- total unique future progression assets: 257
 - weapon-magazine relationship links: 999
 - weapon-attachment relationship links: 111
 
@@ -70,8 +70,21 @@ EXCLUSIONS
 - vnx_* records excluded: 0
 
 OVERRIDES
+- additionalItem:ItemGPS
 - weaponType:vn_mc10->smg
 - weaponType:vn_mc10_sd->smg
+- itemType:vn_b_camo_k98k->camo
+- itemType:vn_b_camo_m14->camo
+- itemType:vn_b_camo_m14a1->camo
+- itemType:vn_b_camo_m1903->camo
+- itemType:vn_b_camo_m1_garand->camo
+- itemType:vn_b_camo_m36->camo
+- itemType:vn_b_camo_m40a1->camo
+- itemType:vn_b_camo_m9130->camo
+- itemType:vn_b_camo_svd->camo
+- itemType:vn_b_camo_vz54->camo
+- variantOf:vn_izh54_p->vn_izh54
+- variantOf:vn_izh54_shorty->vn_izh54
 - variantOf:vn_kbkg_gl->vn_kbkg
 - variantOf:vn_l1a1_01_camo->vn_l1a1_01
 - variantOf:vn_l1a1_01_gl->vn_l1a1_01
@@ -82,6 +95,50 @@ OVERRIDES
 - variantOf:vn_l1a1_03_camo->vn_l1a1_01
 - variantOf:vn_l1a1_xm148->vn_l1a1_01
 - variantOf:vn_l1a1_xm148_camo->vn_l1a1_01
+- variantOf:vn_l2a3_f->vn_l2a3
+- variantOf:vn_l34a1_f->vn_l34a1
+- variantOf:vn_l34a1_xm148->vn_l34a1
+- variantOf:vn_m14_camo->vn_m14
+- variantOf:vn_m14a1_shorty->vn_m14a1
+- variantOf:vn_m16_camo->vn_m16
+- variantOf:vn_m16_m203->vn_m16
+- variantOf:vn_m16_m203_camo->vn_m16
+- variantOf:vn_m16_muzzle->vn_m16
+- variantOf:vn_m16_xm148->vn_m16
+- variantOf:vn_m1903_gl->vn_m1903
+- variantOf:vn_m1_garand_gl->vn_m1_garand
+- variantOf:vn_m1a1_tommy_so->vn_m1a1_tommy
+- variantOf:vn_m1carbine_gl->vn_m1carbine
+- variantOf:vn_m2carbine_gl->vn_m2carbine
+- variantOf:vn_m21_nvg->vn_m21
+- variantOf:vn_m36_camo->vn_m36
+- variantOf:vn_m40a1_camo->vn_m40a1
+- variantOf:vn_m45_camo->vn_m45
+- variantOf:vn_m45_fold->vn_m45
+- variantOf:vn_m4956_gl->vn_m4956
+- variantOf:vn_m60_shorty->vn_m60
+- variantOf:vn_m60_shorty_camo->vn_m60
+- variantOf:vn_m79_p->vn_m79
+- variantOf:vn_mat49_f->vn_mat49
+- variantOf:vn_rpd_shorty->vn_rpd
+- variantOf:vn_rpd_shorty_01->vn_rpd
+- variantOf:vn_sks_gl->vn_sks
+- variantOf:vn_type64_f_smg->vn_type64_smg
+- variantOf:vn_vz61_p->vn_vz61
+- variantOf:vn_xm16e1_xm148->vn_xm16e1
+- variantOf:vn_xm177_camo->vn_xm177
+- variantOf:vn_xm177_fg->vn_xm177
+- variantOf:vn_xm177_m203->vn_xm177
+- variantOf:vn_xm177_m203_camo->vn_xm177
+- variantOf:vn_xm177_muzzle->vn_xm177
+- variantOf:vn_xm177_short->vn_xm177
+- variantOf:vn_xm177_stock->vn_xm177
+- variantOf:vn_xm177_stock_camo->vn_xm177
+- variantOf:vn_xm177_xm148->vn_xm177
+- variantOf:vn_xm177_xm148_camo->vn_xm177
+- variantOf:vn_xm177e1_camo->vn_xm177e1
+- derivedRequirements:vn_m21_nvg->vn_m21,vn_o_anpvs2_m14
+- derivedRequirements:vn_m36_camo->vn_m36,vn_b_camo_m36
 
 VALIDATION WARNINGS
 - baseMagazines: 119
@@ -110,25 +167,6 @@ VALIDATION WARNINGS
   - vn_m127: ambiguous (vn_m127_mag, vn_m128_mag, vn_m129_mag)
   - vn_m14: ambiguous (vn_m14_10_mag, vn_m14_mag)
   - vn_m14_bayo: ambiguous (vn_m14_10_mag, vn_m14_mag)
-- duplicateRootDisplayNames: 2
-  - display=m16a1 (xm148) roots=vn_m16_xm148 display=M16A1 (XM148) type=rifle family=m16 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag | vn_m16_muzzle display=M16A1 (XM148) type=launcher family=m16_muzzle muzzles=rifle_mag magCategories=rifle_mag
-  - display=xm177e2 (xm148) roots=vn_xm177_xm148 display=XM177E2 (XM148) type=launcher family=xm177 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag | vn_xm177_muzzle display=XM177E2 (XM148) type=launcher family=xm177_muzzle muzzles=rifle_mag magCategories=rifle_mag
-- integratedLauncherRoots: 15
-  - vn_l34a1_xm148 display=L34A1 (XM148) type=smg family=l34a1 muzzles=launcher+primary_firearm magCategories=grenade_40mm+smg_mag
-  - vn_m16_m203_camo display=M16A1 (M203 Camo) type=launcher family=m16 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag
-  - vn_m16_m203 display=M16A1 (M203) type=launcher family=m16 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag
-  - vn_m16_xm148 display=M16A1 (XM148) type=rifle family=m16 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag
-  - vn_m1903_gl display=M1903 (Rifle Grenade) type=rifle family=m1903 muzzles=launcher+primary_firearm magCategories=grenade_22mm+rifle_mag
-  - vn_m1_garand_gl display=M1 Garand (Rifle Grenade) type=rifle family=m1_garand muzzles=launcher+primary_firearm magCategories=grenade_22mm+rifle_mag
-  - vn_m1carbine_gl display=M1 Carbine (Rifle Grenade) type=rifle family=m1carbine muzzles=launcher+primary_firearm magCategories=grenade_22mm+rifle_mag
-  - vn_m2carbine_gl display=M2 Carbine (Rifle Grenade) type=rifle family=m2carbine muzzles=launcher+primary_firearm magCategories=grenade_22mm+rifle_mag
-  - vn_m4956_gl display=M49/56 (Rifle Grenade) type=rifle family=m4956 muzzles=launcher+primary_firearm magCategories=grenade_22mm+rifle_mag
-  - vn_sks_gl display=SKS Rifle (22mm GL) type=rifle family=sks muzzles=launcher+primary_firearm magCategories=grenade_22mm+rifle_mag
-  - vn_xm16e1_xm148 display=XM16E1 (XM148) type=rifle family=xm16e1 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag
-  - vn_xm177_m203 display=XM177E2 (M203) type=launcher family=xm177 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag
-  - vn_xm177_m203_camo display=XM177E2 (M203/ Camo) type=launcher family=xm177 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag
-  - vn_xm177_xm148 display=XM177E2 (XM148) type=launcher family=xm177 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag
-  - vn_xm177_xm148_camo display=XM177E2 (XM148/ Camo) type=launcher family=xm177 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag
 - relationships: 6
   - reverse only: vn_gun_m61a1_640_mag -> vn_m61a1
   - reverse only: vn_m128_mag -> vn_rocket_m128_launcher
@@ -136,37 +174,9 @@ VALIDATION WARNINGS
   - reverse only: vn_sa2_camo_mag_x4 -> vn_sa2_launcher
   - reverse only: vn_sa2_mag_x1 -> vn_sa2_launcher
   - reverse only: vn_sa2_mag_x4 -> vn_sa2_launcher
-- suspiciousLauncherRoots: 2
-  - vn_m16_muzzle display=M16A1 (XM148) type=launcher family=m16_muzzle muzzles=rifle_mag magCategories=rifle_mag
-  - vn_xm177_muzzle display=XM177E2 (XM148) type=launcher family=xm177_muzzle muzzles=rifle_mag magCategories=rifle_mag
-- unresolvedRelatedRoots: 63
-  - vn_izh54 display=ISh-54 type=shotgun family=izh54 muzzles=shotgun_mag magCategories=shotgun_mag relatedRoots=vn_izh54_shorty,vn_izh54_p
-  - vn_izh54_shorty display=ISh-54 (Sawn-off) type=shotgun family=izh54 muzzles=shotgun_mag magCategories=shotgun_mag relatedRoots=vn_izh54,vn_izh54_p
-  - vn_izh54_p display=ISh-54 (Sidearm) type=handgun family=izh54 muzzles=shotgun_mag magCategories=shotgun_mag relatedRoots=vn_izh54,vn_izh54_shorty
-  - vn_l2a3 display=L2A3 type=smg family=l2a3 muzzles=smg_mag magCategories=smg_mag relatedRoots=vn_l2a3_f
-  - vn_l2a3_f display=L2A3 (Folded) type=smg family=l2a3 muzzles=smg_mag magCategories=smg_mag relatedRoots=vn_l2a3
-  - vn_l34a1 display=L34A1 type=smg family=l34a1 muzzles=smg_mag magCategories=smg_mag relatedRoots=vn_l34a1_f,vn_l34a1_xm148
-  - vn_l34a1_f display=L34A1 (Folded) type=smg family=l34a1 muzzles=smg_mag magCategories=smg_mag relatedRoots=vn_l34a1,vn_l34a1_xm148
-  - vn_l34a1_xm148 display=L34A1 (XM148) type=smg family=l34a1 muzzles=launcher+primary_firearm magCategories=grenade_40mm+smg_mag relatedRoots=vn_l34a1,vn_l34a1_f
-  - vn_m14 display=M14 type=rifle family=m14 muzzles=rifle_mag magCategories=rifle_mag relatedRoots=vn_m14_camo
-  - vn_m14_camo display=M14 (Camo) type=rifle family=m14 muzzles=rifle_mag magCategories=rifle_mag relatedRoots=vn_m14
-  - vn_m14a1 display=M14A1 type=rifle family=m14a1 muzzles=rifle_mag magCategories=rifle_mag relatedRoots=vn_m14a1_shorty
-  - vn_m14a1_shorty display=M14A1 (Shorty) type=rifle family=m14a1 muzzles=rifle_mag magCategories=rifle_mag relatedRoots=vn_m14a1
-  - vn_m16 display=M16A1 type=rifle family=m16 muzzles=rifle_mag magCategories=rifle_mag relatedRoots=vn_m16_camo,vn_m16_m203_camo,vn_m16_m203,vn_m16_xm148
-  - vn_m16_camo display=M16A1 (Camo) type=rifle family=m16 muzzles=rifle_mag magCategories=rifle_mag relatedRoots=vn_m16,vn_m16_m203_camo,vn_m16_m203,vn_m16_xm148
-  - vn_m16_m203_camo display=M16A1 (M203 Camo) type=launcher family=m16 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag relatedRoots=vn_m16,vn_m16_camo,vn_m16_m203,vn_m16_xm148
-  - vn_m16_m203 display=M16A1 (M203) type=launcher family=m16 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag relatedRoots=vn_m16,vn_m16_camo,vn_m16_m203_camo,vn_m16_xm148
-  - vn_m16_xm148 display=M16A1 (XM148) type=rifle family=m16 muzzles=launcher+primary_firearm magCategories=grenade_40mm+rifle_mag relatedRoots=vn_m16,vn_m16_camo,vn_m16_m203_camo,vn_m16_m203
-  - vn_m1903_gl display=M1903 (Rifle Grenade) type=rifle family=m1903 muzzles=launcher+primary_firearm magCategories=grenade_22mm+rifle_mag relatedRoots=vn_m1903
-  - vn_m1903 display=M1903 Rifle type=rifle family=m1903 muzzles=rifle_mag magCategories=rifle_mag relatedRoots=vn_m1903_gl
-  - vn_m1_garand display=M1 Garand type=rifle family=m1_garand muzzles=rifle_mag magCategories=rifle_mag relatedRoots=vn_m1_garand_gl
-  - vn_m1_garand_gl display=M1 Garand (Rifle Grenade) type=rifle family=m1_garand muzzles=launcher+primary_firearm magCategories=grenade_22mm+rifle_mag relatedRoots=vn_m1_garand
-  - vn_m1carbine display=M1 Carbine type=rifle family=m1carbine muzzles=rifle_mag magCategories=rifle_mag relatedRoots=vn_m1carbine_gl,vn_m1carbine_shorty
-  - vn_m1carbine_gl display=M1 Carbine (Rifle Grenade) type=rifle family=m1carbine muzzles=launcher+primary_firearm magCategories=grenade_22mm+rifle_mag relatedRoots=vn_m1carbine,vn_m1carbine_shorty
-  - vn_m1carbine_shorty display=M1 Carbine (Shorty) type=rifle family=m1carbine muzzles=pistol_mag magCategories=pistol_mag relatedRoots=vn_m1carbine,vn_m1carbine_gl
-  - vn_m21 display=XM21 Sniper Rifle type=marksman family=m21 muzzles=rifle_mag magCategories=rifle_mag relatedRoots=vn_m21_nvg
-- variants: 1
-  - vn_m36_camo: family=m36 candidate=vn_m36 remains ambiguous
+- unresolvedRelatedRoots: 2
+  - vn_m1carbine display=M1 Carbine type=rifle family=m1carbine muzzles=rifle_mag magCategories=rifle_mag relatedRoots=vn_m1carbine_shorty
+  - vn_m1carbine_shorty display=M1 Carbine (Shorty) type=rifle family=m1carbine muzzles=pistol_mag magCategories=pistol_mag relatedRoots=vn_m1carbine
 
 RELATIONSHIP DETAILS
 - reverse only: vn_gun_m61a1_640_mag -> vn_m61a1
