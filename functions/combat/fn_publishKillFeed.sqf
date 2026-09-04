@@ -79,7 +79,8 @@ if (_mode isEqualTo "deathfeed") exitWith {
             "",
             (_kill get "victimName"),
             (_victimSide call _sideToken),
-            ""
+            "",
+            (_kill getOrDefault ["weaponPicture", ""])
         ] remoteExecCall ["bn_koth_fnc_ui_addKillFeedEntry", _targets];
     };
 };
@@ -98,5 +99,6 @@ private _type = if (_kill get "suicide") then {
     (_kill get "weapon"),
     (_kill get "victimName"),
     ((_kill get "victimSide") call _sideToken),
-    (_kill get "distanceText")
+    (_kill get "distanceText"),
+    (_kill getOrDefault ["weaponPicture", ""])
 ] remoteExecCall ["bn_koth_fnc_ui_addKillFeedEntry", 0];
