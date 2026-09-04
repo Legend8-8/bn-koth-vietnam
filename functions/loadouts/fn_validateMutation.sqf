@@ -490,7 +490,7 @@ private _shouldApply = true;
 private _resultMessage = "Loadout mutation validated.";
 private _resultCode = "OK";
 
-switch (_op) do {
+private _mutationCaseResult = switch (_op) do {
     case "snapshot": {
         // Reconcile from the server-observed physical unit state. This keeps
         // partial Arsenal mutations from rebuilding a stale intended kit after
@@ -1266,6 +1266,20 @@ switch (_op) do {
     default {
         ["ERR_MALFORMED_REQUEST", format ["Unsupported mutation op '%1'.", _op], _baseLoadoutId] call _resultFail
     };
+};
+
+// SQF exitWith inside a switch case exits that case scope, not this function.
+// Preserve direct failure maps returned by a case and promote any failure code
+// accumulated by the case before the authoritative success result is built.
+if (
+    (_mutationCaseResult isEqualType createHashMap) &&
+    {!(_mutationCaseResult getOrDefault ["success", true])}
+) exitWith {
+    _mutationCaseResult
+};
+
+if !(_resultCode isEqualTo "OK") exitWith {
+    [_resultCode, _resultMessage, _baseLoadoutId] call _resultFail
 };
 
 if !((_mutatedLoadout isEqualType []) && {(count _mutatedLoadout) >= 10}) exitWith {

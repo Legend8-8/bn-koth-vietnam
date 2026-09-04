@@ -109,5 +109,21 @@ private _appearanceResult = [_leveledPlayer, _headgearBoth, "vn_test_headgear_bo
 ["Appearance entitlement never reports crossSideAllowed", isNil {_appearanceResult get "crossSideAllowed"}] call _check;
 ["Appearance entitlement never reports owned/rented", isNil {_appearanceResult get "owned"} && {isNil {_appearanceResult get "rented"}}] call _check;
 
+// Real authored metadata regression cases for saved-kit visual identity. The
+// server mutation path calls these same shared entitlement rules with
+// requireAppearance=true before accepting an untrusted local kit.
+private _realProgression = createHashMapFromArray [["level", 300]];
+private _realWestUniform = ["Wearables", "vn_b_uniform_aus_01_01"] call bn_koth_fnc_loadouts_getItemMetadata;
+private _realEastUniform = ["Wearables", "vn_o_uniform_nva_air_01"] call bn_koth_fnc_loadouts_getItemMetadata;
+private _realBothHeadgear = ["Wearables", "vn_b_bandana_01"] call bn_koth_fnc_loadouts_getItemMetadata;
+
+["Authored WEST uniform metadata is configured", _realWestUniform getOrDefault ["configured", false]] call _check;
+["Authored WEST uniform rejects EAST appearance", !(([_realProgression, _realWestUniform, "vn_b_uniform_aus_01_01", "EAST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", true])] call _check;
+["Authored WEST uniform allows WEST appearance", ([_realProgression, _realWestUniform, "vn_b_uniform_aus_01_01", "WEST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", false]] call _check;
+["Authored EAST uniform rejects WEST appearance", !(([_realProgression, _realEastUniform, "vn_o_uniform_nva_air_01", "WEST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", true])] call _check;
+["Authored EAST uniform allows EAST appearance", ([_realProgression, _realEastUniform, "vn_o_uniform_nva_air_01", "EAST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", false]] call _check;
+["Authored BOTH headgear allows WEST appearance", ([_realProgression, _realBothHeadgear, "vn_b_bandana_01", "WEST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", false]] call _check;
+["Authored BOTH headgear allows EAST appearance", ([_realProgression, _realBothHeadgear, "vn_b_bandana_01", "EAST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", false]] call _check;
+
 diag_log format ["[BN_KOTH_TEST] Equipment side policy: %1 failure(s): %2", count _failures, _failures];
 _failures
