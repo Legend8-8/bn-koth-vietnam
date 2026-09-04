@@ -87,6 +87,7 @@ for "_i" from 0 to 2 do {
         };
         if !(isNull _descriptionCtrl) then {
             _descriptionCtrl ctrlSetText _description;
+            _descriptionCtrl ctrlEnable false;
             _descriptionCtrl ctrlShow true;
         };
         _candidateCtrl ctrlSetBackgroundColor (if (_isSelected) then {[0.36, 0.28, 0.1, 0.96]} else {[0.13, 0.12, 0.1, 0.92]});
@@ -103,6 +104,7 @@ for "_i" from 0 to 2 do {
         };
         if !(isNull _descriptionCtrl) then {
             _descriptionCtrl ctrlSetText "";
+            _descriptionCtrl ctrlEnable false;
             _descriptionCtrl ctrlShow false;
         };
         _candidateCtrl ctrlSetBackgroundColor [0.13, 0.12, 0.1, 0.92];

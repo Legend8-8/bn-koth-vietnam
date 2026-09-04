@@ -1087,6 +1087,7 @@ class VoteTotal1: BN_KOTH_Lobby_Value
             h = safeZoneH * 0.030;
             sizeEx = "0.0135 * safeZoneH";
             colorText[] = {0.82, 0.8, 0.76, 0.88};
+            enable = 0;
         };
 
         class VoteCandidate2: VoteCandidate1
@@ -1105,6 +1106,7 @@ class VoteTotal2: VoteTotal1
         {
             idc = BN_KOTH_IDC_VOTE_DESC_2;
             y = BN_KOTH_MAIN_Y + safeZoneH * 0.380;
+            enable = 0;
         };
 
         class VoteCandidate3: VoteCandidate1
@@ -1123,6 +1125,7 @@ class VoteTotal3: VoteTotal1
         {
             idc = BN_KOTH_IDC_VOTE_DESC_3;
             y = BN_KOTH_MAIN_Y + safeZoneH * 0.464;
+            enable = 0;
         };
 
         class VoteHelp: BN_KOTH_Lobby_Body
