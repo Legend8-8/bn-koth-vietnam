@@ -14,7 +14,12 @@ missionNamespace setVariable ["BN_KOTH_buildEnabled", true];
 missionNamespace setVariable ["BN_KOTH_buildPlacementActive", false];
 missionNamespace setVariable ["BN_KOTH_buildGhost", objNull];
 missionNamespace setVariable ["BN_KOTH_buildPlacementRotation", 0];
+missionNamespace setVariable ["BN_KOTH_buildPlacementHeight", 0];
+missionNamespace setVariable ["BN_KOTH_buildPlacementHeightOffset", 0];
 missionNamespace setVariable ["BN_KOTH_buildPlacementTargetPos", [0,0,0]];
+missionNamespace setVariable ["BN_KOTH_buildPlacementCanPlace", false];
+missionNamespace setVariable ["BN_KOTH_buildPlacementConfirmRequested", false];
+missionNamespace setVariable ["BN_KOTH_buildPlacementCancelRequested", false];
 missionNamespace setVariable ["BN_KOTH_buildPlacementKeyDownEh", -1];
 missionNamespace setVariable ["BN_KOTH_buildInitialized", true];
 

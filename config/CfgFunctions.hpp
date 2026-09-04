@@ -246,6 +246,7 @@ class CfgFunctions
         {
             class build_initPlayerLocal {file = "functions\build\fn_initPlayerLocal.sqf";};
             class build_getCatalog {file = "functions\build\fn_getCatalog.sqf";};
+            class build_openMenu {file = "functions\build\fn_build_openMenu.sqf";};
             class build_openWheel {file = "functions\build\fn_openWheel.sqf";};
             class build_onSelect {file = "functions\build\fn_onSelect.sqf";};
             class build_startPlacement {file = "functions\build\fn_startPlacement.sqf";};
@@ -253,6 +254,8 @@ class CfgFunctions
             class build_requestPlace {file = "functions\build\fn_requestPlace.sqf";};
             class build_serverPlace {file = "functions\build\fn_serverPlace.sqf";};
             class build_serverRemove {file = "functions\build\fn_serverRemove.sqf";};
+            class build_registerObject {file = "functions\build\fn_registerObject.sqf";};
+            class build_clearAll {file = "functions\build\fn_clearAll.sqf";};
             class build_canBuild {file = "functions\build\fn_canBuild.sqf";};
         };
 

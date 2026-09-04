@@ -45,7 +45,7 @@ class CfgBnKothEscMenuKeybinds
         ctrl = "false";
         alt = "false";
         down = 1;
-        function = "bn_koth_fnc_build_openWheel";
+        function = "bn_koth_fnc_build_openMenu";
         displayName = "Open Build Menu";
         access = 1;
     };

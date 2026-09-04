@@ -14,6 +14,8 @@ params ["_selection"];
 private _catalogKey = "";
 private _catalogKeys = missionNamespace getVariable ["BN_KOTH_buildCatalogKeys", []];
 
+diag_log format ["[BN_KOTH Build] fn_onSelect selection=%1", _selection];
+
 private _resolveByIndex = {
     params ["_value", "_keys"];
 
@@ -56,23 +58,30 @@ if (_selection isEqualType "") then {
 };
 
 if !(_catalogKey isEqualType "") exitWith {
+    diag_log format ["[BN_KOTH Build] Invalid catalog key type: %1", typeName _catalogKey];
     hint "Selected build item is not configured.";
 };
 
-if (_catalogKey isEqualTo "") exitWith {};
+if (_catalogKey isEqualTo "") exitWith {
+    diag_log "[BN_KOTH Build] fn_onSelect rejected empty catalog key.";
+    hint "No valid build item selected.";
+};
 if !(call bn_koth_fnc_build_canBuild) exitWith {};
 if (missionNamespace getVariable ["BN_KOTH_buildPlacementActive", false]) exitWith {};
 
 private _root = missionConfigFile >> "CfgBnKothBuild" >> "Objects" >> _catalogKey;
 if !(isClass _root) exitWith {
+    diag_log format ["[BN_KOTH Build] Catalog key not configured: %1", _catalogKey];
     hint "Selected build item is not configured.";
 };
 
 private _className = getText (_root >> "classname");
 if (_className isEqualTo "") exitWith {
+    diag_log format ["[BN_KOTH Build] Missing classname for key: %1", _catalogKey];
     hint "Selected build item has no class name.";
 };
 
+diag_log format ["[BN_KOTH Build] Resolved build key=%1 class=%2", _catalogKey, _className];
 missionNamespace setVariable ["BN_KOTH_buildPlacementActive", true];
 missionNamespace setVariable ["BN_KOTH_buildPlacementKey", _catalogKey];
 missionNamespace setVariable ["BN_KOTH_buildPlacementClass", _className];

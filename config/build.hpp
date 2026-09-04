@@ -6,11 +6,18 @@ class CfgBnKothBuild
     defaultKeyDik = DIK_N;
     maxObjectsPerPlayer = 15;
     maxObjectsPerSide = 80;
-    placeDistanceMin = 2;
-    placeDistanceMax = 12;
+    placeDistanceMin = 1;
+    placeDistanceMax = 10;
+    placementHeightMin = -2;
+    placementHeightMax = 2;
+    placementHeightStep = 0.05;
+    placementHeightStepShift = 0.25;
+    placementRotationStep = 1;
+    placementRotationStepShift = 15;
     allowDeleteOwn = 1;
     clearOnRoundReset = 1;
     placementPolicy = 0;
+    placeCooldown = 0.35;
 
     class Objects
     {

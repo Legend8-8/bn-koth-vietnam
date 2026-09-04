@@ -30,6 +30,12 @@ if !(_activeLocationId isEqualTo "") then {
 };
 
 [] call bn_koth_fnc_teams_returnAllToLobby;
+private _buildCfg = missionConfigFile >> "CfgBnKothBuild";
+if (isClass _buildCfg) then {
+    if ((getNumber (_buildCfg >> "clearOnRoundReset")) > 0) then {
+        [] call bn_koth_fnc_build_clearAll;
+    };
+};
 [] call bn_koth_fnc_zone_clearActiveLocation;
 [] call bn_koth_fnc_scoring_resetProgress;
 
