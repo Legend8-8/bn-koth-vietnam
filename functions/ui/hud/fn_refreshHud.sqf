@@ -2,6 +2,7 @@
     File: fn_refreshHud.sqf
     Author: Legend
     Edited: Mongo
+    Edited: Tylervip
     Description: Renders scores, AO status, score progress, and safe-zone notices.
     Execution: Client
     Parameters:
@@ -74,11 +75,32 @@ private _enemySafeZoneText = if (_enemySafeZoneVisible) then {
     ""
 };
 
+private _earplugsEnabled = !isNull player && {localNamespace getVariable ["BN_KOTH_earplugsEnabled", false]};
+private _earplugsTexture = if (_earplugsEnabled) then {
+    "\a3\ui_f\data\igui\rscingameui\RscDisplayChannel\MuteVON_crossed_ca.paa"
+} else {
+    ""
+};
+
+private _spottedUntil = if (!isNull player) then {player getVariable ["BN_KOTH_spottedUntil", -1]} else {-1};
+private _spottedBySide = if (!isNull player) then {player getVariable ["BN_KOTH_spottedBySide", sideUnknown]} else {sideUnknown};
+private _playerSpotted = !isNull player
+    && {alive player}
+    && {time < _spottedUntil}
+    && {[_spottedBySide] call bn_koth_fnc_teams_validateSide}
+    && {side group player isNotEqualTo _spottedBySide};
+private _spottedTexture = if (_playerSpotted) then {
+    "\a3\Ui_F_Curator\Data\CfgMarkers\minefieldAP_ca.paa"
+} else {
+    ""
+};
+
 private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
 private _progressionAvailable = _progression isEqualType createHashMap
     && {"level" in _progression}
     && {"xp" in _progression};
 private _playerProgressText = "LEVEL --   XP SYNCING";
+private _playerXpRatio = 0;
 private _rankIcon = "";
 private _rankColor = [1, 1, 1, 0];
 private _rankVisible = false;
@@ -90,6 +112,7 @@ if (_progressionAvailable) then {
     private _level = _levelProgress getOrDefault ["level", 1];
     private _xp = _levelProgress getOrDefault ["xp", 0];
     private _maxLevel = _levelProgress getOrDefault ["maxLevel", 270];
+    _playerXpRatio = (_levelProgress getOrDefault ["ratio", 0]) max 0 min 1;
     if (_level >= _maxLevel) then {
         _playerProgressText = format ["LEVEL %1   MAX LEVEL  %2 XP", _level, round _xp];
     } else {
@@ -112,14 +135,14 @@ private _aoVisible = _roundActive
     && {!(_activeAoMarker isEqualTo "")}
     && {!((markerShape _activeAoMarker) isEqualTo "")};
 private _priorityMarker = "BN_KOTH_priorityZoneMarker";
-private _priorityVisible = _aoVisible && {!((markerShape _priorityMarker) isEqualTo "")};
+private _priorityVisible = false;
 private _priorityCounts = [0, 0];
 private _aoCounts = [0, 0];
 private _zonePopulation = missionNamespace getVariable ["BN_KOTH_zonePopulation", createHashMap];
 if (_zonePopulation isEqualType createHashMap) then {
-    private _publishedAoCounts = _zonePopulation getOrDefault ["raw", [0, 0]];
-    if (_publishedAoCounts isEqualType [] && {(count _publishedAoCounts) >= 2}) then {
-        _aoCounts = [(_publishedAoCounts select 0) max 0, (_publishedAoCounts select 1) max 0];
+    private _publishedWeightedCounts = _zonePopulation getOrDefault ["weighted", [0, 0]];
+    if (_publishedWeightedCounts isEqualType [] && {(count _publishedWeightedCounts) >= 2}) then {
+        _aoCounts = [(_publishedWeightedCounts select 0) max 0, (_publishedWeightedCounts select 1) max 0];
     };
     private _publishedCounts = _zonePopulation getOrDefault ["priority", [0, 0]];
     if (_publishedCounts isEqualType [] && {(count _publishedCounts) >= 2}) then {
@@ -189,6 +212,10 @@ private _staticKey = [
     _safeZoneVisible,
     _enemySafeZoneText,
     _enemySafeZoneVisible,
+    _earplugsEnabled,
+    _earplugsTexture,
+    _playerSpotted,
+    _spottedTexture,
     _playerProgressText,
     _rankIcon,
     _rankColor,
@@ -206,6 +233,14 @@ if !((uiNamespace getVariable ["BN_KOTH_hudStaticKey", []]) isEqualTo _staticKey
     (_display displayCtrl BN_KOTH_IDC_HUD_STATUS) ctrlSetTextColor _statusColor;
     (_display displayCtrl BN_KOTH_IDC_HUD_ROUND_LEAD) ctrlSetText _roundLeadText;
 
+    private _earplugsCtrl = _display displayCtrl BN_KOTH_IDC_HUD_EARPLUGS;
+    _earplugsCtrl ctrlSetText _earplugsTexture;
+    _earplugsCtrl ctrlShow _earplugsEnabled;
+
+    private _spottedCtrl = _display displayCtrl BN_KOTH_IDC_HUD_SPOTTED;
+    _spottedCtrl ctrlSetText _spottedTexture;
+    _spottedCtrl ctrlShow _playerSpotted;
+
     private _safeZoneCtrl = _display displayCtrl BN_KOTH_IDC_HUD_SAFE_ZONE;
     _safeZoneCtrl ctrlSetText _safeZoneText;
     _safeZoneCtrl ctrlShow _safeZoneVisible;
@@ -220,21 +255,19 @@ if !((uiNamespace getVariable ["BN_KOTH_hudStaticKey", []]) isEqualTo _staticKey
     _rankCtrl ctrlShow _rankVisible;
     (_display displayCtrl BN_KOTH_IDC_HUD_PLAYER_PROGRESS) ctrlSetText _playerProgressText;
 
-    private _aoCtrl = _display displayCtrl BN_KOTH_IDC_HUD_AO_POPULATION;
-    _aoCtrl ctrlSetStructuredText parseText format [
-        "<t align='center' color='#E0DBCC'>AO  </t><t color='#73C4FF'>WEST %1</t><t color='#E0DBCC'> - </t><t color='#FF7A7A'>%2 EAST</t>",
-        round (_aoCounts select 0),
+    private _weightedPlayerCountWestCtrl = _display displayCtrl BN_KOTH_IDC_HUD_WEIGHTED_PLAYER_COUNT_WEST;
+    _weightedPlayerCountWestCtrl ctrlSetStructuredText parseText format [
+        "<t align='left' valign='middle'><img image='\a3\ui_f\data\igui\cfg\simpletasks\types\meet_ca.paa' size='1.0' /> <t color='#73C4FF'>%1</t></t>",
+        round (_aoCounts select 0)
+    ];
+    _weightedPlayerCountWestCtrl ctrlShow _aoVisible;
+
+    private _weightedPlayerCountEastCtrl = _display displayCtrl BN_KOTH_IDC_HUD_WEIGHTED_PLAYER_COUNT_EAST;
+    _weightedPlayerCountEastCtrl ctrlSetStructuredText parseText format [
+        "<t align='right' valign='middle'><t color='#FF7A7A'>%1</t> <img image='\a3\ui_f\data\igui\cfg\simpletasks\types\meet_ca.paa' size='1.0' /></t>",
         round (_aoCounts select 1)
     ];
-    _aoCtrl ctrlShow _aoVisible;
-
-    private _priorityCtrl = _display displayCtrl BN_KOTH_IDC_HUD_PRIORITY_POPULATION;
-    _priorityCtrl ctrlSetStructuredText parseText format [
-        "<t align='center' color='#F5C742'>PRIORITY BONUS  </t><t color='#73C4FF'>+%1</t><t color='#F5C742'> - </t><t color='#FF7A7A'>+%2</t>",
-        round (_priorityCounts select 0),
-        round (_priorityCounts select 1)
-    ];
-    _priorityCtrl ctrlShow _priorityVisible;
+    _weightedPlayerCountEastCtrl ctrlShow _aoVisible;
     uiNamespace setVariable ["BN_KOTH_hudStaticKey", _staticKey];
 };
 
@@ -262,25 +295,48 @@ if (_progressActive && {_progressStartedAt >= 0}) then {
 };
 _progressRatio = (_progressRatio max 0) min 1;
 
-private _barBgCtrl = _display displayCtrl BN_KOTH_IDC_HUD_PROGRESS_BG;
-private _barFillCtrl = _display displayCtrl BN_KOTH_IDC_HUD_PROGRESS_FILL;
-private _bgPos = ctrlPosition _barBgCtrl;
-private _fillPos = ctrlPosition _barFillCtrl;
-private _filledWidth = (_bgPos select 2) * _progressRatio;
+private _scoreBarBgCtrl = _display displayCtrl BN_KOTH_IDC_HUD_PROGRESS_BG;
+private _scoreBarFillCtrl = _display displayCtrl BN_KOTH_IDC_HUD_PROGRESS_FILL;
+private _scoreBgPos = ctrlPosition _scoreBarBgCtrl;
+private _scoreFillPos = ctrlPosition _scoreBarFillCtrl;
+private _scoreFilledWidth = (_scoreBgPos select 2) * _progressRatio;
 
 if (_progressRatio <= 0) then {
-    _barFillCtrl ctrlShow false;
+    _scoreBarFillCtrl ctrlShow false;
 } else {
-    _barFillCtrl ctrlShow true;
-    _fillPos set [2, _filledWidth];
-    _fillPos set [0, if (_progressSide isEqualTo east) then {
-        (_bgPos select 0) + (_bgPos select 2) - _filledWidth
+    _scoreBarFillCtrl ctrlShow true;
+    _scoreFillPos set [2, _scoreFilledWidth];
+    _scoreFillPos set [0, if (_progressSide isEqualTo east) then {
+        (_scoreBgPos select 0) + (_scoreBgPos select 2) - _scoreFilledWidth
     } else {
-        _bgPos select 0
+        _scoreBgPos select 0
     }];
-    _barFillCtrl ctrlSetPosition _fillPos;
-    _barFillCtrl ctrlSetBackgroundColor _barColor;
-    _barFillCtrl ctrlCommit 0;
+    _scoreBarFillCtrl ctrlSetPosition _scoreFillPos;
+    _scoreBarFillCtrl ctrlSetBackgroundColor _barColor;
+    _scoreBarFillCtrl ctrlCommit 0;
 };
+_scoreBarBgCtrl ctrlSetBackgroundColor [0.08, 0.08, 0.08, 0.92];
 
-_barBgCtrl ctrlSetBackgroundColor [0.08, 0.08, 0.08, 0.92];
+private _xpTrackCtrl = _display displayCtrl BN_KOTH_IDC_HUD_XP_PROGRESS_BG;
+private _xpFillCtrl = _display displayCtrl BN_KOTH_IDC_HUD_XP_PROGRESS_FILL;
+private _xpTrackPos = ctrlPosition _xpTrackCtrl;
+private _xpFillPos = ctrlPosition _xpFillCtrl;
+private _xpFilledWidth = (_xpTrackPos select 2) * _playerXpRatio;
+
+if (_playerXpRatio <= 0) then {
+    _xpFillCtrl ctrlShow false;
+} else {
+    _xpFillCtrl ctrlShow true;
+    _xpFillPos set [0, _xpTrackPos select 0];
+    _xpFillPos set [1, _xpTrackPos select 1];
+    _xpFillPos set [2, _xpFilledWidth];
+    _xpFillPos set [3, _xpTrackPos select 3];
+    _xpFillCtrl ctrlSetPosition _xpFillPos;
+    _xpFillCtrl ctrlSetBackgroundColor [0.76, 0.58, 0.20, 1];
+    _xpFillCtrl ctrlCommit 0;
+};
+_xpTrackCtrl ctrlSetBackgroundColor [0.08, 0.08, 0.08, 0.92];
+
+private _xpTextCtrl = _display displayCtrl BN_KOTH_IDC_HUD_PLAYER_PROGRESS;
+_xpTextCtrl ctrlSetText (_playerProgressText);
+_xpTextCtrl ctrlSetTextColor [0.88, 0.86, 0.80, 0.95];

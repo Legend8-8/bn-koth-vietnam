@@ -95,27 +95,27 @@ class BN_KOTH_RscHud
             colorBackground[] = {0, 0, 0, 0};
         };
 
-        class HudAoPopulation: BN_KOTH_RscStructuredText
+        class HudWeightedPlayerCountWest: BN_KOTH_RscStructuredText
         {
-            idc = BN_KOTH_IDC_HUD_AO_POPULATION;
+            idc = BN_KOTH_IDC_HUD_WEIGHTED_PLAYER_COUNT_WEST;
             text = "";
             x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
-            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.40;
-            w = BN_KOTH_HUD_W * 0.90;
-            h = BN_KOTH_HUD_H * 0.14;
-            size = "0.0105 * safeZoneH";
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.30;
+            w = BN_KOTH_HUD_W * 0.40;
+            h = BN_KOTH_HUD_H * 0.28;
+            size = "0.02 * safeZoneH";
             colorBackground[] = {0, 0, 0, 0};
         };
 
-        class HudPriorityPopulation: BN_KOTH_RscStructuredText
+        class HudWeightedPlayerCountEast: BN_KOTH_RscStructuredText
         {
-            idc = BN_KOTH_IDC_HUD_PRIORITY_POPULATION;
+            idc = BN_KOTH_IDC_HUD_WEIGHTED_PLAYER_COUNT_EAST;
             text = "";
-            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
-            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.52;
-            w = BN_KOTH_HUD_W * 0.90;
-            h = BN_KOTH_HUD_H * 0.14;
-            size = "0.0105 * safeZoneH";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.56;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.30;
+            w = BN_KOTH_HUD_W * 0.40;
+            h = BN_KOTH_HUD_H * 0.28;
+            size = "0.02 * safeZoneH";
             colorBackground[] = {0, 0, 0, 0};
         };
 
@@ -130,16 +130,38 @@ class BN_KOTH_RscHud
             colorText[] = {1, 1, 1, 1};
         };
 
+        class HudEarplugs: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_HUD_EARPLUGS;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.80;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.67;
+            w = BN_KOTH_HUD_H * 0.16;
+            h = BN_KOTH_HUD_H * 0.16;
+            colorText[] = {0.85, 0.40, 0.00, 1.00};
+        };
+
+        class HudSpotted: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_HUD_SPOTTED;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.12;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.67;
+            w = BN_KOTH_HUD_H * 0.16;
+            h = BN_KOTH_HUD_H * 0.16;
+            colorText[] = {0.90, 0.00, 0.00, 1.00};
+        };
+
         class HudPlayerProgress: BN_KOTH_RscText
         {
             idc = BN_KOTH_IDC_HUD_PLAYER_PROGRESS;
             text = "LEVEL --   XP SYNCING";
-            style = 0;
+            style = 2;
             font = "PuristaSemiBold";
-            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.16;
-            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.67;
-            w = BN_KOTH_HUD_W * 0.79;
-            h = BN_KOTH_HUD_H * 0.20;
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.18;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.70;
+            w = BN_KOTH_HUD_W * 0.64;
+            h = BN_KOTH_HUD_H * 0.08;
             sizeEx = "0.011 * safeZoneH";
             colorText[] = {0.88, 0.86, 0.80, 0.95};
             colorBackground[] = {0, 0, 0, 0};
@@ -165,6 +187,28 @@ class BN_KOTH_RscHud
             w = 0;
             h = BN_KOTH_HUD_H * 0.10;
             colorBackground[] = {0.45, 0.77, 1, 0.95};
+        };
+
+        class HudXpProgressBg: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_XP_PROGRESS_BG;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.22;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.80;
+            w = BN_KOTH_HUD_W * 0.56;
+            h = BN_KOTH_HUD_H * 0.04;
+            colorBackground[] = {0.08, 0.08, 0.08, 0.92};
+        };
+
+        class HudXpProgressFill: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_XP_PROGRESS_FILL;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.22;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.80;
+            w = 0;
+            h = BN_KOTH_HUD_H * 0.04;
+            colorBackground[] = {0.76, 0.58, 0.20, 1};
         };
 
         class HudSafeZone: BN_KOTH_RscText
