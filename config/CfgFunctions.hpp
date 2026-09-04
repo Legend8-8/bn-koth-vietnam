@@ -335,6 +335,7 @@ class CfgFunctions
             class ui_selectControlledUnit {file = "functions\ui\state\fn_selectControlledUnit.sqf";};
             class ui_notify {file = "functions\ui\fn_notify.sqf";};
             class ui_addKillFeedEntry {file = "functions\ui\fn_addKillFeedEntry.sqf";};
+            class ui_addRewardFeedEntry {file = "functions\ui\fn_addRewardFeedEntry.sqf";};
             class escMenu_initPlayerLocal {file = "functions\ui\esc_menu\fn_initPlayerLocal.sqf";};
             class escMenu_installPauseButtons {file = "functions\ui\esc_menu\fn_installPauseButtons.sqf";};
             class escMenu_openKeybindings {file = "functions\ui\esc_menu\fn_openKeybindings.sqf";};

@@ -8,5 +8,6 @@ class RscTitles
     #include "transition\transition.hpp"
     #include "results\results.hpp"
     #include "hud\hud.hpp"
+    #include "hud\rewardfeed.hpp"
     #include "hud\killfeed.hpp"
 };
