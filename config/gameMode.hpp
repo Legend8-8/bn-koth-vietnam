@@ -20,3 +20,8 @@ class CfgBnKothDebug
     // Development default for the current prototype cycle.
     enabled = 0;
 };
+
+class CfgBnKothDeploymentTransition
+{
+    meltdownChance = 0.01;
+};

@@ -639,6 +639,18 @@ During each case confirm the existing `BN_KOTH_LobbyBlackout` remains behind
 the transition with no visible frame of AO setup and that the transition's
 fade does not remove the HUD, lobby, or other named UI layers.
 
+The optional client-local operator-meltdown sequence is controlled by
+`CfgBnKothDeploymentTransition.meltdownChance` in `config/gameMode.hpp`.
+During visual approval it is deliberately `1` (100%); set it to `0.01` for an
+approximately one-percent production chance. Verify three believable theatre
+line failures, rapid bounded safe-ASCII keyboard slams filling most of the text
+area, a silent blinking-cursor hold, the temporary inverted selection state,
+instant deletion, slow accurate retyping with `;-)`, and normal AO/status
+typing afterward. ACTIVE arriving early must not cut the sequence short, while
+a PREPARING abort must cancel it through the existing lifecycle token and
+restore input/blackout normally. Repeated deployments must not retain text,
+selection colours, scripts, or handles from the previous run.
+
 22. Round-End Results Presentation
 
 The round-end results screen is client-local presentation over the existing
