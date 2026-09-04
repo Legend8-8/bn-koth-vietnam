@@ -47,19 +47,18 @@ missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", _localProgressio
 private _rewardAmount = _progression getOrDefault ["rewardAmount", _progression getOrDefault ["amount", 0]];
 private _rewardReason = _progression getOrDefault ["rewardReason", _progression getOrDefault ["reason", ""]];
 private _rewardType = toLower (_progression getOrDefault ["rewardType", "xp"]);
-if !(_rewardAmount isEqualTo 0 || {_rewardReason isEqualTo ""}) then {
-    private _reasonLabel = switch (toLower _rewardReason) do {
-        case "kill": {"KILL"};
-        case "control": {"OBJECTIVE"};
-        case "priority": {"PRIORITY"};
-        default {toUpper _rewardReason};
-    };
+if !(_rewardAmount isEqualTo 0) then {
+    if !(_rewardReason isEqualTo "") then {
+        private _reasonLabel = switch (toLower _rewardReason) do {
+            case "kill": {"KILL"};
+            case "assist": {"ASSIST"};
+            case "control": {"OBJECTIVE"};
+            case "priority": {"PRIORITY"};
+            case "transport": {"TRANSPORT"};
+            default {toUpper _rewardReason};
+        };
 
-    if (_rewardType isEqualTo "cash") then {
-        private _cashSign = if (_rewardAmount > 0) then {"+"} else {""};
-        systemChat format ["[CASH] %1 %2$%3", _reasonLabel, _cashSign, _rewardAmount];
-    } else {
-        systemChat format ["[XP] %1 +%2 XP", _reasonLabel, _rewardAmount];
+        [_rewardType, _rewardAmount, _reasonLabel] call bn_koth_fnc_ui_addRewardFeedEntry;
     };
 };
 

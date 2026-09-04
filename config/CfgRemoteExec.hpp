@@ -143,6 +143,12 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_ui_addRewardFeedEntry
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_playerMapMarkers_initPlayerLocal
         {
             allowedTargets = 1;
