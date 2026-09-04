@@ -20,6 +20,7 @@ class CfgFunctions
             class combat_initAttributionDiagnostics {file = "functions\combat\fn_initAttributionDiagnostics.sqf";};
             class combat_publishKillFeed {file = "functions\combat\fn_publishKillFeed.sqf";};
             class combat_recordAttributionHit {file = "functions\combat\fn_recordAttributionHit.sqf";};
+            class combat_testKillFeedAi {file = "functions\combat\fn_testKillFeedAi.sqf";};
         };
 
         class curator

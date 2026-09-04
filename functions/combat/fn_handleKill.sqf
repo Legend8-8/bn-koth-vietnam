@@ -60,6 +60,7 @@ private _validPvp = _hasIdentifiedKiller && {!_suicide} && {!_teamkill};
 // weapon progression, unlocks, rewards, or persisted statistics.
 private _method = "other";
 private _weaponDisplay = "";
+private _weaponPicture = "";
 private _killerInVehicle = false;
 if (_hasIdentifiedKiller) then {
     private _killerVeh = vehicle _effKiller;
@@ -82,11 +83,13 @@ if (_hasIdentifiedKiller) then {
         // register the vehicle itself as the credited weapon.
         _weaponDisplay = getText (configFile >> "CfgVehicles" >> typeOf _killerVeh >> "displayName");
         if (_weaponDisplay isEqualTo "") then { _weaponDisplay = typeOf _killerVeh };
+        _weaponPicture = getText (configFile >> "CfgVehicles" >> typeOf _killerVeh >> "picture");
     } else {
         private _weaponClass = currentWeapon _effKiller;
         if !(_weaponClass isEqualTo "") then {
             _weaponDisplay = getText (configFile >> "CfgWeapons" >> _weaponClass >> "displayName");
             if (_weaponDisplay isEqualTo "") then { _weaponDisplay = _weaponClass };
+            _weaponPicture = getText (configFile >> "CfgWeapons" >> _weaponClass >> "picture");
         };
     };
 };
@@ -113,6 +116,7 @@ _kill set ["teamkill", _teamkill];
 _kill set ["validPvp", _validPvp];
 _kill set ["method", _method];
 _kill set ["weapon", _weaponDisplay];
+_kill set ["weaponPicture", _weaponPicture];
 _kill set ["killerInVehicle", _killerInVehicle];
 _kill set ["distanceText", _distText];
 _kill set ["roundActive", _roundState isEqualTo "ACTIVE"];
