@@ -16,7 +16,7 @@ class EditorData
 	};
 	class Camera
 	{
-		pos[]={770.22443,39.25621,9181.9355};
+		pos[]={761.06787,49.082634,9178.6631};
 		dir[]={0.76076907,-0.54308367,0.35541233};
 		up[]={0.49203578,0.83968097,0.22986723};
 		aside[]={0.42327115,-3.4052937e-07,-0.90601826};
@@ -162,7 +162,7 @@ class Mission
 	appId=1227700;
 	class Intel
 	{
-		briefingName="BN-SWEATSHOP-DEV";
+		briefingName="BN-KOTH-VIETNAM";
 		resistanceWest=0;
 		timeOfChanges=1800.0002;
 		startWeather=0.2;
@@ -6099,7 +6099,7 @@ class Mission
 			name="saigon_east_free_ground_spawnpoint";
 			type="Empty";
 			colorName="ColorOrange";
-			angle=55.644321;
+			angle=55.644318;
 			id=293;
 		};
 		class Item128
@@ -6108,7 +6108,7 @@ class Mission
 			position[]={16585.176,26.379999,3929.8657};
 			name="saigon_west_free_ground_spawnpoint";
 			type="Empty";
-			angle=209.98874;
+			angle=209.98872;
 			id=294;
 		};
 		class Item129
@@ -6146,7 +6146,7 @@ class Mission
 			position[]={16616.922,26.472284,3981.1145};
 			name="saigon_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=212.73083;
+			angle=212.73082;
 			id=298;
 		};
 		class Item133
@@ -6396,7 +6396,7 @@ class Mission
 			position[]={17140.197,6.2399998,9247.8545};
 			name="hue_west_free_air_spawnpoint";
 			type="Empty";
-			angle=104.92562;
+			angle=104.92561;
 			id=308;
 		};
 		class Item143
@@ -6415,7 +6415,7 @@ class Mission
 			position[]={17110,6.1479955,9266};
 			name="hue_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=55.462616;
+			angle=55.462612;
 			id=310;
 		};
 		class Item145
@@ -7016,7 +7016,7 @@ class Mission
 			name="hanoi_west_command_spawnpoint";
 			type="Empty";
 			colorName="ColorGreen";
-			angle=7.1569953;
+			angle=7.1569948;
 			id=339;
 			atlOffset=6.4373016e-06;
 		};
@@ -9343,7 +9343,7 @@ class Mission
 			name="son_tay_pow_respawn_east";
 			text="son_tay_pow_respawn_east";
 			type="Empty";
-			angle=194.47096;
+			angle=194.47095;
 			id=412;
 		};
 		class Item237
@@ -9379,7 +9379,7 @@ class Mission
 			colorName="ColorRed";
 			a=50;
 			b=50;
-			angle=194.47096;
+			angle=194.47095;
 			id=415;
 			atlOffset=0.50561464;
 		};
@@ -9535,7 +9535,7 @@ class Mission
 			fillName="SolidBorder";
 			a=168.01489;
 			b=149.59349;
-			angle=180.1339;
+			angle=180.13388;
 			drawBorder=1;
 			id=420;
 			atlOffset=-3.8562927;
@@ -9547,7 +9547,7 @@ class Mission
 			name="bao_ve_respawn_west";
 			text="bao_ve_respawn_west";
 			type="Empty";
-			angle=198.00003;
+			angle=198.00002;
 			id=421;
 			atlOffset=3.8146973e-06;
 		};
@@ -9582,7 +9582,7 @@ class Mission
 			};
 			id=423;
 			type="Land_vn_b_prop_mapstand_01";
-			atlOffset=3.8146973e-05;
+			atlOffset=-0.00017547607;
 			class CustomAttributes
 			{
 				class Attribute0
@@ -9617,7 +9617,7 @@ class Mission
 			};
 			id=424;
 			type="Land_vn_tent_02_03";
-			atlOffset=3.8146973e-05;
+			atlOffset=4.196167e-05;
 			class CustomAttributes
 			{
 				class Attribute0
@@ -9657,7 +9657,7 @@ class Mission
 			colorName="ColorRed";
 			a=50;
 			b=50;
-			angle=194.47098;
+			angle=194.47096;
 			id=426;
 			atlOffset=0.50486946;
 		};
@@ -9678,7 +9678,7 @@ class Mission
 			};
 			id=427;
 			type="Land_vn_b_prop_mapstand_01";
-			atlOffset=4.5776367e-05;
+			atlOffset=0.00036048889;
 			class CustomAttributes
 			{
 				class Attribute0
