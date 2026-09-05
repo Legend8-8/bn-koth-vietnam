@@ -278,10 +278,10 @@ private _progressStartedAt = -1;
 private _progressActive = false;
 private _progressDuration = missionNamespace getVariable [
     "BN_KOTH_scoreTickInterval",
-    if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {15}
+    if (isClass _scoringCfg) then {getNumber (_scoringCfg >> "scoreTickInterval")} else {30}
 ];
 if (_progress isEqualType createHashMap) then {
-    _progressSide = _progress getOrDefault ["side", sideUnknown];
+    _progressSide = missionNamespace getVariable ["BN_KOTH_zoneController", sideUnknown];
     _progressBase = _progress getOrDefault ["base", 0];
     _progressStartedAt = _progress getOrDefault ["startedAt", -1];
     _progressActive = _progress getOrDefault ["active", false];
@@ -291,7 +291,12 @@ _progressDuration = _progressDuration max 1;
 
 private _progressRatio = _progressBase;
 if (_progressActive && {_progressStartedAt >= 0}) then {
-    _progressRatio = _progressBase + ((serverTime - _progressStartedAt) / _progressDuration);
+    // Wrap presentation on the published server epoch, including while the next
+    // publication is in flight. This never completes or awards a gameplay cycle.
+    _progressRatio = (_progressBase + ((serverTime - _progressStartedAt) / _progressDuration)) max 0;
+    if (_progressRatio > 1) then {
+        _progressRatio = _progressRatio mod 1;
+    };
 };
 _progressRatio = (_progressRatio max 0) min 1;
 

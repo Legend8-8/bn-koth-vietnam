@@ -100,7 +100,7 @@ class CfgFunctions
         {
             class scoring_initServer {file = "functions\scoring\fn_initServer.sqf";};
             class scoring_resetProgress {file = "functions\scoring\fn_resetProgress.sqf";};
-            class scoring_awardControlTick {file = "functions\scoring\fn_awardControlTick.sqf";};
+            class scoring_awardObjectiveTick {file = "functions\scoring\fn_awardObjectiveTick.sqf";};
         };
 
         class progression
@@ -110,7 +110,7 @@ class CfgFunctions
             class progression_xp_getLevel {file = "functions\progression\xp\fn_getLevel.sqf";};
             class progression_xp_getLevelProgress {file = "functions\progression\xp\fn_getLevelProgress.sqf";};
             class progression_xp_addXp {file = "functions\progression\xp\fn_addXp.sqf";};
-            class progression_xp_awardControlTick {file = "functions\progression\xp\fn_awardControlTick.sqf";};
+            class progression_xp_awardObjectiveTick {file = "functions\progression\xp\fn_awardObjectiveTick.sqf";};
             class progression_xp_awardKill {file = "functions\progression\xp\fn_awardKill.sqf";};
             class progression_mastery_initPlayer {file = "functions\progression\mastery\fn_initPlayer.sqf";};
             class progression_mastery_awardKill {file = "functions\progression\mastery\fn_awardKill.sqf";};

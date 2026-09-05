@@ -20,7 +20,8 @@ private _readNonNegative = {
 
 missionNamespace setVariable ["BN_KOTH_startingCash", ["startingCash", 1000] call _readNonNegative];
 missionNamespace setVariable ["BN_KOTH_cashPerKill", ["cashPerKill", 50] call _readNonNegative];
-missionNamespace setVariable ["BN_KOTH_cashPerControlTick", ["cashPerControlTick", 10] call _readNonNegative];
-missionNamespace setVariable ["BN_KOTH_cashPerPriorityTick", ["cashPerPriorityTick", 20] call _readNonNegative];
+missionNamespace setVariable ["BN_KOTH_cashPerParticipationTick", ["cashPerParticipationTick", 5] call _readNonNegative];
+missionNamespace setVariable ["BN_KOTH_cashPerControlBonus", ["cashPerControlBonus", 5] call _readNonNegative];
+missionNamespace setVariable ["BN_KOTH_cashPerPriorityBonus", ["cashPerPriorityBonus", 20] call _readNonNegative];
 
 ["Session cash economy initialized", "INFO"] call bn_koth_fnc_common_log;
