@@ -27,7 +27,7 @@ if !(_roundState isEqualTo "ACTIVE") exitWith {
         ["priority", [0, 0]]
     ]] call bn_koth_fnc_common_publicState;
     if (!_skipScoringUpdate) then {
-        [] call bn_koth_fnc_scoring_awardControlTick;
+        [] call bn_koth_fnc_scoring_awardObjectiveTick;
     };
     sideUnknown
 };
@@ -40,7 +40,7 @@ if (_marker isEqualTo "") exitWith {
         ["Zone evaluation skipped: BN_KOTH_activeZoneMarker is empty.", "WARN"] call bn_koth_fnc_common_log;
     };
     if (!_skipScoringUpdate) then {
-        [] call bn_koth_fnc_scoring_awardControlTick;
+        [] call bn_koth_fnc_scoring_awardObjectiveTick;
     };
     sideUnknown
 };
@@ -241,7 +241,7 @@ missionNamespace setVariable ["BN_KOTH_zoneEligibleSnapshot", createHashMapFromA
 ]] call bn_koth_fnc_common_publicState;
 
 if (!_skipScoringUpdate) then {
-    [] call bn_koth_fnc_scoring_awardControlTick;
+    [] call bn_koth_fnc_scoring_awardObjectiveTick;
 };
 
 _controller

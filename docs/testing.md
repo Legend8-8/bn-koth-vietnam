@@ -109,7 +109,7 @@ Zone-related changes must verify:
 - zone state updates at the expected interval;
 - actual-player, weighted-control and Priority-occupancy values come from the same eligible-player pass;
 - the bottom-right HUD shows WEST/EAST team scores, AO status, round lead,
-  scoring progress, local rank/level/XP, published WEST/EAST raw AO population,
+  objective-cycle progress, local rank/level/XP, published WEST/EAST raw AO population,
   and the published Priority counts as a visually distinct `+N` bonus without
   independently scanning players;
 - missing progression state shows a safe syncing presentation and maximum level
@@ -122,8 +122,8 @@ Zone-related changes must verify:
   holder, per-holder diagnostics identify RNG output and final position, and
   active-location cleanup deletes all tracked holders without granting
   progression entitlement;
-- controlled-AO score progress and award cadence use the config-owned 30-second
-  interval without changing point or reward values;
+- occupied-AO objective progress uses the config-owned 30-second interval in
+  both CONTROLLED and CONTESTED states;
 - the Priority client-local Simple Task is created once without notification,
   follows the global moving marker, and is removed outside ACTIVE state or when
   the deployed HUD/AO/Priority marker is absent;
@@ -872,3 +872,61 @@ route, and the fixed `EXIT MENU` left / `BACK` right layout.
 
 Live persisted totals and leaderboard windows remain dedicated-server database
 acceptance and must not be claimed by the focused UI checks.
+
+
+26. Occupied-AO Objective Cycle
+
+Run on a hosted session and a dedicated server with multiple human clients.
+Capture XP/cash before and after completion, team scores, server
+BN_KOTH_scoreProgress (active, startedAt, duration), and both client/server RPT.
+Keep scoreTick = 1 and scoreTickInterval = 30; use enough supporting players
+to maintain the stated weighted controller when an opposing Priority player
+is present.
+
+| Completion state | Eligible player | XP | Cash | Team score |
+| --- | --- | ---: | ---: | --- |
+| NEUTRAL | none | 0 | 0 | none |
+| WEST controlled | WEST AO | 10 | 10 | WEST +1 |
+| WEST controlled | WEST Priority | 30 | 30 | WEST +1 |
+| WEST controlled | EAST AO | 5 | 5 | WEST +1 |
+| WEST controlled | EAST Priority | 25 | 25 | WEST +1 |
+| CONTESTED | either side AO | 5 | 5 | none |
+| CONTESTED | either side Priority | 25 | 25 | none |
+
+Also verify EAST control symmetrically. Priority remains an additive control
+weight; arrange equal weighted counts for contested cases.
+
+1. Empty AO: progress stays inactive at zero through more than 30 seconds,
+   with no personal rewards or team score.
+2. CONTROLLED -> CONTESTED at roughly 15 seconds: startedAt is unchanged,
+   yellow CONTESTED bar keeps filling; completion follows contested rows.
+3. CONTESTED -> CONTROLLED at roughly 15 seconds: startedAt is unchanged;
+   completion grants current controller bonus and team score. Repeat with
+   WEST -> EAST control to verify no ownership-triggered restart.
+4. Empty the AO midway: reset immediately on the next zone evaluation; no
+   incomplete reward. Re-entry starts a fresh full 30-second cycle.
+5. Observe at least three consecutive controlled and contested cycles.
+   Verify full-to-zero-to-filling motion without a visible hold or inactive
+   publication. Next startedAt advances by duration, not update latency.
+   Include network latency, lower server FPS and a JIP client near rollover.
+   A delayed publication must not snap the interpolated bar backward.
+6. With WEST one scoreTick below scoreLimit, complete a controlled cycle.
+   Confirm exactly one final reward/score/stat tick, correct winner, ENDING
+   resets progress, and no subsequent cycle or rewards. Start another round
+   and confirm fresh cycle state.
+7. At completion separately make a candidate dead, incapacitated, LOBBY,
+   not deployed, absent from activeParticipants, stale/currentUnit-mismatched,
+   disconnected, or outside the AO (including Priority without AO eligibility).
+   They must receive neither reward nor objective contribution. Restore valid
+   state and verify eligibility resumes through the zone owner.
+8. Reconnect/JIP mid-cycle: clients receive the current server epoch and own
+   progression, no historical participation reward, no duplicate payout.
+9. Verify contested rewards do not increment round/career objective points;
+   controlled points remain tied to actual team score. XP/cash still reach
+   targeted updates and persistence; valid PvP kills remain 25 XP / 50 cash.
+10. After a server stall spanning multiple intervals, verify no catch-up burst
+    of rewards for missed snapshots; one current completion and phase-aligned
+    active continuation. No extra timer, reward scan or RemoteExec is involved.
+
+Static inspection and delimiter checks do not establish runtime or visual
+acceptance of this checklist.

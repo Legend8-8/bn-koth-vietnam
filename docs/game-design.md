@@ -70,12 +70,15 @@ The score interval, points awarded per interval and winning score must be config
 The server is responsible for calculating and awarding all team score.
 
 The deployed bottom-right HUD presents WEST and EAST team scores, current AO
-control status, the round lead, scoring progress, the local server-provided
+control status, the round lead, objective-cycle progress, the local server-provided
 rank/level/XP presentation, raw WEST/EAST main-AO population, and a visually
 distinct `+N` Priority bonus row. Weighted control and personal Priority status
 remain authoritative gameplay state but are not displayed directly in that panel.
 
-Normal controlled-AO score ticks occur every 30 seconds. A player in Priority
+Occupied-AO objective cycles complete every 30 seconds. CONTROLLED and CONTESTED
+both advance the cycle without freezing or restarting on ownership changes.
+NEUTRAL stops/resets it. Completion uses current eligibility and control; only
+CONTROLLED completion awards the configured team score. A player in Priority
 already contributes one normal AO unit plus one bonus control unit; the HUD bonus
 row explains that existing weighting without changing it.
 
@@ -90,9 +93,15 @@ into persistent player data.
 
 The current implementation awards XP for:
 
-- validated control participation while a team controls the zone;
-- validated participation inside the active Priority zone during a scoring interval;
-- validated opposing player kills.
+- every eligible AO player: 5 XP / 5 cash per completed objective cycle;
+- controlling-side players: an additional 5 XP / 5 cash;
+- eligible Priority players of either side: an additional 20 XP / 20 cash;
+- validated opposing player kills: unchanged at 25 XP / 50 cash.
+
+Thus controlling AO/Priority players receive 10/30 of each currency; other
+AO/Priority players receive 5/25. Contested cycles grant participation and
+Priority rewards to both sides, with no control bonus or team score. Incomplete
+cycles grant nothing when the AO empties.
 
 The same validated events provisionally award config-owned cash amounts. Cash
 is initialized once when a player first enters server progression state.

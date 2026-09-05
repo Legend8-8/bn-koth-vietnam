@@ -191,7 +191,7 @@ Contains:
 - score intervals;
 - score validation;
 - score limit checks;
-- future personal reward handling.
+- occupied-AO objective-cycle cadence and dispatch to progression.
 
 "functions/respawn/"
 
@@ -243,9 +243,9 @@ Contains:
 Contains player progression systems:
 
 - `xp/` owns server-authoritative XP awards, level calculation, level progress,
-  and Priority-zone, control, and combat reward hooks;
+  and AO participation, control/Priority bonuses, and combat reward hooks;
 - `cash/` owns server-authoritative session cash initialization, reads, awards,
-  and atomic spending. It consumes the same validated kill/control/Priority
+  and atomic spending. It consumes the same validated kill/objective
   reward events as XP and creates no independent eligibility loop;
 - `acquisition/` owns canonical weapon purchase and server-session rental
   transactions. It calculates the combined cash/entitlement transition once,
@@ -330,13 +330,30 @@ Systems communicate through small public functions.
 
 Example:
 
-[_controllingSide] call bn_koth_fnc_scoring_awardControlTick;
+[] call bn_koth_fnc_scoring_awardObjectiveTick;
 
 The zone system decides who controls the zone.
 
 The scoring system decides whether and how score is awarded.
 
 The zone system must not directly edit the team score variable.
+
+The existing zone cadence calls scoring_awardObjectiveTick. Scoring owns the
+30-second occupied-AO cycle in BN_KOTH_scoreProgress: CONTROLLED and CONTESTED
+continue the same cycle, including controller changes; NEUTRAL/inactive resets it.
+At completion scoring refreshes zone_evaluateControl with its skip-scoring flag,
+then progression_xp_awardObjectiveTick consumes BN_KOTH_zoneEligibleSnapshot.
+Progression awards additive participation/control/Priority XP and cash using its
+existing mutation and persistence paths, with no player scan. Only CONTROLLED
+completions award team score and round/career objective points.
+
+Consecutive cycles publish an active start timestamp in the same completion path,
+aligned to the previous server epoch rather than the delayed update time. Missed
+intervals after a server stall are not replayed with fabricated eligibility.
+HUD interpolation wraps against that server timestamp and duration while the
+next publication is in flight; it never awards or acknowledges a cycle.
+JIP uses the existing scoreProgress snapshot. Round ENDING resets progress and
+prevents reseeding after the final valid personal reward and team score tick.
 
 Round statistics are downstream consumers of those authoritative decisions.
 They must not reinterpret kill validity, duplicate AO eligibility checks, award

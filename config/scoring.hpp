@@ -7,8 +7,9 @@ class CfgBnKothScoring
 	class progression
 	{
 		// Live reward hooks. Keep these values server-authoritative and config-tunable.
-		xpPerControlTick = 10;
-		xpPerPriorityTick = 20;
+		xpPerParticipationTick = 5;
+		xpPerControlBonus = 5;
+		xpPerPriorityBonus = 20;
 		xpPerKill = 25;
 
 		// XP required for each next level uses:
@@ -25,8 +26,9 @@ class CfgBnKothScoring
 		// Provisional session-economy values. Rebalance after economy playtesting.
 		startingCash = 1000;
 		cashPerKill = 50;
-		cashPerControlTick = 10;
-		cashPerPriorityTick = 20;
+		cashPerParticipationTick = 5;
+		cashPerControlBonus = 5;
+		cashPerPriorityBonus = 20;
 	};
 
 	prepareDuration = 10;

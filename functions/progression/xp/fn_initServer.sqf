@@ -13,24 +13,30 @@
 if (!isServer) exitWith {};
 
 private _progressionCfg = missionConfigFile >> "CfgBnKothScoring" >> "progression";
-private _xpPerControlTick = if (isNumber (_progressionCfg >> "xpPerControlTick")) then {
-    getNumber (_progressionCfg >> "xpPerControlTick")
+private _xpPerParticipationTick = if (isNumber (_progressionCfg >> "xpPerParticipationTick")) then {
+    getNumber (_progressionCfg >> "xpPerParticipationTick")
 } else {
-    10
+    5
+};
+missionNamespace setVariable ["BN_KOTH_xpPerParticipationTick", _xpPerParticipationTick max 0];
+private _xpPerControlBonus = if (isNumber (_progressionCfg >> "xpPerControlBonus")) then {
+    getNumber (_progressionCfg >> "xpPerControlBonus")
+} else {
+    5
 };
 private _xpPerKill = if (isNumber (_progressionCfg >> "xpPerKill")) then {
     getNumber (_progressionCfg >> "xpPerKill")
 } else {
     25
 };
-private _xpPerPriorityTick = if (isNumber (_progressionCfg >> "xpPerPriorityTick")) then {
-    getNumber (_progressionCfg >> "xpPerPriorityTick")
+private _xpPerPriorityBonus = if (isNumber (_progressionCfg >> "xpPerPriorityBonus")) then {
+    getNumber (_progressionCfg >> "xpPerPriorityBonus")
 } else {
     20
 };
-missionNamespace setVariable ["BN_KOTH_xpPerControlTick", _xpPerControlTick max 0];
+missionNamespace setVariable ["BN_KOTH_xpPerControlBonus", _xpPerControlBonus max 0];
 missionNamespace setVariable ["BN_KOTH_xpPerKill", _xpPerKill max 0];
-missionNamespace setVariable ["BN_KOTH_xpPerPriorityTick", _xpPerPriorityTick max 0];
+missionNamespace setVariable ["BN_KOTH_xpPerPriorityBonus", _xpPerPriorityBonus max 0];
 
 private _progressionByUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
 if !(_progressionByUid isEqualType createHashMap) then {
