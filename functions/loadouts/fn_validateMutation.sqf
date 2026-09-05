@@ -174,6 +174,11 @@ private _extractWeaponComposition = {
         ]
     };
 
+    // Arma also represents an unequipped launcher as an empty array.
+    if ((_slotToken isEqualTo "LAUNCHER") && {_weaponSlot isEqualTo []}) then {
+        _weaponSlot = ["", "", "", "", [], [], ""];
+    };
+
     if !((_weaponSlot isEqualType []) && {(count _weaponSlot) >= 7}) exitWith {
         ["ERR_LOADOUT_SLOT_SHAPE", format ["%1 slot shape is invalid.", _slotLabel]] call _slotFail
     };

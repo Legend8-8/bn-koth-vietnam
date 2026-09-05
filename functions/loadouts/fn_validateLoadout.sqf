@@ -360,6 +360,46 @@ if !(_requestMode isEqualTo "configured") then {
     };
 };
 
+// Only explicit managed weapon changes clean retained spare magazines. Saved
+// kits must still reject incompatible cargo rather than silently repairing it.
+private _removeIncompatibleWeaponCargo = {
+    params ["_loadout"];
+    private _cleaned = +_loadout;
+    private _allowedMagazines = [];
+    {
+        private _slot = _cleaned select _x;
+        if ((_slot isEqualType []) && {(count _slot) >= 7}) then {
+            private _weaponClass = toLower (_slot select 0);
+            {
+                _allowedMagazines pushBackUnique (toLower _x);
+            } forEach getArray (_compatibilityCfg >> "WeaponMagazines" >> _weaponClass >> "values");
+        };
+    } forEach [0, 1, 2];
+
+    {
+        private _container = _cleaned select _x;
+        if ((_container isEqualType []) && {(count _container) >= 2} && {(_container select 1) isEqualType []}) then {
+            private _cargo = (_container select 1) select {
+                private _keep = true;
+                if ((_x isEqualType []) && {(count _x) >= 2} && {(_x select 0) isEqualType ""}) then {
+                    private _class = toLower (_x select 0);
+                    private _magCfg = _compatibilityCfg >> "SourceMagazines" >> _class;
+                    if (isClass _magCfg) then {
+                        private _category = toLower (getText (_magCfg >> "category"));
+                        _keep = (_class in _allowedMagazines) ||
+                            {(_category find "grenade") >= 0} ||
+                            {(_category find "smoke") >= 0};
+                    };
+                };
+                _keep
+            };
+            _container set [1, _cargo];
+            _cleaned set [_x, _container];
+        };
+    } forEach [3, 4, 5];
+    _cleaned
+};
+
 if (_requestMode isEqualTo "primary") exitWith {
     private _compositionResult = [
         _primaryRequest,
@@ -427,7 +467,7 @@ if (_requestMode isEqualTo "primary") exitWith {
         ["message", "Primary composition request validated and built."],
         ["loadoutId", _buildResult getOrDefault ["loadoutId", ""]],
         ["sideToken", _authoritativeSideToken],
-        ["validatedLoadout", _buildResult getOrDefault ["loadout", []]],
+        ["validatedLoadout", [_buildResult getOrDefault ["loadout", []]] call _removeIncompatibleWeaponCargo],
         ["validatedPrimary", _validatedPrimary],
         ["validatedWeapons", _validatedWeapons],
         ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
@@ -1023,13 +1063,18 @@ if (_requestMode isEqualTo "weapons") exitWith {
         ] call _fail
     };
 
+    private _loadout = _buildResult getOrDefault ["loadout", []];
+    if ((["primary", "launcher", "handgun"] findIf {_x in _slotKeys}) >= 0) then {
+        _loadout = [_loadout] call _removeIncompatibleWeaponCargo;
+    };
+
     [createHashMapFromArray [
         ["success", true],
         ["code", "OK"],
         ["message", "Weapon composition request validated and built."],
         ["loadoutId", _buildResult getOrDefault ["loadoutId", ""]],
         ["sideToken", _authoritativeSideToken],
-        ["validatedLoadout", _buildResult getOrDefault ["loadout", []]],
+        ["validatedLoadout", _loadout],
         ["validatedPrimary", _validatedWeapons getOrDefault ["primary", createHashMap]],
         ["validatedWeapons", _validatedWeapons],
         ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
