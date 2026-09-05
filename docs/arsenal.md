@@ -1671,6 +1671,12 @@ compositions in the reusable intended-loadout mutation baseline. An unentitled
 picked-up weapon remains physically usable until normal gameplay removes or
 replaces it, but an unrelated Arsenal mutation cannot reapply it.
 
+Accepted managed primary, handgun, and launcher composition requests remove
+retained cargo magazines incompatible with all resulting weapon slots, using
+canonical compatibility data. Compatible magazines, grenade/smoke categories,
+and non-magazine cargo remain unchanged. This cleanup applies to managed
+weapon requests only; saved-kit loading continues to reject incompatible cargo.
+
 Saved kits are stored only in the local client's `profileNamespace`. Saving and
 deleting do not mutate server gameplay state. A locally stored kit is never an
 authority source: LOAD submits the complete stored array as untrusted intent,
