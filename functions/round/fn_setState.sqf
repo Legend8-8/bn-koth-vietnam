@@ -92,6 +92,7 @@ switch (_newState) do {
     };
 
     case "ENDING": {
+        [] call bn_koth_fnc_progression_transport_cleanup;
         [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
 
         private _endingDuration = missionNamespace getVariable ["BN_KOTH_endingDuration", 8];

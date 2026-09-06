@@ -62,6 +62,8 @@ if (_uid isEqualTo "") exitWith {
     false
 };
 
+[_uid] call bn_koth_fnc_progression_transport_cleanup;
+
 private _record = _records getOrDefault [_uid, createHashMap];
 if !(_record isEqualType createHashMap) exitWith {
     [format ["Death ignored: missing player record UID=%1", _uid], "WARN"] call bn_koth_fnc_common_log;

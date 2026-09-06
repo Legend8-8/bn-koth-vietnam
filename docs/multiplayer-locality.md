@@ -25,6 +25,16 @@ optional diagnostics only control RPT verbosity. `EntityKilled` owns lethality,
 attached unique `ATTRIBUTED` canonical infantry root. Clients have no mastery
 mutation or weapon-attribution request endpoint.
 
+Transport insertion rewards are likewise server-only. Server-installed
+vehicle GetIn/GetOut, ControlsShifted and SeatSwitched handlers establish or
+invalidate the mounted transport leg, and the existing server zone evaluation
+confirms subsequent AO entry. Candidates are bounded per passenger and pair
+cooldowns remain server-local across ordinary lifecycle cleanup. The server
+resolves current player records, representations, assigned sides, controller,
+timing, displacement and AO membership. Clients have no insertion-reward
+endpoint and never supply identity, side, distance, timing, AO membership or
+reward results.
+
 A client must not be trusted to determine:
 
 - zone ownership;

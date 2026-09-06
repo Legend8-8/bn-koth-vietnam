@@ -16,6 +16,8 @@ params ["_uid"];
 if (!isServer) exitWith {};
 if (_uid isEqualTo "") exitWith {};
 
+[_uid] call bn_koth_fnc_progression_transport_cleanup;
+
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 private _record = _records getOrDefault [_uid, createHashMap];
 private _groupImpact = [[_uid], []] call bn_koth_fnc_groups_capturePresentationImpact;
