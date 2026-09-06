@@ -12,6 +12,19 @@ class CfgBnKothScoring
 		xpPerPriorityBonus = 20;
 		xpPerKill = 25;
 
+		class transportInsertion
+		{
+			// Initial reward surface: curated rotary-wing transports only.
+			xpPerPassenger = 25;
+			minimumTransportSeconds = 20;
+			minimumTransportDistance = 500;
+			confirmationWindowSeconds = 30;
+			maximumBoardedSeconds = 900;
+			samePairCooldownSeconds = 600;
+			eligibleStoreCategories[] = {"ROTARY"};
+			eligibleVehicleRoles[] = {"TRANSPORT"};
+		};
+
 		// XP required for each next level uses:
 		// base + (levelIndex * linearStep) + (levelIndex^2 * quadraticStep).
 		// Cumulative XP is the only value that needs persistence; level is derived.
@@ -29,6 +42,7 @@ class CfgBnKothScoring
 		cashPerParticipationTick = 5;
 		cashPerControlBonus = 5;
 		cashPerPriorityBonus = 20;
+		cashPerTransportPassenger = 25;
 	};
 
 	prepareDuration = 10;

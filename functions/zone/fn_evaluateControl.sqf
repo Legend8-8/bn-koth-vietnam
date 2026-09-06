@@ -232,6 +232,10 @@ missionNamespace setVariable ["BN_KOTH_zoneEligibleSnapshot", createHashMapFromA
     ["priorityUids", [_sideAPriorityUids, _sideBPriorityUids]]
 ]];
 
+// Transport progression consumes this already-computed authoritative AO
+// membership. It does not scan players or decide zone control independently.
+[_players] call bn_koth_fnc_progression_transport_processZonePlayers;
+
 ["BN_KOTH_zoneController", _controller] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_zoneState", _zoneState] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_zonePopulation", createHashMapFromArray [

@@ -278,6 +278,12 @@ Contains player progression systems:
 
 - `xp/` owns server-authoritative XP awards, level calculation, level progress,
   and AO participation, control/Priority bonuses, and combat reward hooks;
+- `transport/` owns bounded server-only insertion candidates and pair cooldowns.
+  It consumes event-driven vehicle GetIn/GetOut, controller and seat lifecycle
+  plus the zone owner's existing authoritative AO-membership pass. Vehicle
+  eligibility comes from current vehicle progression metadata. It calls the
+  existing XP and cash owners, accepts no client reward claim, and creates no
+  second player or zone polling loop;
 - `cash/` owns server-authoritative session cash initialization, reads, awards,
   and atomic spending. It consumes the same validated kill/objective
   reward events as XP and creates no independent eligibility loop;

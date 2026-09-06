@@ -97,11 +97,19 @@ The current implementation awards XP for:
 - controlling-side players: an additional 5 XP / 5 cash;
 - eligible Priority players of either side: an additional 20 XP / 20 cash;
 - validated opposing player kills: unchanged at 25 XP / 50 cash.
+- validated human-passenger transport insertions into the active AO: 25 XP /
+  25 cash per passenger.
 
 Thus controlling AO/Priority players receive 10/30 of each currency; other
 AO/Priority players receive 5/25. Contested cycles grant participation and
 Priority rewards to both sides, with no control bonus or team score. Incomplete
 cycles grant nothing when the AO empties.
+
+Transport insertion rewards are limited by authored vehicle metadata to
+rotary-wing transports. A passenger must board outside the AO, travel for the
+configured minimum time and displacement with the same-team human pilot,
+exit normally while landed, and enter the AO within the confirmation window.
+A server-owned pilot/passenger cooldown prevents rapid repeat rewards.
 
 The same validated events provisionally award config-owned cash amounts. Cash
 is initialized once when a player first enters server progression state.
@@ -222,8 +230,8 @@ unlimited vehicle unlock. The free lifecycle remains separate.
 The initial product surface uses ground, rotary-wing and fixed-wing categories;
 sea remains reserved for a later curated pass. Vehicle unlocks are broad
 account milestones and do not use weapon mastery. Purchase/rental balance is
-provisional. Active purchased-vehicle limits, persistence, final prices and
-transport rewards remain future work.
+provisional. Active purchased-vehicle limits, persistence and final prices
+remain future work.
 
 Helicopter transport should be an important part of the Vietnam setting.
 

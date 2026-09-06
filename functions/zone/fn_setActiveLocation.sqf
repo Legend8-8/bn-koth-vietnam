@@ -38,6 +38,10 @@ if !([_locationId] call bn_koth_fnc_zone_validateLocation) exitWith {
     false
 };
 
+// Candidates are tied to one validated AO identity and never cross an
+// accepted AO change. Pair cooldown history deliberately survives.
+[] call bn_koth_fnc_progression_transport_cleanup;
+
 private _activeZoneMarker = _activeLocationData get "zoneMarker";
 private _activeWestRespawn = _activeLocationData get "respawnWestMarker";
 private _activeEastRespawn = _activeLocationData get "respawnEastMarker";

@@ -14,6 +14,8 @@
 
 if (!isServer) exitWith {};
 
+[] call bn_koth_fnc_progression_transport_cleanup;
+
 private _locationsCfg = missionConfigFile >> "CfgBnKothLocations";
 if (isClass _locationsCfg) then {
     {

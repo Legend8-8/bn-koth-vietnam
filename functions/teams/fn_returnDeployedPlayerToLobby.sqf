@@ -68,6 +68,7 @@ if (!_lobbyOk) exitWith {
 private _invalidatedInvites = [[_uid], [], [_uid], false] call bn_koth_fnc_groups_clearInvites;
 _groupImpact set ["directUids", (_groupImpact getOrDefault ["directUids", []]) + _invalidatedInvites];
 
+[_uid] call bn_koth_fnc_progression_transport_cleanup;
 [_uid] call bn_koth_fnc_loadouts_clearPlayerState;
 
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];

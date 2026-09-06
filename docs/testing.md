@@ -145,6 +145,27 @@ Scoring-related changes must verify:
 - reaching the configured score limit triggers the expected win behaviour;
 - clients cannot directly award team score.
 
+Transport insertion XP must be tested on a dedicated server with at least two
+human clients. Use a configured ROTARY/TRANSPORT vehicle and verify: outside-AO
+boarding, the minimum time and distance, cargo exit followed by AO entry within
+the confirmation window, one reward per passenger, independent rewards for
+multiple passengers, pair cooldown rejection, edge hopping rejection, expired
+confirmation, AI exclusion, pilot change/exit rejection, and cleanup on death,
+disconnect, vehicle destruction, round end, and AO change. Inspect the server
+RPT for `Transport insertion rewarded`; clients must have no callable XP or
+transport-reward mutation path.
+
+Before dedicated testing, run the focused server cleanup contract in the server
+debug console:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\transport\test_transport.sqf"
+```
+
+Expected result: `[]`. This checks passenger-scoped cleanup, ordinary full
+candidate cleanup, pair-cooldown retention and BOARDED-only invalidation without
+claiming vehicle-event or multiplayer-locality acceptance.
+
 8. Respawn Testing
 
 Respawn-related changes must verify:
