@@ -82,25 +82,52 @@ private _gpsValidation = [1, "ItemGPS", _sourceItemsCfg] call bn_koth_fnc_loadou
     {(getText (_sourceWeaponsCfg >> "vn_pps43" >> "baseMagazineConfidence")) isEqualTo "high"}] call _check;
 
 private _l1a1Metadata = ["vn_l1a1_01"] call bn_koth_fnc_loadouts_getWeaponMetadata;
-["L1A1 remains level 20", (_l1a1Metadata getOrDefault ["minLevel", 0]) isEqualTo 20] call _check;
-["L1A1 has provisional purchase and rental prices",
-    (_l1a1Metadata getOrDefault ["purchasePrice", -1]) isEqualTo 1500 &&
-    {(_l1a1Metadata getOrDefault ["rentalPrice", -1]) isEqualTo 300}] call _check;
+["L1A1 resolves to WEST", (_l1a1Metadata getOrDefault ["allowedSides", []]) isEqualTo ["WEST"]] call _check;
+["L1A1 unlock level is 5", (_l1a1Metadata getOrDefault ["minLevel", 0]) isEqualTo 5] call _check;
+["L1A1 purchase price is 500", (_l1a1Metadata getOrDefault ["purchasePrice", -1]) isEqualTo 500] call _check;
+["L1A1 rental price is 100", (_l1a1Metadata getOrDefault ["rentalPrice", -1]) isEqualTo 100] call _check;
+["L1A1 mastery requirement is 30",
+    (_l1a1Metadata getOrDefault ["masteryKillsRequired", 0]) isEqualTo 30] call _check;
 ["L1A1 explicitly permits cross-side mastery",
     _l1a1Metadata getOrDefault ["crossSideAllowed", false]] call _check;
 
-private _l1a1VariantMetadata = ["vn_l1a1_02"] call bn_koth_fnc_loadouts_getWeaponMetadata;
-["L1A1 structural variant inherits canonical level",
-    (_l1a1VariantMetadata getOrDefault ["canonicalClass", ""]) isEqualTo "vn_l1a1_01" &&
-    {(_l1a1VariantMetadata getOrDefault ["minLevel", 0]) isEqualTo 20} &&
-    {_l1a1VariantMetadata getOrDefault ["crossSideAllowed", false]} &&
-    {(_l1a1VariantMetadata getOrDefault ["masteryKillsRequired", 0]) isEqualTo 50} &&
-    {(_l1a1VariantMetadata getOrDefault ["purchasePrice", -1]) isEqualTo 1500} &&
-    {(_l1a1VariantMetadata getOrDefault ["rentalPrice", -1]) isEqualTo 300}] call _check;
+{
+    private _variantMetadata = [_x] call bn_koth_fnc_loadouts_getWeaponMetadata;
+    [format ["L1A1 structural variant %1 inherits canonical policy", _x],
+        (_variantMetadata getOrDefault ["canonicalClass", ""]) isEqualTo "vn_l1a1_01" &&
+        {(_variantMetadata getOrDefault ["allowedSides", []]) isEqualTo ["WEST"]} &&
+        {(_variantMetadata getOrDefault ["minLevel", 0]) isEqualTo 5} &&
+        {(_variantMetadata getOrDefault ["masteryKillsRequired", 0]) isEqualTo 30} &&
+        {(_variantMetadata getOrDefault ["purchasePrice", -1]) isEqualTo 500} &&
+        {(_variantMetadata getOrDefault ["rentalPrice", -1]) isEqualTo 100}] call _check;
+} forEach [
+    "vn_l1a1_01_bayo",
+    "vn_l1a1_01_camo",
+    "vn_l1a1_01_gl",
+    "vn_l1a1_01_mrk",
+    "vn_l1a1_02",
+    "vn_l1a1_02_bayo",
+    "vn_l1a1_02_camo",
+    "vn_l1a1_02_gl",
+    "vn_l1a1_02_mrk",
+    "vn_l1a1_03",
+    "vn_l1a1_03_camo",
+    "vn_l1a1_xm148",
+    "vn_l1a1_xm148_camo"
+];
 
-private _level19 = createHashMapFromArray [["level", 19], ["perks", []], ["weaponKills", createHashMap]];
-private _entitlement = ["test_uid", "WEST", _level19, _l1a1Metadata, "vn_l1a1_01"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
-["L1A1 is level-locked at level 19", (_entitlement getOrDefault ["code", ""]) isEqualTo "LOCKED_LEVEL"] call _check;
+private _level5Unowned = createHashMapFromArray [
+    ["level", 5],
+    ["ownedWeapons", []],
+    ["rentedWeapons", []],
+    ["perks", []],
+    ["weaponKills", createHashMap]
+];
+private _entitlement = ["test_uid", "WEST", _level5Unowned, _l1a1Metadata, "vn_l1a1_01"] call bn_koth_fnc_progression_evaluateWeaponEntitlementRules;
+["Level 5 does not grant L1A1 ownership",
+    !(_entitlement getOrDefault ["entitled", true]) &&
+    {!(_entitlement getOrDefault ["owned", true])} &&
+    {(_entitlement getOrDefault ["code", ""]) isEqualTo "REQUIRES_ACQUISITION"}] call _check;
 
 private _unresolvedMetadata = ["vn_fkb1_pm"] call bn_koth_fnc_loadouts_getWeaponMetadata;
 ["PM flashlight remains unconfigured", !(_unresolvedMetadata getOrDefault ["configured", true])] call _check;

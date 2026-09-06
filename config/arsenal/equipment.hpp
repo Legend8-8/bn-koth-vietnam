@@ -231,6 +231,12 @@ class CfgBnKothArsenal
 
                 class vn_l1a1_01
                 {
+                    allowedSides[] = {"WEST"};
+                    crossSideAllowed = 1;
+                    minLevel = 5;
+                    masteryKillsRequired = 30;
+                    purchasePrice = 500;
+                    rentalPrice = 100;
                 };
 
                 class vn_l2a1_01
