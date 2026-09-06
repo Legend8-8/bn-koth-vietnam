@@ -36,6 +36,22 @@ if !(remoteExecutedOwner isEqualTo 2) exitWith {
 
 if !(_validationResult isEqualType createHashMap) exitWith {};
 
+if (_validationResult getOrDefault ["spawnPreference", false]) exitWith {
+    private _current = missionNamespace getVariable ["BN_KOTH_spawnKitResponse", [0, "", false]];
+    if !((_validationResult getOrDefault ["preferenceRevision", -1]) isEqualTo (_current select 0)) exitWith {};
+    if (_validationResult getOrDefault ["success", false]) then {
+        _current set [2, false];
+        missionNamespace setVariable ["BN_KOTH_spawnKitResponse", _current];
+    } else {
+        if ((_current select 2) && {(profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""]) isEqualTo (_current select 1)}) then {
+            profileNamespace setVariable ["BN_KOTH_preferredSpawnKitId", ""];
+            saveProfileNamespace;
+            [format ["SPAWN LOADOUT PREFERENCE CLEARED: %1", _validationResult getOrDefault ["message", "Kit rejected."]]] call bn_koth_fnc_ui_notify;
+        };
+    };
+    [] call bn_koth_fnc_menu_refresh;
+};
+
 if !(_validationResult getOrDefault ["success", false]) exitWith {
     private _pendingKitOperation = uiNamespace getVariable ["BN_KOTH_menuPendingKitOperation", ""];
     if !(_pendingKitOperation isEqualTo "") then {

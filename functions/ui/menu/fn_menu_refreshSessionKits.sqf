@@ -37,6 +37,48 @@ if ((count _kits) isEqualTo 0) then {
 _kits = _kits select {(_x isEqualType []) && {(count _x) >= 3} && {(_x select 0) isEqualType ""} && {(_x select 1) isEqualType ""} && {(_x select 2) isEqualType []}};
 
 private _cards = call bn_koth_fnc_menu_getItemCardControls;
+private _defaultActions = [
+    BN_KOTH_IDC_MENU_BROWSER_CARD_1_DEFAULT_ACTION,
+    BN_KOTH_IDC_MENU_BROWSER_CARD_2_DEFAULT_ACTION,
+    BN_KOTH_IDC_MENU_BROWSER_CARD_3_DEFAULT_ACTION,
+    BN_KOTH_IDC_MENU_BROWSER_CARD_4_DEFAULT_ACTION
+];
+private _previewBases = [
+    BN_KOTH_IDC_MENU_KIT_CARD_1_PREVIEW_PRIMARY,
+    BN_KOTH_IDC_MENU_KIT_CARD_2_PREVIEW_PRIMARY,
+    BN_KOTH_IDC_MENU_KIT_CARD_3_PREVIEW_PRIMARY,
+    BN_KOTH_IDC_MENU_KIT_CARD_4_PREVIEW_PRIMARY
+];
+private _resolvePicture = {
+    params ["_className"];
+    if !(_className isEqualType "" && {!(_className isEqualTo "")}) exitWith {""};
+    private _cfg = configFile >> "CfgWeapons" >> _className;
+    if !(isClass _cfg) then {_cfg = configFile >> "CfgVehicles" >> _className;};
+    if !(isClass _cfg) exitWith {""};
+    getText (_cfg >> "picture")
+};
+private _readLoadoutClass = {
+    params ["_loadout", "_index", ["_stringSlot", false]];
+    if !(_loadout isEqualType [] && {(count _loadout) > _index}) exitWith {""};
+    private _slot = _loadout select _index;
+    if (_stringSlot) exitWith {if (_slot isEqualType "") then {_slot} else {""}};
+    if !(_slot isEqualType [] && {(count _slot) > 0} && {(_slot select 0) isEqualType ""}) exitWith {""};
+    _slot select 0
+};
+{
+    private _control = _display displayCtrl _x;
+    _control ctrlShow false;
+    _control ctrlEnable false;
+    _control buttonSetAction "";
+} forEach _defaultActions;
+{
+    private _previewBase = _x;
+    for "_offset" from 0 to 6 do {
+        private _control = _display displayCtrl (_previewBase + _offset);
+        _control ctrlSetText "";
+        _control ctrlShow false;
+    };
+} forEach _previewBases;
 private _pageSize = count _cards;
 private _pageCount = (ceil ((count _kits) / _pageSize)) max 1;
 private _page = uiNamespace getVariable ["BN_KOTH_menuKitPage", 0];
@@ -44,6 +86,7 @@ if !(_page isEqualType 0) then {_page = 0};
 _page = (_page max 0) min (_pageCount - 1);
 uiNamespace setVariable ["BN_KOTH_menuKitPage", _page];
 
+private _preferredId = profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""];
 private _selectedId = uiNamespace getVariable ["BN_KOTH_menuKitSelectedId", ""];
 private _selectedIndex = _kits findIf {(_x select 0) isEqualTo _selectedId};
 private _nameControl = _display displayCtrl BN_KOTH_IDC_MENU_KIT_NAME;
@@ -86,15 +129,41 @@ _next buttonSetAction "private _p=uiNamespace getVariable ['BN_KOTH_menuKitPage'
 } forEach _cards;
 
 {
-    private _index = _forEachIndex + (_page * _pageSize);
+    private _cardIndex = _forEachIndex;
+    private _index = _cardIndex + (_page * _pageSize);
     if (_index >= (count _kits)) then {continue};
     private _record = _kits select _index;
     _record params ["_kitId", "_kitName", "_savedLoadout"];
     _x params ["_bg", "_area", "_pic", "_name", "_status", "_overlay", "_lock", "_primary", "_secondary"];
     {(_display displayCtrl _x) ctrlShow true} forEach [_bg, _area, _name, _status, _primary, _secondary];
+    private _previewClasses = [
+        [_savedLoadout, 0] call _readLoadoutClass,
+        [_savedLoadout, 1] call _readLoadoutClass,
+        [_savedLoadout, 2] call _readLoadoutClass,
+        [_savedLoadout, 3] call _readLoadoutClass,
+        [_savedLoadout, 4] call _readLoadoutClass,
+        [_savedLoadout, 6, true] call _readLoadoutClass,
+        [_savedLoadout, 5] call _readLoadoutClass
+    ];
+    private _previewBase = _previewBases select _cardIndex;
+    for "_offset" from 0 to 6 do {
+        private _control = _display displayCtrl (_previewBase + _offset);
+        private _picture = [_previewClasses select _offset] call _resolvePicture;
+        _control ctrlSetText _picture;
+        _control ctrlShow !(_picture isEqualTo "");
+    };
     (_display displayCtrl _area) ctrlSetBackgroundColor [0.025, 0.025, 0.022, 0.92];
     (_display displayCtrl _name) ctrlSetText (toUpper _kitName);
     (_display displayCtrl _status) ctrlSetText (if (_kitId isEqualTo _selectedId) then {"SELECTED - LOAD, EDIT, RENAME OR DELETE"} else {"STORED LOCALLY - VALIDATED WHEN LOADED"});
+    if (_kitId isEqualTo _preferredId) then {
+        (_display displayCtrl _status) ctrlSetText "DEFAULT SPAWN LOADOUT ✓";
+    };
+    private _defaultControl = _display displayCtrl (_defaultActions select _cardIndex);
+    private _isPreferred = _kitId isEqualTo _preferredId;
+    _defaultControl ctrlSetText (if (_isPreferred) then {"DEFAULT ✓"} else {"SET DEFAULT"});
+    _defaultControl ctrlEnable !_isPreferred;
+    _defaultControl ctrlShow true;
+    _defaultControl buttonSetAction format ["%1 call bn_koth_fnc_menu_setSpawnKit;", str [_kitId, "SET"]];
     (_display displayCtrl _primary) ctrlSetText "LOAD";
     (_display displayCtrl _primary) ctrlEnable true;
     (_display displayCtrl _primary) buttonSetAction format ["%1 call bn_koth_fnc_menu_loadSessionKit;", str [_kitId, "LOAD"]];

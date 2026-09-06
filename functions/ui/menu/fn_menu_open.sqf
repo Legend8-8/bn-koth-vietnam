@@ -20,6 +20,8 @@ params [
 
 if (!hasInterface) exitWith {false};
 
+["", "RESUBMIT"] call bn_koth_fnc_menu_setSpawnKit;
+
 uiNamespace setVariable ["BN_KOTH_menuArsenalEnabled", _arsenalEnabled];
 uiNamespace setVariable ["BN_KOTH_menuArsenalBoardNetId", if (isNull _arsenalBoard) then {""} else {netId _arsenalBoard}];
 
@@ -36,6 +38,8 @@ if (!isNull _display) exitWith {
     [createHashMapFromArray [["mutation", createHashMapFromArray [["op", "snapshot"]]]]] call bn_koth_fnc_loadouts_request;
     true
 };
+
+uiNamespace setVariable ["BN_KOTH_menuKitSelectedId", ""];
 
 private _opened = createDialog "BN_KOTH_RscMenu";
 if (_opened) then {

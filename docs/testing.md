@@ -930,3 +930,24 @@ weight; arrange equal weighted counts for contested cases.
 
 Static inspection and delimiter checks do not establish runtime or visual
 acceptance of this checklist.
+
+Saved-kit spawn preference regression checks (isolated test mission):
+
+- Client debug console, menu closed: `[] call compile preprocessFileLineNumbers "functions\ui\menu\test_spawnPreference.sqf"`.
+  Exercises single selection, rename/delete, stale and matching rejection,
+  overwrite resubmission, and unchanged intended presentation with network calls stubbed.
+- Server debug console with a connected WEST starter-entitled player:
+  `[testPlayer] call compile preprocessFileLineNumbers "functions\loadouts\test_spawnPreference.sqf"`.
+  Exercises the real validator/resolver for valid/invalid candidates, side changes,
+  stale ownership and starter fallback without equipping the player.
+- Dedicated two-client validation remains required: ordinary LOAD/EDIT access
+  rejection away from mapboards; preference submission away from mapboards;
+  initial and late deployment, death/respawn, side switching back and forth,
+  complete disconnect/reconnect without opening the Arsenal followed by
+  deployment/spawn using the preferred kit, rapid selection/overwrite/delete,
+  current perk/acquisition/appearance rejection, and client/server RPT review.
+  Confirm rapid SET requests use their separate throttle while preference CLEAR
+  remains immediate and does not leave an older candidate active.
+  Confirm preference changes never equip or change intended state, only one
+  card shows `DEFAULT SPAWN LOADOUT ✓` with its `DEFAULT ✓` button disabled,
+  and no preference response delays deployment.

@@ -353,7 +353,29 @@ private _cargoBrowserControls = [
     _ctrlCargoCategoryEquipment
 ];
 
-private _kitManagerControls = [_ctrlKitName, _ctrlKitSave, _ctrlKitRename];
+private _kitPreviewBases = [
+    BN_KOTH_IDC_MENU_KIT_CARD_1_PREVIEW_PRIMARY,
+    BN_KOTH_IDC_MENU_KIT_CARD_2_PREVIEW_PRIMARY,
+    BN_KOTH_IDC_MENU_KIT_CARD_3_PREVIEW_PRIMARY,
+    BN_KOTH_IDC_MENU_KIT_CARD_4_PREVIEW_PRIMARY
+];
+private _kitPreviewControlPool = [];
+{
+    private _previewBase = _x;
+    for "_offset" from 0 to 6 do {
+        _kitPreviewControlPool pushBack (_display displayCtrl (_previewBase + _offset));
+    };
+} forEach _kitPreviewBases;
+
+private _kitManagerControls = [
+    _ctrlKitName,
+    _ctrlKitSave,
+    _ctrlKitRename,
+    _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_CARD_1_DEFAULT_ACTION,
+    _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_CARD_2_DEFAULT_ACTION,
+    _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_CARD_3_DEFAULT_ACTION,
+    _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_CARD_4_DEFAULT_ACTION
+] + _kitPreviewControlPool;
 
 // Store V1 deliberately reuses these fixed controls, but owns their
 // visibility, geometry, text, and actions while STORE is active.

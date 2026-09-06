@@ -238,6 +238,7 @@ class CfgFunctions
             class loadouts_validateWeaponComposition {file = "functions\loadouts\fn_validateWeaponComposition.sqf";};
             class loadouts_validateAssignedItemSlot {file = "functions\loadouts\fn_validateAssignedItemSlot.sqf";};
             class loadouts_buildWeaponSlot {file = "functions\loadouts\fn_buildWeaponSlot.sqf";};
+            class loadouts_getSpawnLoadout {file = "functions\loadouts\fn_getSpawnLoadout.sqf";};
             class loadouts_buildValidatedLoadout {file = "functions\loadouts\fn_buildValidatedLoadout.sqf";};
             class loadouts_applyLoadout {file = "functions\loadouts\fn_applyLoadout.sqf";};
             class loadouts_request {file = "functions\loadouts\fn_request.sqf";};
@@ -417,6 +418,7 @@ class CfgFunctions
             class menu_applyAttachment {file = "functions\ui\menu\fn_menu_applyAttachment.sqf";};
             class menu_applyCargo {file = "functions\ui\menu\fn_menu_applyCargo.sqf";};
             class menu_adjustCargo {file = "functions\ui\menu\fn_menu_adjustCargo.sqf";};
+            class menu_setSpawnKit {file = "functions\ui\menu\fn_menu_setSpawnKit.sqf";};
             class menu_saveSessionKit {file = "functions\ui\menu\fn_menu_saveSessionKit.sqf";};
             class menu_loadSessionKit {file = "functions\ui\menu\fn_menu_loadSessionKit.sqf";};
             class menu_deleteSessionKit {file = "functions\ui\menu\fn_menu_deleteSessionKit.sqf";};
