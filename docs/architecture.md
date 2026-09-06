@@ -65,6 +65,7 @@ bn-koth-vietnam/
 │   ├── round/
 │   ├── roundStats/
 │   ├── teams/
+│   ├── groups/
 │   ├── zone/
 │   ├── scoring/
 │   ├── respawn/
@@ -172,6 +173,39 @@ Contains:
 - team balance;
 - faction information;
 - side switching rules.
+
+"functions/groups/"
+
+Owns the server-session player-group model and its derived native Arma group
+representation. `BN_KOTH_groups` is server-only and keyed by a stable logical
+group ID; each non-empty record has one `leaderUid`, an ordered unique
+`memberUids` array, a revision, and derived native-group fields. The server
+serializes CREATE, JOIN, LEAVE, KICK, TRANSFER and DISBAND mutations against
+current player records. A client supplies only the operation and applicable
+target identifier; the server resolves the requester through
+`remoteExecutedOwner` and the server-owned player registry.
+
+Logical groups survive the round lobby/reset cycle but not a member disconnect.
+Native grouping is event-driven at logical mutation, deployment and ACTIVE JIP
+deployment, death/respawn, return to lobby, disconnect, and round release. It is
+never a second authority: team assignment remains owned by `functions/teams/`,
+and reconciliation may remove an incompatible member but may not change a
+player's team.
+
+The logical leader's authoritative deployed playable side controls final
+same-side reconciliation. A connected but undeployed leader has no inferred
+side: membership and `leaderUid` remain unchanged, and affected deployed members
+remain in normal/singleton native groups until the leader deploys. Native Arma
+leadership may temporarily differ while the logical leader is dead or otherwise
+not materialized, but derived engine leadership never changes `leaderUid`.
+
+Group presentation is requester-specific client state. Opening the Group Menu
+requests a read-only snapshot. Snapshot handling does not own routine native
+repair and the menu is never required for authoritative or native state to
+become correct. Mutation/lifecycle publication captures transient impact from
+the affected logical group members and sides. Only deployed recipients whose
+current-group or same-side available-group projection can have changed receive
+an update; an unrelated ungrouped lifecycle event produces no group traffic.
 
 "functions/zone/"
 
@@ -407,6 +441,14 @@ Authoritative server state includes:
 - spawned gameplay vehicles.
 
 Clients may receive copies of this information for display.
+
+Logical player groups additionally own a session-only display name and lock
+flag. Stable logical IDs remain unchanged by renaming, and neither field is
+derived from native Arma groups. Transient 60-second invitations are held in a
+separate server-only target-keyed map and are never persisted or broadcast.
+Requester-specific projections expose invite candidates only after the server
+proves that both leader and candidate are deployed ACTIVE humans on the same
+authoritative side and that the candidate is currently ungrouped.
 
 The server decides safe-zone membership from authoritative player records and active location markers. Commands whose effects depend on object locality, including player ejection and vehicle `allowDamage`, execute on the current owner through narrowly allowlisted server-to-client endpoints. Local event handlers enforce firing, damage and physical-inventory presentation rules. The server independently deletes safe-zone ground loot and corpses from a strict candidate allowlist, so client inventory presentation is never the cleanup authority.
 

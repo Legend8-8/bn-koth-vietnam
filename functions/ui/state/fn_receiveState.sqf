@@ -22,6 +22,7 @@ if !(_payload isEqualType createHashMap) exitWith {};
 
 private _keyMap = createHashMapFromArray [
     ["roundState", "BN_KOTH_roundState"],
+    ["groupState", "BN_KOTH_groupStateLocal"],
     ["liveLeaders", "BN_KOTH_liveLeaders"],
     ["playerProgression", "BN_KOTH_playerProgressionLocal"],
     ["vehicleRentalState", "BN_KOTH_vehicleRentalStateLocal"],
@@ -76,6 +77,7 @@ private _keyMap = createHashMapFromArray [
 [] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;
 
 [] call bn_koth_fnc_ui_updateLobbyLifecycle;
+[] call bn_koth_fnc_groupMenu_refresh;
 [] call bn_koth_fnc_ui_refreshHud;
 [] call bn_koth_fnc_ui_refreshLobby;
 

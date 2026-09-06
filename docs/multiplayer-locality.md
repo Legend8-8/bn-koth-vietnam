@@ -49,6 +49,8 @@ Zone ownership calculation| Server
 Team score| Server
 Win-condition calculation| Server
 Team assignment validation| Server
+Logical player-group membership and leadership| Server
+Native player-group reconciliation| Server, with native leader selection delegated to the native group's locality owner
 Experience and level changes| Server
 Player input and menus| Owning client
 HUD drawing| Each client
@@ -319,6 +321,64 @@ no separate requisition step. The active rental map is server-only; only the
 requesting client receives their projected state. Get-in authorization is
 checked from server-owned UID/access data. A narrowly allowlisted
 server-to-owner endpoint performs locality-sensitive ejection.
+
+15. Player Group Requests And Native Materialization
+
+The owning client sends only a group operation plus the applicable logical
+group or member identifier. `bn_koth_fnc_groups_request` runs on the server,
+derives the caller from `remoteExecutedOwner`, and verifies that owner against
+the current unit and UID in `BN_KOTH_playerRecords`. A client-supplied requester
+UID is neither accepted nor required. Mutation validation uses current round,
+deployment, side, membership and leadership state at execution time.
+
+`BN_KOTH_groups` remains server-local. Targeted presentation snapshots contain
+only names, stable identifiers, counts, deployment status and permissions needed
+by the requesting client. An explicit snapshot is read-only; opening the Group
+Menu is not a reconciliation or eventual-consistency boundary.
+
+Native membership is reconciled by the server at existing lifecycle events. The
+server uses global membership commands for same-side deployed units. If the
+native group is server-local, reconciliation executes `selectLeader` directly
+and never calls a public endpoint. Otherwise, the server resolves `groupOwner`
+and sends the narrowly allowlisted
+`bn_koth_fnc_groups_applyNativeLeadership` instruction there. That endpoint is
+remote-only, accepts only the server, and verifies locality, logical revision and
+group membership. This temporary native leader is derived engine state and
+cannot mutate logical leadership.
+
+Native release first moves live members, including unexpected AI/headless
+entities, into safe standalone groups. Empty-group cleanup then follows the
+native group's current locality. A server-local group is marked
+`deleteGroupWhenEmpty` and deleted directly if already empty; a client-local
+group receives the narrowly validated server-to-owner
+`bn_koth_fnc_groups_prepareNativeCleanup` instruction. Its logical ID and
+revision checks prevent cleanup of an unrelated group. The deletion flag covers
+dead units that remain until later corpse removal, while logical release proceeds
+without waiting for native deletion and no polling is introduced.
+
+Presentation updates are also event-driven. Each mutation or relevant lifecycle
+event captures only the affected logical group IDs, member UIDs and possible
+leader/member sides. The publisher targets active members plus active players on
+those sides whose AVAILABLE GROUPS projection can change. Empty impact has no
+all-player fallback, so an ungrouped death or respawn sends no group projection.
+
+Round release separates native units without deleting logical groups. If the
+logical leader is connected but undeployed, no side is inferred and deployed
+members remain separated. If the leader later deploys, their authoritative
+`assignedSide` drives reconciliation. Death/respawn preserves `leaderUid`; only
+disconnect, explicit leave/transfer, or another real membership removal may
+trigger deterministic logical succession.
+
+Group locking, display names and invitations remain server-owned extensions of
+this same request boundary. Ordinary JOIN fails when the logical lock flag is
+set; accepting a current invitation is a separate operation which revalidates
+the target, current leader, deployment, membership and both authoritative sides.
+Candidate projection uses that same validation and therefore never returns an
+opposite-side identity. Invitations live in `BN_KOTH_groupInvites`, expire via
+one scheduled server deadline rather than polling, and are cleared on relevant
+disconnect/death/lobby, leadership, disband and round-reset boundaries. Lock and
+display name remain logical session state across round release.
+
 # Perk requests
 
 Perk purchase and activation requests are client intent only. The server derives the player from `remoteExecutedOwner`, reads configured price and authoritative progression, commits atomically, marks persistence dirty, and publishes only to that owner. Suppressor cleanup is server-derived; the owning client only applies the server-signed Unit Loadout because `setUnitLoadout` must execute where the player unit is local.

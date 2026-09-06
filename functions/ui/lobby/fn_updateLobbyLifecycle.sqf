@@ -15,6 +15,8 @@
 
 if (!hasInterface) exitWith {false};
 
+[] call bn_koth_fnc_groupMenu_updateLifecycle;
+
 private _syncHud = {
     params ["_isDeployed"];
     [_isDeployed] call bn_koth_fnc_ui_updateHudLifecycle;

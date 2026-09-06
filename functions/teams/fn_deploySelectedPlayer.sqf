@@ -132,6 +132,15 @@ if (_record isEqualType createHashMap) then {
 _activeParticipants pushBackUnique _uid;
 ["BN_KOTH_activeParticipants", _activeParticipants] call bn_koth_fnc_common_publicState;
 [] call bn_koth_fnc_teams_publishState;
+private _groupImpact = [[_uid], []] call bn_koth_fnc_groups_capturePresentationImpact;
+private _groupIds = _groupImpact getOrDefault ["groupIds", []];
+if ((count _groupIds) > 0) then {
+    [_groupIds] call bn_koth_fnc_groups_reconcile;
+    private _groupImpactAfter = [[], _groupIds] call bn_koth_fnc_groups_capturePresentationImpact;
+    [[_groupImpact, _groupImpactAfter]] call bn_koth_fnc_groups_publishUpdate;
+} else {
+    [[_groupImpact]] call bn_koth_fnc_groups_publishUpdate;
+};
 
 [format ["Single-player deployment success UID=%1 side=%2 AO=%3", _uid, _assignedSide, _activeLocationId], "INFO"] call bn_koth_fnc_common_log;
 true

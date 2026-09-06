@@ -296,3 +296,36 @@ The action is intentionally unbound by default. Players bind `Advanced Climb
 is unavailable while dead, incapacitated, prone, underwater, attached, already
 traversing, or inside a vehicle. Geometry probing must find a supported, clear
 destination before movement begins.
+
+14. Player Groups
+
+The custom Group Menu replaces player-facing vanilla team switching/group
+management and is available only to living, authoritatively deployed players in
+`ACTIVE`. `Group Menu` uses the existing gamemode keybinding system, defaults to
+U, and follows the existing remapping, modifier and conflict behavior. Opening
+the menu is presentation only; it does not make gameplay state correct.
+
+Logical KOTH groups are server-session state keyed by stable player UID. A UID
+belongs to at most one group; every non-empty group has exactly one leader who
+is also a member. Empty groups are deleted. Clients cannot mutate membership,
+leadership or side eligibility directly. Respawn and unit replacement do not
+change logical membership, and group reconciliation never changes a player's
+team. Disconnect and explicit leave remove membership; removal of the current
+leader selects the earliest still-deployed member when one exists, otherwise the
+earliest remaining member. Explicit transfer is permitted only to a deployed
+same-side member.
+
+Groups survive `ENDING`, `RESETTING`, `WAITING` and the next deployment within
+the same server session. Native Arma groups are released during round reset and
+recreated only for compatible deployed members. The logical leader's real
+authoritative deployed `assignedSide` takes precedence: matching deployed
+members materialize together and mismatching deployed members are removed and
+notified. Lobby, CIV and otherwise undeployed members remain logically retained
+because their round side is inconclusive.
+
+If the logical leader remains connected but never deploys, the group is neither
+dissolved nor transferred. No leader side is guessed, no member is removed for
+side mismatch, and deployed members remain in normal/singleton native groups for
+the round. If the leader deploys later, reconciliation then uses the leader's
+actual side. Native leadership may temporarily differ while the logical leader
+is dead, respawning or unmaterialized, but this never changes `leaderUid`.

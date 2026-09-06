@@ -71,6 +71,9 @@ if !(_record isEqualType createHashMap) exitWith {
 private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
 private _stateBefore = _record getOrDefault ["state", "LOBBY"];
 private _roundState = [] call bn_koth_fnc_round_getState;
+private _groupImpactBefore = [[_uid], []] call bn_koth_fnc_groups_capturePresentationImpact;
+private _invalidatedInvites = [[_uid], [], [_uid], false] call bn_koth_fnc_groups_clearInvites;
+_groupImpactBefore set ["directUids", (_groupImpactBefore getOrDefault ["directUids", []]) + _invalidatedInvites];
 
 _deadUnit setVariable ["BN_KOTH_safeZoneProtected", false, true];
 _deadUnit setVariable ["BN_KOTH_enemySafeZoneIntruder", false, true];
@@ -95,6 +98,16 @@ if (_wasParticipant) then {
 };
 
 [] call bn_koth_fnc_teams_publishState;
+if (_stateBefore in ["ACTIVE", "DEPLOYING"] || {_wasParticipant}) then {
+    private _groupIds = _groupImpactBefore getOrDefault ["groupIds", []];
+    if ((count _groupIds) > 0) then {
+        [_groupIds] call bn_koth_fnc_groups_reconcile;
+        private _groupImpactAfter = [[], _groupIds] call bn_koth_fnc_groups_capturePresentationImpact;
+        [[_groupImpactBefore, _groupImpactAfter]] call bn_koth_fnc_groups_publishUpdate;
+    } else {
+        [[_groupImpactBefore]] call bn_koth_fnc_groups_publishUpdate;
+    };
+};
 
 if (_roundState isEqualTo "ACTIVE") then {
     [] call bn_koth_fnc_zone_evaluateControl;

@@ -80,6 +80,24 @@ class CfgFunctions
             class teams_notifyPlayer {file = "functions\teams\fn_notifyPlayer.sqf";};
         };
 
+        class groups
+        {
+            class groups_initServer {file = "functions\groups\fn_initServer.sqf";};
+            class groups_request {file = "functions\groups\fn_request.sqf";};
+            class groups_mutate {file = "functions\groups\fn_mutate.sqf";};
+            class groups_removeMember {file = "functions\groups\fn_removeMember.sqf";};
+            class groups_reconcile {file = "functions\groups\fn_reconcile.sqf";};
+            class groups_releaseNativeGroups {file = "functions\groups\fn_releaseNativeGroups.sqf";};
+            class groups_prepareNativeCleanup {file = "functions\groups\fn_prepareNativeCleanup.sqf";};
+            class groups_capturePresentationImpact {file = "functions\groups\fn_capturePresentationImpact.sqf";};
+            class groups_isInviteCandidate {file = "functions\groups\fn_isInviteCandidate.sqf";};
+            class groups_clearInvites {file = "functions\groups\fn_clearInvites.sqf";};
+            class groups_expireInvite {file = "functions\groups\fn_expireInvite.sqf";};
+            class groups_buildPresentationState {file = "functions\groups\fn_buildPresentationState.sqf";};
+            class groups_publishUpdate {file = "functions\groups\fn_publishUpdate.sqf";};
+            class groups_applyNativeLeadership {file = "functions\groups\fn_applyNativeLeadership.sqf";};
+        };
+
         class zone
         {
             class zone_initServer {file = "functions\zone\fn_initServer.sqf";};
@@ -339,6 +357,12 @@ class CfgFunctions
             class ui_notify {file = "functions\ui\fn_notify.sqf";};
             class ui_addKillFeedEntry {file = "functions\ui\fn_addKillFeedEntry.sqf";};
             class ui_addRewardFeedEntry {file = "functions\ui\fn_addRewardFeedEntry.sqf";};
+            class groupMenu_open {file = "functions\ui\groups\fn_open.sqf";};
+            class groupMenu_close {file = "functions\ui\groups\fn_close.sqf";};
+            class groupMenu_refresh {file = "functions\ui\groups\fn_refresh.sqf";};
+            class groupMenu_action {file = "functions\ui\groups\fn_action.sqf";};
+            class groupMenu_updateLifecycle {file = "functions\ui\groups\fn_updateLifecycle.sqf";};
+            class groupMenu_receiveState {file = "functions\ui\groups\fn_receiveState.sqf";};
             class escMenu_initPlayerLocal {file = "functions\ui\esc_menu\fn_initPlayerLocal.sqf";};
             class escMenu_installPauseButtons {file = "functions\ui\esc_menu\fn_installPauseButtons.sqf";};
             class escMenu_openKeybindings {file = "functions\ui\esc_menu\fn_openKeybindings.sqf";};

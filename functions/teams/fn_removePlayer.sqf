@@ -18,6 +18,10 @@ if (_uid isEqualTo "") exitWith {};
 
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 private _record = _records getOrDefault [_uid, createHashMap];
+private _groupImpact = [[_uid], []] call bn_koth_fnc_groups_capturePresentationImpact;
+private _invalidatedInvites = [[_uid], [], [_uid], false] call bn_koth_fnc_groups_clearInvites;
+_groupImpact set ["directUids", (_groupImpact getOrDefault ["directUids", []]) + _invalidatedInvites];
+private _groupChanged = [_uid] call bn_koth_fnc_groups_removeMember;
 
 [_uid] call bn_koth_fnc_career_accumulatePlaytime;
 private _careerFlush = [_uid, "disconnect"] call bn_koth_fnc_career_flushPlayer;
@@ -71,6 +75,14 @@ if (_votesByUid isEqualType createHashMap) then {
 [] call bn_koth_fnc_round_updateVoteTotals;
 [] call bn_koth_fnc_round_maybeShortenVoteDeadline;
 [] call bn_koth_fnc_teams_publishState;
+if (_groupChanged || {(count (_groupImpact getOrDefault ["inviteCandidateSides", []])) > 0} || {(count _invalidatedInvites) > 0}) then {
+    private _groupIds = _groupImpact getOrDefault ["groupIds", []];
+    if ((count _groupIds) > 0) then {
+        [_groupIds] call bn_koth_fnc_groups_reconcile;
+    };
+    private _groupImpactAfter = [[], _groupIds] call bn_koth_fnc_groups_capturePresentationImpact;
+    [[_groupImpact, _groupImpactAfter]] call bn_koth_fnc_groups_publishUpdate;
+};
 if (([] call bn_koth_fnc_round_getState) isEqualTo "WAITING") then {
     [count ([] call bn_koth_fnc_teams_getConnectedHumanUids)] call bn_koth_fnc_round_reconcileVoteCandidates;
 };
