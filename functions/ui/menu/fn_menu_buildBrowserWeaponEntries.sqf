@@ -81,7 +81,7 @@ private _cfgWeaponType = switch (_weaponSlot) do {
 _sortable sort true;
 {_entries pushBack (_x select 1);} forEach _sortable;
 
-if (_weaponSlot isEqualTo "LAUNCHER") then {
+if (_weaponSlot in ["HANDGUN", "LAUNCHER"]) then {
     _entries = [createHashMapFromArray [
         ["weaponClass", ""],
         ["displayName", "NONE"],

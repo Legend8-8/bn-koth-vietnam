@@ -1,8 +1,9 @@
 /*
     File: test_weaponChangeCargo.sqf
     Author: Legend
-    Description: Tests managed weapon-change cargo cleanup and saved-kit rejection.
-        Run after mission initialization; does not apply equipment or save kits.
+    Description: Tests managed weapon-change validation, cargo cleanup, and
+        saved-kit rejection. Run after mission initialization; does not apply
+        equipment or save kits.
     Execution: Hosted or dedicated server debug/test context
     Parameters: 0: Connected WEST player with starter entitlement <OBJECT>
     Returns: Failed assertion labels <ARRAY>
@@ -63,6 +64,97 @@ if (isNull _player || {!isPlayer _player} || {(getPlayerUID _player) isEqualTo "
     if !(_starter getOrDefault ["success", false]) then {
         _failures pushBack "WEST starter unavailable for saved-kit rejection test.";
     } else {
+        {
+            _x params ["_slotName", "_slotIndex"];
+            private _clearRequest = createHashMapFromArray [["weapons", createHashMapFromArray [
+                [_slotName, createHashMapFromArray [
+                    ["weaponClass", ""],
+                    ["magazines", []],
+                    ["attachments", []]
+                ]]
+            ]]];
+            private _clearResult = [_player, _clearRequest] call bn_koth_fnc_loadouts_validateLoadout;
+            private _validatedWeapons = _clearResult getOrDefault ["validatedWeapons", createHashMap];
+            private _clearPayload = _validatedWeapons getOrDefault [_slotName, createHashMap];
+            private _validatedLoadout = _clearResult getOrDefault ["validatedLoadout", []];
+            private _clearedSlot = if ((count _validatedLoadout) > _slotIndex) then {
+                _validatedLoadout select _slotIndex
+            } else {
+                objNull
+            };
+
+            [format ["%1 clear passes authoritative validation without weapon entitlement", _slotName],
+                (_clearResult getOrDefault ["success", false]) &&
+                {_clearPayload getOrDefault ["clear", false]}
+            ] call _check;
+            [format ["%1 clear builds empty Unit Loadout index %2", _slotName, _slotIndex],
+                (_clearedSlot isEqualType []) &&
+                {
+                    (_clearedSlot isEqualTo []) ||
+                    {((count _clearedSlot) >= 7) && {(_clearedSlot select 0) isEqualTo ""}}
+                }
+            ] call _check;
+        } forEach [
+            ["launcher", 1],
+            ["handgun", 2]
+        ];
+
+        private _primaryClearResult = [_player, createHashMapFromArray [["weapons", createHashMapFromArray [
+            ["primary", createHashMapFromArray [
+                ["weaponClass", ""],
+                ["magazines", []],
+                ["attachments", []]
+            ]]
+        ]]]] call bn_koth_fnc_loadouts_validateLoadout;
+        ["Primary clear remains rejected", !(_primaryClearResult getOrDefault ["success", true])] call _check;
+
+        {
+            _x params ["_slotName", "_slotIndex", "_emptySlot", "_expectedSuccess"];
+            private _savedLoadout = +(_starter get "loadout");
+            // Isolate optional-slot validation from the separately tested rule
+            // that rejects cargo magazines incompatible with all carried weapons.
+            {
+                private _container = +(_savedLoadout select _x);
+                _container set [1, []];
+                _savedLoadout set [_x, _container];
+            } forEach [3, 4, 5];
+            _savedLoadout set [_slotIndex, +_emptySlot];
+            private _savedResult = [_player, createHashMapFromArray [["mutation", createHashMapFromArray [
+                ["op", "load_local_kit"],
+                ["kitId", format ["test_empty_%1", _slotName]],
+                ["savedLoadout", _savedLoadout]
+            ]]]] call bn_koth_fnc_loadouts_validateLoadout;
+
+            if (_expectedSuccess) then {
+                private _validatedLoadout = _savedResult getOrDefault ["validatedLoadout", []];
+                private _builtSlot = if ((count _validatedLoadout) > _slotIndex) then {
+                    _validatedLoadout select _slotIndex
+                } else {
+                    objNull
+                };
+
+                [format ["Saved kit with empty %1 passes load_local_kit validation", _slotName],
+                    _savedResult getOrDefault ["success", false]
+                ] call _check;
+                [format ["Saved empty %1 builds Unit Loadout index %2 empty", _slotName, _slotIndex],
+                    (_builtSlot isEqualType []) &&
+                    {
+                        (_builtSlot isEqualTo []) ||
+                        {((count _builtSlot) >= 7) && {(_builtSlot select 0) isEqualTo ""}}
+                    }
+                ] call _check;
+            } else {
+                ["Saved kit with empty primary remains rejected with ERR_LOADOUT_SLOT_EMPTY",
+                    !(_savedResult getOrDefault ["success", true]) &&
+                    {(_savedResult getOrDefault ["code", ""]) isEqualTo "ERR_LOADOUT_SLOT_EMPTY"}
+                ] call _check;
+            };
+        } forEach [
+            ["launcher", 1, [], true],
+            ["handgun", 2, ["", "", "", "", [], [], ""], true],
+            ["primary", 0, ["", "", "", "", [], [], ""], false]
+        ];
+
         private _saved = +(_starter get "loadout");
         private _vest = _saved select 4;
         private _cargo = +(_vest select 1);

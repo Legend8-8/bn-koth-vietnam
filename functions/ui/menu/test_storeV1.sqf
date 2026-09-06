@@ -1,8 +1,9 @@
 /*
     File: test_storeV1.sqf
     Author: Legend
-    Description: Focused in-engine checks for canonical Store catalogue and
-        weapon-state presentation. This file is not runtime-registered.
+    Description: Focused in-engine checks for canonical Store and Arsenal
+        weapon catalogues and weapon-state presentation. This file is not
+        runtime-registered.
     Execution: Client debug/test context
     Returns: Failed assertion labels <ARRAY>
 */
@@ -23,6 +24,28 @@ private _entries = [] call bn_koth_fnc_menu_buildStoreWeaponEntries;
 private _classes = _entries apply {_x getOrDefault ["weaponClass", ""]};
 private _uniqueClasses = _classes arrayIntersect _classes;
 ["Store catalogue contains only unique canonical roots", (count _classes) isEqualTo (count _uniqueClasses)] call _check;
+
+private _compatibilityCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment" >> "Compatibility";
+{
+    _x params ["_slotToken", "_expectedClearCount"];
+    private _browserEntries = [_compatibilityCfg, _slotToken] call bn_koth_fnc_menu_buildBrowserWeaponEntries;
+    private _clearEntries = _browserEntries select {_x getOrDefault ["clearSlot", false]};
+
+    [format ["%1 Arsenal catalogue has expected clear entry count", _slotToken], (count _clearEntries) isEqualTo _expectedClearCount] call _check;
+    if (_expectedClearCount > 0) then {
+        [format ["%1 Arsenal clear entry remains first", _slotToken],
+            (count _browserEntries) > 0 &&
+            {(_browserEntries select 0) getOrDefault ["clearSlot", false]} &&
+            {((_browserEntries select 0) getOrDefault ["weaponClass", "__missing__"]) isEqualTo ""} &&
+            {((_browserEntries select 0) getOrDefault ["displayName", ""]) isEqualTo "NONE"}
+        ] call _check;
+    };
+} forEach [
+    ["PRIMARY", 0],
+    ["HANDGUN", 1],
+    ["LAUNCHER", 1]
+];
+
 private _allCanonical = (_entries findIf {
     private _entryClass = _x getOrDefault ["weaponClass", ""];
     private _entryMetadata = _x getOrDefault ["metadata", createHashMap];

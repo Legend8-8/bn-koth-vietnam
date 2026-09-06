@@ -161,6 +161,8 @@ private _resolveBaseWeapon = {
     _resolved
 };
 
+private _optionalWeaponSlotTokens = ["HANDGUN", "LAUNCHER"];
+
 private _extractWeaponComposition = {
     params ["_weaponSlot", "_slotToken", "_slotLabel"];
 
@@ -174,8 +176,8 @@ private _extractWeaponComposition = {
         ]
     };
 
-    // Arma also represents an unequipped launcher as an empty array.
-    if ((_slotToken isEqualTo "LAUNCHER") && {_weaponSlot isEqualTo []}) then {
+    // Arma also represents an unequipped optional weapon as an empty array.
+    if ((_slotToken in _optionalWeaponSlotTokens) && {_weaponSlot isEqualTo []}) then {
         _weaponSlot = ["", "", "", "", [], [], ""];
     };
 
@@ -185,11 +187,11 @@ private _extractWeaponComposition = {
 
     private _resolvedWeaponClass = toLower (_weaponSlot select 0);
     if (_resolvedWeaponClass isEqualTo "") exitWith {
-        if (_slotToken isEqualTo "LAUNCHER") then {
+        if (_slotToken in _optionalWeaponSlotTokens) then {
             createHashMapFromArray [
                 ["success", true],
                 ["code", "OK"],
-                ["message", "Launcher slot is empty."],
+                ["message", format ["%1 slot is empty.", _slotLabel]],
                 ["composition", createHashMapFromArray [
                     ["isEmpty", true],
                     ["baseWeaponClass", ""],
@@ -604,7 +606,7 @@ private _mutationCaseResult = switch (_op) do {
                     private _isEmpty = _composition getOrDefault ["isEmpty", false];
 
                     if (_isEmpty) then {
-                        if (_slotName isEqualTo "launcher") then {
+                        if ((toUpper _slotName) in _optionalWeaponSlotTokens) then {
                             _validatedWeapons set [_slotName, createHashMapFromArray [["clear", true]]];
                         } else {
                             _resultCode = "ERR_LOADOUT_SLOT_EMPTY";

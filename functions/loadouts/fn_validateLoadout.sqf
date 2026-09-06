@@ -521,6 +521,77 @@ if (_requestMode isEqualTo "weapons") exitWith {
         ] call bn_koth_fnc_loadouts_validateWeaponComposition
     };
 
+    private _validateOptionalSlot = {
+        params ["_slotName", "_slotToken", "_slotLabel"];
+
+        private _slotRequest = _weaponsRequest getOrDefault [_slotName, objNull];
+        if !(_slotRequest isEqualType createHashMap) exitWith {
+            createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", format ["Weapons.%1 must be a map.", _slotName]]
+            ]
+        };
+
+        private _weaponClassRaw = _slotRequest getOrDefault ["weaponClass", ""];
+        if !(_weaponClassRaw isEqualType "") exitWith {
+            createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", format ["%1 weaponClass must be a string.", _slotLabel]]
+            ]
+        };
+
+        if ((toLower _weaponClassRaw) isEqualTo "") exitWith {
+            private _magazines = _slotRequest getOrDefault ["magazines", []];
+            private _attachments = _slotRequest getOrDefault ["attachments", []];
+
+            if !((_magazines isEqualType []) && {_attachments isEqualType []}) exitWith {
+                createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", format ["%1 clear intent requires magazines/attachments arrays.", _slotLabel]]
+                ]
+            };
+
+            if ((count _magazines) > 0 || {(count _attachments) > 0}) exitWith {
+                createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", format ["%1 clear intent must not provide magazines or attachments.", _slotLabel]]
+                ]
+            };
+
+            createHashMapFromArray [
+                ["success", true],
+                ["code", "OK"],
+                ["message", format ["%1 clear intent validated.", _slotLabel]],
+                ["validatedWeapon", createHashMapFromArray [["clear", true]]]
+            ]
+        };
+
+        private _slotResult = [_slotName, _slotToken, _slotLabel] call _validateSlot;
+        if !(_slotResult getOrDefault ["success", false]) exitWith {_slotResult};
+
+        private _validatedWeapon = _slotResult getOrDefault ["validatedWeapon", createHashMap];
+        private _entitlement = [_validatedWeapon] call _validateWeaponEntitlement;
+        if !(_entitlement getOrDefault ["entitled", false]) exitWith {
+            createHashMapFromArray [
+                ["success", false],
+                ["code", _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"]],
+                ["message", _entitlement getOrDefault ["message", format ["%1 is not entitled for this player.", _slotLabel]]]
+            ]
+        };
+
+        private _attachmentEntitlement = [_validatedWeapon] call _validateAttachmentEntitlements;
+        if !(_attachmentEntitlement getOrDefault ["entitled", false]) exitWith {_attachmentEntitlement};
+
+        createHashMapFromArray [
+            ["success", true],
+            ["validatedWeapon", _validatedWeapon]
+        ]
+    };
+
     if ("primary" in _slotKeys) then {
         private _primaryResult = ["primary", "PRIMARY", "Primary"] call _validateSlot;
         if (_primaryResult getOrDefault ["success", false]) then {
@@ -546,97 +617,20 @@ if (_requestMode isEqualTo "weapons") exitWith {
         };
     };
 
-    if (((count _slotFailure) isEqualTo 0) && {"launcher" in _slotKeys}) then {
-        private _launcherRequest = _weaponsRequest getOrDefault ["launcher", objNull];
-        if !(_launcherRequest isEqualType createHashMap) then {
-            _slotFailure = createHashMapFromArray [
-                ["success", false],
-                ["code", "ERR_MALFORMED_REQUEST"],
-                ["message", "Weapons.launcher must be a map."]
-            ];
-        } else {
-            private _launcherClassRaw = _launcherRequest getOrDefault ["weaponClass", ""];
-            if !(_launcherClassRaw isEqualType "") then {
-                _slotFailure = createHashMapFromArray [
-                    ["success", false],
-                    ["code", "ERR_MALFORMED_REQUEST"],
-                    ["message", "Launcher weaponClass must be a string."]
-                ];
+    {
+        _x params ["_slotName", "_slotToken", "_slotLabel"];
+        if (((count _slotFailure) isEqualTo 0) && {_slotName in _slotKeys}) then {
+            private _slotResult = [_slotName, _slotToken, _slotLabel] call _validateOptionalSlot;
+            if (_slotResult getOrDefault ["success", false]) then {
+                _validatedWeapons set [_slotName, _slotResult getOrDefault ["validatedWeapon", createHashMap]];
             } else {
-                private _launcherClass = toLower _launcherClassRaw;
-                if (_launcherClass isEqualTo "") then {
-                    private _launcherMags = _launcherRequest getOrDefault ["magazines", []];
-                    private _launcherAttachments = _launcherRequest getOrDefault ["attachments", []];
-
-                    if !((_launcherMags isEqualType []) && {_launcherAttachments isEqualType []}) then {
-                        _slotFailure = createHashMapFromArray [
-                            ["success", false],
-                            ["code", "ERR_MALFORMED_REQUEST"],
-                            ["message", "Launcher clear intent requires magazines/attachments arrays."]
-                        ];
-                    } else {
-                        if ((count _launcherMags) > 0 || {(count _launcherAttachments) > 0}) then {
-                            _slotFailure = createHashMapFromArray [
-                                ["success", false],
-                                ["code", "ERR_MALFORMED_REQUEST"],
-                                ["message", "Launcher clear intent must not provide magazines or attachments."]
-                            ];
-                        } else {
-                            _validatedWeapons set ["launcher", createHashMapFromArray [["clear", true]]];
-                        };
-                    };
-                } else {
-                    private _launcherResult = ["launcher", "LAUNCHER", "Launcher"] call _validateSlot;
-                    if (_launcherResult getOrDefault ["success", false]) then {
-                        private _validatedLauncher = _launcherResult getOrDefault ["validatedWeapon", createHashMap];
-                        private _entitlement = [_validatedLauncher] call _validateWeaponEntitlement;
-
-                        if (_entitlement getOrDefault ["entitled", false]) then {
-                            private _attachmentEntitlement = [_validatedLauncher] call _validateAttachmentEntitlements;
-                            if (_attachmentEntitlement getOrDefault ["entitled", false]) then {
-                                _validatedWeapons set ["launcher", _validatedLauncher];
-                            } else {
-                                _slotFailure = _attachmentEntitlement;
-                            };
-                        } else {
-                            _slotFailure = createHashMapFromArray [
-                                ["success", false],
-                                ["code", _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"]],
-                                ["message", _entitlement getOrDefault ["message", "Launcher is not entitled for this player."]]
-                            ];
-                        };
-                    } else {
-                        _slotFailure = _launcherResult;
-                    };
-                };
+                _slotFailure = _slotResult;
             };
         };
-    };
-
-    if (((count _slotFailure) isEqualTo 0) && {"handgun" in _slotKeys}) then {
-        private _handgunResult = ["handgun", "HANDGUN", "Handgun"] call _validateSlot;
-        if (_handgunResult getOrDefault ["success", false]) then {
-            private _validatedHandgun = _handgunResult getOrDefault ["validatedWeapon", createHashMap];
-            private _entitlement = [_validatedHandgun] call _validateWeaponEntitlement;
-
-            if (_entitlement getOrDefault ["entitled", false]) then {
-                private _attachmentEntitlement = [_validatedHandgun] call _validateAttachmentEntitlements;
-                if (_attachmentEntitlement getOrDefault ["entitled", false]) then {
-                    _validatedWeapons set ["handgun", _validatedHandgun];
-                } else {
-                    _slotFailure = _attachmentEntitlement;
-                };
-            } else {
-                _slotFailure = createHashMapFromArray [
-                    ["success", false],
-                    ["code", _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"]],
-                    ["message", _entitlement getOrDefault ["message", "Handgun is not entitled for this player."]]
-                ];
-            };
-        } else {
-            _slotFailure = _handgunResult;
-        };
-    };
+    } forEach [
+        ["launcher", "LAUNCHER", "Launcher"],
+        ["handgun", "HANDGUN", "Handgun"]
+    ];
 
     if (((count _slotFailure) isEqualTo 0) && {"uniform" in _slotKeys}) then {
         private _uniformRequest = _weaponsRequest getOrDefault ["uniform", objNull];

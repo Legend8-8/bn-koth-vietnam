@@ -2,7 +2,7 @@
     File: fn_menu_applyWeaponComposition.sqf
     Author: Legend
     Description: Sends one complete weapon-slot composition intent, or an
-        explicit empty-launcher intent, through the authoritative loadout
+        explicit optional-weapon clear intent, through the authoritative loadout
         request path.
     Execution: Client
     Parameters:
@@ -29,9 +29,9 @@ _weaponClass = toLower _weaponClass;
 _magazineClass = toLower _magazineClass;
 if !(_weaponSlot in ["primary", "handgun", "launcher"]) exitWith {false};
 
-private _isLauncherClear = (_weaponSlot isEqualTo "launcher") && {_weaponClass isEqualTo ""};
-if (!_isLauncherClear && {_weaponClass isEqualTo "" || {_magazineClass isEqualTo ""}}) exitWith {false};
-if (_isLauncherClear && {!(_magazineClass isEqualTo "") || {(count _attachments) > 0}}) exitWith {false};
+private _isOptionalSlotClear = (_weaponSlot in ["handgun", "launcher"]) && {_weaponClass isEqualTo ""};
+if (!_isOptionalSlotClear && {_weaponClass isEqualTo "" || {_magazineClass isEqualTo ""}}) exitWith {false};
+if (_isOptionalSlotClear && {!(_magazineClass isEqualTo "") || {(count _attachments) > 0}}) exitWith {false};
 
 private _canonicalAttachments = [];
 {
@@ -44,7 +44,7 @@ private _canonicalAttachments = [];
 } forEach _attachments;
 _canonicalAttachments sort true;
 
-private _magazines = if (_isLauncherClear) then {[]} else {[_magazineClass]};
+private _magazines = if (_isOptionalSlotClear) then {[]} else {[_magazineClass]};
 private _weapons = createHashMap;
 _weapons set [_weaponSlot, createHashMapFromArray [
     ["weaponClass", _weaponClass],

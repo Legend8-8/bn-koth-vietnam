@@ -156,7 +156,7 @@ private _entries = [];
             ["success", true],
             ["entitled", true],
             ["code", "ENTITLED_CLEAR"],
-            ["message", "Empty launcher slot requires no entitlement."],
+            ["message", "Empty weapon slot requires no entitlement."],
             ["accessType", "UNCONTROLLED"]
         ]
     } else {
@@ -365,7 +365,7 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
     private _cash = (_progression getOrDefault ["cash", 0]) max 0;
 
     private _status = if (_clearSlot) then {
-        if (_isApplied) then {"NO LAUNCHER SELECTED"} else {"REMOVE CURRENT LAUNCHER"}
+        if (_isApplied) then {"NO WEAPON SELECTED"} else {"REMOVE CURRENT WEAPON"}
     } else {
         switch (_accessType) do {
             case "OWNED": {"OWNED"};
