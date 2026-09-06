@@ -79,7 +79,7 @@ private _group = createGroup [_assignedSide, true];
 private _gameplayUnit = _group createUnit [_unitClass, _spawnPos, [], 0, "NONE"];
 _gameplayUnit setDir _spawnDir;
 
-private _starterResult = [_assignedSide] call bn_koth_fnc_loadouts_getStarterLoadout;
+private _starterResult = [_ownerPlayer] call bn_koth_fnc_loadouts_getSpawnLoadout;
 if !(_starterResult getOrDefault ["success", false]) exitWith {
     deleteVehicle _gameplayUnit;
     deleteGroup _group;
@@ -111,6 +111,13 @@ if (!_transferOk) exitWith {
     [format ["Single-player deployment transfer failed for UID %1", _uid], "ERROR"] call bn_koth_fnc_common_log;
     false
 };
+
+// Commit the applied spawn loadout only at the existing successful spawn boundary.
+private _loadoutStates = missionNamespace getVariable ["BN_KOTH_playerLoadoutState", createHashMap];
+_loadoutStates set [_uid, createHashMapFromArray [
+    ["intendedLoadout", +_starterLoadout], ["sideToken", toUpper str _assignedSide]
+]];
+missionNamespace setVariable ["BN_KOTH_playerLoadoutState", _loadoutStates];
 
 _gameplayUnit setPosATL _spawnPos;
 

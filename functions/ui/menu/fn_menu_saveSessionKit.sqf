@@ -34,6 +34,9 @@ if (_operation isEqualTo "UPDATE") exitWith {
     saveProfileNamespace;
     uiNamespace setVariable ["BN_KOTH_menuKitEditId", ""];
     uiNamespace setVariable ["BN_KOTH_menuKitEditName", ""];
+    if (_kitId isEqualTo (profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""])) then {
+        [_kitId, "SET"] call bn_koth_fnc_menu_setSpawnKit;
+    };
     [format ["SAVED LOADOUT UPDATED: %1", toUpper _savedName]] call bn_koth_fnc_ui_notify;
     ["LOADOUT"] call bn_koth_fnc_menu_refresh;
     true

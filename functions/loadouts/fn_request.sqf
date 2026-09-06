@@ -58,6 +58,58 @@ if !(_record isEqualType createHashMap) exitWith {
     [format ["Rejected loadout request for UID %1: player not registered.", _uid], "WARN"] call bn_koth_fnc_common_log;
 };
 
+// Preference intent has no equipment-mutation capability. Derive the caller
+// above, validate only through saved-kit LOAD, and return before Arsenal writes.
+private _preference = if (_request isEqualType createHashMap) then {_request getOrDefault ["spawnPreference", ""]} else {""};
+if (_preference in ["SET", "CLEAR"]) exitWith {
+    private _correlation = _request getOrDefault ["preferenceRevision", -1];
+    if !(_correlation isEqualType 0) exitWith {};
+    if !((_record getOrDefault ["ownerId", -1]) isEqualTo _ownerId) exitWith {};
+
+    private _preferenceThrottled = false;
+    if (_preference isEqualTo "SET") then {
+        private _now = serverTime;
+        private _lastRequestAt = _record getOrDefault ["lastSpawnPreferenceRequestAt", -999];
+        _preferenceThrottled = (_now - _lastRequestAt) < 0.25;
+        if (!_preferenceThrottled) then {
+            _record set ["lastSpawnPreferenceRequestAt", _now];
+        };
+    };
+
+    if (_preferenceThrottled) exitWith {
+        // A rejected replacement must not leave an older candidate active.
+        _record deleteAt "preferredSpawnCandidate";
+        _records set [_uid, _record];
+        missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+        [format ["Throttled rapid spawn-preference request from UID %1.", _uid], "WARN"] call bn_koth_fnc_common_log;
+        [createHashMapFromArray [
+            ["spawnPreference", true], ["preferenceRevision", _correlation],
+            ["success", false], ["message", "Spawn preference requests are arriving too quickly."]
+        ]] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
+    };
+
+    _record deleteAt "preferredSpawnCandidate";
+    private _result = createHashMapFromArray [["success", true]];
+    if (_preference isEqualTo "SET") then {
+        private _mutation = _request getOrDefault ["mutation", createHashMap];
+        // Do not accept a client-selected validation operation in this branch.
+        private _saved = if (_mutation isEqualType createHashMap) then {_mutation getOrDefault ["savedLoadout", []]} else {[]};
+        _result = [_playerObj, createHashMapFromArray [["mutation", createHashMapFromArray [
+            ["op", "load_local_kit"], ["savedLoadout", _saved]
+        ]]]] call bn_koth_fnc_loadouts_validateLoadout;
+        if (_result getOrDefault ["success", false]) then {
+            _record set ["preferredSpawnCandidate", +(_result get "validatedLoadout")];
+        };
+    };
+    _records set [_uid, _record];
+    missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+    [createHashMapFromArray [
+        ["spawnPreference", true], ["preferenceRevision", _correlation],
+        ["success", _result getOrDefault ["success", false]],
+        ["message", _result getOrDefault ["message", ""]]
+    ]] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
+};
+
 // Narrow server-side anti-spam guard. This is request hygiene, not gameplay entitlement.
 private _now = serverTime;
 private _lastRequestAt = _record getOrDefault ["lastLoadoutRequestAt", -999];
@@ -69,7 +121,7 @@ _record set ["lastLoadoutRequestAt", _now];
 _records set [_uid, _record];
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
-// Every operation capable of changing or storing loadout state requires
+// Every remaining operation capable of changing or storing intended loadout state requires
 // authoritative access at the player's active team mapboard. The client-side
 // menu capability flag is presentation only and is never trusted here.
 private _requiresArsenalAccess = true;

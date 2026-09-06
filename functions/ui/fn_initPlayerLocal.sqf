@@ -14,6 +14,8 @@
 
 if (!hasInterface) exitWith {};
 
+missionNamespace setVariable ["BN_KOTH_spawnKitResponse", [0, "", false]];
+
 uiNamespace setVariable ["BN_KOTH_initialPreloadFinished", false];
 
 addMissionEventHandler [
@@ -121,3 +123,6 @@ if (_existingLifecycleLoop isEqualTo scriptNull || {scriptDone _existingLifecycl
 
     missionNamespace setVariable ["BN_KOTH_lobbyLifecycleLoopHandle", _lifecycleHandle];
 };
+
+// One reconnect/startup submission; rejection leaves the local preference intact.
+[] call bn_koth_fnc_menu_setSpawnKit;

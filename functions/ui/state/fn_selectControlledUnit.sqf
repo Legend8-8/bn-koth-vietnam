@@ -44,6 +44,11 @@ diag_log format [
     typeOf _targetUnit
 ];
 
+private _enteringLobby = (side group _targetUnit) isEqualTo civilian;
+if (_enteringLobby) then {
+    [true] call bn_koth_fnc_ui_updateLobbyBlackout;
+};
+
 selectPlayer _targetUnit;
 
 private _switched = player isEqualTo _targetUnit;
@@ -57,9 +62,13 @@ if (_switched) then {
     [] call bn_koth_fnc_respawn_initPlayerLocal;
     [] call bn_koth_fnc_loadouts_initPlayerLocal;
     [] call bn_koth_fnc_escMenu_initPlayerLocal;
-    [] call bn_koth_fnc_ui_updateLobbyBlackout;
+    [_enteringLobby] call bn_koth_fnc_ui_updateLobbyBlackout;
     [] call bn_koth_fnc_ui_evaluateStateReadiness;
     [] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;
+} else {
+    if (_enteringLobby) then {
+        [] call bn_koth_fnc_ui_updateLobbyBlackout;
+    };
 };
 
 [_targetUnit, _token, _switched] call _reportAck;

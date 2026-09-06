@@ -136,7 +136,7 @@ if !([_assignedSide] call bn_koth_fnc_teams_validateSide) exitWith {
     false
 };
 
-private _starterResult = [_assignedSide] call bn_koth_fnc_loadouts_getStarterLoadout;
+private _starterResult = [_newUnit] call bn_koth_fnc_loadouts_getSpawnLoadout;
 if !(_starterResult getOrDefault ["success", false]) exitWith {
     [
         format [
@@ -165,9 +165,16 @@ if !((_starterLoadout isEqualType []) && {(count _starterLoadout) >= 10}) exitWi
 
 _newUnit setUnitLoadout _starterLoadout;
 
-// Fresh starter boundary: after starter application succeeds, discard any
-// previously intended deployed-loadout state for this player.
+// Clear superseded managed state after applying the spawn loadout.
 [_uid] call bn_koth_fnc_loadouts_clearPlayerState;
+
+// Commit the applied spawn loadout only at the existing successful spawn boundary.
+private _loadoutStates = missionNamespace getVariable ["BN_KOTH_playerLoadoutState", createHashMap];
+_loadoutStates set [_uid, createHashMapFromArray [
+    ["intendedLoadout", +_starterLoadout], ["sideToken", toUpper str _assignedSide]
+]];
+missionNamespace setVariable ["BN_KOTH_playerLoadoutState", _loadoutStates];
+
 
 _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 _record = _records getOrDefault [_uid, createHashMap];

@@ -14,6 +14,9 @@ if !(_kits isEqualType []) then {_kits = []};
 _kits = _kits select {(_x isEqualType []) && {(count _x) >= 3} && {(_x select 0) isEqualType ""} && {(_x select 1) isEqualType ""} && {(_x select 2) isEqualType []}};
 private _index = _kits findIf {(_x isEqualType []) && {(count _x) >= 3} && {(_x select 0) isEqualTo _kitId}};
 if (_index < 0) exitWith {false};
+if (_kitId isEqualTo (profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""])) then {
+    ["", "CLEAR"] call bn_koth_fnc_menu_setSpawnKit;
+};
 _kits deleteAt _index;
 profileNamespace setVariable ["BN_KOTH_savedKits_v2", _kits];
 saveProfileNamespace;

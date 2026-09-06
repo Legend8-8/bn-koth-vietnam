@@ -1678,7 +1678,7 @@ and non-magazine cargo remain unchanged. This cleanup applies to managed
 weapon requests only; saved-kit loading continues to reject incompatible cargo.
 
 Saved kits are stored only in the local client's `profileNamespace`. Saving and
-deleting do not mutate server gameplay state. A locally stored kit is never an
+deleting do not directly mutate equipped or intended gameplay loadout state. A locally stored kit is never an
 authority source: LOAD submits the complete stored array as untrusted intent,
 and the server repeats structural weapon/attachment validation, factual slot
 validation, progression entitlement checks, assigned-slot rules, cargo class
@@ -1713,6 +1713,25 @@ a target hint: it resolves the object itself and verifies it against the
 configured side mapboard or marker and player distance before accepting the
 mutation. This avoids selecting a different nearby board while preserving the
 server-owned access decision.
+
+Ordinary saved-kit LOAD/EDIT retains these mapboard/access restrictions.
+SET DEFAULT submit/clear is preference-only intent and may run outside mapboard
+access, including reconnect/menu initialization. It never equips the player or
+changes `intendedLoadout`; clearing removes only the preference/candidate.
+Only the preferred stable kit ID is stored in client `profileNamespace`.
+The submitted array remains untrusted and must pass the normal server-owned
+`load_local_kit` validation before becoming a session spawn candidate. Every
+spawn revalidates that candidate against current authoritative state and uses
+the faction starter if absent or invalid. Temporary side invalidity preserves
+the local preference. The validation-bearing SET request has a separate
+server-owned per-record throttle; CLEAR remains immediate so deleting a
+preferred kit cannot leave its old candidate active. Disconnect removes the
+session-only candidate with the complete player record, while registration
+retries preserve a candidate already accepted for that record. Client
+initialization resubmits the local preference after reconnect. Overwriting a
+preferred kit replaces its candidate through validation; rejection clears the
+matching local selection. Rename preserves the stable ID and deleting the
+preferred kit clears its preference.
 
 The operator-panel render-to-texture control and client-local camera lifecycle
 helpers are retained as disabled preview framework. The menu does not currently

@@ -872,6 +872,58 @@ class BN_KOTH_RscMenu
             h = safeZoneH * 0.120;
         };
 
+        class KitCardPreviewPrimary: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_CARD_1_PREVIEW_PRIMARY;
+            style = 2096;
+            text = "";
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.102;
+            w = (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.66;
+            h = safeZoneH * 0.072;
+        };
+
+        class KitCardPreviewLauncher: KitCardPreviewPrimary
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_CARD_1_PREVIEW_LAUNCHER;
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2 + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.68;
+            w = (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.30;
+            h = safeZoneH * 0.032;
+        };
+
+        class KitCardPreviewHandgun: KitCardPreviewLauncher
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_CARD_1_PREVIEW_HANDGUN;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.140;
+            h = safeZoneH * 0.030;
+        };
+
+        class KitCardPreviewUniform: KitCardPreviewPrimary
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_CARD_1_PREVIEW_UNIFORM;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.178;
+            w = (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.22;
+            h = safeZoneH * 0.036;
+        };
+
+        class KitCardPreviewVest: KitCardPreviewUniform
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_CARD_1_PREVIEW_VEST;
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2 + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.255;
+        };
+
+        class KitCardPreviewHeadgear: KitCardPreviewUniform
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_CARD_1_PREVIEW_HEADGEAR;
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2 + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.51;
+        };
+
+        class KitCardPreviewBackpack: KitCardPreviewUniform
+        {
+            idc = BN_KOTH_IDC_MENU_KIT_CARD_1_PREVIEW_BACKPACK;
+            x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2 + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.765;
+        };
+
         class BrowserCardName: BN_KOTH_Menu_Value
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_NAME;
@@ -932,6 +984,13 @@ class BN_KOTH_RscMenu
             x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2 + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 3) * 0.5 + BN_KOTH_MENU_BROWSER_CARD_GAP;
         };
 
+        class BrowserCardDefaultAction: BrowserCardSecondaryAction
+        {
+            idc = BN_KOTH_IDC_MENU_BROWSER_CARD_1_DEFAULT_ACTION;
+            text = "";
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.258;
+        };
+
         class BrowserCard2Background: BrowserCardBackground
         {
             idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_BG;
@@ -939,32 +998,56 @@ class BN_KOTH_RscMenu
         };
         class BrowserCard2ImageArea: BrowserCardImageArea {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_IMAGE_AREA; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
         class BrowserCard2Image: BrowserCardImage {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_IMAGE; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
+        class KitCard2PreviewPrimary: KitCardPreviewPrimary {idc = BN_KOTH_IDC_MENU_KIT_CARD_2_PREVIEW_PRIMARY; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
+        class KitCard2PreviewLauncher: KitCardPreviewLauncher {idc = BN_KOTH_IDC_MENU_KIT_CARD_2_PREVIEW_LAUNCHER; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.68;};
+        class KitCard2PreviewHandgun: KitCardPreviewHandgun {idc = BN_KOTH_IDC_MENU_KIT_CARD_2_PREVIEW_HANDGUN; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.68;};
+        class KitCard2PreviewUniform: KitCardPreviewUniform {idc = BN_KOTH_IDC_MENU_KIT_CARD_2_PREVIEW_UNIFORM; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
+        class KitCard2PreviewVest: KitCardPreviewVest {idc = BN_KOTH_IDC_MENU_KIT_CARD_2_PREVIEW_VEST; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.255;};
+        class KitCard2PreviewHeadgear: KitCardPreviewHeadgear {idc = BN_KOTH_IDC_MENU_KIT_CARD_2_PREVIEW_HEADGEAR; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.51;};
+        class KitCard2PreviewBackpack: KitCardPreviewBackpack {idc = BN_KOTH_IDC_MENU_KIT_CARD_2_PREVIEW_BACKPACK; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 2) * 0.765;};
         class BrowserCard2Name: BrowserCardName {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_NAME; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
         class BrowserCard2Status: BrowserCardStatus {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_STATUS; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
         class BrowserCard2LockOverlay: BrowserCardLockOverlay {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_LOCK_OVERLAY; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 2 + BN_KOTH_MENU_BROWSER_CARD_W;};
         class BrowserCard2LockText: BrowserCardLockText {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_LOCK_TEXT; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
         class BrowserCard2PrimaryAction: BrowserCardPrimaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_PRIMARY_ACTION; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W;};
         class BrowserCard2SecondaryAction: BrowserCardSecondaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_SECONDARY_ACTION; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 3) * 0.5 + BN_KOTH_MENU_BROWSER_CARD_GAP;};
+        class BrowserCard2DefaultAction: BrowserCardDefaultAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_2_DEFAULT_ACTION; x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_CARD_GAP * 3 + BN_KOTH_MENU_BROWSER_CARD_W + (BN_KOTH_MENU_BROWSER_CARD_W - BN_KOTH_MENU_BROWSER_CARD_GAP * 3) * 0.5 + BN_KOTH_MENU_BROWSER_CARD_GAP;};
 
         class BrowserCard3Background: BrowserCardBackground {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_BG; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.382;};
         class BrowserCard3ImageArea: BrowserCardImageArea {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_IMAGE_AREA; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.392;};
         class BrowserCard3Image: BrowserCardImage {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_IMAGE; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.392;};
+        class KitCard3PreviewPrimary: KitCardPreviewPrimary {idc = BN_KOTH_IDC_MENU_KIT_CARD_3_PREVIEW_PRIMARY; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.396;};
+        class KitCard3PreviewLauncher: KitCardPreviewLauncher {idc = BN_KOTH_IDC_MENU_KIT_CARD_3_PREVIEW_LAUNCHER; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.396;};
+        class KitCard3PreviewHandgun: KitCardPreviewHandgun {idc = BN_KOTH_IDC_MENU_KIT_CARD_3_PREVIEW_HANDGUN; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.434;};
+        class KitCard3PreviewUniform: KitCardPreviewUniform {idc = BN_KOTH_IDC_MENU_KIT_CARD_3_PREVIEW_UNIFORM; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.472;};
+        class KitCard3PreviewVest: KitCardPreviewVest {idc = BN_KOTH_IDC_MENU_KIT_CARD_3_PREVIEW_VEST; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.472;};
+        class KitCard3PreviewHeadgear: KitCardPreviewHeadgear {idc = BN_KOTH_IDC_MENU_KIT_CARD_3_PREVIEW_HEADGEAR; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.472;};
+        class KitCard3PreviewBackpack: KitCardPreviewBackpack {idc = BN_KOTH_IDC_MENU_KIT_CARD_3_PREVIEW_BACKPACK; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.472;};
         class BrowserCard3Name: BrowserCardName {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_NAME; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.520;};
         class BrowserCard3Status: BrowserCardStatus {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_STATUS; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.547;};
         class BrowserCard3LockOverlay: BrowserCardLockOverlay {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_LOCK_OVERLAY; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.382;};
         class BrowserCard3LockText: BrowserCardLockText {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_LOCK_TEXT; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.490;};
         class BrowserCard3PrimaryAction: BrowserCardPrimaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_PRIMARY_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.588;};
         class BrowserCard3SecondaryAction: BrowserCardSecondaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_SECONDARY_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.588;};
+        class BrowserCard3DefaultAction: BrowserCardDefaultAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_3_DEFAULT_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.552;};
 
         class BrowserCard4Background: BrowserCard2Background {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_BG; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.382;};
         class BrowserCard4ImageArea: BrowserCard2ImageArea {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_IMAGE_AREA; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.392;};
         class BrowserCard4Image: BrowserCard2Image {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_IMAGE; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.392;};
+        class KitCard4PreviewPrimary: KitCard2PreviewPrimary {idc = BN_KOTH_IDC_MENU_KIT_CARD_4_PREVIEW_PRIMARY; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.396;};
+        class KitCard4PreviewLauncher: KitCard2PreviewLauncher {idc = BN_KOTH_IDC_MENU_KIT_CARD_4_PREVIEW_LAUNCHER; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.396;};
+        class KitCard4PreviewHandgun: KitCard2PreviewHandgun {idc = BN_KOTH_IDC_MENU_KIT_CARD_4_PREVIEW_HANDGUN; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.434;};
+        class KitCard4PreviewUniform: KitCard2PreviewUniform {idc = BN_KOTH_IDC_MENU_KIT_CARD_4_PREVIEW_UNIFORM; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.472;};
+        class KitCard4PreviewVest: KitCard2PreviewVest {idc = BN_KOTH_IDC_MENU_KIT_CARD_4_PREVIEW_VEST; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.472;};
+        class KitCard4PreviewHeadgear: KitCard2PreviewHeadgear {idc = BN_KOTH_IDC_MENU_KIT_CARD_4_PREVIEW_HEADGEAR; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.472;};
+        class KitCard4PreviewBackpack: KitCard2PreviewBackpack {idc = BN_KOTH_IDC_MENU_KIT_CARD_4_PREVIEW_BACKPACK; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.472;};
         class BrowserCard4Name: BrowserCard2Name {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_NAME; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.520;};
         class BrowserCard4Status: BrowserCard2Status {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_STATUS; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.547;};
         class BrowserCard4LockOverlay: BrowserCard2LockOverlay {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_LOCK_OVERLAY; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.382;};
         class BrowserCard4LockText: BrowserCard2LockText {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_LOCK_TEXT; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.490;};
         class BrowserCard4PrimaryAction: BrowserCard2PrimaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_PRIMARY_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.588;};
         class BrowserCard4SecondaryAction: BrowserCard2SecondaryAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_SECONDARY_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.588;};
+        class BrowserCard4DefaultAction: BrowserCard2DefaultAction {idc = BN_KOTH_IDC_MENU_BROWSER_CARD_4_DEFAULT_ACTION; y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.552;};
 
         // PERKS owns a separate fixed catalogue pool. These controls are never
         // shared with Loadout, Store, or the Arsenal browser.

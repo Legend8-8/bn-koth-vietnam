@@ -2,15 +2,18 @@
     File: fn_updateLobbyBlackout.sqf
     Author: Legend
     Description: Shows or hides the local lobby black curtain from replicated player and UI state.
+        A server-selected lobby representation handoff may force it visible before selectPlayer.
     Execution: Client
     Parameters:
-        None
+        0: Force the curtain visible during a lobby representation handoff <BOOL> (optional)
     Returns:
         True when the blackout should be visible, otherwise false <BOOL>
     Public: Yes
 */
 
 if (!hasInterface) exitWith {false};
+
+params [["_forceVisible", false, [true]]];
 
 private _uid = getPlayerUID player;
 private _stateReady = missionNamespace getVariable ["BN_KOTH_stateReady", false];
@@ -28,7 +31,7 @@ if (_stateReady && {!(_uid isEqualTo "")}) then {
 
 private _transitionVisible = uiNamespace getVariable ["BN_KOTH_transitionVisible", false];
 private _resultsVisible = uiNamespace getVariable ["BN_KOTH_resultsVisible", false];
-private _shouldShowBlackout = _initialPreloadFinished && {!_isDeployed || {_transitionVisible} || {_resultsVisible}};
+private _shouldShowBlackout = _forceVisible || {_initialPreloadFinished && {!_isDeployed || {_transitionVisible} || {_resultsVisible}}};
 private _layer = "BN_KOTH_LobbyBlackout" call BIS_fnc_rscLayer;
 private _isVisible = uiNamespace getVariable ["BN_KOTH_lobbyBlackoutVisible", false];
 
