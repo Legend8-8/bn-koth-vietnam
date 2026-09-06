@@ -475,8 +475,9 @@ A feature may be considered tested when:
 Run `functions/ui/menu/test_storeV1.sqf` in a client debug context and
 `functions/progression/acquisition/test_weaponAcquisition.sqf` on the server;
 both return `[]` on success. Hosted and dedicated tests must also verify
-root-to-category and category-to-product navigation, canonical-only deterministic
-weapon ordering, global WEST/EAST/BOTH weapon visibility, level/mastery/perk
+root-to-category and category-to-product navigation, canonical-only weapon
+ordering by required level then case-insensitive display name and canonical class,
+global WEST/EAST/BOTH weapon visibility, level/mastery/perk
 locks, unconfigured-price safety, buy/rent outcomes, rental-to-owned upgrade,
 requester-only results, targeted progression repaint, the exact curated vehicle
 surface (37 Ground, 29 Rotary Wing, 18 Fixed Wing, no SEA), real config pictures,

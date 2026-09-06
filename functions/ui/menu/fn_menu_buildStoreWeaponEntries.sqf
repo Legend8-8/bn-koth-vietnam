@@ -55,6 +55,10 @@ private _sortable = [];
     if (_displayName isEqualTo "") then {_displayName = getText (_sourceCfg >> "displayName")};
     if (_displayName isEqualTo "") then {_displayName = toUpper _weaponClass};
 
+    private _minLevel = (_metadata getOrDefault ["minLevel", 1]) max 1;
+    private _levelText = str _minLevel;
+    private _levelSortKey = ("000000" + _levelText) select [(count _levelText), 6];
+
     private _storeCategory = switch (_weaponType) do {
         case "handgun": {"SIDEARMS"};
         case "launcher": {"LAUNCHERS"};
@@ -88,7 +92,10 @@ private _sortable = [];
         ["rented", _weaponClass in _rentedWeapons],
         ["masteryKills", (_weaponKills getOrDefault [_weaponClass, 0]) max 0]
     ];
-    _sortable pushBack [format ["%1|%2", toLower _displayName, _weaponClass], _entry];
+    _sortable pushBack [
+        format ["%1|%2|%3", _levelSortKey, toLower _displayName, _weaponClass],
+        _entry
+    ];
 } forEach ("true" configClasses _sourceWeaponsCfg);
 
 _sortable sort true;
