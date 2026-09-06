@@ -132,5 +132,12 @@ private _activeParticipants = [];
 
 ["BN_KOTH_activeParticipants", _activeParticipants] call bn_koth_fnc_common_publicState;
 [] call bn_koth_fnc_teams_publishState;
+private _groupImpact = [_activeParticipants, []] call bn_koth_fnc_groups_capturePresentationImpact;
+private _groupIds = _groupImpact getOrDefault ["groupIds", []];
+if ((count _groupIds) > 0) then {
+    [_groupIds] call bn_koth_fnc_groups_reconcile;
+    private _groupImpactAfter = [[], _groupIds] call bn_koth_fnc_groups_capturePresentationImpact;
+    [[_groupImpact, _groupImpactAfter]] call bn_koth_fnc_groups_publishUpdate;
+};
 
 count _activeParticipants

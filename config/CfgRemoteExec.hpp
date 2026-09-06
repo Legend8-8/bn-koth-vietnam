@@ -23,6 +23,30 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_groups_request
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_groupMenu_receiveState
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_groups_applyNativeLeadership
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_groups_prepareNativeCleanup
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_loadouts_request
         {
             allowedTargets = 2;

@@ -14,6 +14,8 @@ respawn = 3;
 respawnDelay = 5;
 respawnOnStart = -1;
 disabledAI = 1;
+// Player representation is owned by the BN KOTH team handoff system.
+enableTeamSwitch = 0;
 
 class CfgBnKothDebug
 {
@@ -24,4 +26,10 @@ class CfgBnKothDebug
 class CfgBnKothDeploymentTransition
 {
     meltdownChance = 0.01;
+};
+
+class CfgBnKothGroups
+{
+    inviteExpirySeconds = 60;
+    maxDisplayNameLength = 24;
 };

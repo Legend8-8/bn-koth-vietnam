@@ -37,6 +37,18 @@ class CfgBnKothEscMenuKeybinds
         displayName = "Spot Enemy";
         access = 1;
     };
+
+    class group_menu
+    {
+        defaultKey = DIK_U;
+        shift = "false";
+        ctrl = "false";
+        alt = "false";
+        down = 1;
+        function = "bn_koth_fnc_groupMenu_open";
+        displayName = "Group Menu";
+        access = 1;
+    };
 };
 
 class CfgBnKothEscMenuOptions

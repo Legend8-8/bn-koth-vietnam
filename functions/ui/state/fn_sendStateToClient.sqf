@@ -42,6 +42,7 @@ private _playerProgressionPayload = [
 
 private _payload = createHashMapFromArray [
     ["roundState", missionNamespace getVariable ["BN_KOTH_roundState", "WAITING"]],
+    ["groupState", [_targetUid] call bn_koth_fnc_groups_buildPresentationState],
     ["liveLeaders", missionNamespace getVariable ["BN_KOTH_liveLeaders", createHashMap]],
     ["playerProgression", _playerProgressionPayload],
     ["vehicleRentalState", [_targetUid] call bn_koth_fnc_vehicles_getRentalState],

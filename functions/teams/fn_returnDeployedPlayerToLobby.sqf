@@ -48,6 +48,8 @@ if !(_state in ["ACTIVE", "DEPLOYING"]) exitWith {
     false
 };
 
+private _groupImpact = [[_uid], []] call bn_koth_fnc_groups_capturePresentationImpact;
+
 // Vehicle rental is one-life-per-UID; end it through its existing owner instead of leaving it orphaned.
 private _activeRentals = missionNamespace getVariable ["BN_KOTH_vehicleActiveRentals", createHashMap];
 private _rentalRecord = _activeRentals getOrDefault [_uid, createHashMap];
@@ -63,6 +65,8 @@ if (!_lobbyOk) exitWith {
     [format ["returnDeployedPlayerToLobby failed: lobby handoff UID=%1", _uid], "ERROR"] call bn_koth_fnc_common_log;
     false
 };
+private _invalidatedInvites = [[_uid], [], [_uid], false] call bn_koth_fnc_groups_clearInvites;
+_groupImpact set ["directUids", (_groupImpact getOrDefault ["directUids", []]) + _invalidatedInvites];
 
 [_uid] call bn_koth_fnc_loadouts_clearPlayerState;
 
@@ -85,6 +89,14 @@ missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
 [] call bn_koth_fnc_round_updateVoteTotals;
 [] call bn_koth_fnc_teams_publishState;
+private _groupIds = _groupImpact getOrDefault ["groupIds", []];
+if ((count _groupIds) > 0) then {
+    [_groupIds] call bn_koth_fnc_groups_reconcile;
+    private _groupImpactAfter = [[], _groupIds] call bn_koth_fnc_groups_capturePresentationImpact;
+    [[_groupImpact, _groupImpactAfter]] call bn_koth_fnc_groups_publishUpdate;
+} else {
+    [[_groupImpact]] call bn_koth_fnc_groups_publishUpdate;
+};
 
 [_ownerId, "You returned to the lobby."] call bn_koth_fnc_teams_notifyPlayer;
 [format ["Deployed player returned to lobby UID=%1", _uid], "INFO"] call bn_koth_fnc_common_log;

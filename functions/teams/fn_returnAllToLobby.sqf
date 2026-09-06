@@ -59,6 +59,8 @@ private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", create
 } forEach (keys _records);
 
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+[[]] call bn_koth_fnc_groups_releaseNativeGroups;
+[[], [], [], true] call bn_koth_fnc_groups_clearInvites;
 ["BN_KOTH_activeParticipants", []] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_votesByUid", createHashMap] call bn_koth_fnc_common_publicState;
 [] call bn_koth_fnc_round_updateVoteTotals;

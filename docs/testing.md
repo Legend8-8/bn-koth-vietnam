@@ -931,6 +931,107 @@ weight; arrange equal weighted counts for contested cases.
 Static inspection and delimiter checks do not establish runtime or visual
 acceptance of this checklist.
 
+27. Custom Player Groups
+
+Run the focused server-side invariant checks after mission initialization:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\groups\test_groups.sqf"
+```
+
+Expected result: `[]`. These checks cover undeployed-leader retention, no
+premature opposite-side removal, round native release without logical deletion,
+death/respawn leadership retention, deterministic succession after an actual
+leader removal, the `remoteExecutedOwner` request boundary, direct server-local
+leadership, remote-only owner endpoint checks, locality-owned native cleanup,
+empty-impact publication, ungrouped lifecycle non-fan-out, and the read-only
+snapshot ordering. They do not establish native group locality or UI behavior.
+
+Dedicated-server validation requires at least three human clients and both
+playable sides:
+
+1. Create a group, join from the same side, and verify a direct opposite-side
+   JOIN request fails server-side. Repeat CREATE/JOIN rapidly and verify one
+   logical membership per UID, no duplicates and no orphan native groups.
+2. Verify member leave, leader kick, non-leader kick rejection, explicit leader
+   transfer, leader leave and leader disconnect. Only real membership removal or
+   explicit transfer may change `leaderUid`; ordinary member disconnect removes
+   that member. Empty groups are deleted.
+3. Kill and respawn a member and then the leader. Membership and logical leader
+   remain unchanged, the replacement units regain native membership, and a
+   temporary native leader never becomes logical authority.
+4. Keep the logical leader connected but undeployed while one member deploys.
+   Verify `leaderUid` and membership remain unchanged and the deployed member is
+   left in a valid normal/singleton native group.
+5. With the leader still undeployed, deploy two members on opposite sides.
+   Verify no cross-side native group forms, neither member is removed, and
+   logical leadership remains unchanged.
+6. During that round, deploy the leader. Verify the leader's authoritative
+   `assignedSide` is then used: matching members remain and materialize together;
+   mismatching deployed members are removed and notified.
+7. Repeat with the leader never deploying. Complete reset and verify the same
+   logical group, leader and member order survive into the next round.
+8. Verify both members WEST -> both WEST, both WEST -> both EAST, and all-member
+   side changes preserve the logical group and rematerialize on the current side.
+   Then split leader/member sides and verify only mismatching deployed members
+   are removed. Undeployed/CIV members remain inconclusive and retained.
+9. Transfer leadership before the next deployment and verify the new leader's
+   real side controls reconciliation without moving any player's team.
+10. Verify ACTIVE JIP receives current group presentation and correct native
+    membership, while reconnect after disconnect does not restore membership.
+    AI, headless clients and stale units must never appear.
+11. Verify the menu cannot open in lobby, PREPARING, ENDING or RESETTING; closes
+    on death/round invalidation; and stale requests fail after state or side
+    changes. Opening/refreshing the menu must not be necessary for native repair.
+12. Verify default U opens only the custom menu, repeated presses leave one
+    display, remapping uses the new binding, U then follows the established
+    replacement policy, and persistence/modifier/conflict behavior matches other
+    gamemode bindings.
+13. Observe server and all client RPTs through deployment, respawn, disconnect,
+    JIP and reset. Confirm no recurring reconciliation loop or unchanged-state
+    network traffic exists and native leader selection succeeds on hosted and
+    dedicated locality owners.
+14. Release groups owned in turn by the dedicated server and each player client.
+    Verify direct cleanup occurs only for server-local groups, the validated
+    owner endpoint marks client-local groups for deletion, already-empty groups
+    disappear, and groups temporarily retaining dead units disappear after corpse
+    removal. Logical deletion/release must complete without waiting or polling.
+15. Record group presentation RemoteExec recipients. An ungrouped death/respawn
+    must send none; a grouped member status change must reach current members and
+    only the side(s) whose available-group projection can change. Repeat for
+    create, join, leave, kick, transfer, disband and side-reconciliation removal.
+16. Verify new groups default OPEN, only the logical leader can LOCK/UNLOCK, a
+    forged ordinary JOIN cannot enter a locked group, and unlocking restores
+    normal same-side joining. Locked groups remain visible and marked LOCKED.
+17. As leader, inspect invite candidates with same-side and opposite-side active
+    clients plus grouped, lobby, dead and disconnected clients. Only deployed
+    ACTIVE same-side ungrouped humans may appear; inspect the received projection
+    to confirm no enemy UID, name, status or existence is included.
+18. Forge INVITE and ACCEPT_INVITE operations for an opposite-side UID and after
+   target side change. Confirm both fail server-side. Verify valid invites can
+   be accepted into OPEN and LOCKED groups, DECLINE removes them, and expiry
+   removes the prompt after 60 seconds without recurring work. Confirm a valid
+   invite notifies the target to open Group Menu without naming a physical key,
+   immediately returns the leader's open menu to MY GROUP, and excludes the
+   pending target from subsequent invite choices while duplicate server requests
+   remain rejected.
+19. Verify target grouping/creation, target or leader death/disconnect/return to
+    lobby, leadership transfer, disband and round reset invalidate applicable
+    invites. Record recipients and confirm only the target and leaders whose
+    candidate projection changed receive updates; unrelated opposite-side death
+    or respawn causes no group/invite fan-out.
+20. Rename as leader using leading/trailing whitespace, a valid 24-character
+    name, empty/whitespace, 25 characters, newline/control characters and `<`,
+    `>` or `&`. Confirm only the trimmed valid name is accepted, non-leader rename
+    fails, the stable group ID never changes, and duplicate display names remain
+    allowed.
+21. Complete reset and whole-group WEST-to-EAST deployment cycles. Confirm display
+    name and lock survive while every outstanding invite is cleared and current
+    side candidate privacy is recalculated.
+
+Static checks do not establish dedicated multiplayer, native command locality,
+group chat/markers, UI layout, or lifecycle acceptance.
+
 Saved-kit spawn preference regression checks (isolated test mission):
 
 - Client debug console, menu closed: `[] call compile preprocessFileLineNumbers "functions\ui\menu\test_spawnPreference.sqf"`.

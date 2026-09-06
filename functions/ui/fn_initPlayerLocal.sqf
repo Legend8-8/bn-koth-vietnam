@@ -15,8 +15,10 @@
 if (!hasInterface) exitWith {};
 
 missionNamespace setVariable ["BN_KOTH_spawnKitResponse", [0, "", false]];
+missionNamespace setVariable ["BN_KOTH_groupStateLocal", createHashMap];
 
 uiNamespace setVariable ["BN_KOTH_initialPreloadFinished", false];
+uiNamespace setVariable ["BN_KOTH_groupMenuDisplay", displayNull];
 
 addMissionEventHandler [
     "PreloadFinished",
