@@ -30,6 +30,7 @@ missionNamespace setVariable [
     createHashMapFromArray [[_playableSides select 0, 0], [_playableSides select 1, 0]],
     true
 ];
+missionNamespace setVariable ["BN_KOTH_buildObjects", [], true];
 ["BN_KOTH_winningSide", sideUnknown] call bn_koth_fnc_common_publicState;
 [
     "BN_KOTH_teamScores",
