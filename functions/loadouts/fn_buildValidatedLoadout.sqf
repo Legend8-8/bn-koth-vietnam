@@ -100,18 +100,18 @@ private _validatedWeaponKeys = keys _validatedWeapons;
             private _slotPayload = _validatedWeapons get _slotName;
 
             if (
-                (_slotName isEqualTo "launcher") &&
+                (_slotName in ["launcher", "handgun"]) &&
                 (_slotPayload isEqualType createHashMap) &&
                 {_slotPayload getOrDefault ["clear", false]}
             ) then {
-                private _baselineLauncher = _builtLoadout select _loadoutIndex;
-                private _clearedLauncher = if ((_baselineLauncher isEqualType []) && {(count _baselineLauncher) >= 7}) then {
+                private _baselineWeapon = _builtLoadout select _loadoutIndex;
+                private _clearedWeapon = if ((_baselineWeapon isEqualType []) && {(count _baselineWeapon) >= 7}) then {
                     ["", "", "", "", [], [], ""]
                 } else {
                     []
                 };
 
-                _builtLoadout set [_loadoutIndex, _clearedLauncher];
+                _builtLoadout set [_loadoutIndex, _clearedWeapon];
             } else {
                 private _slotResult = [
                     _slotName,

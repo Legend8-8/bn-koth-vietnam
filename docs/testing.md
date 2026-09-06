@@ -300,6 +300,13 @@ Test the directly affected system and any system that depends on it.
 
 For the Arsenal rework, also verify:
 
+- run `[testPlayer] call compile preprocessFileLineNumbers "functions\loadouts\test_weaponChangeCargo.sqf"`
+  on a hosted or dedicated server and expect `[]`; its managed weapon-change
+  checks validate direct and saved-kit Sidearm/Launcher clears without weapon
+  entitlement, build empty Unit Loadout indexes 2 and 1 respectively, and
+  continue to reject direct or saved-kit Primary clears. The saved-kit cases
+  cover the shared validation used by LOAD, Set Default, and spawn-time default
+  candidate revalidation;
 - opening at the correct team mapboard reconciles the overview from the
   server-observed physical player loadout;
 - an unentitled battlefield pickup remains physically usable, but Arsenal
@@ -474,7 +481,9 @@ A feature may be considered tested when:
 
 Run `functions/ui/menu/test_storeV1.sqf` in a client debug context and
 `functions/progression/acquisition/test_weaponAcquisition.sqf` on the server;
-both return `[]` on success. Hosted and dedicated tests must also verify
+both return `[]` on success. The client test also requires exactly one
+first-entry Arsenal `NONE` for Sidearm and Launcher, and none for Primary.
+Hosted and dedicated tests must also verify
 root-to-category and category-to-product navigation, canonical-only weapon
 ordering by required level then case-insensitive display name and canonical class,
 global WEST/EAST/BOTH weapon visibility, level/mastery/perk

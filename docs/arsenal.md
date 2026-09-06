@@ -1214,9 +1214,11 @@ not submittable.
 The browser slot context is presentation only. The request contains a
 `weapons.primary`, `weapons.handgun`, or `weapons.launcher` intent, and the
 server validates that slot through the shared weapon-composition validator
-before building the authoritative intended loadout. Launcher presentation also
-provides an explicit `NONE` choice. That choice submits an empty launcher-slot
-intent; only the server validates and applies the resulting removal.
+for populated selections before building the authoritative intended loadout.
+Sidearm and launcher presentation also provide an explicit first-entry `NONE`
+choice. That choice submits an empty optional-weapon-slot intent; only the
+server validates and applies the resulting removal. Primary weapons remain
+required and provide no `NONE` choice.
 
 Safe-zone anti-duplication boundaries are:
 
