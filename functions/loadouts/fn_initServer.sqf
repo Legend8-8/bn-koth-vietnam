@@ -189,8 +189,7 @@ private _loadedCount = 0;
     if (_failure isEqualTo "") then {
         private _binocular = toLower (getText (_cfg >> "binocular"));
         if (_binocular isEqualTo "") then {
-            private _templateBinocular = _loadout select 8;
-            _loadout set [8, if (_templateBinocular isEqualType []) then {[]} else {""}];
+            _loadout set [8, []];
         } else {
             private _type = [_binocular] call BIS_fnc_itemType;
             if !((_type isEqualType []) && {(count _type) >= 2} && {(toLower (_type select 1)) isEqualTo "binocular"}) then {_failure = format ["configured binocular '%1' is invalid", _binocular];} else {
