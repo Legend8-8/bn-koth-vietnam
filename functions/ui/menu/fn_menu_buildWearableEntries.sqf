@@ -54,7 +54,8 @@ private _currentWeaponClass = toLower (switch (_selectorMode) do {
     case "FACEWEAR": {toLower (_intendedLoadout select 7)};
     default {
         private _slot = _intendedLoadout select 8;
-        if (_slot isEqualType "") then {toLower _slot} else {""}
+        if (_slot isEqualType "") exitWith {toLower _slot};
+        if ((_slot isEqualType []) && {(count _slot) > 0} && {(_slot select 0) isEqualType ""}) then {toLower (_slot select 0)} else {""}
     };
 });
 

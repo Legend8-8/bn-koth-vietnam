@@ -729,20 +729,30 @@ private _mutationCaseResult = switch (_op) do {
 
         _mutatedLoadout set [9, _assignedSlot];
 
-        // Validate binocular slot.
+        // Validate the native Unit Loadout binocular slot. Older saved kits may
+        // contain the previously emitted bare classname; accept it only as
+        // legacy intent and normalize it to the canonical weapon-style array.
         private _binocSlot = _mutatedLoadout select 8;
-        if !(_binocSlot isEqualType "") then {
+        private _binocClass = "";
+        if (_binocSlot isEqualType "") then {
+            _binocClass = toLower _binocSlot;
+        } else {
             if (_binocSlot isEqualType []) then {
                 if ((count _binocSlot) > 0) then {
-                    _resultCode = "ERR_BINOCULAR_SLOT_SHAPE";
-                    _resultMessage = "Saved binocular slot array shape is invalid.";
+                    if ((_binocSlot select 0) isEqualType "") then {
+                        _binocClass = toLower (_binocSlot select 0);
+                    } else {
+                        _resultCode = "ERR_BINOCULAR_SLOT_SHAPE";
+                        _resultMessage = "Saved binocular slot array shape is invalid.";
+                    };
                 };
             } else {
                 _resultCode = "ERR_BINOCULAR_SLOT_SHAPE";
                 _resultMessage = "Saved binocular slot has invalid type.";
             };
-        } else {
-            private _binocClass = toLower _binocSlot;
+        };
+
+        if (_resultCode isEqualTo "OK") then {
             if !(_binocClass isEqualTo "") then {
                 private _binocType = [_binocClass] call BIS_fnc_itemType;
                 if !((_binocType isEqualType []) && {(count _binocType) >= 2} && {(toLower (_binocType select 1)) isEqualTo "binocular"}) then {
@@ -752,6 +762,10 @@ private _mutationCaseResult = switch (_op) do {
                     private _entitlement=[_uid,"Wearables",_binocClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
                     if !(_entitlement getOrDefault ["entitled",false]) then {_resultCode=_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"];_resultMessage=_entitlement getOrDefault ["message","Saved binocular is not entitled."];};
                 };
+            };
+
+            if (_resultCode isEqualTo "OK") then {
+                _mutatedLoadout set [8, if (_binocClass isEqualTo "") then {[]} else {[_binocClass, "", "", "", [], [], ""]}];
             };
         };
 
@@ -889,9 +903,7 @@ private _mutationCaseResult = switch (_op) do {
         private _binocularClass = toLower _binocularClassRaw;
 
         if (_binocularClass isEqualTo "") then {
-            private _baselineBinoc = _mutatedLoadout select 8;
-            private _emptyBinoc = if (_baselineBinoc isEqualType []) then {[]} else {""};
-            _mutatedLoadout set [8, _emptyBinoc];
+            _mutatedLoadout set [8, []];
             _resultMessage = "Binocular slot cleared.";
         } else {
             if !(isClass (_sourceItemsCfg >> _binocularClass)) exitWith {
@@ -908,7 +920,7 @@ private _mutationCaseResult = switch (_op) do {
                 [_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"],_entitlement getOrDefault ["message","Binocular is not entitled for this player."],_baseLoadoutId] call _resultFail
             };
 
-            _mutatedLoadout set [8, _binocularClass];
+            _mutatedLoadout set [8, [_binocularClass, "", "", "", [], [], ""]];
             _resultMessage = "Binocular slot updated.";
         };
     };
