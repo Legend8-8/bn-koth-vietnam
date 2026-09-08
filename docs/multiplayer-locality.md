@@ -169,9 +169,13 @@ On success, the lifecycle is:
 2. Server asks owning client to selectPlayer through bn_koth_fnc_ui_selectControlledUnit.
 3. Server waits until target-unit locality ownership matches the player owner.
 4. Server updates authoritative player record state.
-5. After `selectPlayer` and locality confirmation, the client initializes that
-   representation once with `VN_fnc_revive_coreinit`, guarded by the unit-local
-   `BN_KOTH_advancedReviveCoreInitializedLocal` flag.
+5. The client acknowledges successful representation selection from
+   `player isEqualTo _targetUnit`; transient same-frame `local` state does not
+   reject or delay that ACK. It initializes the representation with
+   `VN_fnc_revive_coreinit` immediately when local, or through one bounded
+   client-local defer when locality propagation follows `selectPlayer`. The
+   unit-local `BN_KOTH_advancedReviveCoreInitializedLocal` flag prevents repeat
+   initialization.
 6. Server triggers post-handoff local reinitialization on the owning client (map icons, 3D icons, ESC menu), plus server-side curator setup.
 
 This split keeps authority server-side while still ensuring client-local systems are reinstalled after ownership changes.

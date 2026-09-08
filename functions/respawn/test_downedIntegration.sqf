@@ -56,6 +56,9 @@ private _roundSource = preprocessFileLineNumbers "functions\round\fn_setState.sq
 [((_presentationSource find "attachTo [_unit, _offset]") >= 0) && {(_presentationSource find "camSetTarget") >= 0} && {(_presentationSource find "camSetFov") >= 0}, "Fixed attached casualty camera contract is absent"] call _check;
 [((_presentationSource find "cameraEffect [""TERMINATE""") >= 0) && {(_presentationSource find "camDestroy") >= 0}, "Casualty camera teardown is absent"] call _check;
 [((_handoffSource find "[true] call bn_koth_fnc_respawn_updateDownedPresentation") >= 0), "Representation handoff does not tear down casualty presentation"] call _check;
+[((_handoffSource find "private _switched = player isEqualTo _targetUnit;") >= 0), "Representation ACK no longer uses the proven selected-player identity contract"] call _check;
+[((_handoffSource find "BN_KOTH_advancedReviveCoreInitPendingLocal") >= 0) && {(_handoffSource find "diag_tickTime + 5") >= 0}, "Representation handoff lacks bounded duplicate-safe deferred Advanced Revive initialization"] call _check;
+[((_handoffSource find "BN_KOTH_advancedReviveCoreInitializedLocal") >= 0) && {(_handoffSource find "local _unit") >= 0}, "Advanced Revive initialization lacks its per-representation guard or locality gate"] call _check;
 [((_presentationSource find "[player, 3] call VN_fnc_revive_action_respawn") >= 0), "Give Up does not use the supported S.O.G. completion path"] call _check;
 
 [((_reconcileSource find "bn_koth_fnc_respawn_isIncapacitated") >= 0), "Help reconciliation does not invalidate recovered casualties"] call _check;
