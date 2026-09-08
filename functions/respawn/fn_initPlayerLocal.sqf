@@ -14,12 +14,14 @@ if (!hasInterface) exitWith {false};
 if (isNull player) exitWith {false};
 
 private _unit = player;
+[_unit] call bn_koth_fnc_progression_perks_applyMedicTraitLocal;
 
 if !(_unit getVariable ["BN_KOTH_safeZoneDamageEhLocal", false]) then {
-    _unit addEventHandler ["HandleDamage", {
+    private _damageEhId = _unit addEventHandler ["HandleDamage", {
         _this call bn_koth_fnc_respawn_handleDamage
     }];
     _unit setVariable ["BN_KOTH_safeZoneDamageEhLocal", true, false];
+    _unit setVariable ["BN_KOTH_safeZoneDamageEhIdLocal", _damageEhId, false];
 };
 
 if !(_unit getVariable ["BN_KOTH_safeZoneFiredEhLocal", false]) then {

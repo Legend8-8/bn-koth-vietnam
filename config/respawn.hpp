@@ -9,7 +9,4 @@ class CfgBnKothRespawn
 
     // Call For Help presentation. The 3D marker is never rendered beyond this range.
     casualtyHelp3DMaxDistance = 50;
-    casualtyCameraOffset[] = {0, -3.25, 2.15};
-    casualtyCameraTargetHeight = 0.45;
-    casualtyCameraFov = 0.7;
 };

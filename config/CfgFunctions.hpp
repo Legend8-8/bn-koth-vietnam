@@ -168,7 +168,9 @@ class CfgFunctions
             class progression_perks_isSuppressor {file = "functions\progression\perks\fn_isSuppressor.sqf";};
             class progression_perks_findRestrictedItems {file = "functions\progression\perks\fn_findRestrictedItems.sqf";};
             class progression_perks_findSuppressors {file = "functions\progression\perks\fn_findSuppressors.sqf";};
+            class progression_perks_removeRestrictedItems {file = "functions\progression\perks\fn_removeRestrictedItems.sqf";};
             class progression_perks_removeSuppressors {file = "functions\progression\perks\fn_removeSuppressors.sqf";};
+            class progression_perks_applyMedicTraitLocal {file = "functions\progression\perks\fn_applyMedicTraitLocal.sqf";};
             class progression_perks_test_perks {file = "functions\progression\perks\test_perks.sqf";};
         };
 

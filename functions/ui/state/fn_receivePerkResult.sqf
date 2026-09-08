@@ -10,19 +10,23 @@ if (!hasInterface || {!isRemoteExecuted} || {remoteExecutedOwner isNotEqualTo 2}
 private _code = _result getOrDefault ["code", "UNKNOWN"];
 private _message = _result getOrDefault ["message", "Perk request failed."];
 if (_code isEqualTo "CONFIRMATION_REQUIRED") exitWith {
-    [_message] spawn {
-        params ["_warning"];
-        private _confirmed = [_warning, "Deactivate Suppressor", true, true] call BIS_fnc_guiMessage;
-        if (_confirmed) then {["DEACTIVATE_CONFIRM", "suppressor"] call bn_koth_fnc_menu_requestPerk};
+    [_message, _result getOrDefault ["perkId", ""]] spawn {
+        params ["_warning", "_perkId"];
+        private _metadata = [_perkId] call bn_koth_fnc_progression_perks_getConfig;
+        private _displayName = _metadata getOrDefault ["displayName", _perkId];
+        private _confirmed = [_warning, format ["Deactivate %1", _displayName], true, true] call BIS_fnc_guiMessage;
+        if (_confirmed && {_perkId isNotEqualTo ""}) then {["DEACTIVATE_CONFIRM", _perkId] call bn_koth_fnc_menu_requestPerk};
     };
 };
-if (_code isEqualTo "SUPPRESSOR_CLEANUP_REQUIRED") exitWith {
+if (_code in ["SUPPRESSOR_CLEANUP_REQUIRED", "PERK_CLEANUP_REQUIRED"]) exitWith {
+    private _perkId = _result getOrDefault ["perkId", "perk"];
+    private _metadata = [_perkId] call bn_koth_fnc_progression_perks_getConfig;
+    private _displayName = _metadata getOrDefault ["displayName", _perkId];
     private _token = _result getOrDefault ["cleanupToken", ""];
     private _validation = _result getOrDefault ["cleanupValidation", createHashMap];
-    private _clean = _validation getOrDefault ["validatedLoadout", []];
-    if (_token isEqualTo "" || {!(_validation isEqualType createHashMap)}) exitWith {["Suppressor cleanup request was invalid; the perk remains active."] call bn_koth_fnc_ui_notify};
+    if (_token isEqualTo "" || {!(_validation isEqualType createHashMap)}) exitWith {[format ["%1 cleanup request was invalid; the perk remains active.", _displayName]] call bn_koth_fnc_ui_notify};
     private _applied = [player, _validation] call bn_koth_fnc_loadouts_applyLoadout;
-    if !(_applied getOrDefault ["success", false]) exitWith {["Suppressor cleanup failed; the perk remains active."] call bn_koth_fnc_ui_notify};
+    if !(_applied getOrDefault ["success", false]) exitWith {[format ["%1 cleanup failed; the perk remains active.", _displayName]] call bn_koth_fnc_ui_notify};
     [_token] remoteExecCall ["bn_koth_fnc_progression_perks_ackCleanup", 2];
 };
 private _managedLoadout = _result getOrDefault ["managedLoadout", []];

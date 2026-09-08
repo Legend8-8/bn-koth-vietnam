@@ -1039,6 +1039,12 @@ class CfgBnKothArsenal
             };
             class Consumables
             {
+                class vn_b_item_medikit_01
+                {
+                    allowedSides[] = {"WEST", "EAST"};
+                    minLevel = 1;
+                    requiredPerks[] = {"medic"};
+                };
                 class vn_m18_white_mag {allowedSides[] = {"WEST"}; minLevel = 1;};
                 class vn_m61_grenade_mag {allowedSides[] = {"WEST"}; minLevel = 1;};
                 class vn_rdg2_mag {allowedSides[] = {"EAST"}; minLevel = 1;};

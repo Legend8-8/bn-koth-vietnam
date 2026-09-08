@@ -212,22 +212,25 @@ clients and at least two same-team clients:
 
 - later `selectPlayer` representation handoff does not manually enter the
   S.O.G. incapacitated casualty core loop;
+- each newly selected representation receives the S.O.G. local event-handler
+  setup once after becoming local, and ordinary KOTH safe-zone damage handling
+  does not override the S.O.G. `HandleDamage` result;
 - real S.O.G. damage incapacitates without changing the KOTH team, deployed,
   ACTIVE-participant, group, player-record or `currentUnit` identity;
 - a casualty immediately stops contributing to raw/weighted/Priority AO
   population, control and scoring eligibility, then contributes again after a
   successful revive;
-- the attached third-person camera stays fixed on the casualty during body
-  rotation, dragging and carrying, and mouse/zoom/view inputs cannot turn,
-  widen or switch it;
+- native S.O.G. retains casualty-view ownership and no KOTH scripted casualty
+  camera overrides its presentation or action input;
 - Give Up produces one normal S.O.G./engine death-respawn cycle;
 - no rescue marker exists before Call For Help, repeated requests remain
-  one-shot, and only same-team clients receive the marker;
+  one-shot, conscious same-team clients receive the marker, and the requesting
+  casualty receives only their own approved map/GPS marker;
 - the casualty marker appears on the full M-map and normal NAV/GPS minimap
   controls, follows a moved casualty, and its 3D counterpart disappears beyond the
   configured 50-metre limit;
 - revive, death, respawn, disconnect, team/representation change, lobby return,
-  ENDING and RESETTING all clear camera, actions and rescue presentation;
+  ENDING and RESETTING all clear actions and rescue presentation;
 - a downed client cannot open KOTH combat-intel UI, mutate/read group state,
   spot targets, traverse, teleport or enter an air-insertion commit.
 
@@ -238,7 +241,7 @@ call compile preprocessFileLineNumbers "functions\respawn\test_downedIntegration
 ```
 
 Expected result: `[]`. This verifies the central predicate and production
-ownership/security hooks; it does not establish camera, S.O.G. lifecycle or
+ownership/security hooks; it does not establish S.O.G. lifecycle or
 multiplayer RemoteExec behavior.
 
 Starter-loadout configuration changes must additionally verify on a dedicated
@@ -660,6 +663,44 @@ Run on hosted and dedicated servers with the extDB schema-v2 migration applied:
 - Dedicated security: invoke requests only from the owning client and confirm forged UID/cost/ownership/loadout data is neither accepted nor part of the endpoint schema.
 
 Focused server tests: `call compile preprocessFileLineNumbers "functions\progression\perks\test_perks.sqf"`. Expected result: `[]`.
+
+## MEDIC and S.O.G. Advanced Revive dedicated matrix
+
+The perk/medikit entitlement, managed-loadout sanitation and static derived-trait wiring are covered by the focused perk test. S.O.G.'s module-owned action timing, item removal and healing still require dedicated-server runtime proof with a casualty and reviver on separate clients:
+
+1. NON-MEDIC + WEST/EAST FAK only
+   - Resuscitate available
+   - ~10 seconds
+   - exactly one FAK removed only on success
+   - interrupted attempt consumes nothing
+
+2. NON-MEDIC + medikit only
+   - no Medic revive capability
+
+3. MEDIC + FAK only
+   - normal behavior only
+   - verify no unintended Medic boost
+
+4. MEDIC + medikit only
+   - Medic revive available
+   - ~5 seconds
+   - medikit retained
+   - no FAK required
+   - casualty fully healed
+
+5. MEDIC + FAK + medikit
+   - Medic behavior wins
+   - FAK not consumed
+
+6. MEDIC perk deactivated while medikit in managed loadout
+   - medikit immediately/authoritatively invalidated
+   - no stale Medic trait
+   - respawn cannot restore it
+
+7. Medikit manually acquired/picked up by NON-MEDIC
+   - possession alone grants no KOTH Medic entitlement/capability
+
+Do not infer a pass for cases 1-5 from the KOTH trait mirror alone. The current Eden module owns global `revive_item_remove`, `revive_delay` and `medic_boost` behavior, and the public S.O.G. function documentation does not define a supported per-item override seam.
 
 ## Cloak spotting matrix
 

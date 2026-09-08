@@ -70,6 +70,7 @@ private _keyMap = createHashMapFromArray [
     };
 } forEach (keys _payload);
 
+[] call bn_koth_fnc_progression_perks_applyMedicTraitLocal;
 [] call bn_koth_fnc_ui_evaluateStateReadiness;
 [] call bn_koth_fnc_ui_results_update;
 [] call bn_koth_fnc_ui_transition_update;

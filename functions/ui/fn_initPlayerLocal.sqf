@@ -24,8 +24,6 @@ uiNamespace setVariable ["BN_KOTH_groupMenuDisplay", displayNull];
 uiNamespace setVariable ["BN_KOTH_airInsertionActionBinding", [objNull, []]];
 uiNamespace setVariable ["BN_KOTH_airInsertionBackpackBinding", [objNull, -1, ""]];
 uiNamespace setVariable ["BN_KOTH_downedActionBinding", [objNull, []]];
-uiNamespace setVariable ["BN_KOTH_downedCamera", objNull];
-uiNamespace setVariable ["BN_KOTH_downedCameraUnit", objNull];
 uiNamespace setVariable ["BN_KOTH_casualtyHelpOwnRequestActive", false];
 uiNamespace setVariable ["BN_KOTH_casualtyHelpRequestPending", false];
 uiNamespace setVariable ["BN_KOTH_casualtyHelpRequestPendingAt", -1];

@@ -1,7 +1,7 @@
 /*
     File: test_perks.sqf
     Author: Legend
-    Description: Focused server tests for perk state, transactions, and Suppressor managed-loadout handling.
+    Description: Focused server tests for perk state, transactions, and restricted managed-loadout handling.
     Execution: Server test console
     Returns: Failure messages; an empty array means pass.
 */
@@ -32,6 +32,51 @@ private _cloakConfig = ["cloak"] call bn_koth_fnc_progression_perks_getConfig;
     && {_cloakConfig getOrDefault ["purchasable", false]}
     && {(_cloakConfig getOrDefault ["purchaseCost", -1]) isEqualTo 1},
     "Cloak config is not available through the canonical perk catalogue."] call _assert;
+private _medicConfig = ["medic"] call bn_koth_fnc_progression_perks_getConfig;
+[_medicConfig getOrDefault ["success", false]
+    && {_medicConfig getOrDefault ["available", false]}
+    && {_medicConfig getOrDefault ["purchasable", false]}
+    && {(_medicConfig getOrDefault ["purchaseCost", -1]) isEqualTo 1}
+    && {"vn_b_item_medikit_01" in (_medicConfig getOrDefault ["restrictedClasses", []])},
+    "MEDIC config is unavailable or does not own the medikit restriction."] call _assert;
+[!((["field_medic_placeholder"] call bn_koth_fnc_progression_perks_getConfig) getOrDefault ["success", false]), "The retired field_medic_placeholder perk remains configured."] call _assert;
+
+private _medikitMetadata = ["Consumables", "vn_b_item_medikit_01"] call bn_koth_fnc_loadouts_getItemMetadata;
+[_medikitMetadata getOrDefault ["success", false]
+    && {(_medikitMetadata getOrDefault ["allowedSides", []]) isEqualTo ["WEST", "EAST"]}
+    && {(_medikitMetadata getOrDefault ["minLevel", -1]) isEqualTo 1}
+    && {"medic" in (_medikitMetadata getOrDefault ["requiredPerks", []])},
+    "Medikit metadata is missing its cross-team MEDIC entitlement."] call _assert;
+private _inactiveMedicEntitlement = [_state, _medikitMetadata, "vn_b_item_medikit_01", "WEST", false] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+[!(_inactiveMedicEntitlement getOrDefault ["entitled", true])
+    && {(_inactiveMedicEntitlement getOrDefault ["code", ""]) isEqualTo "LOCKED_PERK"}
+    && {"medic" in (_inactiveMedicEntitlement getOrDefault ["missingPerks", []])},
+    "Inactive MEDIC did not visibly lock medikit entitlement."] call _assert;
+
+private _traitSource = preprocessFileLineNumbers "functions\progression\perks\fn_applyMedicTraitLocal.sqf";
+private _progressionReceiveSource = preprocessFileLineNumbers "functions\ui\state\fn_receiveProgression.sqf";
+private _stateReceiveSource = preprocessFileLineNumbers "functions\ui\state\fn_receiveState.sqf";
+private _respawnInitSource = preprocessFileLineNumbers "functions\respawn\fn_initPlayerLocal.sqf";
+private _handoffSource = preprocessFileLineNumbers "functions\ui\state\fn_selectControlledUnit.sqf";
+private _cargoUiSource = preprocessFileLineNumbers "functions\ui\menu\fn_menu_refreshCargoBrowser.sqf";
+private _validatorSource = preprocessFileLineNumbers "functions\loadouts\fn_validateLoadout.sqf";
+[((_traitSource find "setUnitTrait [""Medic"", _enabled]") >= 0)
+    && {(_traitSource find "BN_KOTH_playerProgressionLocal") >= 0}
+    && {(_traitSource find "BN_KOTH_playerStates") >= 0}
+    && {(_traitSource find "BN_KOTH_playableSides") >= 0}
+    && {(_traitSource find "ACTIVE") >= 0}
+    && {(_traitSource find "local _unit") >= 0},
+    "MEDIC trait mirror is not derived locally from projected active/deployed state."] call _assert;
+[((_progressionReceiveSource find "progression_perks_applyMedicTraitLocal") >= 0)
+    && {(_stateReceiveSource find "progression_perks_applyMedicTraitLocal") >= 0}
+    && {(_respawnInitSource find "progression_perks_applyMedicTraitLocal") >= 0}
+    && {(_handoffSource find "setUnitTrait [""Medic"", false]") >= 0}
+    && {(_handoffSource find "respawn_initPlayerLocal") >= 0},
+    "MEDIC trait lifecycle is missing a progression, snapshot, respawn, or representation-handoff seam."] call _assert;
+[((_cargoUiSource find "%1 PERK REQUIRED") >= 0)
+    && {(_validatorSource find "BN_KOTH_playerProgression") >= 0}
+    && {(_validatorSource find "progression_perks_findRestrictedItems") >= 0},
+    "Medikit lock presentation or authoritative managed-loadout perk validation is not wired through the generic path."] call _assert;
 [!([_uid, "cloak"] call bn_koth_fnc_progression_perks_isActive), "Unowned Cloak was reported active."] call _assert;
 _state set ["activePerks", ["cloak"]];
 [([_uid, "cloak"] call bn_koth_fnc_progression_perks_isActive), "Authoritative active Cloak was not detected."] call _assert;
@@ -89,6 +134,42 @@ _currentLoadoutState = (missionNamespace getVariable ["BN_KOTH_playerLoadoutStat
 [_final getOrDefault ["success", false] && {!("suppressor" in (_state getOrDefault ["activePerks", []]))} && {(_currentLoadoutState get "intendedLoadout") isEqualTo _clean}, "Successful authoritative cleanup did not commit intendedLoadout then deactivate."] call _assert;
 private _replay = [_uid, _token2, objNull, _clean] call bn_koth_fnc_progression_perks_completeCleanup;
 [!(_replay getOrDefault ["success", true]) && {(_replay getOrDefault ["code", ""]) isEqualTo "NO_PENDING_CLEANUP"}, "Replayed cleanup completion was accepted."] call _assert;
+
+private _medicPurchase = [_uid, "medic"] call bn_koth_fnc_progression_perks_purchase;
+private _medicActivate = [_uid, "medic", "ACTIVATE"] call bn_koth_fnc_progression_perks_setActive;
+[_medicPurchase getOrDefault ["success", false]
+    && {_medicActivate getOrDefault ["success", false]}
+    && {"medic" in (_state getOrDefault ["activePerks", [])},
+    "MEDIC purchase/activation did not use the existing authoritative perk path."] call _assert;
+private _activeMedicEntitlement = [_state, _medikitMetadata, "vn_b_item_medikit_01", "EAST", false] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+[_activeMedicEntitlement getOrDefault ["entitled", false], "Active MEDIC did not grant EAST medikit entitlement."] call _assert;
+
+missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", createHashMapFromArray [["activePerks", ["medic"]]]];
+_state set ["activePerks", []];
+private _clientTraitBypass = [_state, _medikitMetadata, "vn_b_item_medikit_01", "WEST", false] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+[!(_clientTraitBypass getOrDefault ["entitled", true]), "Client MEDIC presentation state bypassed authoritative medikit entitlement."] call _assert;
+_state set ["activePerks", ["medic"]];
+
+private _medicLoadout = [[], [], [], ["u", [["vn_b_item_medikit_01", 1], ["vn_b_item_firstaidkit", 2]]], ["v", []], ["b", []], "", "", [], []];
+missionNamespace setVariable ["BN_KOTH_playerLoadoutState", createHashMapFromArray [[_uid, createHashMapFromArray [["intendedLoadout", _medicLoadout], ["sideToken", "WEST"]]]]];
+[((count ([_medicLoadout, "medic"] call bn_koth_fnc_progression_perks_findRestrictedItems)) isEqualTo 1), "Managed-loadout MEDIC restriction did not find the medikit."] call _assert;
+private _medicWarning = [_uid, "medic", "DEACTIVATE"] call bn_koth_fnc_progression_perks_setActive;
+[(_medicWarning getOrDefault ["code", ""]) isEqualTo "CONFIRMATION_REQUIRED" && {"medic" in (_state getOrDefault ["activePerks", [])}, "MEDIC deactivation did not require safe medikit cleanup."] call _assert;
+private _medicCleanup = [_uid, "medic", "DEACTIVATE_CONFIRM"] call bn_koth_fnc_progression_perks_setActive;
+private _medicClean = (_medicCleanup getOrDefault ["cleanupValidation", createHashMap]) getOrDefault ["validatedLoadout", []];
+private _medicToken = _medicCleanup getOrDefault ["cleanupToken", ""];
+[(_medicCleanup getOrDefault ["code", ""]) isEqualTo "PERK_CLEANUP_REQUIRED"
+    && {(count ([_medicClean, "medic"] call bn_koth_fnc_progression_perks_findRestrictedItems)) isEqualTo 0}
+    && {(str _medicClean find "vn_b_item_firstaidkit") >= 0}
+    && {"medic" in (_state getOrDefault ["activePerks", [])},
+    "MEDIC cleanup removed the wrong cargo or deactivated before physical application."] call _assert;
+private _medicFinal = [_uid, _medicToken, objNull, _medicClean] call bn_koth_fnc_progression_perks_completeCleanup;
+_currentLoadoutState = (missionNamespace getVariable ["BN_KOTH_playerLoadoutState", createHashMap]) get _uid;
+[_medicFinal getOrDefault ["success", false]
+    && {!("medic" in (_state getOrDefault ["activePerks", []))}
+    && {(_currentLoadoutState get "intendedLoadout") isEqualTo _medicClean}
+    && {(count ([(_currentLoadoutState get "intendedLoadout"), "medic"] call bn_koth_fnc_progression_perks_findRestrictedItems)) isEqualTo 0},
+    "Authoritative MEDIC cleanup did not sanitize intended loadout before deactivation."] call _assert;
 
 _state set ["activePerks", ["one", "two", "three"]];
 private _limit = [_uid, "suppressor", "ACTIVATE"] call bn_koth_fnc_progression_perks_setActive;

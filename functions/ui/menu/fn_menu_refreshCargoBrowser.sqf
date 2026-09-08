@@ -103,7 +103,11 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuCar
         case "LOCKED_LEVEL": {format ["LOCKED UNTIL LEVEL %1", _entry getOrDefault ["minLevel", 1]]};
         case "LOCKED_PERK": {
             private _missing = _entry getOrDefault ["missingPerks", []];
-            if ((count _missing) > 0) then {format ["REQUIRES PERK: %1", toUpper (_missing joinString ", ")]} else {"REQUIRED PERK MISSING"}
+            if ((count _missing) isEqualTo 1) then {
+                format ["%1 PERK REQUIRED", toUpper (_missing select 0)]
+            } else {
+                if ((count _missing) > 1) then {format ["PERKS REQUIRED: %1", toUpper (_missing joinString ", ")]} else {"REQUIRED PERK MISSING"}
+            }
         };
         default {if (_entitled) then {""} else {"ENTITLEMENT UNAVAILABLE"}};
     };

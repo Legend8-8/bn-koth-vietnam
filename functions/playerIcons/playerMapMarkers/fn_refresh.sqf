@@ -26,7 +26,7 @@ private _deleteAllMarkers = {
     uiNamespace setVariable ["BN_KOTH_casualtyHelpMapDrawEntries", []];
 };
 
-if (isNull player || {!alive player} || {[player] call bn_koth_fnc_respawn_isIncapacitated}) exitWith {
+if (isNull player || {!alive player}) exitWith {
     call _deleteAllMarkers;
     missionNamespace setVariable ["BN_KOTH_playerMapMarkersMarkers", _markers];
     0
@@ -38,6 +38,7 @@ if (_myUid isEqualTo "") exitWith {
     missionNamespace setVariable ["BN_KOTH_playerMapMarkersMarkers", _markers];
     0
 };
+private _viewerIncapacitated = [player] call bn_koth_fnc_respawn_isIncapacitated;
 
 private _playerAssignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
 if !(_playerAssignments isEqualType createHashMap) then {
@@ -82,7 +83,7 @@ private _showDriverName = missionNamespace getVariable ["BN_KOTH_playerMapMarker
 private _markerShadow = missionNamespace getVariable ["BN_KOTH_playerMapMarkersShadow", false];
 private _markersEnabled = missionNamespace getVariable ["BN_KOTH_playerMapMarkersEnabled", true];
 
-private _eligiblePlayers = if (_markersEnabled) then {allPlayers select {
+private _eligiblePlayers = if (_markersEnabled && {!_viewerIncapacitated}) then {allPlayers select {
     private _unit = _x;
     private _uid = getPlayerUID _unit;
     private _assignedSide = _playerAssignments getOrDefault [_uid, sideUnknown];
@@ -153,7 +154,7 @@ private _vehicleGroups = createHashMap;
     if (_isTalking) then {_micDrawEntries pushBack [getPosVisual _vehicle];};
 } forEach (keys _vehicleGroups);
 
-if (_markersEnabled) then {
+if (_markersEnabled && {!_viewerIncapacitated}) then {
     {
         private _unit = _x;
         if (isNull _unit || {!alive _unit} || {[_unit] call bn_koth_fnc_respawn_isIncapacitated} || {_unit isEqualTo player}) then {
@@ -186,11 +187,17 @@ if (_viewerActive && {_helpState isEqualType []}) then {
         private _casualtySide = _playerAssignments getOrDefault [_casualtyUid, sideUnknown];
         private _casualtyActive = _activeLookup getOrDefault [_casualtyUid, false];
         private _casualtyState = _playerStates getOrDefault [_casualtyUid, "LOBBY"];
+        private _isOwnCasualty = _casualtyUid isEqualTo _myUid && {_casualty isEqualTo player};
+        private _viewerMaySeeCasualty = if (_viewerIncapacitated) then {
+            _isOwnCasualty
+        } else {
+            !_isOwnCasualty && {_casualty isNotEqualTo player}
+        };
 
         if (
             !isNull _casualty
             && {alive _casualty}
-            && {_casualty isNotEqualTo player}
+            && {_viewerMaySeeCasualty}
             && {[_casualty] call bn_koth_fnc_respawn_isIncapacitated}
             && {_casualtySide isEqualTo _mySide}
             && {_casualtyActive}

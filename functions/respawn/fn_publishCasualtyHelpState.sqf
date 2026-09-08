@@ -42,6 +42,12 @@ private _roundActive = ([] call bn_koth_fnc_round_getState) isEqualTo "ACTIVE";
         && {(_viewerRecord getOrDefault ["state", ""]) isEqualTo "ACTIVE"}
         && {_viewerRecord getOrDefault ["deployed", false]}
         && {_roundActive};
+    private _viewerCanReceiveOwnRequest = _viewerIdentityValid
+        && {alive _viewer}
+        && {[_viewer] call bn_koth_fnc_respawn_isIncapacitated}
+        && {(_viewerRecord getOrDefault ["state", ""]) isEqualTo "ACTIVE"}
+        && {_viewerRecord getOrDefault ["deployed", false]}
+        && {_roundActive};
 
     if (_viewerIdentityValid && {[_viewerSide] call bn_koth_fnc_teams_validateSide}) then {
         {
@@ -51,6 +57,9 @@ private _roundActive = ([] call bn_koth_fnc_round_getState) isEqualTo "ACTIVE";
 
             if (_casualtyUid isEqualTo _viewerUid) then {
                 _ownRequestActive = true;
+                if (_viewerCanReceiveOwnRequest && {_casualty isEqualTo _viewer} && {_casualtySide isEqualTo _viewerSide}) then {
+                    _entries pushBack [_casualtyUid, _casualty, _viewerRecord getOrDefault ["name", "Teammate"]];
+                };
             } else {
                 if (_viewerCanReceiveIntel && {_casualtySide isEqualTo _viewerSide}) then {
                     private _casualtyRecord = _records getOrDefault [_casualtyUid, createHashMap];

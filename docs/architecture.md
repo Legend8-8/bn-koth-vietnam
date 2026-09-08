@@ -224,9 +224,11 @@ bleedout, revive, drag/carry and revive-driven respawn mechanics. KOTH derives
 combat eligibility from the current representation through
 `bn_koth_fnc_respawn_isIncapacitated`; it does not remove a casualty from team,
 deployment, session, group or `currentUnit` state. The same folder owns the
-client-local fixed casualty camera/actions and the small server-only Call For
-Help map keyed by UID. Clients receive only a same-team rescue projection and
-fail closed when the referenced representation is no longer a valid casualty.
+client-local KOTH casualty interactions and the small server-only Call For Help
+map keyed by UID. Clients receive only a same-team rescue projection, with an
+approved requester also receiving their own map/GPS entry, and fail closed when
+the referenced representation is no longer a valid casualty. Native S.O.G.
+owns the casualty view.
 
 "functions/scoring/"
 
@@ -587,5 +589,7 @@ rented M577 receives no managed command capability.
 Perks extend the existing progression/persistence boundary. `ownedPerks` is permanent purchase state; `activePerks` is the persisted, bounded subset whose gameplay effects are enabled. The server owns both arrays, purchase transactions, active-slot validation, and managed-loadout enforcement. Clients receive only a targeted presentation projection and submit narrow perk intents.
 
 The Suppressor perk is enforced only when constructing or applying a managed loadout. Battlefield pickups remain ordinary Arma inventory state and are not polled or deleted. Confirmed deactivation first replaces the server-owned intended loadout with a catalogue-derived suppressor-free loadout, applies that server-derived loadout through the existing local application path, and only then finalizes deactivation.
+
+MEDIC uses the same ownership boundary. Human-authored consumable metadata makes `vn_b_item_medikit_01` available to both KOTH teams only while `medic` is active, and complete managed loadouts containing it otherwise fail with `ERR_PERK_MEDIC_INACTIVE`. The owning client mirrors the projected active perk onto only its current `ACTIVE` representation with Arma's `Medic` trait; that trait is derived S.O.G. input and never KOTH entitlement. The existing confirmed cleanup transaction removes a medikit from the live and server-owned intended loadout before MEDIC deactivation commits.
 
 Cloak is consumed at the server-owned successful-spot boundary. The ordinary replicated mark and its expiry remain unchanged; only the target HUD-warning deadline is omitted when the authoritative requester's `activePerks` contains `cloak`. Warning state is per successful action, so a later non-Cloak spot can still warn an already marked target.
