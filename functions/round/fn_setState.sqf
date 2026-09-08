@@ -40,6 +40,7 @@ if !(_newState in _allowedNext) exitWith {
 
 ["BN_KOTH_roundState", _newState] call bn_koth_fnc_common_publicState;
 [format ["Round state -> %1", _newState]] call bn_koth_fnc_common_log;
+[] call bn_koth_fnc_respawn_reconcileCasualtyHelp;
 
 if (_newState in ["PREPARING", "ENDING", "RESETTING"]) then {
     [] call bn_koth_fnc_scoring_resetProgress;

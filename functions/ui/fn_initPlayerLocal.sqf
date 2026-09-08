@@ -17,11 +17,18 @@ if (!hasInterface) exitWith {};
 missionNamespace setVariable ["BN_KOTH_spawnKitResponse", [0, "", false]];
 missionNamespace setVariable ["BN_KOTH_groupStateLocal", createHashMap];
 missionNamespace setVariable ["BN_KOTH_airInsertionLocalState", createHashMap];
+missionNamespace setVariable ["BN_KOTH_casualtyHelpStateLocal", []];
 
 uiNamespace setVariable ["BN_KOTH_initialPreloadFinished", false];
 uiNamespace setVariable ["BN_KOTH_groupMenuDisplay", displayNull];
 uiNamespace setVariable ["BN_KOTH_airInsertionActionBinding", [objNull, []]];
 uiNamespace setVariable ["BN_KOTH_airInsertionBackpackBinding", [objNull, -1, ""]];
+uiNamespace setVariable ["BN_KOTH_downedActionBinding", [objNull, []]];
+uiNamespace setVariable ["BN_KOTH_downedCamera", objNull];
+uiNamespace setVariable ["BN_KOTH_downedCameraUnit", objNull];
+uiNamespace setVariable ["BN_KOTH_casualtyHelpOwnRequestActive", false];
+uiNamespace setVariable ["BN_KOTH_casualtyHelpRequestPending", false];
+uiNamespace setVariable ["BN_KOTH_casualtyHelpRequestPendingAt", -1];
 
 addMissionEventHandler [
     "PreloadFinished",
@@ -119,6 +126,7 @@ private _existingLifecycleLoop = missionNamespace getVariable ["BN_KOTH_lobbyLif
 if (_existingLifecycleLoop isEqualTo scriptNull || {scriptDone _existingLifecycleLoop}) then {
     private _lifecycleHandle = [] spawn {
         while {hasInterface} do {
+            [] call bn_koth_fnc_respawn_updateDownedPresentation;
             [] call bn_koth_fnc_ui_updateLobbyLifecycle;
             sleep 0.25;
         };

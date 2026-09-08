@@ -19,6 +19,7 @@ private _fail = {
 
 if (!isServer) exitWith {["NOT_SERVER", "Server authority required."] call _fail};
 if (isNull _player || {!isPlayer _player} || {!alive _player}) exitWith {["INVALID_PLAYER", "You must be alive and connected."] call _fail};
+if ([_player] call bn_koth_fnc_respawn_isIncapacitated) exitWith {["PLAYER_INCAPACITATED", "Air insertion is unavailable while incapacitated."] call _fail};
 
 private _uid = getPlayerUID _player;
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];

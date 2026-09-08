@@ -92,6 +92,7 @@ if (_stateBefore in ["ACTIVE", "DEPLOYING", "RESPAWNING"]) then {
 
 _records set [_uid, _record];
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+[] call bn_koth_fnc_respawn_reconcileCasualtyHelp;
 
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 private _wasParticipant = _uid in _activeParticipants;

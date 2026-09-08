@@ -54,6 +54,7 @@ if (_record isEqualType createHashMap) then {
 
 _records deleteAt _uid;
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+[] call bn_koth_fnc_respawn_reconcileCasualtyHelp;
 
 private _handoffs = missionNamespace getVariable ["BN_KOTH_transferHandoffPending", createHashMap];
 if (_handoffs isEqualType createHashMap) then {

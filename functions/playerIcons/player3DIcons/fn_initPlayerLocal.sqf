@@ -35,6 +35,16 @@ missionNamespace setVariable ["BN_KOTH_player3DIconsEastColor", getArray (_confi
 missionNamespace setVariable ["BN_KOTH_player3DIconsSameGroupColor", getArray (_config >> "sameGroupColor")];
 missionNamespace setVariable ["BN_KOTH_player3DIconsEnemyMarkDuration", (getNumber (_config >> "temporaryEnemyMarkDuration")) max 0];
 uiNamespace setVariable ["BN_KOTH_player3DIconsDrawData", []];
+uiNamespace setVariable ["BN_KOTH_casualtyHelp3DDrawData", []];
+
+private _helpTexture = getText (_config >> "casualtyHelpTexture");
+if (_helpTexture isEqualTo "") then {_helpTexture = "\A3\ui_f\data\map\markers\military\warning_CA.paa"};
+private _helpColor = getArray (_config >> "casualtyHelpColor");
+if !(_helpColor isEqualType [] && {count _helpColor >= 4}) then {_helpColor = [1, 0.2, 0.15, 1]};
+missionNamespace setVariable ["BN_KOTH_casualtyHelp3DTexture", _helpTexture];
+missionNamespace setVariable ["BN_KOTH_casualtyHelp3DColor", _helpColor];
+missionNamespace setVariable ["BN_KOTH_casualtyHelp3DSize", (getNumber (_config >> "casualtyHelpSize")) max 0.1];
+missionNamespace setVariable ["BN_KOTH_casualtyHelp3DMaxDistance", (getNumber (missionConfigFile >> "CfgBnKothRespawn" >> "casualtyHelp3DMaxDistance")) max 1];
 
 if !(missionNamespace getVariable ["BN_KOTH_player3DIconsRefreshLoopAdded", false]) then {
     private _refreshHandler = addMissionEventHandler ["EachFrame", {

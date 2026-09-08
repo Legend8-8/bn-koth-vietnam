@@ -15,6 +15,7 @@ if !(uiNamespace getVariable ["BN_KOTH_priorityTaskEhAdded", false]) then {
         if !(hasInterface) exitWith {};
         if !(uiNamespace getVariable ["BN_KOTH_hudVisible", false]) exitWith {};
         if (isNull player || {!alive player}) exitWith {};
+        if ([player] call bn_koth_fnc_respawn_isIncapacitated) exitWith {};
         if !((missionNamespace getVariable ["BN_KOTH_roundState", ""]) isEqualTo "ACTIVE") exitWith {};
 
         private _activeAoMarker = missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""];
@@ -40,6 +41,7 @@ private _priorityMarker = "BN_KOTH_priorityZoneMarker";
 private _shouldExist = uiNamespace getVariable ["BN_KOTH_hudVisible", false]
     && {!isNull player}
     && {alive player}
+    && {!([player] call bn_koth_fnc_respawn_isIncapacitated)}
     && {(missionNamespace getVariable ["BN_KOTH_roundState", ""]) isEqualTo "ACTIVE"}
     && {_activeAoAvailable}
     && {!((markerShape _priorityMarker) isEqualTo "")};

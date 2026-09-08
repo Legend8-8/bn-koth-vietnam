@@ -48,11 +48,22 @@ if !(_unit getVariable ["BN_KOTH_safeZoneGetInEhLocal", false]) then {
     _unit setVariable ["BN_KOTH_safeZoneGetInEhLocal", true, false];
 };
 
+if !(_unit getVariable ["BN_KOTH_downedKilledEhLocal", false]) then {
+    _unit addEventHandler ["Killed", {
+        params ["_killed"];
+        if (_killed isEqualTo player) then {
+            [true] call bn_koth_fnc_respawn_updateDownedPresentation;
+        };
+    }];
+    _unit setVariable ["BN_KOTH_downedKilledEhLocal", true, false];
+};
+
 if !(missionNamespace getVariable ["BN_KOTH_respawnLocalMissionEhAdded", false]) then {
     private _eventId = addMissionEventHandler ["EntityRespawned", {
         params ["_newEntity"];
 
         if (hasInterface && {!isNull _newEntity} && {_newEntity isEqualTo player}) then {
+            [true] call bn_koth_fnc_respawn_updateDownedPresentation;
             [] call bn_koth_fnc_respawn_initPlayerLocal;
         };
     }];

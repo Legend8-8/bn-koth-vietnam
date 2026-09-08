@@ -215,6 +215,18 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_respawn_requestCasualtyHelp
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_respawn_receiveCasualtyHelpState
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
         class bn_koth_fnc_vehicles_mobileRespawn_requestTeleport
         {
             allowedTargets = 2;

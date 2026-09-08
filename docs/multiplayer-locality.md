@@ -83,6 +83,10 @@ Safe-zone physical inventory blocking| Owning client
 Safe-zone ground-loot and corpse cleanup| Server
 Respawn presentation| Owning client
 Respawn rules and validation| Server
+Advanced Revive mechanics| S.O.G. Advanced Revive module/runtime
+KOTH incapacitated combat eligibility| Server, derived from the current representation
+Call For Help approval and teammate projection| Server
+Casualty camera, actions, full-map/GPS Draw overlays and bounded 3D overlay| Owning client
 Player safe-zone membership| Server
 Player firing and damage enforcement| Owning client
 Vehicle safe-zone membership| Server
@@ -165,9 +169,19 @@ On success, the lifecycle is:
 2. Server asks owning client to selectPlayer through bn_koth_fnc_ui_selectControlledUnit.
 3. Server waits until target-unit locality ownership matches the player owner.
 4. Server updates authoritative player record state.
-5. Server triggers post-handoff local reinitialization on the owning client (map icons, 3D icons, ESC menu), plus server-side curator setup.
+5. After `selectPlayer` and locality confirmation, the client initializes that
+   representation once with `VN_fnc_revive_coreinit`, guarded by the unit-local
+   `BN_KOTH_advancedReviveCoreInitializedLocal` flag.
+6. Server triggers post-handoff local reinitialization on the owning client (map icons, 3D icons, ESC menu), plus server-side curator setup.
 
 This split keeps authority server-side while still ensuring client-local systems are reinstalled after ownership changes.
+
+Call For Help is a narrow client-to-server intent with no UID, side, target or
+incapacitation claim. The server derives the caller from `remoteExecutedOwner`,
+validates its player record and current representation, and stores only valid
+ACTIVE deployed casualties. It publishes each client only same-team entries.
+The receiver rejects non-server callers; map and 3D renderers independently
+revalidate local lifecycle, team and incapacitation state before drawing.
 
 5. State Distribution
 

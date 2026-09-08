@@ -47,6 +47,9 @@ _operation = toUpper _operation;
 if (_operation isEqualTo "SNAPSHOT") exitWith {
     [[_uid] call bn_koth_fnc_groups_buildPresentationState] remoteExecCall ["bn_koth_fnc_groupMenu_receiveState", _ownerId];
 };
+if ([_player] call bn_koth_fnc_respawn_isIncapacitated) exitWith {
+    [_ownerId, "Group changes are unavailable while incapacitated."] call bn_koth_fnc_teams_notifyPlayer;
+};
 
 private _directInviteOperation = _operation in ["INVITE", "DECLINE_INVITE"];
 private _impactBefore = if (_directInviteOperation) then {

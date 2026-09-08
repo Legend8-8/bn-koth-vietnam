@@ -123,7 +123,7 @@ private _preparationStarted = true;
 {
     private _record = _records getOrDefault [_x, createHashMap];
     private _unit = if (_record isEqualType createHashMap) then {_record getOrDefault ["currentUnit", objNull]} else {objNull};
-    if (isNull _unit || {!alive _unit} || {!isNil {_backpackStates get _x}}) exitWith {
+    if (isNull _unit || {!alive _unit} || {[_unit] call bn_koth_fnc_respawn_isIncapacitated} || {!isNil {_backpackStates get _x}}) exitWith {
         _preparationStarted = false;
     };
     private _physicalLoadout = getUnitLoadout _unit;
@@ -158,6 +158,7 @@ private _allPrepared = true;
         && {(_backpackState getOrDefault ["phase", ""]) isEqualTo "READY"}
         && {!isNull _unit}
         && {alive _unit}
+        && {!([_unit] call bn_koth_fnc_respawn_isIncapacitated)}
         && {(backpack _unit) isEqualTo _parachuteClass}) exitWith {_allPrepared = false};
 } forEach _validPassengers;
 if (!_allPrepared) exitWith {
@@ -190,7 +191,7 @@ private _allBoarded = true;
 {
     private _record = _records getOrDefault [_x, createHashMap];
     private _unit = if (_record isEqualType createHashMap) then {_record getOrDefault ["currentUnit", objNull]} else {objNull};
-    if (isNull _unit || {!alive _unit} || {!((vehicle _unit) isEqualTo _aircraft)}) exitWith {_allBoarded = false};
+    if (isNull _unit || {!alive _unit} || {[_unit] call bn_koth_fnc_respawn_isIncapacitated} || {!((vehicle _unit) isEqualTo _aircraft)}) exitWith {_allBoarded = false};
     if (_forEachIndex isEqualTo 0 && {!((driver _aircraft) isEqualTo _unit)}) exitWith {_allBoarded = false};
 } forEach _validPassengers;
 if (!_allBoarded || {(crew _aircraft) findIf {!isPlayer _x} >= 0}) exitWith {

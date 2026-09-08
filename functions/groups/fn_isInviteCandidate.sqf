@@ -38,5 +38,6 @@ _candidateUid in _active
     && {!isNull _unit}
     && {isPlayer _unit}
     && {alive _unit}
+    && {!([_unit] call bn_koth_fnc_respawn_isIncapacitated)}
     && {(getPlayerUID _unit) isEqualTo _candidateUid}
     && {(_record getOrDefault ["currentUnit", objNull]) isEqualTo _unit}

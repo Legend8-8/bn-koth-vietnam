@@ -25,6 +25,9 @@ if (!local _unit) exitWith {
 if (!alive _unit) exitWith {
     [_unit, _result, "PLAYER_DEAD", false, []] call bn_koth_fnc_traversal_cancel
 };
+if ([_unit] call bn_koth_fnc_respawn_isIncapacitated) exitWith {
+    [_unit, _result, "PLAYER_UNCONSCIOUS", false, []] call bn_koth_fnc_traversal_cancel
+};
 
 private _landing = _result getOrDefault ["landingPositionASL", getPosASL _unit];
 _unit setVelocity [0, 0, 0];

@@ -19,6 +19,7 @@ params [
 ];
 
 if (!hasInterface) exitWith {false};
+if ([player] call bn_koth_fnc_respawn_isIncapacitated) exitWith {false};
 
 ["", "RESUBMIT"] call bn_koth_fnc_menu_setSpawnKit;
 

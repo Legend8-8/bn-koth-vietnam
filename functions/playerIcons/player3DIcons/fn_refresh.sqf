@@ -8,8 +8,13 @@
     Public: Yes
 */
 
-if (!hasInterface || {isNull player} || {!alive player}) exitWith {0};
-if !(missionNamespace getVariable ["BN_KOTH_player3DIconsEnabled", true]) exitWith {0};
+if (!hasInterface || {isNull player} || {!alive player} || {[player] call bn_koth_fnc_respawn_isIncapacitated}) exitWith {
+    uiNamespace setVariable ["BN_KOTH_player3DIconsDrawData", []];
+    uiNamespace setVariable ["BN_KOTH_casualtyHelp3DDrawData", []];
+    0
+};
+
+private _friendlyIconsEnabled = missionNamespace getVariable ["BN_KOTH_player3DIconsEnabled", true];
 
 private _playerAssignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
 if !(_playerAssignments isEqualType createHashMap) then {
@@ -21,7 +26,11 @@ private _mySide = _playerAssignments getOrDefault [_myUid, side group player];
 if !([_mySide] call bn_koth_fnc_teams_validateSide) then {
     _mySide = side group player;
 };
-if !([_mySide] call bn_koth_fnc_teams_validateSide) exitWith {0};
+if !([_mySide] call bn_koth_fnc_teams_validateSide) exitWith {
+    uiNamespace setVariable ["BN_KOTH_player3DIconsDrawData", []];
+    uiNamespace setVariable ["BN_KOTH_casualtyHelp3DDrawData", []];
+    0
+};
 
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 private _playerStates = missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap];
@@ -44,7 +53,7 @@ private _friendlyTexture = missionNamespace getVariable ["BN_KOTH_player3DIconsT
 private _height = missionNamespace getVariable ["BN_KOTH_player3DIconsHeight", 2.2];
 private _drawEntries = [];
 
-private _eligiblePlayers = allPlayers select {
+private _eligiblePlayers = if (_friendlyIconsEnabled) then {allPlayers select {
     private _unit = _x;
     private _uid = getPlayerUID _unit;
     private _assignedSide = _playerAssignments getOrDefault [_uid, sideUnknown];
@@ -58,13 +67,15 @@ private _eligiblePlayers = allPlayers select {
     !isNull _unit
     && {_uid isNotEqualTo ""}
     && {alive _unit}
+    && {!([_unit] call bn_koth_fnc_respawn_isIncapacitated)}
     && {[_assignedSide] call bn_koth_fnc_teams_validateSide}
     && {_assignedSide isEqualTo _mySide}
     && {_isActiveParticipant || {_isActiveState}}
     && {player distance2D _unit <= _maxDistance}
     && {(_unit isNotEqualTo player) || {_includeLocalPlayer}}
-};
+}} else {[]};
 
+if (_friendlyIconsEnabled) then {
 {
     private _unit = _x;
     private _unitPos = _unit modelToWorldVisual (_unit selectionPosition "neck");
@@ -89,7 +100,7 @@ private _eligiblePlayers = allPlayers select {
     private _markedUntil = _unit getVariable ["BN_KOTH_spottedUntil", -1];
     private _markedBySide = _unit getVariable ["BN_KOTH_spottedBySide", sideUnknown];
 
-    if (isNull _unit || {!alive _unit} || {_unit isEqualTo player}) then {
+    if (isNull _unit || {!alive _unit} || {[_unit] call bn_koth_fnc_respawn_isIncapacitated} || {_unit isEqualTo player}) then {
         continue;
     };
     if (time >= _markedUntil) then {
@@ -116,6 +127,39 @@ private _eligiblePlayers = allPlayers select {
         false
     ];
 } forEach allPlayers;
+};
+
+private _helpDrawEntries = [];
+private _helpState = missionNamespace getVariable ["BN_KOTH_casualtyHelpStateLocal", []];
+private _helpMaxDistance = missionNamespace getVariable ["BN_KOTH_casualtyHelp3DMaxDistance", 50];
+private _viewerActive = (_activeLookup getOrDefault [_myUid, false])
+    && {(_playerStates getOrDefault [_myUid, "LOBBY"]) isEqualTo "ACTIVE"}
+    && {(missionNamespace getVariable ["BN_KOTH_roundState", ""]) isEqualTo "ACTIVE"};
+if (_viewerActive && {_helpState isEqualType []}) then {
+    {
+        _x params ["_casualtyUid", "_casualty", "_casualtyName"];
+        private _casualtySide = _playerAssignments getOrDefault [_casualtyUid, sideUnknown];
+        private _casualtyActive = _activeLookup getOrDefault [_casualtyUid, false];
+        private _casualtyState = _playerStates getOrDefault [_casualtyUid, "LOBBY"];
+
+        if (
+            !isNull _casualty
+            && {alive _casualty}
+            && {_casualty isNotEqualTo player}
+            && {[_casualty] call bn_koth_fnc_respawn_isIncapacitated}
+            && {_casualtySide isEqualTo _mySide}
+            && {_casualtyActive}
+            && {_casualtyState isEqualTo "ACTIVE"}
+            && {player distance _casualty <= _helpMaxDistance}
+        ) then {
+            _helpDrawEntries pushBack [
+                _casualty modelToWorldVisual (_casualty selectionPosition "neck"),
+                format ["%1 - NEEDS HELP", _casualtyName]
+            ];
+        };
+    } forEach _helpState;
+};
 
 uiNamespace setVariable ["BN_KOTH_player3DIconsDrawData", _drawEntries];
-count _drawEntries
+uiNamespace setVariable ["BN_KOTH_casualtyHelp3DDrawData", _helpDrawEntries];
+(count _drawEntries) + (count _helpDrawEntries)

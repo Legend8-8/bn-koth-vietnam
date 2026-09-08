@@ -217,6 +217,17 @@ Contains:
 - publishing zone state;
 - detecting control changes.
 
+"functions/respawn/"
+
+S.O.G. Advanced Revive remains the sole owner of damage, incapacitation,
+bleedout, revive, drag/carry and revive-driven respawn mechanics. KOTH derives
+combat eligibility from the current representation through
+`bn_koth_fnc_respawn_isIncapacitated`; it does not remove a casualty from team,
+deployment, session, group or `currentUnit` state. The same folder owns the
+client-local fixed casualty camera/actions and the small server-only Call For
+Help map keyed by UID. Clients receive only a same-team rescue projection and
+fail closed when the referenced representation is no longer a valid casualty.
+
 "functions/scoring/"
 
 Contains:

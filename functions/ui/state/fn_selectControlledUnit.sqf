@@ -3,8 +3,9 @@
     Author: Legend
     Edited: Mongo
     Description: Performs local player-unit handoff to a server-selected representation,
-        then reports the observed local outcome back to the server so the transfer
-        contract can commit only on a confirmed handoff rather than inferred locality.
+        initializes the newly selected unit's S.O.G. Advanced Revive lifecycle, then
+        reports the observed local outcome back to the server so the transfer contract
+        can commit only on a confirmed handoff rather than inferred locality.
     Execution: Client
     Parameters:
         0: Target unit <OBJECT>
@@ -49,9 +50,10 @@ if (_enteringLobby) then {
     [true] call bn_koth_fnc_ui_updateLobbyBlackout;
 };
 
+[true] call bn_koth_fnc_respawn_updateDownedPresentation;
 selectPlayer _targetUnit;
 
-private _switched = player isEqualTo _targetUnit;
+private _switched = player isEqualTo _targetUnit && {local _targetUnit};
 diag_log format [
     "[BN_KOTH][INFO] ui_selectControlledUnit result switched=%1 current=%2",
     _switched,
@@ -59,6 +61,12 @@ diag_log format [
 ];
 
 if (_switched) then {
+    if !(player getVariable ["BN_KOTH_advancedReviveCoreInitializedLocal", false]) then {
+        [player] call VN_fnc_revive_coreinit;
+        player setVariable ["BN_KOTH_advancedReviveCoreInitializedLocal", true, false];
+    };
+
+    [] call bn_koth_fnc_respawn_updateDownedPresentation;
     [] call bn_koth_fnc_respawn_initPlayerLocal;
     [] call bn_koth_fnc_loadouts_initPlayerLocal;
     [] call bn_koth_fnc_escMenu_initPlayerLocal;

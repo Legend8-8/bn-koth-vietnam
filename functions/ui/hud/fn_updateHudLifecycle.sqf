@@ -17,6 +17,7 @@ if (!hasInterface) exitWith {false};
 
 _shouldShow = _shouldShow && {!(uiNamespace getVariable ["BN_KOTH_transitionVisible", false])};
 _shouldShow = _shouldShow && {!(uiNamespace getVariable ["BN_KOTH_resultsVisible", false])};
+_shouldShow = _shouldShow && {!([player] call bn_koth_fnc_respawn_isIncapacitated)};
 
 private _visible = uiNamespace getVariable ["BN_KOTH_hudVisible", false];
 private _layer = "BN_KOTH_HUD" call BIS_fnc_rscLayer;

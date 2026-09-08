@@ -22,9 +22,11 @@ private _deleteAllMarkers = {
     {
         _markers deleteAt _x;
     } forEach (keys _markers);
+    uiNamespace setVariable ["BN_KOTH_playerMapMarkersMicDrawEntries", []];
+    uiNamespace setVariable ["BN_KOTH_casualtyHelpMapDrawEntries", []];
 };
 
-if (isNull player || {!alive player} || {!(missionNamespace getVariable ["BN_KOTH_playerMapMarkersEnabled", true])}) exitWith {
+if (isNull player || {!alive player} || {[player] call bn_koth_fnc_respawn_isIncapacitated}) exitWith {
     call _deleteAllMarkers;
     missionNamespace setVariable ["BN_KOTH_playerMapMarkersMarkers", _markers];
     0
@@ -78,8 +80,9 @@ private _alpha = missionNamespace getVariable ["BN_KOTH_playerMapMarkersAlpha", 
 private _showPassengerCount = missionNamespace getVariable ["BN_KOTH_playerMapMarkersShowPassengerCount", true];
 private _showDriverName = missionNamespace getVariable ["BN_KOTH_playerMapMarkersShowDriverName", true];
 private _markerShadow = missionNamespace getVariable ["BN_KOTH_playerMapMarkersShadow", false];
+private _markersEnabled = missionNamespace getVariable ["BN_KOTH_playerMapMarkersEnabled", true];
 
-private _eligiblePlayers = allPlayers select {
+private _eligiblePlayers = if (_markersEnabled) then {allPlayers select {
     private _unit = _x;
     private _uid = getPlayerUID _unit;
     private _assignedSide = _playerAssignments getOrDefault [_uid, sideUnknown];
@@ -92,10 +95,11 @@ private _eligiblePlayers = allPlayers select {
     !isNull _unit
     && {_uid isNotEqualTo ""}
     && {alive _unit}
+    && {!([_unit] call bn_koth_fnc_respawn_isIncapacitated)}
     && {[_assignedSide] call bn_koth_fnc_teams_validateSide}
     && {_isActiveParticipant || {_isActiveState}}
     && {_assignedSide isEqualTo _mySide}
-};
+}} else {[]};
 
 private _markerEntries = [];
 private _micDrawEntries = [];
@@ -149,25 +153,53 @@ private _vehicleGroups = createHashMap;
     if (_isTalking) then {_micDrawEntries pushBack [getPosVisual _vehicle];};
 } forEach (keys _vehicleGroups);
 
-{
-    private _unit = _x;
-    if (isNull _unit || {!alive _unit} || {_unit isEqualTo player}) then {
-        continue;
-    };
+if (_markersEnabled) then {
+    {
+        private _unit = _x;
+        if (isNull _unit || {!alive _unit} || {[_unit] call bn_koth_fnc_respawn_isIncapacitated} || {_unit isEqualTo player}) then {
+            continue;
+        };
 
-    private _markedUntil = _unit getVariable ["BN_KOTH_spottedUntil", -1];
-    private _markedBySide = _unit getVariable ["BN_KOTH_spottedBySide", sideUnknown];
-    if (time >= _markedUntil) then {
-        continue;
-    };
-    if (_markedBySide isNotEqualTo _mySide) then {
-        continue;
-    };
+        private _markedUntil = _unit getVariable ["BN_KOTH_spottedUntil", -1];
+        private _markedBySide = _unit getVariable ["BN_KOTH_spottedBySide", sideUnknown];
+        if (time >= _markedUntil) then {
+            continue;
+        };
+        if (_markedBySide isNotEqualTo _mySide) then {
+            continue;
+        };
 
-    private _markerKey = format ["enemy_%1", netId _unit];
-    private _enemyColor = if (side group _unit isEqualTo west) then {"ColorBlue"} else {"ColorRed"};
-    _markerEntries pushBack [_markerKey, getPosVisual _unit, getDir _unit, "", _markerType, _enemyColor];
-} forEach allPlayers;
+        private _markerKey = format ["enemy_%1", netId _unit];
+        private _enemyColor = if (side group _unit isEqualTo west) then {"ColorBlue"} else {"ColorRed"};
+        _markerEntries pushBack [_markerKey, getPosVisual _unit, getDir _unit, "", _markerType, _enemyColor];
+    } forEach allPlayers;
+};
+
+private _helpDrawEntries = [];
+private _helpState = missionNamespace getVariable ["BN_KOTH_casualtyHelpStateLocal", []];
+private _viewerActive = (_activeLookup getOrDefault [_myUid, false])
+    && {(_playerStates getOrDefault [_myUid, "LOBBY"]) isEqualTo "ACTIVE"}
+    && {(missionNamespace getVariable ["BN_KOTH_roundState", ""]) isEqualTo "ACTIVE"};
+if (_viewerActive && {_helpState isEqualType []}) then {
+    {
+        _x params ["_casualtyUid", "_casualty", "_casualtyName"];
+        private _casualtySide = _playerAssignments getOrDefault [_casualtyUid, sideUnknown];
+        private _casualtyActive = _activeLookup getOrDefault [_casualtyUid, false];
+        private _casualtyState = _playerStates getOrDefault [_casualtyUid, "LOBBY"];
+
+        if (
+            !isNull _casualty
+            && {alive _casualty}
+            && {_casualty isNotEqualTo player}
+            && {[_casualty] call bn_koth_fnc_respawn_isIncapacitated}
+            && {_casualtySide isEqualTo _mySide}
+            && {_casualtyActive}
+            && {_casualtyState isEqualTo "ACTIVE"}
+        ) then {
+            _helpDrawEntries pushBack [getPosVisual _casualty, format ["%1 - NEEDS HELP", _casualtyName]];
+        };
+    } forEach _helpState;
+};
 
 private _activeKeys = [];
 {
@@ -200,4 +232,5 @@ private _activeKeys = [];
 
 missionNamespace setVariable ["BN_KOTH_playerMapMarkersMarkers", _markers];
 uiNamespace setVariable ["BN_KOTH_playerMapMarkersMicDrawEntries", _micDrawEntries];
+uiNamespace setVariable ["BN_KOTH_casualtyHelpMapDrawEntries", _helpDrawEntries];
 count _markerEntries

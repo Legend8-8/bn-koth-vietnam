@@ -207,6 +207,40 @@ Respawn-related changes must verify:
 - safe-zone status survives respawn representation handoff and is cleared outside active safe-zone states;
 - reconnecting does not produce invalid spawn state.
 
+Advanced Revive integration must additionally verify with two opposing-team
+clients and at least two same-team clients:
+
+- each later `selectPlayer` representation receives one S.O.G. core
+  initialization after it becomes the local player;
+- real S.O.G. damage incapacitates without changing the KOTH team, deployed,
+  ACTIVE-participant, group, player-record or `currentUnit` identity;
+- a casualty immediately stops contributing to raw/weighted/Priority AO
+  population, control and scoring eligibility, then contributes again after a
+  successful revive;
+- the attached third-person camera stays fixed on the casualty during body
+  rotation, dragging and carrying, and mouse/zoom/view inputs cannot turn,
+  widen or switch it;
+- Give Up produces one normal S.O.G./engine death-respawn cycle;
+- no rescue marker exists before Call For Help, repeated requests remain
+  one-shot, and only same-team clients receive the marker;
+- the casualty marker appears on the full M-map and normal NAV/GPS minimap
+  controls, follows a moved casualty, and its 3D counterpart disappears beyond the
+  configured 50-metre limit;
+- revive, death, respawn, disconnect, team/representation change, lobby return,
+  ENDING and RESETTING all clear camera, actions and rescue presentation;
+- a downed client cannot open KOTH combat-intel UI, mutate/read group state,
+  spot targets, traverse, teleport or enter an air-insertion commit.
+
+Before runtime testing, run the focused server static contract:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\respawn\test_downedIntegration.sqf"
+```
+
+Expected result: `[]`. This verifies the central predicate and production
+ownership/security hooks; it does not establish camera, S.O.G. lifecycle or
+multiplayer RemoteExec behavior.
+
 Starter-loadout configuration changes must additionally verify on a dedicated
 server that both WEST and EAST definitions initialize, receive the configured
 side-correct assigned equipment, derive each weapon's generated canonical

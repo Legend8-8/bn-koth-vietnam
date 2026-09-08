@@ -80,7 +80,7 @@ private _checkInterruption = {
     if (isNull _unit) exitWith {"PLAYER_DELETED"};
     if (!local _unit) exitWith {"PLAYER_NOT_LOCAL"};
     if (!alive _unit) exitWith {"PLAYER_DEAD"};
-    if ((lifeState _unit) isEqualTo "INCAPACITATED") exitWith {"PLAYER_UNCONSCIOUS"};
+    if ([_unit] call bn_koth_fnc_respawn_isIncapacitated) exitWith {"PLAYER_UNCONSCIOUS"};
     if !(isNull (objectParent _unit)) exitWith {"PLAYER_IN_VEHICLE"};
     if !(isNull (attachedTo _unit)) exitWith {"PLAYER_ATTACHED"};
     if !((_unit getVariable ["BN_KOTH_traversalState", "IDLE"]) isEqualTo "TRAVERSING") exitWith {"TRAVERSAL_STATE_LOST"};

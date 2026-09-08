@@ -14,6 +14,10 @@
 
 if (!isServer) exitWith {};
 
+if !((missionNamespace getVariable ["BN_KOTH_casualtyHelpRequests", objNull]) isEqualType createHashMap) then {
+    missionNamespace setVariable ["BN_KOTH_casualtyHelpRequests", createHashMap];
+};
+
 if (missionNamespace getVariable ["BN_KOTH_respawnHandlersInitialized", false]) then {
     private _existingKilledId = missionNamespace getVariable ["BN_KOTH_respawnEntityKilledEhId", -1];
     private _existingRespawnedId = missionNamespace getVariable ["BN_KOTH_respawnEntityRespawnedEhId", -1];

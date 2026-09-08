@@ -90,6 +90,7 @@ if (_ackStatus isEqualTo "CONFIRMED" && {_ownerConfirmed}) exitWith {
     _record set ["state", _targetState];
     _records set [_uid, _record];
     missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+    [] call bn_koth_fnc_respawn_reconcileCasualtyHelp;
 
     [_uid] call _clearPending;
 
