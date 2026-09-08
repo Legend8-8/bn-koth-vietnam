@@ -210,8 +210,8 @@ Respawn-related changes must verify:
 Advanced Revive integration must additionally verify with two opposing-team
 clients and at least two same-team clients:
 
-- each later `selectPlayer` representation receives one S.O.G. core
-  initialization after it becomes the local player;
+- later `selectPlayer` representation handoff does not manually enter the
+  S.O.G. incapacitated casualty core loop;
 - real S.O.G. damage incapacitates without changing the KOTH team, deployed,
   ACTIVE-participant, group, player-record or `currentUnit` identity;
 - a casualty immediately stops contributing to raw/weighted/Priority AO

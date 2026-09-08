@@ -19,7 +19,18 @@ params [
 ];
 
 if (!hasInterface) exitWith {false};
-if ([player] call bn_koth_fnc_respawn_isIncapacitated) exitWith {false};
+if ([player] call bn_koth_fnc_respawn_isIncapacitated) exitWith {
+    private _uid = getPlayerUID player;
+    private _playerStates = missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap];
+    diag_log format [
+        "[BN_KOTH][INFO] menu_open denied reason=INCAPACITATED lifeState=%1 vnIncap=%2 playerState=%3 roundState=%4",
+        lifeState player,
+        player getVariable ["vn_revive_incapacitated", false],
+        _playerStates getOrDefault [_uid, ""],
+        missionNamespace getVariable ["BN_KOTH_roundState", ""]
+    ];
+    false
+};
 
 ["", "RESUBMIT"] call bn_koth_fnc_menu_setSpawnKit;
 
