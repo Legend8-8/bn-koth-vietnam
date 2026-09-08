@@ -226,6 +226,36 @@ class CfgRemoteExec
             allowedTargets = 1;
             jip = 0;
         };
+
+        class bn_koth_fnc_airInsertion_request
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_airInsertion_receiveState
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_airInsertion_applyPassengerMove
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_airInsertion_applyBackpack
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_airInsertion_backpackRequest
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
     };
 
     class Commands

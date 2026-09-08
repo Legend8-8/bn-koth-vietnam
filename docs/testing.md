@@ -1083,3 +1083,108 @@ Saved-kit spawn preference regression checks (isolated test mission):
   Confirm preference changes never equip or change intended state, only one
   card shows `DEFAULT SPAWN LOADOUT ✓` with its `DEFAULT ✓` button disabled,
   and no preference response delays deployment.
+
+28. Tactical Air Insertion
+
+Run the focused server checks after mission initialization:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\airInsertion\test_airInsertion.sqf"
+```
+
+Expected result: `[]`. The check covers production config defaults and aircraft
+resolution, configured distance/heading/terrain-relative AGL mathematics,
+request ownership and OPEN-state boundaries, capacity enforcement, asset-before-
+cash ordering, boarding-before-cash ordering, initiator-driver assignment, all
+four real human seats, absence of AI flight and vehicle locks, server-authorized
+seat movement and deterministic ordering, pre-boarding parachute preparation,
+physical slot-5 capture and restoration through the player's current full
+loadout, verified restore acknowledgement, native-Eject/freefall boundaries,
+mapboard/countdown/role presentation, bounded empty-aircraft abandonment,
+intended-loadout isolation, rental-state isolation, and session/player-index
+cleanup. Static source checks
+do not establish human flight controls, engine Eject behaviour, manual parachute
+deployment, network timing, physical inventory preservation or dedicated
+locality.
+
+Dedicated-server validation requires at least four human clients and both
+playable sides:
+
+1. Buy a solo insertion from the correct active team mapboard and verify only the initiator is manifested.
+2. Start a group insertion and verify every eligible same-side safe-zone player receives an opt-in invitation.
+3. Accept from multiple players and verify the authoritative seat count updates for all involved clients.
+4. Ignore an invitation and verify the player is not moved or charged.
+5. Leave as a passenger before departure and verify removal from the manifest.
+6. Cancel as initiator before departure and verify the whole OPEN session closes.
+7. Verify cancellation deducts no cash.
+8. Attempt with insufficient cash and verify server rejection before asset creation.
+9. Commit successfully and verify exactly one configured $500 charge to the initiator.
+10. Verify passengers pay nothing.
+11. Spend the initiator's remaining balance concurrently and verify a losing insertion commit returns boarded players, deletes the asset and charges nothing.
+12. Measure the aircraft's AO-relative spawn distance and verify it remains within 1500–2000 metres.
+13. Measure ASL against terrain height and verify approximately 500 metres AGL.
+14. Verify the initial heading targets the active AO.
+15. Verify the initiator occupies the driver seat and has normal flight controls immediately after commit.
+16. Fill pilot, copilot and both cargo seats with four humans and verify the displayed manifest never exceeds actual capacity.
+17. Attempt one additional JOIN and verify server-side full-session rejection.
+18. Verify no AI crew exists before or after boarding and no scripted waypoint or flight-control owner appears.
+19. Verify the copilot position is usable and normal seat changes remain available to manifested occupants.
+20. Before boarding, verify each manifested player's current backpack slot is captured and physically replaced with `B_Parachute`.
+21. Verify preparation changes no weapon, uniform, vest, headgear, goggles or assigned item.
+22. Force one preparation acknowledgement to fail and verify all changed backpacks are restored, boarded players are returned, the asset is removed and no cash is charged.
+23. Use native Eject from the driver seat and verify normal freefall begins without an already-deployed parachute.
+24. Delay deployment deliberately, then deploy manually and complete the descent.
+25. Verify the original backpack classname returns only after leaving/finishing the parachute at ground level, followed by owner acknowledgement and server physical verification.
+26. Verify every original backpack cargo entry and quantity returns exactly.
+27. Verify intended and saved loadout state never contains `B_Parachute` and all non-backpack equipment remains unchanged.
+28. Repeat native Eject, delayed manual deployment and restoration from copilot and both cargo positions.
+29. Have the pilot and passengers eject at different points and verify each temporary backpack state is independent.
+30. After the pilot ejects, verify a remaining manifested occupant can move into the driver seat and continue flying.
+31. Land the Caesar, use ordinary Get Out while the aircraft is grounded, and verify the original backpack is restored without forcing parachute deployment.
+32. Die separately during freefall and under the deployed chute; verify temporary state clears without restoring onto the dead representation or corrupting respawn loadout ownership.
+33. Disconnect before landing and verify temporary state clears without persisting `B_Parachute`.
+34. Attempt entry by a non-manifested player and verify server rejection without locking the aircraft for manifested occupants.
+35. Disconnect a passenger during OPEN and verify manifest removal.
+36. Disconnect the initiator during OPEN and verify session cancellation without charge.
+37. Disconnect an occupant while AIRBORNE and verify membership cleanup without destroying a still-occupied aircraft.
+38. Destroy the aircraft or end the round and verify session and aircraft state terminate safely without AI references.
+39. Exercise JIP/reconnect during OPEN and AIRBORNE; no stale invitation or membership may be reconstructed.
+40. Verify the empty Caesar continues naturally for the configured 20-second abandonment grace after the last occupant exits, then deletes; verify the hard timeout safely ejects remaining occupants before deletion and leaves no pilot-group or waypoint state.
+41. Complete RESETTING/WAITING and verify the server session, player-index and temporary-backpack maps are empty.
+42. Verify the Caesar is absent from command, free-managed, rental, ownership and persistent state.
+
+Review server and every client RPT for RemoteExec, locality, missing-class,
+undefined-variable and repeated-script errors. Hosted testing is useful for
+iteration but does not establish this feature's multiplayer acceptance.
+
+The corrected SOLO freefall and backpack-lifecycle regression must also be
+repeated in the runtime mission:
+
+1. Equip a normal backpack with a recognizable mix of items and magazines.
+2. Start a SOLO insertion.
+3. Confirm the original backpack is temporarily replaced with `B_Parachute`.
+4. Confirm all other combat equipment remains untouched.
+5. Spawn into the Caesar pilot seat and fly normally.
+6. Use native Eject.
+7. Confirm freefall rather than an immediate deployed chute.
+8. Delay deployment deliberately.
+9. Deploy the parachute manually and complete the descent.
+10. Land and finish/leave the parachute state.
+11. Confirm the exact original backpack classname returns.
+12. Confirm every original backpack cargo entry and quantity returns.
+13. Confirm weapons, vest, uniform and assigned items remain unchanged.
+14. Confirm intended/saved loadout state never contains `B_Parachute`.
+15. Repeat from the copilot position.
+16. Repeat from cargo seat 0.
+17. Repeat from cargo seat 1.
+18. Die during freefall and verify normal respawn ownership with no temporary state leak.
+19. Die under the deployed chute and verify normal respawn ownership with no temporary state leak.
+20. Disconnect before landing and verify no stale server state or persistent parachute backpack.
+21. End the round while airborne and verify safe restoration/clear through the round lifecycle.
+22. Review server and every client RPT for locality errors, restore mismatch or acknowledgement-timeout warnings, duplicate restoration and state leaks. A successful insertion/restoration should not emit serialized backpack diagnostics.
+
+Polish validation should additionally confirm the short preparation blackout
+hides the safe-zone backpack/boarding swap, the view returns with the player
+already seated in a flying aircraft, the countdown changes to `DEPARTING`, each
+occupant receives only one concise role/egress notification, and no stale AIR
+INSERTION HUD or action remains after any lifecycle exit.

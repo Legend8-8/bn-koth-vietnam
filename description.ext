@@ -8,6 +8,7 @@
 #include "config\ranks.hpp"
 #include "config\perks.hpp"
 #include "config\vehicles.hpp"
+#include "config\airInsertion.hpp"
 #include "config\teams.hpp"
 #include "config\playerIcons\playerMapMarkers.hpp"
 #include "config\playerIcons\player3DIcons.hpp"

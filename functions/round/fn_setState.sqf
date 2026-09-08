@@ -92,6 +92,12 @@ switch (_newState) do {
     };
 
     case "ENDING": {
+        {
+            [_x, "ROUND_ENDING", "RETURN"] call bn_koth_fnc_airInsertion_cleanupSession;
+        } forEach +(keys (missionNamespace getVariable ["BN_KOTH_airInsertionSessions", createHashMap]));
+        {
+            [_x, "RESTORE", "ROUND_ENDING"] call bn_koth_fnc_airInsertion_cleanupBackpack;
+        } forEach +(keys (missionNamespace getVariable ["BN_KOTH_airInsertionBackpacks", createHashMap]));
         [] call bn_koth_fnc_progression_transport_cleanup;
         [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
 
@@ -137,6 +143,12 @@ switch (_newState) do {
     };
 
     case "RESETTING": {
+        {
+            [_x, "ROUND_RESETTING", "RETURN"] call bn_koth_fnc_airInsertion_cleanupSession;
+        } forEach +(keys (missionNamespace getVariable ["BN_KOTH_airInsertionSessions", createHashMap]));
+        {
+            [_x, "CLEAR", "ROUND_RESETTING"] call bn_koth_fnc_airInsertion_cleanupBackpack;
+        } forEach +(keys (missionNamespace getVariable ["BN_KOTH_airInsertionBackpacks", createHashMap]));
         [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
 
         [] spawn {

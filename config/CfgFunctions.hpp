@@ -324,6 +324,24 @@ class CfgFunctions
             class vehicles_mobileRespawn_executeTeleport {file = "functions\vehicles\mobile_respawn\fn_executeTeleport.sqf";};
         };
 
+        class airInsertion
+        {
+            class airInsertion_initServer {file = "functions\airInsertion\fn_initServer.sqf";};
+            class airInsertion_request {file = "functions\airInsertion\fn_request.sqf";};
+            class airInsertion_evaluatePlayer {file = "functions\airInsertion\fn_evaluatePlayer.sqf";};
+            class airInsertion_getTransform {file = "functions\airInsertion\fn_getTransform.sqf";};
+            class airInsertion_publishSession {file = "functions\airInsertion\fn_publishSession.sqf";};
+            class airInsertion_commitSession {file = "functions\airInsertion\fn_commitSession.sqf";};
+            class airInsertion_applyBackpack {file = "functions\airInsertion\fn_applyBackpack.sqf";};
+            class airInsertion_backpackRequest {file = "functions\airInsertion\fn_backpackRequest.sqf";};
+            class airInsertion_cleanupBackpack {file = "functions\airInsertion\fn_cleanupBackpack.sqf";};
+            class airInsertion_cleanupSession {file = "functions\airInsertion\fn_cleanupSession.sqf";};
+            class airInsertion_cleanupPlayer {file = "functions\airInsertion\fn_cleanupPlayer.sqf";};
+            class airInsertion_handleAircraftGetOut {file = "functions\airInsertion\fn_handleAircraftGetOut.sqf";};
+            class airInsertion_receiveState {file = "functions\airInsertion\fn_receiveState.sqf";};
+            class airInsertion_applyPassengerMove {file = "functions\airInsertion\fn_applyPassengerMove.sqf";};
+        };
+
         class ui
         {
             class ui_initPlayerLocal {file = "functions\ui\fn_initPlayerLocal.sqf";};

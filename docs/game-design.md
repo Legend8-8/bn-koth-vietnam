@@ -235,6 +235,21 @@ remain future work.
 
 Helicopter transport should be an important part of the Vietnam setting.
 
+The active team mapboard also offers a one-shot AIR INSERTION service during
+ACTIVE rounds. The initiator pays the configured charter cost once; invited
+same-side players in that side's safe zone may opt in without charge. The
+initiator pilots the temporary Caesar BTT and the manifest may fill all four
+human positions: pilot, copilot and two cargo seats. There is no AI pilot or
+scripted flight path. Manifested players use the aircraft's normal controls and
+native Eject action. Before boarding, each player temporarily wears the standard
+parachute backpack while their exact current physical backpack and its contents
+are retained for restoration. Eject produces normal freefall, and the player
+chooses when to deploy the parachute. The original backpack returns only after
+the completed descent and landing. The aircraft grants no rental or ownership
+state and is removed after a short abandonment grace once its last manifested
+occupant exits. Temporary backpack handling never changes intended, saved,
+owned or persistent loadout state.
+
 9. Round States
 
 A round can be in one of the following states:

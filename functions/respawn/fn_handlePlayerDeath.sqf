@@ -62,6 +62,7 @@ if (_uid isEqualTo "") exitWith {
     false
 };
 
+[_uid, "PLAYER_DIED"] call bn_koth_fnc_airInsertion_cleanupPlayer;
 [_uid] call bn_koth_fnc_progression_transport_cleanup;
 
 private _record = _records getOrDefault [_uid, createHashMap];

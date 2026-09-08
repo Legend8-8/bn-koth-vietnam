@@ -272,6 +272,30 @@ Contains:
 - abandonment and cleanup;
 - future vehicle purchases.
 
+"functions/airInsertion/"
+
+Owns the one-shot tactical air-insertion service used from the active team
+mapboard. `BN_KOTH_airInsertionSessions`, its UID index and the bounded
+temporary-backpack state map are server-only.
+Clients submit only start/join/leave/cancel intent and receive targeted
+presentation plus server-authorized locality instructions. The server owns the
+session, frozen manifest, payment and temporary aircraft creation, while the
+initiator flies the aircraft through normal driver locality. Before boarding,
+the server captures each player's current physical Unit Loadout backpack slot
+and authorizes the owning client to substitute `B_Parachute`. Boarding and
+payment proceed only after the server verifies that preparation. Native Eject
+then provides normal freefall and player-controlled parachute deployment. After
+the player finishes the parachute descent and reaches the ground, the owning
+client replaces slot 5 in its current full physical loadout, verifies the exact
+captured slot locally, and acknowledges the result. The server independently
+verifies that physical slot before clearing temporary state; failures retain the
+capture for bounded retry. The service consumes the existing team registry,
+safe-zone, AO and atomic cash owners; neither the aircraft nor temporary
+parachute backpack enters free, command, rental, ownership, intended-loadout or
+persistence state. When the last manifested occupant exits, the empty aircraft
+enters a bounded abandoned grace period before deletion so normal egress does
+not produce an immediate visible pop.
+
 "functions/progression/"
 
 Contains player progression systems:

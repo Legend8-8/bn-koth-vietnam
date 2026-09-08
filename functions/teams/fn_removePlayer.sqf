@@ -16,6 +16,7 @@ params ["_uid"];
 if (!isServer) exitWith {};
 if (_uid isEqualTo "") exitWith {};
 
+[_uid, "PLAYER_DISCONNECTED"] call bn_koth_fnc_airInsertion_cleanupPlayer;
 [_uid] call bn_koth_fnc_progression_transport_cleanup;
 
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
