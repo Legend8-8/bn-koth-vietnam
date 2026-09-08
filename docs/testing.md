@@ -702,6 +702,26 @@ The perk/medikit entitlement, managed-loadout sanitation and static derived-trai
 
 Do not infer a pass for cases 1-5 from the KOTH trait mirror alone. The current Eden module owns global `revive_item_remove`, `revive_delay` and `medic_boost` behavior, and the public S.O.G. function documentation does not define a supported per-item override seam.
 
+### Experimental consumption seam capture
+
+The current experimental build deliberately stops at diagnostics: no consumption path exists, so every inventory remains unchanged. A client-local, two-hour probe records transitions of `bis_fnc_holdAction_running`, the raw `bis_fnc_holdAction_params`, `actionParams` metadata and cursor-object actions. It logs only hold start/end transitions and does not send network traffic or alter the action, casualty, or inventory. Set `experimentalHoldActionDiagnostics = 0` in `config/respawn.hpp` to disable it.
+
+For the first capture, down one client through genuine S.O.G. damage and have another client complete and interrupt native Resuscitate. Also exercise Withstand, Give Up, Call For Help, drag and carry once where available. Preserve the reviver client RPT lines beginning `REVIVE HOLD DIAGNOSTIC`. A usable follow-up seam must identify the local caller, casualty target and Resuscitate action distinctly from every other hold action before experimental consumption can be enabled.
+
+Once that seam and a server transaction exist, run these acceptance cases:
+
+- A: WEST non-Medic, two WEST FAKs, successful revive; expect one FAK.
+- B: EAST non-Medic, two EAST FAKs, successful revive; expect one FAK.
+- C: Interrupted normal revive; expect inventory unchanged.
+- D: Medic perk, medikit and FAK, successful revive; retain both items.
+- E: Medic perk and medikit only, successful revive if S.O.G. permits; retain medikit.
+- F: Medic perk, no medikit and an appropriate FAK, successful revive; consume the FAK as normal.
+- G: Two revivers attempt one casualty; expect at most one charge.
+- H: Casualty dies during the attempt; expect no charge.
+- I: Reviver dies or becomes incapacitated during the attempt; expect no charge.
+
+Until the transaction is implemented, the expected item result in every case is unchanged. Native global item removal remains disabled.
+
 ## Cloak spotting matrix
 
 - With `cloak` absent from the authoritative requester's `activePerks`, a valid infantry or vehicle-crew spot writes the normal mark and target warning deadlines.

@@ -234,6 +234,7 @@ class CfgFunctions
             class respawn_handlePlayerRespawn {file = "functions\respawn\fn_handlePlayerRespawn.sqf";};
             class respawn_isIncapacitated {file = "functions\respawn\fn_isIncapacitated.sqf";};
             class respawn_updateDownedPresentation {file = "functions\respawn\fn_updateDownedPresentation.sqf";};
+            class respawn_startReviveHoldActionDiagnosticsLocal {file = "functions\respawn\fn_startReviveHoldActionDiagnosticsLocal.sqf";};
             class respawn_requestCasualtyHelp {file = "functions\respawn\fn_requestCasualtyHelp.sqf";};
             class respawn_publishCasualtyHelpState {file = "functions\respawn\fn_publishCasualtyHelpState.sqf";};
             class respawn_receiveCasualtyHelpState {file = "functions\respawn\fn_receiveCasualtyHelpState.sqf";};
