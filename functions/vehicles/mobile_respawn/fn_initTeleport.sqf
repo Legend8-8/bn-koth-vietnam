@@ -1,7 +1,8 @@
 /*
     File: fn_initTeleport.sqf
     Author: tylervip
-    Description: Adds mapboard actions that request teleport into command vehicle.
+    Edited: Legend
+    Description: Adds active team mapboard actions for the deployed menu, command teleport, and air insertion.
     Execution: Client
     Parameters:
         None
@@ -112,6 +113,27 @@ private _resolveBoardTarget = {
                 ];
 
                 _board setVariable [_menuActionKey, _menuActionId, false];
+            };
+
+            private _insertionCfg = missionConfigFile >> "CfgBnKothAirInsertion";
+            if (isClass _insertionCfg && {(getNumber (_insertionCfg >> "enabled")) > 0}) then {
+                private _insertionCost = (getNumber (_insertionCfg >> "cost")) max 1;
+                {
+                    _x params ["_mode", "_label"];
+                    private _key = format ["BN_KOTH_airInsertionBoardAction_%1_%2", _sideToken, _mode];
+                    if (_board getVariable [_key, -1] < 0) then {
+                        private _actionId = _board addAction [
+                            format ["AIR INSERTION — %1 — $%2", _label, _insertionCost],
+                            {
+                                params ["_target", "_caller", "_actionId", "_args"];
+                                [_args select 0, ""] remoteExecCall ["bn_koth_fnc_airInsertion_request", 2];
+                            },
+                            [_mode], 1.5, false, true, "",
+                            format ["alive _target && {_this distance _target < 5} && {(side _this) isEqualTo %1}", _side]
+                        ];
+                        _board setVariable [_key, _actionId, false];
+                    };
+                } forEach [["START_SOLO", "SOLO"], ["START_GROUP", "GROUP"]];
             };
         } forEach _defs;
 

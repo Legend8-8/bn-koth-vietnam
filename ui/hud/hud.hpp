@@ -9,6 +9,9 @@
 #define BN_KOTH_SAFE_ZONE_BANNER_W (safeZoneW * 0.50)
 #define BN_KOTH_SAFE_ZONE_BANNER_X (safeZoneX + safeZoneW * 0.25)
 #define BN_KOTH_SAFE_ZONE_BANNER_Y (safeZoneY + safeZoneH * 0.04)
+#define BN_KOTH_AIR_INSERTION_BANNER_W (safeZoneW * 0.40)
+#define BN_KOTH_AIR_INSERTION_BANNER_X (safeZoneX + safeZoneW * 0.30)
+#define BN_KOTH_AIR_INSERTION_BANNER_Y (safeZoneY + safeZoneH * 0.115)
 
 class BN_KOTH_RscHud
 {
@@ -24,6 +27,21 @@ class BN_KOTH_RscHud
 
     class controls
     {
+        class AirInsertion: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_AIR_INSERTION;
+            text = "";
+            style = 18;
+            font = "PuristaSemiBold";
+            x = BN_KOTH_AIR_INSERTION_BANNER_X;
+            y = BN_KOTH_AIR_INSERTION_BANNER_Y;
+            w = BN_KOTH_AIR_INSERTION_BANNER_W;
+            h = safeZoneH * 0.070;
+            sizeEx = "0.017 * safeZoneH";
+            colorText[] = {0.88, 0.86, 0.80, 1};
+            colorBackground[] = {0.03, 0.03, 0.03, 0.82};
+        };
+
         class HudBackground: BN_KOTH_RscText
         {
             idc = BN_KOTH_IDC_HUD_BACKGROUND;

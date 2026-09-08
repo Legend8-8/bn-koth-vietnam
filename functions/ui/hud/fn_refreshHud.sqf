@@ -202,6 +202,30 @@ private _safeZoneText = if (_safeZoneVisible) then {
     ""
 };
 
+private _insertionState = missionNamespace getVariable ["BN_KOTH_airInsertionLocalState", createHashMap];
+private _insertionVisible = _insertionState isEqualType createHashMap && {(count _insertionState) > 0};
+private _insertionText = "";
+if (_insertionVisible) then {
+    private _insertionPhase = _insertionState getOrDefault ["state", ""];
+    private _insertionRole = _insertionState getOrDefault ["role", ""];
+    private _passengerCount = _insertionState getOrDefault ["passengerCount", 0];
+    private _capacity = _insertionState getOrDefault ["capacity", 0];
+    _insertionText = switch (_insertionPhase) do {
+        case "OPEN": {
+            private _remaining = ceil (((_insertionState getOrDefault ["departureAt", serverTime]) - serverTime) max 0);
+            private _action = switch (_insertionRole) do {
+                case "INVITED": {if (_passengerCount >= _capacity) then {"FULL"} else {"JOIN"}};
+                case "INITIATOR": {"CANCEL"};
+                default {"LEAVE"};
+            };
+            format ["AIR INSERTION\nDeparting in %1\n%2 / %3 aboard — %4", _remaining, _passengerCount, _capacity, _action]
+        };
+        case "COMMITTING": {format ["AIR INSERTION\nDEPARTING\n%1 / %2 aboard", _passengerCount, _capacity]};
+        default {""};
+    };
+    _insertionVisible = !(_insertionText isEqualTo "");
+};
+
 private _staticKey = [
     _westScore,
     _eastScore,
@@ -223,7 +247,9 @@ private _staticKey = [
     _aoCounts,
     _priorityCounts,
     _aoVisible,
-    _priorityVisible
+    _priorityVisible,
+    _insertionText,
+    _insertionVisible
 ];
 
 if !((uiNamespace getVariable ["BN_KOTH_hudStaticKey", []]) isEqualTo _staticKey) then {
@@ -248,6 +274,10 @@ if !((uiNamespace getVariable ["BN_KOTH_hudStaticKey", []]) isEqualTo _staticKey
     private _enemySafeZoneCtrl = _display displayCtrl BN_KOTH_IDC_HUD_ENEMY_SAFE_ZONE;
     _enemySafeZoneCtrl ctrlSetText _enemySafeZoneText;
     _enemySafeZoneCtrl ctrlShow _enemySafeZoneVisible;
+
+    private _insertionCtrl = _display displayCtrl BN_KOTH_IDC_HUD_AIR_INSERTION;
+    _insertionCtrl ctrlSetText _insertionText;
+    _insertionCtrl ctrlShow _insertionVisible;
 
     private _rankCtrl = _display displayCtrl BN_KOTH_IDC_HUD_RANK_ICON;
     _rankCtrl ctrlSetText _rankIcon;

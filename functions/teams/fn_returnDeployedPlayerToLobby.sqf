@@ -3,9 +3,9 @@
     Author: Legend
     Description: Returns one currently-deployed (ACTIVE/DEPLOYING) player to the
         authoritative neutral lobby representation without disconnecting them.
-        Ends an orphaned owned vehicle rental life through the existing rental
-        owner rather than duplicating cleanup logic. Does not touch persistent
-        progression, round stats, or weapon rental entitlement.
+        Ends insertion participation and an orphaned owned vehicle rental life
+        through their existing owners rather than duplicating cleanup logic.
+        Does not touch persistent progression, round stats, or weapon rental entitlement.
     Execution: Server
     Parameters:
         0: Player UID <STRING>
@@ -47,6 +47,8 @@ if !(_state in ["ACTIVE", "DEPLOYING"]) exitWith {
     [format ["returnDeployedPlayerToLobby rejected: invalid state=%1 UID=%2", _state, _uid], "WARN"] call bn_koth_fnc_common_log;
     false
 };
+
+[_uid, "RETURNED_TO_LOBBY"] call bn_koth_fnc_airInsertion_cleanupPlayer;
 
 private _groupImpact = [[_uid], []] call bn_koth_fnc_groups_capturePresentationImpact;
 

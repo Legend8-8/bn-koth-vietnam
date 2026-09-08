@@ -70,6 +70,9 @@ Purchase validation| Server
 Experience and currency changes| Server
 Database access| Server
 Gameplay vehicle creation| Server
+Air-insertion session, manifest, payment and aircraft creation| Server
+Air-insertion flight| Current human driver through normal vehicle locality
+Air-insertion seat assignment and physical backpack substitution/restoration| Owning client, on server instruction
 Local player loadout interface| Owning client
 Loadout entitlement validation| Server
 Traversal input, geometry probing and movement| Owning client
@@ -331,6 +334,37 @@ no separate requisition step. The active rental map is server-only; only the
 requesting client receives their projected state. Get-in authorization is
 checked from server-owned UID/access data. A narrowly allowlisted
 server-to-owner endpoint performs locality-sensitive ejection.
+
+14.1 Tactical Air Insertion
+
+The active team mapboard sends only SOLO/GROUP start intent; invited clients
+send only JOIN/LEAVE/CANCEL intent plus the opaque session ID. The server
+resolves every caller from `remoteExecutedOwner`, revalidates current player
+record, assigned side, active participation and authoritative safe-zone
+membership, freezes the manifest, creates the aircraft, assigns the initiator
+to the driver seat and calls the existing atomic cash owner only after every
+client-local seat assignment has been verified.
+
+The session, manifest, payment, captured backpack slot and asset lifecycle remain
+server-owned. The aircraft has no AI crew or scripted waypoints: flight follows
+normal human-driver vehicle locality and all real human positions are available.
+A narrow server-to-owner endpoint performs driver, copilot or cargo seat
+assignment, safe-zone return after an aborted commit, and the physical backpack
+substitution/restoration required because the player unit is client-local. It
+rejects every non-server remote caller. Before boarding, the server captures
+Unit Loadout slot 5 from the current authoritative player representation, asks
+its owner to apply the configured `B_Parachute`, and verifies the result before
+boarding and payment. Native Eject is not intercepted: it produces standard
+freefall and the player chooses deployment. An owner-local `GetOutMan` handler
+for `ParachuteBase` starts one bounded ground check; the server validates that
+the living player is on foot and grounded before authorizing exact slot-5
+restoration. Restore success requires both an owner-local exact comparison and
+an independent server observation; failed or missing acknowledgements retain the
+captured slot for bounded retry. Death and disconnect clear temporary state
+without writing to the intended-loadout owner; lobby and round lifecycle hooks
+restore a still-live current representation or clear state before reset. An
+empty aircraft remains server-owned during one bounded abandonment grace period;
+there is no AI takeover or recurring cleanup scan.
 
 15. Player Group Requests And Native Materialization
 
