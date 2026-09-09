@@ -19,6 +19,7 @@ private _respawnConfigSource = preprocessFileLineNumbers "config\respawn.hpp";
 private _respawnInitSource = preprocessFileLineNumbers "functions\respawn\fn_initPlayerLocal.sqf";
 private _holdDiagnosticSource = preprocessFileLineNumbers "functions\respawn\fn_startReviveHoldActionDiagnosticsLocal.sqf";
 private _missionSource = preprocessFileLineNumbers "maps\cam_lao_nam\mission.sqm";
+private _remoteExecSource = preprocessFileLineNumbers "config\CfgRemoteExec.hpp";
 private _zoneSource = preprocessFileLineNumbers "functions\zone\fn_evaluateControl.sqf";
 private _requestSource = preprocessFileLineNumbers "functions\respawn\fn_requestCasualtyHelp.sqf";
 private _publishSource = preprocessFileLineNumbers "functions\respawn\fn_publishCasualtyHelpState.sqf";
@@ -84,7 +85,7 @@ private _downedPresentationSources = _presentationSource + _uiInitSource + _resp
 [((_respawnConfigSource find "experimentalHoldActionDiagnostics = 1") >= 0), "The bounded native hold-action playtest probe is not enabled"] call _check;
 [((_respawnConfigSource find "experimentalHoldActionDiagnosticSeconds = 7200") >= 0), "The native hold-action playtest probe is not bounded to the two-hour capture window"] call _check;
 [((_respawnInitSource find "bn_koth_fnc_respawn_startReviveHoldActionDiagnosticsLocal") >= 0), "The local player lifecycle does not start the bounded hold-action probe"] call _check;
-[((_holdDiagnosticSource find "bis_fnc_holdAction_running") >= 0) && {(_holdDiagnosticSource find "bis_fnc_holdAction_params") >= 0} && {(_holdDiagnosticSource find "actionParams") >= 0}, "The probe does not capture the observed native BIS/S.O.G. hold-action surfaces"] call _check;
+[((_holdDiagnosticSource find "bis_fnc_holdAction_running") >= 0) && {(_holdDiagnosticSource find "bis_fnc_holdAction_params") >= 0} && {(_holdDiagnosticSource find "_target actionParams _actionId") >= 0} && {(_holdDiagnosticSource find "_cursor actionParams _x") >= 0}, "The probe does not capture the observed native BIS/S.O.G. hold-action surfaces with valid binary actionParams syntax"] call _check;
 [((_holdDiagnosticSource find "KOTH_CALL_FOR_HELP") >= 0) && {(_holdDiagnosticSource find "KOTH_GIVE_UP") >= 0} && {(_holdDiagnosticSource find "NATIVE_REVIVE_CANDIDATE") >= 0} && {(_holdDiagnosticSource find "AMBIGUOUS") >= 0}, "The probe does not distinguish KOTH holds from candidate/ambiguous native actions"] call _check;
 [((_holdDiagnosticSource find "diag_tickTime < _deadline") >= 0) && {(_holdDiagnosticSource find "BN_KOTH_reviveHoldActionDiagnosticHandle") >= 0} && {(_holdDiagnosticSource find "scriptDone _existing") >= 0}, "The playtest probe is not bounded or duplicate-safe"] call _check;
 [((_holdDiagnosticSource find "remoteExec") < 0), "Diagnostics-only revive probing added a network endpoint"] call _check;
@@ -94,6 +95,17 @@ private _nativeRemovalPropertyAt = _missionSource find "property=""vn_module_rev
 private _nativeRemovalProperty = if (_nativeRemovalPropertyAt >= 0) then {_missionSource select [_nativeRemovalPropertyAt, 500]} else {""};
 [((_missionSource find "type=""vn_module_advanced_revive"";") >= 0), "The Eden S.O.G. Advanced Revive module is absent"] call _check;
 [(_nativeRemovalPropertyAt >= 0) && {(_nativeRemovalProperty find "value=0;") >= 0}, "Native global Resuscitate-item removal is not disabled"] call _check;
+{
+    _x params ["_className", "_allowedTargets"];
+    private _entryAt = _remoteExecSource find format ["class %1", _className];
+    private _entry = if (_entryAt >= 0) then {_remoteExecSource select [_entryAt, 240]} else {""};
+    [(_entryAt >= 0) && {(_entry find format ["allowedTargets = %1", _allowedTargets]) >= 0} && {(_entry find "jip = 0") >= 0}, format ["Required transient S.O.G. RemoteExec allowance has the wrong target/JIP scope: %1", _className]] call _check;
+} forEach [
+    ["VN_fnc_revive_dynamic_audio", 1],
+    ["VN_fnc_revive_detachunit_local", 1],
+    ["VN_fnc_revive_action_dropplayer", 0],
+    ["switchMove", 0]
+];
 
 [((_reconcileSource find "bn_koth_fnc_respawn_isIncapacitated") >= 0), "Help reconciliation does not invalidate recovered casualties"] call _check;
 [((_deathSource find "bn_koth_fnc_respawn_reconcileCasualtyHelp") >= 0), "Death does not reconcile help state"] call _check;

@@ -47,7 +47,7 @@ private _handle = [_duration, _interval] spawn {
             private _target = if (_params isEqualType []) then {_params param [0, objNull, [objNull]]} else {objNull};
             private _caller = if (_params isEqualType []) then {_params param [1, objNull, [objNull]]} else {objNull};
             private _actionId = if (_params isEqualType []) then {_params param [2, -1, [0]]} else {-1};
-            private _actionMetadata = if (!isNull _target && {_actionId >= 0}) then {actionParams [_target, _actionId]} else {[]};
+            private _actionMetadata = if (!isNull _target && {_actionId >= 0}) then {_target actionParams _actionId} else {[]};
             private _metadataText = toLower (str _actionMetadata);
             private _identity = if ((_metadataText find "bn_koth_fnc_respawn_requestcasualtyhelp") >= 0) then {
                 "KOTH_CALL_FOR_HELP"
@@ -63,7 +63,7 @@ private _handle = [_duration, _interval] spawn {
             private _cursorActions = [];
             if (!isNull _cursor) then {
                 {
-                    _cursorActions pushBack [_x, actionParams [_cursor, _x]];
+                    _cursorActions pushBack [_x, _cursor actionParams _x];
                 } forEach actionIDs _cursor;
             };
 
