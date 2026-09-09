@@ -167,6 +167,10 @@ On success, the lifecycle is:
 4. Server updates authoritative player record state.
 5. Server triggers post-handoff local reinitialization on the owning client (map icons, 3D icons, ESC menu), plus server-side curator setup.
 
+Any local-only system that creates actions, event handlers, UI, overlays, or state on the current unit must also be re-run after the handoff. A representation transfer changes the actual controlled unit, so a global flag is not enough: installation must be unit-bound and reattached to the transferred unit.
+
+Examples of reinit-after-transfer work include local UI hooks, per-unit addAction installs, local key handlers, and player-bound markers.
+
 This split keeps authority server-side while still ensuring client-local systems are reinstalled after ownership changes.
 
 5. State Distribution

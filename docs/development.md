@@ -39,6 +39,8 @@ When adding or modifying player-representation transitions, use the locality lif
 
 Short rule: initPlayerLocal.sqf is client startup only, while bn_koth_fnc_teams_transferRepresentation is the server-owned handoff path for moving a player to a new representation unit.
 
+Long rule: any local system that installs actions, event handlers, menus, overlays, or player-bound state must also be re-initialized after a successful representation transfer. A transferred player may receive a new controlled unit, so the local setup must run against that unit again and store installation state on that unit instead of assuming a single mission-level flag is enough.
+
 7. Rank And Equipment Side Metadata
 
 Account rank presentation is configured only under `CfgBnKothRanks` in
