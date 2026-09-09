@@ -17,7 +17,7 @@ private _predicateSource = preprocessFileLineNumbers "functions\respawn\fn_isInc
 private _damageSource = preprocessFileLineNumbers "functions\respawn\fn_handleDamage.sqf";
 private _respawnConfigSource = preprocessFileLineNumbers "config\respawn.hpp";
 private _respawnInitSource = preprocessFileLineNumbers "functions\respawn\fn_initPlayerLocal.sqf";
-private _holdDiagnosticSource = preprocessFileLineNumbers "functions\respawn\fn_startReviveHoldActionDiagnosticsLocal.sqf";
+private _functionsSource = preprocessFileLineNumbers "config\CfgFunctions.hpp";
 private _missionSource = preprocessFileLineNumbers "maps\cam_lao_nam\mission.sqm";
 private _remoteExecSource = preprocessFileLineNumbers "config\CfgRemoteExec.hpp";
 private _zoneSource = preprocessFileLineNumbers "functions\zone\fn_evaluateControl.sqf";
@@ -82,19 +82,32 @@ private _downedPresentationSources = _presentationSource + _uiInitSource + _resp
 [((_damageSource find "if (_intruderCollision) exitWith {_damage};") < 0) && {(_damageSource find "if (_sourceBlocked) exitWith {_currentDamage};") >= 0}, "Safe-zone HandleDamage still overrides stacked handlers during ordinary damage"] call _check;
 [((_presentationSource find "[player, 3] call VN_fnc_revive_action_respawn") >= 0), "Give Up does not use the supported S.O.G. completion path"] call _check;
 
-[((_respawnConfigSource find "experimentalHoldActionDiagnostics = 1") >= 0), "The bounded native hold-action playtest probe is not enabled"] call _check;
-[((_respawnConfigSource find "experimentalHoldActionDiagnosticSeconds = 7200") >= 0), "The native hold-action playtest probe is not bounded to the two-hour capture window"] call _check;
-[((_respawnInitSource find "bn_koth_fnc_respawn_startReviveHoldActionDiagnosticsLocal") >= 0), "The local player lifecycle does not start the bounded hold-action probe"] call _check;
-[((_holdDiagnosticSource find "bis_fnc_holdAction_running") >= 0) && {(_holdDiagnosticSource find "bis_fnc_holdAction_params") >= 0} && {(_holdDiagnosticSource find "_target actionParams _actionId") >= 0} && {(_holdDiagnosticSource find "_cursor actionParams _x") >= 0}, "The probe does not capture the observed native BIS/S.O.G. hold-action surfaces with valid binary actionParams syntax"] call _check;
-[((_holdDiagnosticSource find "KOTH_CALL_FOR_HELP") >= 0) && {(_holdDiagnosticSource find "KOTH_GIVE_UP") >= 0} && {(_holdDiagnosticSource find "NATIVE_REVIVE_CANDIDATE") >= 0} && {(_holdDiagnosticSource find "AMBIGUOUS") >= 0}, "The probe does not distinguish KOTH holds from candidate/ambiguous native actions"] call _check;
-[((_holdDiagnosticSource find "diag_tickTime < _deadline") >= 0) && {(_holdDiagnosticSource find "BN_KOTH_reviveHoldActionDiagnosticHandle") >= 0} && {(_holdDiagnosticSource find "scriptDone _existing") >= 0}, "The playtest probe is not bounded or duplicate-safe"] call _check;
-[((_holdDiagnosticSource find "remoteExec") < 0), "Diagnostics-only revive probing added a network endpoint"] call _check;
-[((_holdDiagnosticSource find "removeItem") < 0) && {(_holdDiagnosticSource find "removeItems") < 0}, "Diagnostics-only revive probing mutates inventory"] call _check;
-[((_holdDiagnosticSource find "setUnconscious") < 0) && {(_holdDiagnosticSource find "call VN_fnc_revive_action_revive") < 0} && {(_holdDiagnosticSource find "call VN_fnc_holdActionAdd") < 0} && {(_holdDiagnosticSource find " addAction [") < 0}, "Diagnostics-only probing interferes with or duplicates the native revive action"] call _check;
+[((_respawnConfigSource find "experimentalHoldActionDiagnostics") < 0)
+    && {(_respawnInitSource find "startReviveHoldActionDiagnosticsLocal") < 0}
+    && {(_functionsSource find "respawn_startReviveHoldActionDiagnosticsLocal") < 0},
+    "The obsolete client hold-action diagnostic remains configured or registered"] call _check;
 private _nativeRemovalPropertyAt = _missionSource find "property=""vn_module_revive_revive_item_remove"";";
 private _nativeRemovalProperty = if (_nativeRemovalPropertyAt >= 0) then {_missionSource select [_nativeRemovalPropertyAt, 500]} else {""};
+private _nativeItemsPropertyAt = _missionSource find "property=""vn_module_revive_revive_item"";";
+private _nativeItemsProperty = if (_nativeItemsPropertyAt >= 0) then {_missionSource select [_nativeItemsPropertyAt, 700]} else {""};
+private _nativeBleedoutPropertyAt = _missionSource find "property=""vn_module_revive_bleedout_time"";";
+private _nativeBleedoutProperty = if (_nativeBleedoutPropertyAt >= 0) then {_missionSource select [_nativeBleedoutPropertyAt, 500]} else {""};
 [((_missionSource find "type=""vn_module_advanced_revive"";") >= 0), "The Eden S.O.G. Advanced Revive module is absent"] call _check;
-[(_nativeRemovalPropertyAt >= 0) && {(_nativeRemovalProperty find "value=0;") >= 0}, "Native global Resuscitate-item removal is not disabled"] call _check;
+[(_nativeRemovalPropertyAt >= 0) && {(_nativeRemovalProperty find "value=1;") >= 0}, "Native successful-Resuscitate item removal is not enabled"] call _check;
+[(_nativeItemsPropertyAt >= 0)
+    && {(_nativeItemsProperty find "vn_b_item_firstaidkit") >= 0}
+    && {(_nativeItemsProperty find "vn_o_item_firstaidkit") >= 0}
+    && {(_nativeItemsProperty find "vn_b_item_medikit_01") >= 0},
+    "Native Resuscitate items do not include both S.O.G. FAKs and the medikit"] call _check;
+[(_nativeBleedoutPropertyAt >= 0)
+    && {(_nativeBleedoutProperty find "value=600;") >= 0},
+    "Native S.O.G. bleedout is not configured for the ten-minute duration"] call _check;
+private _nativeActionsRemoteAt = _remoteExecSource find "class VN_fnc_revive_actions_local";
+private _nativeActionsRemote = if (_nativeActionsRemoteAt >= 0) then {_remoteExecSource select [_nativeActionsRemoteAt, 240]} else {""};
+[(_nativeActionsRemoteAt >= 0)
+    && {(_nativeActionsRemote find "allowedTargets = 0") >= 0}
+    && {(_nativeActionsRemote find "jip = 1") >= 0},
+    "Native casualty action installation lacks its documented global/JIP RemoteExec allowance"] call _check;
 {
     _x params ["_className", "_allowedTargets"];
     private _entryAt = _remoteExecSource find format ["class %1", _className];

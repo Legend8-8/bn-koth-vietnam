@@ -56,6 +56,7 @@ if !(_rewardAmount isEqualTo 0) then {
             case "control": {"OBJECTIVE"};
             case "priority": {"PRIORITY"};
             case "transport": {"TRANSPORT"};
+            case "revive": {"REVIVE"};
             default {toUpper _rewardReason};
         };
 

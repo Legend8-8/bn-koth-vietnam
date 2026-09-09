@@ -220,7 +220,13 @@ Contains:
 "functions/respawn/"
 
 S.O.G. Advanced Revive remains the sole owner of damage, incapacitation,
-bleedout, revive, drag/carry and revive-driven respawn mechanics. KOTH derives
+bleedout, revive, interruption, successful recovery, native medical-item
+consumption, Medic behavior, drag/carry and revive-driven respawn mechanics.
+The Eden module configures S.O.G.'s native bleedout countdown to 600 seconds
+(ten minutes); KOTH does not run a separate bleedout timer.
+The Eden module enables native successful-Resuscitate item removal and accepts
+both S.O.G. faction FAKs plus the medikit; KOTH does not run an inventory
+transaction for revives. KOTH derives
 combat eligibility from the current representation through
 `bn_koth_fnc_respawn_isIncapacitated`; it does not remove a casualty from team,
 deployment, session, group or `currentUnit` state. The same folder owns the
@@ -332,6 +338,13 @@ Contains player progression systems:
 - progression entitlement evaluation consumes authoritative level/rule data;
 - persistent unlocks and mastery storage cross the progression/persistence
   boundary; future perks and reward multipliers belong there rather than in UI.
+
+The progression XP owner also contains dormant revive-reward validation and
+orchestration. It accepts only a server-internal trusted native completion
+record, revalidates the registered current reviver/casualty representations,
+and calls the existing XP and cash owners. No production call exists until the
+native S.O.G. Resuscitate interaction can identify its actual reviver; S.O.G.
+continues to own every revive mechanic and recovery transition.
 
 Current authoritative progression state is stored in the server-owned
 `BN_KOTH_playerProgression` map keyed by UID. Registration establishes it through
@@ -591,5 +604,11 @@ Perks extend the existing progression/persistence boundary. `ownedPerks` is perm
 The Suppressor perk is enforced only when constructing or applying a managed loadout. Battlefield pickups remain ordinary Arma inventory state and are not polled or deleted. Confirmed deactivation first replaces the server-owned intended loadout with a catalogue-derived suppressor-free loadout, applies that server-derived loadout through the existing local application path, and only then finalizes deactivation.
 
 MEDIC uses the same ownership boundary. Human-authored consumable metadata makes `vn_b_item_medikit_01` available to both KOTH teams only while `medic` is active, and complete managed loadouts containing it otherwise fail with `ERR_PERK_MEDIC_INACTIVE`. The owning client mirrors the projected active perk onto only its current `ACTIVE` representation with Arma's `Medic` trait; that trait is derived S.O.G. input and never KOTH entitlement. The existing confirmed cleanup transaction removes a medikit from the live and server-owned intended loadout before MEDIC deactivation commits.
+
+The two S.O.G. faction FAKs have separate human-authored managed-acquisition
+policy: WEST may select `vn_b_item_firstaidkit` and EAST may select
+`vn_o_item_firstaidkit`. That policy is not battlefield usability. Looted FAKs
+remain ordinary physical inventory and S.O.G. may use either configured class
+for a same-team revive; KOTH neither polls nor removes them.
 
 Cloak is consumed at the server-owned successful-spot boundary. The ordinary replicated mark and its expiry remain unchanged; only the target HUD-warning deadline is omitted when the authoritative requester's `activePerks` contains `cloak`. Warning state is per successful action, so a later non-Cloak spot can still warn an already marked target.

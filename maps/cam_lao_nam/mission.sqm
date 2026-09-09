@@ -9800,7 +9800,7 @@ class Mission
 						class data
 						{
 							singleType="SCALAR";
-							value=0;
+							value=1;
 						};
 					};
 				};
@@ -9813,7 +9813,7 @@ class Mission
 						class data
 						{
 							singleType="SCALAR";
-							value=120;
+							value=600;
 						};
 					};
 				};

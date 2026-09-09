@@ -130,6 +130,7 @@ class CfgFunctions
             class progression_xp_addXp {file = "functions\progression\xp\fn_addXp.sqf";};
             class progression_xp_awardObjectiveTick {file = "functions\progression\xp\fn_awardObjectiveTick.sqf";};
             class progression_xp_awardKill {file = "functions\progression\xp\fn_awardKill.sqf";};
+            class progression_xp_awardRevive {file = "functions\progression\xp\fn_awardRevive.sqf";};
             class progression_transport_initServer {file = "functions\progression\transport\fn_initServer.sqf";};
             class progression_transport_registerVehicle {file = "functions\progression\transport\fn_registerVehicle.sqf";};
             class progression_transport_handleGetIn {file = "functions\progression\transport\fn_handleGetIn.sqf";};
@@ -234,7 +235,6 @@ class CfgFunctions
             class respawn_handlePlayerRespawn {file = "functions\respawn\fn_handlePlayerRespawn.sqf";};
             class respawn_isIncapacitated {file = "functions\respawn\fn_isIncapacitated.sqf";};
             class respawn_updateDownedPresentation {file = "functions\respawn\fn_updateDownedPresentation.sqf";};
-            class respawn_startReviveHoldActionDiagnosticsLocal {file = "functions\respawn\fn_startReviveHoldActionDiagnosticsLocal.sqf";};
             class respawn_requestCasualtyHelp {file = "functions\respawn\fn_requestCasualtyHelp.sqf";};
             class respawn_publishCasualtyHelpState {file = "functions\respawn\fn_publishCasualtyHelpState.sqf";};
             class respawn_receiveCasualtyHelpState {file = "functions\respawn\fn_receiveCasualtyHelpState.sqf";};

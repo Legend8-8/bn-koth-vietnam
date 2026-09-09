@@ -1039,6 +1039,7 @@ class CfgBnKothArsenal
             };
             class Consumables
             {
+                class vn_b_item_firstaidkit {allowedSides[] = {"WEST"}; minLevel = 1;};
                 class vn_b_item_medikit_01
                 {
                     allowedSides[] = {"WEST", "EAST"};
@@ -1047,6 +1048,7 @@ class CfgBnKothArsenal
                 };
                 class vn_m18_white_mag {allowedSides[] = {"WEST"}; minLevel = 1;};
                 class vn_m61_grenade_mag {allowedSides[] = {"WEST"}; minLevel = 1;};
+                class vn_o_item_firstaidkit {allowedSides[] = {"EAST"}; minLevel = 1;};
                 class vn_rdg2_mag {allowedSides[] = {"EAST"}; minLevel = 1;};
                 class vn_rgd5_grenade_mag {allowedSides[] = {"EAST"}; minLevel = 1;};
             };

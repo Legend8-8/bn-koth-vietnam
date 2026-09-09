@@ -1829,3 +1829,8 @@ managed command/teleport capability. Vehicles do not use weapon mastery.
 Attachment facts continue to come from the generated S.O.G. compatibility catalogue. The Suppressor perk uses factual `SourceItems.itemType = "suppressor"` metadata. While inactive, any complete managed loadout containing such an item in a weapon slot or uniform/vest/backpack cargo is rejected with `ERR_PERK_SUPPRESSOR_INACTIVE`. Local saved kits are not modified; applying one is denied until the perk is active. Battlefield pickups are intentionally outside this managed-loadout rule.
 
 The S.O.G. medikit (`vn_b_item_medikit_01`) is intentionally cross-team KOTH equipment despite its WEST-looking classname. `Metadata >> Consumables` assigns `allowedSides[] = {"WEST", "EAST"}` and `requiredPerks[] = {"medic"}`. It remains visible in the MEDICAL catalogue while locked, with `MEDIC PERK REQUIRED` shown by the generic single-perk lock presentation. Complete managed loadouts containing it are rejected with `ERR_PERK_MEDIC_INACTIVE` unless the server-owned active-perk set contains `medic`.
+
+Managed FAK acquisition is side-specific: `vn_b_item_firstaidkit` is WEST and
+`vn_o_item_firstaidkit` is EAST. This restriction applies only when KOTH builds,
+validates or saves an intended managed loadout. A faction FAK looted in combat
+remains usable physical inventory and is not removed or converted by KOTH.

@@ -47,6 +47,24 @@ private _medikitMetadata = ["Consumables", "vn_b_item_medikit_01"] call bn_koth_
     && {(_medikitMetadata getOrDefault ["minLevel", -1]) isEqualTo 1}
     && {"medic" in (_medikitMetadata getOrDefault ["requiredPerks", []])},
     "Medikit metadata is missing its cross-team MEDIC entitlement."] call _assert;
+
+private _westFakMetadata = ["Consumables", "vn_b_item_firstaidkit"] call bn_koth_fnc_loadouts_getItemMetadata;
+private _eastFakMetadata = ["Consumables", "vn_o_item_firstaidkit"] call bn_koth_fnc_loadouts_getItemMetadata;
+private _westFakForWest = ["WEST", _westFakMetadata, false] call bn_koth_fnc_progression_evaluateEquipmentSidePolicyRules;
+private _westFakForEast = ["EAST", _westFakMetadata, false] call bn_koth_fnc_progression_evaluateEquipmentSidePolicyRules;
+private _eastFakForEast = ["EAST", _eastFakMetadata, false] call bn_koth_fnc_progression_evaluateEquipmentSidePolicyRules;
+private _eastFakForWest = ["WEST", _eastFakMetadata, false] call bn_koth_fnc_progression_evaluateEquipmentSidePolicyRules;
+[_westFakMetadata getOrDefault ["configured", false]
+    && {(_westFakMetadata getOrDefault ["allowedSides", []]) isEqualTo ["WEST"]}
+    && {_westFakForWest getOrDefault ["allowed", false]}
+    && {!(_westFakForEast getOrDefault ["allowed", true])},
+    "WEST FAK managed-acquisition policy is not WEST-only."] call _assert;
+[_eastFakMetadata getOrDefault ["configured", false]
+    && {(_eastFakMetadata getOrDefault ["allowedSides", []]) isEqualTo ["EAST"]}
+    && {_eastFakForEast getOrDefault ["allowed", false]}
+    && {!(_eastFakForWest getOrDefault ["allowed", true])},
+    "EAST FAK managed-acquisition policy is not EAST-only."] call _assert;
+
 private _inactiveMedicEntitlement = [_state, _medikitMetadata, "vn_b_item_medikit_01", "WEST", false] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
 [!(_inactiveMedicEntitlement getOrDefault ["entitled", true])
     && {(_inactiveMedicEntitlement getOrDefault ["code", ""]) isEqualTo "LOCKED_PERK"}

@@ -15,7 +15,6 @@ if (isNull player) exitWith {false};
 
 private _unit = player;
 [_unit] call bn_koth_fnc_progression_perks_applyMedicTraitLocal;
-[] call bn_koth_fnc_respawn_startReviveHoldActionDiagnosticsLocal;
 
 if !(_unit getVariable ["BN_KOTH_safeZoneDamageEhLocal", false]) then {
     private _damageEhId = _unit addEventHandler ["HandleDamage", {

@@ -34,9 +34,15 @@ private _xpPerPriorityBonus = if (isNumber (_progressionCfg >> "xpPerPriorityBon
 } else {
     20
 };
+private _xpPerRevive = if (isNumber (_progressionCfg >> "xpPerRevive")) then {
+    getNumber (_progressionCfg >> "xpPerRevive")
+} else {
+    25
+};
 missionNamespace setVariable ["BN_KOTH_xpPerControlBonus", _xpPerControlBonus max 0];
 missionNamespace setVariable ["BN_KOTH_xpPerKill", _xpPerKill max 0];
 missionNamespace setVariable ["BN_KOTH_xpPerPriorityBonus", _xpPerPriorityBonus max 0];
+missionNamespace setVariable ["BN_KOTH_xpPerRevive", _xpPerRevive max 0];
 
 private _progressionByUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
 if !(_progressionByUid isEqualType createHashMap) then {
