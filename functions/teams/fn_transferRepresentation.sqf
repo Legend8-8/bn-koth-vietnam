@@ -95,6 +95,7 @@ if (_ackStatus isEqualTo "CONFIRMED" && {_ownerConfirmed}) exitWith {
     [_uid] call _clearPending;
 
     [_targetUnit, _uid] call bn_koth_fnc_curator_init;
+    [_targetUnit] remoteExecCall ["bn_koth_fnc_magRepack_initPlayerLocal", _ownerId];
     [_targetUnit] remoteExecCall ["bn_koth_fnc_playerMapMarkers_initPlayerLocal", _ownerId];
     [_targetUnit] remoteExecCall ["bn_koth_fnc_player3DIcons_initPlayerLocal", _ownerId];
     [_targetUnit] remoteExecCall ["bn_koth_fnc_escMenu_initPlayerLocal", _ownerId];
