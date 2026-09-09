@@ -247,6 +247,13 @@ class CfgFunctions
             class traversal_log {file = "functions\traversal\fn_log.sqf";};
         };
 
+        class magRepack
+        {
+            class magRepack_initPlayerLocal {file = "functions\magRepack\fn_initPlayerLocal.sqf";};
+            class magRepack_repackAllMags {file = "functions\magRepack\fn_repackAllMags.sqf";};
+            class magRepack_ammoRepack {file = "functions\magRepack\fn_ammoRepack.sqf";};
+        };
+
         class loadouts
         {
             class loadouts_initServer {file = "functions\loadouts\fn_initServer.sqf";};
