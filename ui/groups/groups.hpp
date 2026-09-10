@@ -17,7 +17,7 @@ class BN_KOTH_RscGroupMenu
     idd = BN_KOTH_IDD_GROUP_MENU;
     movingEnable = 0;
     enableSimulation = 1;
-    onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_groupMenuDisplay', _display]; _display displayAddEventHandler ['KeyDown', 'if ((_this select 1) isEqualTo 1) exitWith {[] call bn_koth_fnc_groupMenu_close; true}; false']; [] call bn_koth_fnc_groupMenu_refresh;";
+    onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_groupMenuDisplay', _display]; _display displayAddEventHandler ['KeyDown', 'if ((_this select 1) isEqualTo 1) exitWith {[] call bn_koth_fnc_groupMenu_close; true}; false']; [_display displayCtrl 9101] call bn_koth_fnc_announcements_configureControl; [] call bn_koth_fnc_groupMenu_refresh;";
     onUnload = "uiNamespace setVariable ['BN_KOTH_groupMenuDisplay', displayNull];";
 
     class controlsBackground
@@ -307,6 +307,14 @@ class BN_KOTH_RscGroupMenu
             w = safeZoneW * 0.10;
             h = safeZoneH * 0.040;
             action = "[] call bn_koth_fnc_groupMenu_close;";
+        };
+
+        class Announcement: BN_KOTH_AnnouncementNotice
+        {
+            x = BN_KOTH_GROUP_X + BN_KOTH_GROUP_W * 0.34;
+            y = BN_KOTH_GROUP_FOOTER_Y + safeZoneH * 0.008;
+            w = BN_KOTH_GROUP_W * 0.32;
+            h = safeZoneH * 0.059;
         };
     };
 };

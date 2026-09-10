@@ -412,6 +412,10 @@ class CfgFunctions
             class ui_notify {file = "functions\ui\fn_notify.sqf";};
             class ui_addKillFeedEntry {file = "functions\ui\fn_addKillFeedEntry.sqf";};
             class ui_addRewardFeedEntry {file = "functions\ui\fn_addRewardFeedEntry.sqf";};
+            class announcements_getActive {file = "functions\ui\announcements\fn_getActive.sqf";};
+            class announcements_configureControl {file = "functions\ui\announcements\fn_configureControl.sqf";};
+            class announcements_open {file = "functions\ui\announcements\fn_open.sqf";};
+            class announcements_popupOnLoad {file = "functions\ui\announcements\fn_popupOnLoad.sqf";};
             class groupMenu_open {file = "functions\ui\groups\fn_open.sqf";};
             class groupMenu_close {file = "functions\ui\groups\fn_close.sqf";};
             class groupMenu_refresh {file = "functions\ui\groups\fn_refresh.sqf";};

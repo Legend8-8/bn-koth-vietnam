@@ -389,6 +389,7 @@ Contains client-side presentation:
 
 - HUD updates;
 - menus;
+- configured player-facing announcements and their shared popup;
 - notifications;
 - score displays;
 - zone displays.

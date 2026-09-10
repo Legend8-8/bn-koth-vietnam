@@ -39,7 +39,7 @@ class BN_KOTH_RscLobby
     idd = BN_KOTH_IDD_LOBBY;
     movingEnable = 0;
     enableSimulation = 1;
-    onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_lobbyDisplay', _display]; _display displayAddEventHandler ['KeyDown', '_this call bn_koth_fnc_ui_handleLobbyKeyDown']; [] call bn_koth_fnc_ui_refreshLobby; private _discordButton = _display displayCtrl 8304; if !(isNull _discordButton) then {_discordButton ctrlSetURL 'https://discord.gg/bro-nation'; _discordButton ctrlSetURLOverlayMode 0;};";
+    onLoad = "private _display = _this select 0; uiNamespace setVariable ['BN_KOTH_lobbyDisplay', _display]; _display displayAddEventHandler ['KeyDown', '_this call bn_koth_fnc_ui_handleLobbyKeyDown']; [_display displayCtrl 9101] call bn_koth_fnc_announcements_configureControl; [] call bn_koth_fnc_ui_refreshLobby; private _discordButton = _display displayCtrl 8304; if !(isNull _discordButton) then {_discordButton ctrlSetURL 'https://discord.gg/bro-nation'; _discordButton ctrlSetURLOverlayMode 0;};";
     onUnload = "uiNamespace setVariable ['BN_KOTH_lobbyDisplay', displayNull];";
 
     class controlsBackground
@@ -544,9 +544,18 @@ class HeaderPlayers: BN_KOTH_Lobby_Subtitle
             text = "Capture and hold the objective to earn score. First team to reach the score limit wins the round.";
             x = BN_KOTH_UI_X + safeZoneW * 0.028;
             y = BN_KOTH_UI_Y + BN_KOTH_TOPBAR_H + BN_KOTH_TOP_GAP + safeZoneH * 0.007;
-            w = BN_KOTH_UI_W - safeZoneW * 0.04;
+            w = BN_KOTH_UI_W * 0.72;
             h = safeZoneH * 0.028;
             colorText[] = {0.90, 0.90, 0.88, 0.88};
+        };
+
+        class Announcement: BN_KOTH_AnnouncementNotice
+        {
+            x = BN_KOTH_UI_X + BN_KOTH_UI_W * 0.77;
+            y = BN_KOTH_UI_Y + BN_KOTH_TOPBAR_H + BN_KOTH_TOP_GAP + safeZoneH * 0.003;
+            w = BN_KOTH_UI_W * 0.22;
+            h = BN_KOTH_STRIP_H - safeZoneH * 0.006;
+            size = "0.021 * safeZoneH";
         };
 
 		class WestEmblem: BN_KOTH_Lobby_Emblem
