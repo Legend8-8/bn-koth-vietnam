@@ -158,6 +158,11 @@ private _attachButtons = {
         [ctrlParent _button] call bn_koth_fnc_escMenu_openOptions;
     }];
 
+    private _announcement = _display ctrlCreate ["BN_KOTH_AnnouncementNotice", -1];
+    _announcement ctrlSetPosition [safeZoneX + safeZoneW * 0.018, safeZoneY + safeZoneH * 0.305, safeZoneW * 0.18, safeZoneH * 0.060];
+    _announcement ctrlCommit 0;
+    [_announcement] call bn_koth_fnc_announcements_configureControl;
+
     _display setVariable ["BN_KOTH_escMenuButtonsAttached", true];
     diag_log "[BN_KOTH][INFO] escMenu buttons attached to pause display";
 };

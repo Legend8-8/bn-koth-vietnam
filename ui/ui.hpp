@@ -1,8 +1,10 @@
 #include "defines.hpp"
+#include "announcements\controls.hpp"
 #include "lobby\lobby.hpp"
 #include "menu\menu.hpp"
 #include "groups\groups.hpp"
 #include "esc_menu\esc_menu.hpp"
+#include "announcements\popup.hpp"
 
 class RscTitles
 {

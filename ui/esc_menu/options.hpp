@@ -5,7 +5,7 @@ class BN_KOTH_RscEscMenuOptions
     idd = BN_KOTH_IDD_ESC_MENU_OPTIONS;
     movingEnable = 0;
     enableSimulation = 1;
-    onLoad = "_this call bn_koth_fnc_escMenu_options_onLoad;";
+    onLoad = "_this call bn_koth_fnc_escMenu_options_onLoad; [(_this select 0) displayCtrl 9101] call bn_koth_fnc_announcements_configureControl;";
     onUnload = "_this call bn_koth_fnc_escMenu_options_onUnload;";
 
     class controlsBackground
@@ -25,7 +25,7 @@ class BN_KOTH_RscEscMenuOptions
             text = "GAMEMODE OPTIONS";
             x = safeZoneX + safeZoneW * 0.31;
             y = safeZoneY + safeZoneH * 0.26;
-            w = safeZoneW * 0.38;
+            w = safeZoneW * 0.22;
             h = safeZoneH * 0.035;
             sizeEx = "0.030 * safeZoneH";
             colorText[] = {0.96, 0.90, 0.72, 1};
@@ -183,6 +183,15 @@ class BN_KOTH_RscEscMenuOptions
             w = safeZoneW * 0.12;
             h = safeZoneH * 0.04;
             action = "closeDialog 2;";
+        };
+
+        class Announcement: BN_KOTH_AnnouncementNotice
+        {
+            x = safeZoneX + safeZoneW * 0.545;
+            y = safeZoneY + safeZoneH * 0.252;
+            w = safeZoneW * 0.145;
+            h = safeZoneH * 0.050;
+            size = "0.020 * safeZoneH";
         };
     };
 };

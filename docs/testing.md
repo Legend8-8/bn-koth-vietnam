@@ -1372,3 +1372,15 @@ scoreboard viewport and verify:
 7. Vehicle Store categories and cards explain active-AO capability, side, level, perk, cash, active-rental, cooldown, and unconfigured-rental blocks using server projection state.
 8. Multiple simultaneous rentals are reclaimed by the one shared vehicle-manager sweep after configured abandonment/disconnect timeouts, with no per-rental monitor scripts or duplicate cooldowns.
 9. SOLO/GROUP insertion prompts, countdown, successful-departure charge wording, invitation/join state, boarding, egress, closure, and backpack restoration each appear once through the normal notification owner.
+
+### Player-facing announcements
+
+For the configured active announcement, verify the lobby, deployed menu, Group
+Menu, pause menu, gamemode keybindings and gamemode options each show one notice
+using the configured title and subtitle. Open the popup from every surface,
+close it with the visible CLOSE button, reopen it repeatedly, and confirm no
+duplicate controls, handlers or orphaned displays remain. Set the announcement's
+`enabled` value to `0`, reload the mission and confirm every notice is hidden and
+cannot open a popup. Check client RPT for missing config, function, display and
+control errors. Static inspection does not establish layout at all interface
+sizes or in-game popup behaviour.
