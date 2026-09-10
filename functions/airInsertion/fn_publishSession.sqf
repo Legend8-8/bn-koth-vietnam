@@ -44,6 +44,8 @@ private _sent = 0;
 
     [createHashMapFromArray [
         ["id", _sessionId], ["state", _state], ["role", _role],
+        ["mode", _session getOrDefault ["mode", "GROUP"]],
+        ["cost", _session getOrDefault ["cost", 0]],
         ["departureAt", _session getOrDefault ["departureAt", -1]],
         ["passengerCount", count _passengers], ["capacity", _session getOrDefault ["capacity", 0]],
         ["initiatorName", _initiatorName]

@@ -48,6 +48,9 @@ private _requestSource = preprocessFileLineNumbers "functions\airInsertion\fn_re
 private _commitSource = preprocessFileLineNumbers "functions\airInsertion\fn_commitSession.sqf";
 private _backpackApplySource = preprocessFileLineNumbers "functions\airInsertion\fn_applyBackpack.sqf";
 private _backpackRequestSource = preprocessFileLineNumbers "functions\airInsertion\fn_backpackRequest.sqf";
+[(_backpackRequestSource find "lastAcknowledgementAt") >= 0
+    && {(_backpackRequestSource find "lastAcknowledgementOperation") >= 0},
+    "Backpack acknowledgement endpoint must throttle same-operation replays without suppressing the next valid phase."] call _assert;
 private _backpackCleanupSource = preprocessFileLineNumbers "functions\airInsertion\fn_cleanupBackpack.sqf";
 private _moveSource = preprocessFileLineNumbers "functions\airInsertion\fn_applyPassengerMove.sqf";
 private _eligibilitySource = preprocessFileLineNumbers "functions\airInsertion\fn_evaluatePlayer.sqf";
@@ -113,6 +116,7 @@ private _disconnectSource = preprocessFileLineNumbers "functions\teams\fn_remove
 [((_cleanupSource find "HARD_TIMEOUT") >= 0) && {(_cleanupSource find """EJECT""") >= 0} && {(_cleanupSource find "sleep 2") >= 0}, "Hard timeout does not provide bounded safe egress before deletion"] call _check;
 [((_commitSource find "backpack CAPTURE") < 0) && {(_backpackApplySource find "PARACHUTE APPLIED") < 0} && {(_backpackCleanupSource find "RESTORE REQUEST") < 0} && {(_backpackRequestSource find "RESTORE SUCCESS") < 0}, "Temporary successful-path backpack diagnostics remain"] call _check;
 [((_requestSource find "sideToken") < 0) && {(_requestSource find "createdAt") < 0} && {(_publishSource find "aircraftNetId") < 0}, "Unused insertion presentation/session fields remain"] call _check;
+[((_requestSource find '["mode", if (_isGroup) then {"GROUP"} else {"SOLO"}]') >= 0) && {(_publishSource find '["cost", _session getOrDefault ["cost", 0]]') >= 0}, "Insertion presentation omits authoritative SOLO/GROUP or price state"] call _check;
 
 private _savedSessions = missionNamespace getVariable ["BN_KOTH_airInsertionSessions", createHashMap];
 private _savedPlayerSessions = missionNamespace getVariable ["BN_KOTH_airInsertionPlayerSessions", createHashMap];

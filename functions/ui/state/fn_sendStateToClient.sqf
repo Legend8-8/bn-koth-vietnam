@@ -37,13 +37,15 @@ if !(_targetProgression isEqualType createHashMap) then {
 
 private _playerProgressionPayload = [
     _targetUid,
-    _targetProgression
+    _targetProgression,
+    true
 ] call bn_koth_fnc_progression_buildPresentationState;
 
 private _payload = createHashMapFromArray [
     ["roundState", missionNamespace getVariable ["BN_KOTH_roundState", "WAITING"]],
     ["groupState", [_targetUid] call bn_koth_fnc_groups_buildPresentationState],
     ["liveLeaders", missionNamespace getVariable ["BN_KOTH_liveLeaders", createHashMap]],
+    ["roundResult", missionNamespace getVariable ["BN_KOTH_roundResult", createHashMap]],
     ["playerProgression", _playerProgressionPayload],
     ["vehicleRentalState", [_targetUid] call bn_koth_fnc_vehicles_getRentalState],
     ["playerStates", missionNamespace getVariable ["BN_KOTH_playerStates", createHashMap]],

@@ -11,6 +11,14 @@ class CfgBnKothScoring
 		xpPerControlBonus = 5;
 		xpPerPriorityBonus = 20;
 		xpPerKill = 25;
+		// Configurable roadmap rewards. Zero preserves current balance while the
+		// authoritative mechanisms remain available for live tuning.
+		xpPerAssist = 0;
+		xpTeamkillPenalty = 0;
+		xpRoundParticipationBonus = 0;
+		xpRoundWinnerBonus = 0;
+		// Presentation-only kill-streak thresholds. Empty disables milestone notices.
+		streakMilestones[] = {};
 		// Provisional beta value; requires trusted native revive attribution before use.
 		xpPerRevive = 25;
 
@@ -45,6 +53,10 @@ class CfgBnKothScoring
 		cashPerControlBonus = 5;
 		cashPerPriorityBonus = 20;
 		cashPerTransportPassenger = 25;
+		cashPerAssist = 0;
+		cashTeamkillPenalty = 0;
+		cashRoundParticipationBonus = 0;
+		cashRoundWinnerBonus = 0;
 		// Provisional beta value; requires trusted native revive attribution before use.
 		cashPerRevive = 25;
 	};

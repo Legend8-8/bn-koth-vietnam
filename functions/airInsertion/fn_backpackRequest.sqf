@@ -24,6 +24,15 @@ private _state = _states getOrDefault [_uid, createHashMap];
 if !(_state isEqualType createHashMap) exitWith {};
 if !((_state getOrDefault ["sessionId", ""]) isEqualTo _sessionId) exitWith {};
 if !((_state getOrDefault ["unit", objNull]) isEqualTo _unit) exitWith {};
+private _now = diag_tickTime;
+private _acknowledgementCooldown = (getNumber (missionConfigFile >> "CfgBnKothAirInsertion" >> "backpackAcknowledgementCooldownSeconds")) max 0.1;
+private _lastAcknowledgementOperation = _state getOrDefault ["lastAcknowledgementOperation", ""];
+if (_operation isEqualTo _lastAcknowledgementOperation
+    && {(_now - (_state getOrDefault ["lastAcknowledgementAt", -999])) < _acknowledgementCooldown}) exitWith {};
+_state set ["lastAcknowledgementAt", _now];
+_state set ["lastAcknowledgementOperation", _operation];
+_states set [_uid, _state];
+missionNamespace setVariable ["BN_KOTH_airInsertionBackpacks", _states];
 
 switch (_operation) do {
     case "PREPARED": {

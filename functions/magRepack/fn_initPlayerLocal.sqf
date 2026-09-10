@@ -9,6 +9,7 @@
 */
 
 if (!hasInterface) exitWith {false};
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo 2}) exitWith {false};
 if (isNull player) exitWith {false};
 
 private _unit = player;

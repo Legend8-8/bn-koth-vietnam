@@ -27,6 +27,9 @@ uiNamespace setVariable ["BN_KOTH_downedActionBinding", [objNull, []]];
 uiNamespace setVariable ["BN_KOTH_casualtyHelpOwnRequestActive", false];
 uiNamespace setVariable ["BN_KOTH_casualtyHelpRequestPending", false];
 uiNamespace setVariable ["BN_KOTH_casualtyHelpRequestPendingAt", -1];
+// Connection-local handshake only. The saved kits themselves remain in
+// profileNamespace for one-time migration and offline presentation.
+uiNamespace setVariable ["BN_KOTH_savedKitsServerSynced", false];
 
 addMissionEventHandler [
     "PreloadFinished",

@@ -23,6 +23,10 @@ missionNamespace setVariable ["BN_KOTH_cashPerKill", ["cashPerKill", 50] call _r
 missionNamespace setVariable ["BN_KOTH_cashPerParticipationTick", ["cashPerParticipationTick", 5] call _readNonNegative];
 missionNamespace setVariable ["BN_KOTH_cashPerControlBonus", ["cashPerControlBonus", 5] call _readNonNegative];
 missionNamespace setVariable ["BN_KOTH_cashPerPriorityBonus", ["cashPerPriorityBonus", 20] call _readNonNegative];
+missionNamespace setVariable ["BN_KOTH_cashPerAssist", ["cashPerAssist", 0] call _readNonNegative];
+missionNamespace setVariable ["BN_KOTH_cashTeamkillPenalty", ["cashTeamkillPenalty", 0] call _readNonNegative];
+missionNamespace setVariable ["BN_KOTH_cashRoundParticipationBonus", ["cashRoundParticipationBonus", 0] call _readNonNegative];
+missionNamespace setVariable ["BN_KOTH_cashRoundWinnerBonus", ["cashRoundWinnerBonus", 0] call _readNonNegative];
 missionNamespace setVariable ["BN_KOTH_cashPerRevive", ["cashPerRevive", 25] call _readNonNegative];
 
 ["Session cash economy initialized", "INFO"] call bn_koth_fnc_common_log;

@@ -385,7 +385,6 @@ private _centerView = createHashMapFromArray [
     ["scoreLimit", _scoreLimit],
     ["westScore", _westScore],
     ["eastScore", _eastScore],
-    ["roundTimeLimitText", "NONE"],
     ["vehiclesText", "SERVER RULES"],
     ["friendlyFireText", "SERVER RULES"],
     ["thirdPersonText", "SERVER RULES"]

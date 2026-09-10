@@ -131,6 +131,9 @@ if (_record isEqualType createHashMap) then {
 
 _activeParticipants pushBackUnique _uid;
 ["BN_KOTH_activeParticipants", _activeParticipants] call bn_koth_fnc_common_publicState;
+if (([] call bn_koth_fnc_round_getState) isEqualTo "ACTIVE") then {
+    [_uid] call bn_koth_fnc_roundStats_registerParticipant;
+};
 [] call bn_koth_fnc_teams_publishState;
 private _groupImpact = [[_uid], []] call bn_koth_fnc_groups_capturePresentationImpact;
 private _groupIds = _groupImpact getOrDefault ["groupIds", []];

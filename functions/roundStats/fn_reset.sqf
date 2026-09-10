@@ -14,7 +14,21 @@
 
 if (!isServer) exitWith {false};
 
+{
+    if (!isNull _x) then {
+        _x setVariable ["BN_KOTH_assistContributors", nil, false];
+        _x setVariable ["BN_KOTH_assistLastObservedDamage", nil, false];
+    };
+} forEach (missionNamespace getVariable ["BN_KOTH_combatAssistVictims", []]);
+missionNamespace setVariable ["BN_KOTH_combatAssistVictims", []];
+missionNamespace setVariable ["BN_KOTH_assistProcessedKills", createHashMap];
+missionNamespace setVariable ["BN_KOTH_teamkillPenaltyProcessedKills", createHashMap];
+
 missionNamespace setVariable ["BN_KOTH_roundStats", createHashMap];
+missionNamespace setVariable ["BN_KOTH_roundStatsFinalized", false];
+missionNamespace setVariable ["BN_KOTH_roundStatsFinalizing", false];
+missionNamespace setVariable ["BN_KOTH_roundStartedAt", serverTime];
+["BN_KOTH_roundResult", createHashMap] call bn_koth_fnc_common_publicState;
 
 private _emptyLeader = {
     createHashMapFromArray [

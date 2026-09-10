@@ -13,6 +13,7 @@
 params [["_targetUnit", objNull, [objNull]]];
 
 if (!hasInterface) exitWith {false};
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo 2}) exitWith {false};
 
 if (!isNull _targetUnit && {!(_targetUnit isEqualTo player)}) then {
     private _deadline = time + 5;

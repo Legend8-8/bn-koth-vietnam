@@ -108,9 +108,9 @@ switch (_route) do {
     case "ROOT": {
         _entries = [
             ["INFANTRY", "INFANTRY", "Canonical infantry weapons grouped by operational role."] call _makeCategory,
-            ["GROUND", "GROUND VEHICLES", if (["GROUND"] call _vehicleRouteEnabled) then {"Curated ground combat and transport progression products."} else {"DISABLED FOR THIS AO"}, ["GROUND"] call _vehicleRouteEnabled] call _makeCategory,
-            ["ROTARY", "ROTARY WING", if (["ROTARY"] call _vehicleRouteEnabled) then {"Curated S.O.G. helicopter progression products."} else {"DISABLED FOR THIS AO"}, ["ROTARY"] call _vehicleRouteEnabled] call _makeCategory,
-            ["FIXED_WING", "FIXED WING", if (["FIXED_WING"] call _vehicleRouteEnabled) then {"Curated S.O.G. aircraft progression products."} else {"DISABLED FOR THIS AO"}, ["FIXED_WING"] call _vehicleRouteEnabled] call _makeCategory
+            ["GROUND", "GROUND VEHICLES", if (["GROUND"] call _vehicleRouteEnabled) then {"Curated ground combat and transport progression products."} else {"NO PAID GROUND SPAWN FOR THIS AO"}, ["GROUND"] call _vehicleRouteEnabled] call _makeCategory,
+            ["ROTARY", "ROTARY WING", if (["ROTARY"] call _vehicleRouteEnabled) then {"Curated S.O.G. helicopter progression products."} else {"NO PAID AIR SPAWN FOR THIS AO"}, ["ROTARY"] call _vehicleRouteEnabled] call _makeCategory,
+            ["FIXED_WING", "FIXED WING", if (["FIXED_WING"] call _vehicleRouteEnabled) then {"Curated S.O.G. aircraft progression products."} else {"NO PAID AIR SPAWN FOR THIS AO"}, ["FIXED_WING"] call _vehicleRouteEnabled] call _makeCategory
         ];
     };
     case "INFANTRY": {
@@ -354,16 +354,18 @@ switch (_entryKind) do {
         private _allowedSides = _metadata getOrDefault ["allowedSides",[]];
         private _rentalPrice = _state getOrDefault ["rentalPrice",-1];
         private _rentalText=if (_rentalPrice>=0) then {[_rentalPrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
+        private _missingPerks = _state getOrDefault ["missingPerks", []];
         _detail ctrlSetText ([
             _selected getOrDefault ["displayName","VEHICLE"],"",
             format ["CATEGORY: %1",_metadata getOrDefault ["storeCategory",""]],
             format ["ROLE: %1",_metadata getOrDefault ["vehicleRole",""]],
             format ["KOTH AVAILABILITY: %1",if ((count _allowedSides)>0) then {_allowedSides joinString " / "} else {"UNCONFIGURED"}],
-            format ["LEVEL: %1 / %2",_progression getOrDefault ["level",1],_metadata getOrDefault ["minLevel",1]],"",
+            format ["LEVEL: %1 / %2",_progression getOrDefault ["level",1],_metadata getOrDefault ["minLevel",1]],
+            format ["PERKS: %1",if ((count _missingPerks)>0) then {_missingPerks joinString ", "} else {"READY"}],"",
             "RENTAL",_rentalText,"","ACCESS","ONE VEHICLE LIFE","","STATUS",_state getOrDefault ["stateLabel","UNAVAILABLE"]
         ] joinString endl);
         if (_state getOrDefault ["canRent",false]) then {
-            _primaryAction ctrlShow true;_primaryAction ctrlEnable (_cash>=_rentalPrice);_primaryAction ctrlSetText format ["RENT %1",_rentalText];
+            _primaryAction ctrlShow true;_primaryAction ctrlEnable (_state getOrDefault ["canAffordRental",false]);_primaryAction ctrlSetText format ["RENT %1",_rentalText];
             _primaryAction buttonSetAction format ["['RENT',%1,''] call bn_koth_fnc_vehicles_requestRental;",str _vehicleClass];
         } else {
             if (_state getOrDefault ["active",false]) then {_primaryAction ctrlShow true;_primaryAction ctrlEnable false;_primaryAction ctrlSetText "VEHICLE ACTIVE"};

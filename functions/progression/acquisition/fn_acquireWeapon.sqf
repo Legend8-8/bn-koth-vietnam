@@ -36,7 +36,39 @@ private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", create
 if !(_records isEqualType createHashMap) exitWith {["PLAYER_RECORDS_UNAVAILABLE", "Player registry is unavailable."] call _reject};
 if (isNil {_records get _uid}) exitWith {["PLAYER_NOT_REGISTERED", "Player is not registered."] call _reject};
 private _record = _records getOrDefault [_uid, createHashMap];
+private _mapboardAccessDistance = (getNumber (missionConfigFile >> "CfgBnKothInteractions" >> "teamMapboardAccessDistance")) max 1;
 if !(_record isEqualType createHashMap) exitWith {["PLAYER_NOT_REGISTERED", "Player is not registered."] call _reject};
+private _playerObj = _record getOrDefault ["currentUnit", objNull];
+if (isNull _playerObj
+    || {!alive _playerObj}
+    || {!((_record getOrDefault ["deployed", false]))}
+    || {!((_record getOrDefault ["state", ""]) isEqualTo "ACTIVE")}
+    || {!((missionNamespace getVariable ["BN_KOTH_roundState", ""]) isEqualTo "ACTIVE")}
+    || {!((getPlayerUID _playerObj) isEqualTo _uid)}) exitWith {
+    ["NOT_DEPLOYED", "Weapon acquisition requires an alive, actively deployed player."] call _reject
+};
+
+private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
+if !([_assignedSide] call bn_koth_fnc_teams_validateSide) exitWith {["INVALID_SIDE", "Player team state is unavailable."] call _reject};
+private _activeLocation = missionNamespace getVariable ["BN_KOTH_activeLocationId", ""];
+private _locationData = [_activeLocation] call bn_koth_fnc_zone_getLocationData;
+private _boardRef = if (_assignedSide isEqualTo west) then {
+    _locationData getOrDefault ["westCommand_mapboard", ""]
+} else {
+    _locationData getOrDefault ["eastCommand_mapboard", ""]
+};
+private _boardTarget = missionNamespace getVariable [_boardRef, objNull];
+if (isNull _boardTarget && {!(_boardRef isEqualTo "")} && {!((markerShape _boardRef) isEqualTo "")}) then {
+    private _boardPos = markerPos _boardRef;
+    private _boardCandidates = nearestObjects [_boardPos, ["Static", "Thing", "House", "LandVehicle"], _mapboardAccessDistance];
+    if !(_boardCandidates isEqualTo []) then {
+        _boardCandidates = [_boardCandidates, [], {_boardPos distance2D _x}, "ASCEND"] call BIS_fnc_sortBy;
+        _boardTarget = _boardCandidates select 0;
+    };
+};
+if (isNull _boardTarget || {(_playerObj distance2D _boardTarget) > _mapboardAccessDistance}) exitWith {
+    ["NOT_AT_TEAM_MAPBOARD", "Weapon acquisition requires access through your active team mapboard."] call _reject
+};
 
 private _metadata = [_weaponClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
 if !(_metadata getOrDefault ["success", false]) exitWith {

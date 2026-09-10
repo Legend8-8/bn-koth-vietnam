@@ -44,6 +44,25 @@ missionNamespace setVariable ["BN_KOTH_xpPerKill", _xpPerKill max 0];
 missionNamespace setVariable ["BN_KOTH_xpPerPriorityBonus", _xpPerPriorityBonus max 0];
 missionNamespace setVariable ["BN_KOTH_xpPerRevive", _xpPerRevive max 0];
 
+private _readNonNegative = {
+    params ["_name"];
+    private _entry = _progressionCfg >> _name;
+    if (isNumber _entry) then {getNumber _entry max 0} else {0}
+};
+missionNamespace setVariable ["BN_KOTH_xpPerAssist", ["xpPerAssist"] call _readNonNegative];
+missionNamespace setVariable ["BN_KOTH_xpTeamkillPenalty", ["xpTeamkillPenalty"] call _readNonNegative];
+missionNamespace setVariable ["BN_KOTH_xpRoundParticipationBonus", ["xpRoundParticipationBonus"] call _readNonNegative];
+missionNamespace setVariable ["BN_KOTH_xpRoundWinnerBonus", ["xpRoundWinnerBonus"] call _readNonNegative];
+private _streakMilestones = if (isArray (_progressionCfg >> "streakMilestones")) then {
+    getArray (_progressionCfg >> "streakMilestones")
+} else {
+    []
+};
+_streakMilestones = _streakMilestones select {_x isEqualType 0 && {finite _x} && {_x >= 2} && {_x isEqualTo floor _x}};
+_streakMilestones = _streakMilestones arrayIntersect _streakMilestones;
+_streakMilestones sort true;
+missionNamespace setVariable ["BN_KOTH_streakMilestones", _streakMilestones];
+
 private _progressionByUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
 if !(_progressionByUid isEqualType createHashMap) then {
     _progressionByUid = createHashMap;

@@ -15,5 +15,5 @@ if (!hasInterface) exitWith {false};
 private _enabled = !(localNamespace getVariable ["BN_KOTH_earplugsEnabled", false]);
 [_enabled] call bn_koth_fnc_escMenu_earplugs_apply;
 
-systemChat (if (_enabled) then {"Earplugs inserted."} else {"Earplugs removed."});
+[(if (_enabled) then {"EARPLUGS INSERTED."} else {"EARPLUGS REMOVED."})] call bn_koth_fnc_ui_notify;
 true

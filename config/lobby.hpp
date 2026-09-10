@@ -7,6 +7,6 @@ class CfgBnKothLobby
     maxTeamPlayers = 50;
     maxTeamDifference = 2;
 
-    // Temporary Phase 1 lobby unit until finalized by playtesting.
+    // Neutral representation used while a player is in the KOTH lobby.
     lobbyUnitClass = "C_man_1";
 };

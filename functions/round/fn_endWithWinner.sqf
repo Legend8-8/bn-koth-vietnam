@@ -25,6 +25,11 @@ if !([_winningSide] call bn_koth_fnc_teams_validateSide) exitWith {
     false
 };
 
+if !([_winningSide] call bn_koth_fnc_roundStats_finalize) exitWith {
+    ["Winner declaration aborted: round result finalization failed", "ERROR"] call bn_koth_fnc_common_log;
+    false
+};
+
 [_winningSide] call bn_koth_fnc_career_recordRound;
 
 ["BN_KOTH_winningSide", _winningSide] call bn_koth_fnc_common_publicState;

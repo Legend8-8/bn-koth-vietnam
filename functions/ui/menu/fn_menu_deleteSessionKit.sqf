@@ -20,6 +20,7 @@ if (_kitId isEqualTo (profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId
 _kits deleteAt _index;
 profileNamespace setVariable ["BN_KOTH_savedKits_v2", _kits];
 saveProfileNamespace;
+[createHashMapFromArray [["savedKitOperation", "DELETE"], ["savedKitId", _kitId]]] call bn_koth_fnc_loadouts_request;
 uiNamespace setVariable ["BN_KOTH_menuKitSelectedId", ""];
 ["LOCAL KIT DELETED."] call bn_koth_fnc_ui_notify;
 ["LOADOUT_KITS"] call bn_koth_fnc_menu_refresh;

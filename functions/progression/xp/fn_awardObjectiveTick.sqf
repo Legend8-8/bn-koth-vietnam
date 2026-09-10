@@ -53,11 +53,16 @@ private _rewarded = 0;
                 _xp = _xp + _priorityXp;
                 _cash = _cash + _priorityCash;
             };
+            private _reason = if (_uid in _priorityUids) then {
+                if (_hasControl) then {"objective_control_priority"} else {"objective_priority"}
+            } else {
+                if (_hasControl) then {"objective_control"} else {"objective_participation"}
+            };
             if (_xp > 0) then {
-                [_uid, _xp, "objective"] call bn_koth_fnc_progression_xp_addXp;
+                [_uid, _xp, _reason] call bn_koth_fnc_progression_xp_addXp;
             };
             if (_cash > 0) then {
-                [_uid, _cash, "objective"] call bn_koth_fnc_progression_cash_addCash;
+                [_uid, _cash, _reason] call bn_koth_fnc_progression_cash_addCash;
             };
             _rewarded = _rewarded + 1;
         };

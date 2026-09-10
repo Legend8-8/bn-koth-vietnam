@@ -78,5 +78,9 @@ if (_dirty isEqualType createHashMap) then {
     _dirty deleteAt _uid;
     missionNamespace setVariable ["BN_KOTH_persistenceDirtyPlayers", _dirty];
 };
+if ((_normalized getOrDefault ["code", ""]) isEqualTo "NORMALIZED_LEGACY"
+    || {_backendResult getOrDefault ["savedKitsDropped", false]}) then {
+    [_uid, if (_backendResult getOrDefault ["savedKitsDropped", false]) then {"repair_saved_kits"} else {"schema_upgrade"}] call bn_koth_fnc_persistence_markDirty;
+};
 [format ["Persistence state loaded UID=%1 schemaCode=%2 warnings=%3", _uid, _normalized getOrDefault ["code", ""], _normalized getOrDefault ["warnings", []]]] call bn_koth_fnc_common_log;
 [true, "LOADED", _state, true] call _result

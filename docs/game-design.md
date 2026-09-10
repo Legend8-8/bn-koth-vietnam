@@ -71,7 +71,7 @@ The server is responsible for calculating and awarding all team score.
 
 The deployed bottom-right HUD presents WEST and EAST team scores, current AO
 control status, the round lead, objective-cycle progress, the local server-provided
-rank/level/XP presentation, raw WEST/EAST main-AO population, and a visually
+rank/level/XP/cash presentation, raw WEST/EAST main-AO population, and a visually
 distinct `+N` Priority bonus row. Weighted control and personal Priority status
 remain authoritative gameplay state but are not displayed directly in that panel.
 

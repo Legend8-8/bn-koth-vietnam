@@ -2,7 +2,7 @@
     File: fn_addRewardFeedEntry.sqf
     Author: Tylervip
     Description: Renders one reward feed entry to the left of the main HUD,
-        showing XP or cash gains with their source reason label. Presentation only;
+        showing XP/cash deltas and authoritative progression events. Presentation only;
         authoritative award amounts are issued elsewhere.
     Execution: Client
     Parameters:
@@ -21,9 +21,10 @@ params [
 ];
 
 if (!hasInterface) exitWith {};
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo 2}) exitWith {};
 
 private _type = toLower _rewardType;
-if !(_type in ["xp", "cash"]) exitWith {};
+if !(_type in ["xp", "cash", "mastery", "acquisition", "perk_purchase", "perk_activation", "level_up", "teamkill", "streak"]) exitWith {};
 
 #define BN_KOTH_RF_MAX_ENTRIES 10
 #define BN_KOTH_RF_LIFETIME    6
@@ -45,16 +46,22 @@ if (isNull _display) exitWith {
     private _fallback = if (_type isEqualTo "cash") then {
         format ["[CASH] %1 %2$%3", _reasonLabel, if (_amount > 0) then {"+"} else {""}, _amount]
     } else {
-        format ["[XP] %1 +%2 XP", _reasonLabel, _amount]
+        if (_type isEqualTo "xp") then {
+            format ["[XP] %1 %2%3 XP", _reasonLabel, if (_amount >= 0) then {"+"} else {""}, _amount]
+        } else {_reasonLabel}
     };
     systemChat _fallback;
 };
 
-private _color = if (_type isEqualTo "xp") then {"#D8B04B"} else {"#75D66D"};
+private _color = if (_type isEqualTo "xp") then {"#D8B04B"} else {if (_type isEqualTo "cash") then {"#75D66D"} else {"#E3C56A"}};
 private _amountText = if (_type isEqualTo "xp") then {
     format ["%1%2 XP", if (_amount >= 0) then {"+"} else {""}, _amount]
 } else {
-    format ["%1$%2", if (_amount >= 0) then {"+"} else {"-"}, abs _amount]
+    if (_type isEqualTo "cash") then {
+        format ["%1$%2", if (_amount >= 0) then {"+"} else {"-"}, abs _amount]
+    } else {
+        if (_type isEqualTo "mastery") then {format ["+%1 MASTERY", _amount]} else {""}
+    }
 };
 
 private _reasonText = if (_reasonLabel isEqualTo "") then {""} else {

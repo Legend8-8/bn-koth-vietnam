@@ -1679,35 +1679,36 @@ canonical compatibility data. Compatible magazines, grenade/smoke categories,
 and non-magazine cargo remain unchanged. This cleanup applies to managed
 weapon requests only; saved-kit loading continues to reject incompatible cargo.
 
-Saved kits are stored only in the local client's `profileNamespace`. Saving and
-deleting do not directly mutate equipped or intended gameplay loadout state. A locally stored kit is never an
-authority source: LOAD submits the complete stored array as untrusted intent,
-and the server repeats structural weapon/attachment validation, factual slot
-validation, progression entitlement checks, assigned-slot rules, cargo class
-and quantity checks, and container capacity checks before the single owned
-application path may equip it. Editing local profile data therefore cannot
-grant equipment or bypass progression.
+Saved kits are bounded server-persistent intent within the existing progression
+record. CREATE and UPDATE capture the server-owned intended loadout; the client
+cannot submit replacement equipment through those operations. Legacy
+`profileNamespace` kits may be imported once when the durable set is empty. A
+local synchronization marker prevents later re-import of deleted or stale
+local intent. Kits remain untrusted throughout migration. Every
+LOAD/default-spawn use repeats structural
+weapon/attachment validation, factual slot validation, current side/level/
+ownership/mastery/perk/rental checks, assigned-slot rules, cargo checks and
+container-capacity checks before the single owned application path may equip it.
+Editing local profile data or a database row therefore cannot grant equipment.
 
-Persistent progression contains only `schemaVersion`, `uid`, `xp`, `cash`,
-`ownedWeapons`, and canonical `weaponKills`. It deliberately excludes current
-inventory/loadout, picked-up equipment, rentals, and transient Arsenal state.
-Valid fail-closed canonical combat attribution may still award mastery for a
-picked-up infantry weapon because mastery follows server-observed kill evidence,
-not ownership or rental state.
+Persistent progression contains `schemaVersion`, `uid`, `xp`, `cash`,
+`ownedWeapons`, canonical `weaponKills`, perk ownership/activation, the bounded
+saved-kit set, and its preferred kit ID. It deliberately excludes current
+physical inventory, picked-up equipment, session rentals, and transient Arsenal
+state. Valid fail-closed canonical combat attribution may still award mastery
+for a picked-up infantry weapon because mastery follows server-observed kill
+evidence, not ownership or rental state.
 
 The Loadout overview exposes `MANAGE LOADOUTS` and `SAVE CURRENT KIT` in its
-centre footer. The manager supports up to twelve locally named kits, including
-load, explicit edit, rename, and delete. LOAD gives feedback only after the
+centre footer. The manager supports the centrally configured saved-kit limit,
+including load, explicit edit, rename, and delete. LOAD gives feedback only after the
 server-validated loadout has been applied. EDIT submits the same untrusted
 loadout through that validation path and establishes a local edit target only
-after success. The normal Arsenal flow then edits the authoritative intended
-loadout; `SAVE CHANGES` explicitly overwrites that same local record without a
-new name or duplicate. `CANCEL EDIT`, successful ordinary LOAD, successful save,
-and menu close clear the edit target. Navigation, including Store entry, never
-autosaves it. The former fixed `slot1` profile record is migrated once as
-`MIGRATED KIT`; the old profile key is then removed. Kit names and ids are
-presentation metadata only. The server never resolves equipment from a client
-kit id and validates the complete submitted loadout independently.
+after success. The normal Arsenal flow then edits authoritative intended state;
+`SAVE CHANGES` asks the server to recapture it for the same stable kit ID. Local
+profile state remains a presentation cache and migration source, not durable or
+authoritative storage. Kit names and IDs are metadata only; a server-resolved
+kit still passes complete current entitlement validation before use.
 
 State-changing Arsenal requests also include the network id of the actual
 mapboard whose local action opened the menu. The server treats that id only as
@@ -1720,8 +1721,9 @@ Ordinary saved-kit LOAD/EDIT retains these mapboard/access restrictions.
 SET DEFAULT submit/clear is preference-only intent and may run outside mapboard
 access, including reconnect/menu initialization. It never equips the player or
 changes `intendedLoadout`; clearing removes only the preference/candidate.
-Only the preferred stable kit ID is stored in client `profileNamespace`.
-The submitted array remains untrusted and must pass the normal server-owned
+The preferred stable kit ID and presentation cache remain in client
+`profileNamespace`, while the canonical saved set is server-persistent. Any
+legacy submitted array remains untrusted and must pass the normal server-owned
 `load_local_kit` validation before becoming a session spawn candidate. Every
 spawn revalidates that candidate against current authoritative state and uses
 the faction starter if absent or invalid. Temporary side invalidity preserves
@@ -1772,7 +1774,8 @@ cached on entry and invalidated by authoritative progression/acquisition
 updates, with no polling or per-frame config scan.
 
 `BUY` and `RENT` submit intent only. The server derives the caller, repeats
-entitlement and cash checks, commits through
+the alive/current representation, `ACTIVE` deployment and team-mapboard
+proximity checks as well as entitlement and cash checks, commits through
 `functions/progression/acquisition/`, and returns only to the requester. The
 existing targeted progression update refreshes Store cash and ownership/rental
 state. Acquisition does not auto-equip. Persistence, stock, and final price
@@ -1826,7 +1829,7 @@ vehicle object and never
 managed command/teleport capability. Vehicles do not use weapon mastery.
 # Perk-gated managed equipment
 
-Attachment facts continue to come from the generated S.O.G. compatibility catalogue. The Suppressor perk uses factual `SourceItems.itemType = "suppressor"` metadata. While inactive, any complete managed loadout containing such an item in a weapon slot or uniform/vest/backpack cargo is rejected with `ERR_PERK_SUPPRESSOR_INACTIVE`. Local saved kits are not modified; applying one is denied until the perk is active. Battlefield pickups are intentionally outside this managed-loadout rule.
+Attachment facts continue to come from the generated S.O.G. compatibility catalogue. The Suppressor perk uses factual `SourceItems.itemType = "suppressor"` metadata. While inactive, any complete managed loadout containing such an item in a weapon slot or uniform/vest/backpack cargo is rejected with `ERR_PERK_SUPPRESSOR_INACTIVE`. Persisted saved-kit intent is not modified; applying one is denied until the perk is active. Battlefield pickups are intentionally outside this managed-loadout rule.
 
 The S.O.G. medikit (`vn_b_item_medikit_01`) is intentionally cross-team KOTH equipment despite its WEST-looking classname. `Metadata >> Consumables` assigns `allowedSides[] = {"WEST", "EAST"}` and `requiredPerks[] = {"medic"}`. It remains visible in the MEDICAL catalogue while locked, with `MEDIC PERK REQUIRED` shown by the generic single-perk lock presentation. Complete managed loadouts containing it are rejected with `ERR_PERK_MEDIC_INACTIVE` unless the server-owned active-perk set contains `medic`.
 

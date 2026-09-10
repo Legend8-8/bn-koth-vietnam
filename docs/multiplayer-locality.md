@@ -340,10 +340,18 @@ Before merging a multiplayer feature, answer:
 7. Is the same work unnecessarily running on every client?
 8. Does the server remain authoritative?
 
+Every allowlisted server-to-client receiver rejects a remotely executed call
+unless `remoteExecutedOwner == 2`; direct local calls remain valid. The one
+intentional client-to-client voice-state broadcast instead verifies that the
+remote sender owns the reported player object. `allowedTargets` restricts a
+RemoteExec destination, not who may invoke that receiver.
+
 13. Store Weapon Requests
 
 The client sends only `PURCHASE`/`RENT` plus a canonical weapon classname. The
-server resolves the player and UID from `remoteExecutedOwner`, invokes the
+server resolves the player and UID from `remoteExecutedOwner`, requires the
+current authoritative representation to be alive and deployed in `ACTIVE` at
+its team mapboard, invokes the
 existing server-only acquisition API, targets the result to that owner, and
 publishes changed cash/ownership/rental state through the existing player-only
 progression update. Store requests never broadcast and never equip equipment.
@@ -351,8 +359,9 @@ progression update. Store requests never broadcast and never equip equipment.
 14. Vehicle Rental Requests
 
 Clients submit only RENT or owner access-mode intent. The server derives the
-UID from `remoteExecutedOwner`, validates current side/level/perks, cash and
-active-rental state, selects/reserves a cached authored paid pad, creates the
+UID from `remoteExecutedOwner`, requires the current authoritative representation
+to be alive and deployed in `ACTIVE` at its team mapboard, validates current
+side/level/perks, cash and active-rental state, selects/reserves a cached authored paid pad, creates the
 vehicle server-local, and only then deducts cash — all as one transaction with
 no separate requisition step. The active rental map is server-only; only the
 requesting client receives their projected state. Get-in authorization is
@@ -449,6 +458,14 @@ display name remain logical session state across round release.
 
 # Perk requests
 
-Perk purchase and activation requests are client intent only. The server derives the player from `remoteExecutedOwner`, reads configured price and authoritative progression, commits atomically, marks persistence dirty, and publishes only to that owner. Restricted-item cleanup is server-derived; the owning client only applies the server-signed Unit Loadout because `setUnitLoadout` must execute where the player unit is local. Suppressor and MEDIC both use this transaction, and the perk stays active until the server observes the exact sanitized loadout.
+Perk purchase and activation requests are client intent only. The server derives
+the player from `remoteExecutedOwner`, requires the current authoritative
+representation to be alive and deployed in `ACTIVE` at its team mapboard, reads
+configured price and authoritative progression, commits atomically, marks
+persistence dirty, and publishes only to that owner. Restricted-item cleanup is
+server-derived; the owning client only applies the server-signed Unit Loadout
+because `setUnitLoadout` must execute where the player unit is local. Suppressor
+and MEDIC both use this transaction, and the perk stays active until the server
+observes the exact sanitized loadout.
 
 The MEDIC engine trait is client-local derived state. Progression publication, state snapshots, local representation initialization and representation handoff re-evaluate it from projected `activePerks` plus the authoritative `ACTIVE` player-state projection. Lobby/non-current representations receive no KOTH Medic authority, and all medikit validation continues to read the server progression registry rather than the trait.

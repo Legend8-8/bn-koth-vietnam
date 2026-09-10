@@ -173,7 +173,7 @@ class BN_KOTH_RscHud
         class HudPlayerProgress: BN_KOTH_RscText
         {
             idc = BN_KOTH_IDC_HUD_PLAYER_PROGRESS;
-            text = "LEVEL --   XP SYNCING";
+            text = "LEVEL --   XP SYNCING   CASH --";
             style = 2;
             font = "PuristaSemiBold";
             x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.18;

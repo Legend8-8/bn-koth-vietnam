@@ -62,8 +62,10 @@ private _result = createHashMapFromArray [
 ];
 
 [_uid, "xp", _amount, _reason] call bn_koth_fnc_progression_publishUpdate;
+[_uid, "xp", _amount] call bn_koth_fnc_roundStats_recordReward;
 if !(_newLevel isEqualTo _oldLevel) then {
     [] call bn_koth_fnc_teams_publishState;
+    [_uid, "level_up", 0, str _newLevel] call bn_koth_fnc_progression_publishUpdate;
 };
 
 [format [

@@ -109,6 +109,7 @@ switch (toUpper _mode) do {
         };
         if (_matches) then {call _clearBinding};
         ["RESTORED", _sessionId, _matches] remoteExec ["bn_koth_fnc_airInsertion_backpackRequest", 2];
+        if (_matches) then {["ORIGINAL BACKPACK RESTORED."] call bn_koth_fnc_ui_notify};
         call _hideTransition;
     };
     case "CLEAR": {

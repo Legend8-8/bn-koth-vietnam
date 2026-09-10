@@ -25,7 +25,9 @@ private _startResults = {
         [] call bn_koth_fnc_menu_close;
     };
 
-    private _scores = missionNamespace getVariable ["BN_KOTH_teamScores", createHashMap];
+    private _roundResult = missionNamespace getVariable ["BN_KOTH_roundResult", createHashMap];
+    if !(_roundResult isEqualType createHashMap) then {_roundResult = createHashMap};
+    private _scores = _roundResult getOrDefault ["teamScores", missionNamespace getVariable ["BN_KOTH_teamScores", createHashMap]];
     if !(_scores isEqualType createHashMap) then {_scores = createHashMap};
 
     private _playableSides = missionNamespace getVariable ["BN_KOTH_playableSides", [west, east]];
@@ -33,7 +35,7 @@ private _startResults = {
     private _leftSide = _playableSides select 0;
     private _rightSide = _playableSides select 1;
 
-    private _leaders = missionNamespace getVariable ["BN_KOTH_liveLeaders", createHashMap];
+    private _leaders = _roundResult getOrDefault ["leaders", missionNamespace getVariable ["BN_KOTH_liveLeaders", createHashMap]];
     if !(_leaders isEqualType createHashMap) then {_leaders = createHashMap};
     private _leaderSnapshot = createHashMap;
     {
@@ -45,13 +47,24 @@ private _startResults = {
         ]];
     } forEach ["mostDeadly", "objective", "bestStreak"];
 
+    private _personal = createHashMap;
+    private _localUid = if (!isNull player) then {getPlayerUID player} else {""};
+    {
+        if (_x isEqualType createHashMap && {(_x getOrDefault ["uid", ""]) isEqualTo _localUid}) exitWith {
+            _personal = _x;
+        };
+    } forEach (_roundResult getOrDefault ["players", []]);
+
     private _snapshot = createHashMapFromArray [
-        ["winner", missionNamespace getVariable ["BN_KOTH_winningSide", sideUnknown]],
+        ["winner", _roundResult getOrDefault ["winner", missionNamespace getVariable ["BN_KOTH_winningSide", sideUnknown]]],
         ["leftSide", _leftSide],
         ["rightSide", _rightSide],
         ["leftScore", _scores getOrDefault [_leftSide, 0]],
         ["rightScore", _scores getOrDefault [_rightSide, 0]],
-        ["leaders", _leaderSnapshot]
+        ["leaders", _leaderSnapshot],
+        ["personal", _personal],
+        ["players", _roundResult getOrDefault ["players", []]],
+        ["durationSeconds", _roundResult getOrDefault ["durationSeconds", 0]]
     ];
 
     private _oldHandle = uiNamespace getVariable ["BN_KOTH_resultsPresentationHandle", scriptNull];

@@ -67,6 +67,11 @@ if !(_record isEqualType createHashMap) exitWith {
     [format ["Rejected Store acquisition request: UID %1 is not registered.", _uid], "WARN"] call bn_koth_fnc_common_log;
     ["PLAYER_NOT_REGISTERED", "Store player state is not ready."] call _rejectRequest;
 };
+if ((_record getOrDefault ["ownerId", -1]) isNotEqualTo _ownerId
+    || {!((_record getOrDefault ["currentUnit", objNull]) isEqualTo _playerObj)}) exitWith {
+    [format ["Rejected Store acquisition request from stale representation for UID %1.", _uid], "WARN"] call bn_koth_fnc_common_log;
+    ["PLAYER_IDENTITY_MISMATCH", "Store player representation is not current."] call _rejectRequest;
+};
 
 private _now = serverTime;
 private _lastRequestAt = _record getOrDefault ["lastWeaponAcquisitionRequestAt", -999];

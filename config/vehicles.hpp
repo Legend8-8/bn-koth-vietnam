@@ -24,6 +24,7 @@ class CfgBnKothVehicles
 
     // Anti-spam delay between server-authoritative command-teleport requests.
     commandTeleportRequestCooldownSeconds = 10;
+    commandTeleportValidationThrottleSeconds = 0.25;
 
     // One-life paid vehicle rental policy: RENT is one immediate authoritative
     // spawn transaction; there is no separate requisition step.
@@ -31,6 +32,8 @@ class CfgBnKothVehicles
     rentedWreckCleanupSeconds = 180;
     rentedAbandonmentSeconds = 600;
     rentedOwnerDisconnectCleanupSeconds = 600;
+    // Rental lifecycle is swept by the shared vehicle manager, not one loop per rental.
+    rentalMonitorIntervalSeconds = 30;
     paidSpawnClearanceMeters = 12;
     paidFallbackSpawnRadiusMeters = 50;
     paidSpawnMinimumSurfaceNormalZ = 0.85;

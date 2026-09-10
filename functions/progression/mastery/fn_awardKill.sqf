@@ -79,11 +79,40 @@ missionNamespace setVariable ["BN_KOTH_playerProgression", _byUid];
 _processed set [_awardId, _now];
 missionNamespace setVariable ["BN_KOTH_weaponMasteryProcessedKills", _processed];
 
-[_uid, "mastery", 1, "weapon_kill"] call bn_koth_fnc_progression_publishUpdate;
+private _metadata = [_weapon] call bn_koth_fnc_loadouts_getWeaponMetadata;
+private _required = (_metadata getOrDefault ["masteryKillsRequired", 0]) max 0;
+private _weaponCfg = configFile >> "CfgWeapons" >> _weapon;
+private _displayName = if (isClass _weaponCfg) then {getText (_weaponCfg >> "displayName")} else {""};
+if (_displayName isEqualTo "") then {_displayName = toUpper _weapon};
+private _masteryComplete = _required > 0 && {_next >= _required};
+private _reason = if (_required > 0 && {_next < _required}) then {
+    format ["%1  %2 / %3 KILLS", _displayName, _next, _required]
+} else {
+    if (_required > 0 && {_previous < _required} && {_masteryComplete}) then {
+        private _entitlement = [_uid, _weapon] call bn_koth_fnc_progression_evaluateWeaponEntitlement;
+        private _availability = switch (_entitlement getOrDefault ["code", ""]) do {
+            case "REQUIRES_ACQUISITION": {
+                private _options = [];
+                if (_entitlement getOrDefault ["canPurchase", false]) then {_options pushBack "PURCHASE"};
+                if (_entitlement getOrDefault ["canRent", false]) then {_options pushBack "RENTAL"};
+                if ((count _options) > 0) then {format [" — %1 ELIGIBLE", _options joinString " / "]} else {""}
+            };
+            case "LOCKED_LEVEL": {format [" — LEVEL %1 STILL REQUIRED", _entitlement getOrDefault ["minLevel", 1]]};
+            case "LOCKED_PERK": {" — PERK STILL REQUIRED"};
+            default {""};
+        };
+        format ["MASTERY COMPLETE: %1  %2 / %3%4", _displayName, _next, _required, _availability]
+    } else {
+        format ["%1  %2 MASTERY KILLS", _displayName, _next]
+    }
+};
+[_uid, "mastery", 1, _reason] call bn_koth_fnc_progression_publishUpdate;
 [format ["Weapon mastery award UID=%1 weapon=%2 previous=%3 new=%4 attribution=ATTRIBUTED victim=%5", _uid, _weapon, _previous, _next, _victimUid]] call bn_koth_fnc_common_log;
 
 createHashMapFromArray [
     ["awarded", true], ["code", "MASTERY_AWARDED"], ["uid", _uid],
-    ["canonicalClass", _weapon], ["previousKills", _previous], ["weaponKills", _next],
+    ["canonicalClass", _weapon], ["displayName", _displayName],
+    ["previousKills", _previous], ["weaponKills", _next],
+    ["masteryKillsRequired", _required], ["masteryComplete", _masteryComplete],
     ["awardId", _awardId]
 ]

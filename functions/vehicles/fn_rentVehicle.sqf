@@ -18,7 +18,13 @@ private _fail={
 if (!isServer) exitWith {["NOT_SERVER","Server authority required."] call _fail};
 private _records=missionNamespace getVariable ["BN_KOTH_playerRecords",createHashMap];
 private _record=_records getOrDefault [_uid,createHashMap];
+private _mapboardAccessDistance=(getNumber (missionConfigFile >> "CfgBnKothInteractions" >> "teamMapboardAccessDistance")) max 1;
 if !(_record isEqualType createHashMap) exitWith {["PLAYER_NOT_REGISTERED","Player state is not ready."] call _fail};
+private _playerObj=_record getOrDefault ["currentUnit",objNull];
+if (isNull _playerObj || {!alive _playerObj} || {!((_record getOrDefault ["deployed",false]))} || {!((_record getOrDefault ["state",""]) isEqualTo "ACTIVE")} || {!((missionNamespace getVariable ["BN_KOTH_roundState",""]) isEqualTo "ACTIVE")}) exitWith {
+    ["NOT_DEPLOYED","Vehicle rental requires an alive, actively deployed player."] call _fail
+};
+if !((getPlayerUID _playerObj) isEqualTo _uid) exitWith {["PLAYER_NOT_REGISTERED","Current player representation does not match the rental owner."] call _fail};
 
 private _activeMap=missionNamespace getVariable ["BN_KOTH_vehicleActiveRentals",createHashMap];
 private _activeRecord=_activeMap getOrDefault [_uid,createHashMap];
@@ -53,6 +59,17 @@ if (_padCategory isEqualTo "SEA") exitWith {["NO_SAFE_SPAWN","No curated sea ren
 
 private _activeLocation=toLower (missionNamespace getVariable ["BN_KOTH_activeLocationId",""]);
 private _locationData=[_activeLocation] call bn_koth_fnc_zone_getLocationData;
+private _boardRef=if (_sideToken isEqualTo "WEST") then {_locationData getOrDefault ["westCommand_mapboard",""]} else {_locationData getOrDefault ["eastCommand_mapboard",""]};
+private _boardTarget=missionNamespace getVariable [_boardRef,objNull];
+if (isNull _boardTarget && {!(_boardRef isEqualTo "")} && {!((markerShape _boardRef) isEqualTo "")}) then {
+    private _boardPos=markerPos _boardRef;
+    private _boardCandidates=nearestObjects [_boardPos,["Static","Thing","House","LandVehicle"],_mapboardAccessDistance];
+    if !(_boardCandidates isEqualTo []) then {
+        _boardCandidates=[_boardCandidates,[],{_boardPos distance2D _x},"ASCEND"] call BIS_fnc_sortBy;
+        _boardTarget=_boardCandidates select 0;
+    };
+};
+if (isNull _boardTarget || {(_playerObj distance2D _boardTarget)>_mapboardAccessDistance}) exitWith {["NOT_AT_TEAM_MAPBOARD","Vehicle rental requires access through your active team mapboard."] call _fail};
 private _capabilities=[_locationData] call bn_koth_fnc_zone_getVehicleCapabilities;
 private _sideCapabilities=(_capabilities getOrDefault ["sides",createHashMap]) getOrDefault [_sideToken,createHashMap];
 private _family=(_sideCapabilities getOrDefault ["families",createHashMap]) getOrDefault [_category,createHashMap];
@@ -117,26 +134,10 @@ if !(_spent getOrDefault ["success",false]) exitWith {
     [_spent getOrDefault ["code","INSUFFICIENT_CASH"],"Insufficient cash for this rental."] call _fail
 };
 
-_activeMap set [_uid,createHashMapFromArray [["vehicle",_vehicle],["vehicleClass",_canonical],["accessMode","OWNER_ONLY"],["spawnedAt",serverTime],["ownerUid",_uid]]];
+_activeMap set [_uid,createHashMapFromArray [["vehicle",_vehicle],["vehicleClass",_canonical],["accessMode","OWNER_ONLY"],["spawnedAt",serverTime],["ownerUid",_uid],["emptySince",-1],["disconnectedSince",-1]]];
 missionNamespace setVariable ["BN_KOTH_vehicleActiveRentals",_activeMap];
 private _ownerUnit=_record getOrDefault ["currentUnit",objNull];
 if (!isNull _ownerUnit && {owner _ownerUnit > 0}) then {[_vehicle] remoteExecCall ["bn_koth_fnc_vehicles_addRentalOwnerActions",owner _ownerUnit]};
-[_uid,_vehicle] spawn {
-    params ["_uid","_vehicle"];
-    private _cfg=missionConfigFile >> "CfgBnKothVehicles";
-    private _emptyLimit=(getNumber (_cfg >> "rentedAbandonmentSeconds")) max 60;
-    private _disconnectLimit=(getNumber (_cfg >> "rentedOwnerDisconnectCleanupSeconds")) max 60;
-    private _emptySince=-1; private _disconnectedSince=-1;
-    while {!isNull _vehicle && {alive _vehicle}} do {
-        sleep 30;
-        private _ownerConnected=(allPlayers findIf {getPlayerUID _x isEqualTo _uid}) >= 0;
-        if (_ownerConnected) then {_disconnectedSince=-1} else {if (_disconnectedSince<0) then {_disconnectedSince=serverTime}};
-        if ((crew _vehicle findIf {isPlayer _x})<0) then {if (_emptySince<0) then {_emptySince=serverTime}} else {_emptySince=-1};
-        private _abandoned=_emptySince>=0 && {(serverTime-_emptySince)>=_emptyLimit};
-        private _ownerGone=_disconnectedSince>=0 && {(serverTime-_disconnectedSince)>=_disconnectLimit} && {(crew _vehicle findIf {isPlayer _x})<0};
-        if (_abandoned || {_ownerGone}) exitWith {[_uid,_vehicle,if (_ownerGone) then {"OWNER_DISCONNECTED"} else {"ABANDONED"}] call bn_koth_fnc_vehicles_endRentalLife;deleteVehicle _vehicle};
-    };
-};
 if !(_reservationId isEqualTo "") then {_reservations deleteAt _reservationId; missionNamespace setVariable ["BN_KOTH_vehiclePaidPadReservations",_reservations]};
 [format [
     "Vehicle rental SUCCEEDED UID=%1 class=%2 pad=%3 pos=%4 netId=%5 charged=%6",

@@ -13,7 +13,7 @@
 
 params [["_result", createHashMap, [createHashMap]]];
 if (!hasInterface) exitWith {};
-if (!isServer && {remoteExecutedOwner isNotEqualTo 2}) exitWith {};
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo 2}) exitWith {};
 
 private _code = _result getOrDefault ["code", "UNKNOWN"];
 private _message = switch (_code) do {

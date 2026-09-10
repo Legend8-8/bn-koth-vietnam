@@ -24,5 +24,8 @@ createHashMapFromArray [
     ["ownedWeapons", +(_state getOrDefault ["ownedWeapons", []])],
     ["ownedPerks", +(_state getOrDefault ["ownedPerks", []])],
     ["activePerks", +(_state getOrDefault ["activePerks", []])],
+    ["savedKits", +(_state getOrDefault ["savedKits", []])],
+    ["preferredSavedKitId", _state getOrDefault ["preferredSavedKitId", ""]],
+    ["savedKitsInitialized", _state getOrDefault ["savedKitsInitialized", false]],
     ["weaponKills", _projectedKills]
 ]

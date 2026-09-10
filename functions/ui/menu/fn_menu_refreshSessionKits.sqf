@@ -16,7 +16,7 @@ private _titleControl = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_TITLE;
 private _subtitleControl = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_SUBTITLE;
 private _pageLabelControl = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL;
 _titleControl ctrlSetText "SAVED LOADOUTS";
-_subtitleControl ctrlSetText "LOCAL CLIENT KITS - SERVER VALIDATED ON LOAD";
+_subtitleControl ctrlSetText "SAVED TO YOUR PROFILE - SERVER VALIDATED ON LOAD";
 _subtitleControl ctrlShow false;
 _pageLabelControl ctrlSetText "PAGE 1 / 1";
 
@@ -154,7 +154,7 @@ _next buttonSetAction "private _p=uiNamespace getVariable ['BN_KOTH_menuKitPage'
     };
     (_display displayCtrl _area) ctrlSetBackgroundColor [0.025, 0.025, 0.022, 0.92];
     (_display displayCtrl _name) ctrlSetText (toUpper _kitName);
-    (_display displayCtrl _status) ctrlSetText (if (_kitId isEqualTo _selectedId) then {"SELECTED - LOAD, EDIT, RENAME OR DELETE"} else {"STORED LOCALLY - VALIDATED WHEN LOADED"});
+    (_display displayCtrl _status) ctrlSetText (if (_kitId isEqualTo _selectedId) then {"SELECTED - LOAD, EDIT, RENAME OR DELETE"} else {"PERSISTED INTENT - VALIDATED WHEN LOADED"});
     if (_kitId isEqualTo _preferredId) then {
         (_display displayCtrl _status) ctrlSetText "DEFAULT SPAWN LOADOUT ✓";
     };

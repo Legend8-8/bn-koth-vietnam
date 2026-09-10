@@ -5,9 +5,9 @@ class Header
     maxPlayers = 100;
 };
 author = "Bro-Nation";
-onLoadName = "Vietnam KOTH Test";
+onLoadName = "Bro-Nation KOTH Vietnam";
 overviewText = "King of the Hill";
-onLoadMission = "Server-authoritative KOTH prototype for S.O.G. Prairie Fire.";
+onLoadMission = "Server-authoritative persistent KOTH for S.O.G. Prairie Fire.";
 loadScreen = "";
 
 respawn = 3;
@@ -19,13 +19,19 @@ enableTeamSwitch = 0;
 
 class CfgBnKothDebug
 {
-    // Development default for the current prototype cycle.
+    // Debug presentation remains disabled for normal players by default.
     enabled = 0;
 };
 
 class CfgBnKothDeploymentTransition
 {
     meltdownChance = 0.01;
+};
+
+class CfgBnKothInteractions
+{
+    // Shared authoritative tolerance for all active team-mapboard services.
+    teamMapboardAccessDistance = 8;
 };
 
 class CfgBnKothGroups

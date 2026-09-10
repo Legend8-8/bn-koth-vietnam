@@ -617,7 +617,9 @@ run:
 call compile preprocessFileLineNumbers "functions\vehicles\test_rental.sqf"
 ```
 
-An empty array is a pass. Then verify: RENT is the complete transaction (a
+An empty array is a pass. Then verify: requests from the lobby, a stale player
+representation, outside `ACTIVE`, while dead, or away from the authoritative
+team mapboard fail without a vehicle or charge. RENT is the complete transaction (a
 successful RENT immediately spawns the active vehicle in the same request,
 with no separate requisition/pending step); cash is deducted exactly once and
 only after the vehicle exists; a blocked spawn (occupied pads and no safe
@@ -656,6 +658,9 @@ mastery and perks already satisfied, ownership/rental still missing), and
 submit through the exact same `bn_koth_fnc_progression_requestWeaponAcquisition`
 endpoint Store uses. Verify:
 
+- forged BUY/RENT requests while dead, undeployed, outside `ACTIVE`, from a
+  stale representation, or away from the authoritative team mapboard fail
+  before cash or entitlement state changes;
 - a below-level native weapon shows `LOCKED · LEVEL N` with no BUY/RENT;
 - a level-eligible unacquired native weapon shows `AVAILABLE TO ACQUIRE` with
   BUY/RENT enabled only up to the player's current cash;
@@ -684,6 +689,10 @@ no pending-rental state anywhere in the client or server rental payloads.
 
 Run on hosted and dedicated servers with the extDB schema-v2 migration applied:
 
+- forged perk purchase/activation/deactivation requests while dead, undeployed,
+  outside `ACTIVE`, from a stale representation, or away from the authoritative
+  team mapboard fail before cash, perk, intended-loadout, or physical-loadout
+  state changes;
 - Fresh/legacy player: `ownedPerks=[]`, `activePerks=[]`; malformed, duplicate, unknown, non-owned active, and over-limit persisted IDs normalize safely.
 - Purchase Suppressor at $1: cash falls once, ownership appears once, duplicate/spammed purchase does not charge again, reconnect restores it.
 - Activation: unowned is rejected; owned activates without a fee; repeated/rapid requests cannot exceed the configured maximum of three; reconnect restores the normalized active subset.
@@ -1260,6 +1269,11 @@ playable sides:
 41. Complete RESETTING/WAITING and verify the server session, player-index and temporary-backpack maps are empty.
 42. Verify the Caesar is absent from command, free-managed, rental, ownership and persistent state.
 
+During preparation and restoration, replay the same valid backpack
+acknowledgement at high rate. Confirm the server accepts at most one scheduled
+verification per player per 0.25 seconds, creates no reward/charge duplication,
+and leaves the session and backpack state consistent.
+
 Review server and every client RPT for RemoteExec, locality, missing-class,
 undefined-variable and repeated-script errors. Hosted testing is useful for
 iteration but does not establish this feature's multiplayer acceptance.
@@ -1295,3 +1309,66 @@ hides the safe-zone backpack/boarding swap, the view returns with the player
 already seated in a flying aircraft, the countdown changes to `DEPARTING`, each
 occupant receives only one concise role/egress notification, and no stale AIR
 INSERTION HUD or action remains after any lifecycle exit.
+
+### Static AO configuration validation
+
+Run the repository AO validator without building or copying a mission:
+
+```powershell
+    python tools/validate_ao_config.py
+```
+
+The command validates every mission-ready map's configured location IDs,
+rotation membership, population ranges, required zone/respawn/base/mapboard
+references, explicitly authored vehicle-capability references, and image
+paths. Structural failures return a non-zero process status. Missing optional
+presentation images are reported as warnings until their authored assets are
+added.
+
+### Pass 2 round accounting and combat acceptance
+
+On a dedicated server with at least three players, verify:
+
+1. Two opposing contributors damage one victim and a third player lands the kill; only contributors meeting the configured damage/window rules receive an assist.
+2. The killer, teammates, suicide damage, team damage, stale hits, and below-threshold hits receive no assist.
+3. Replaying the same canonical event key awards no second assist or teamkill penalty.
+4. Death, respawn, disconnect, reconnect, and the next `ACTIVE` round leave no stale victim contributor state.
+5. Configured XP/cash assist rewards and teamkill deductions use the normal progression feed and survive reconnect; zero values change no balance.
+6. XP/cash penalties clamp at zero and cannot create negative canonical state.
+7. A dead or respawning participant still appears in the completed-round result, while a disconnected player receives no late payout.
+8. Participation and winning-team bonuses award exactly once at the score-limit winner boundary and do not repeat in `ENDING` or `RESETTING`.
+9. The after-action report shows winner, both final scores, local K/D/A, objective contribution, best streak through Live Leaders, signed round XP/cash delta, level transition, and elapsed round duration.
+10. A JIP client during `ENDING`/`RESETTING` receives the same immutable result projection.
+11. The lobby exposes only the score limit; no round time-limit setting or timer is presented.
+
+### Persistent saved-loadout acceptance
+
+After applying migration `003_add_saved_kits.sql` and deploying the updated
+extDB3 SQL_CUSTOM file:
+
+1. Create, rename, update, delete, and select a default saved loadout at the active team mapboard.
+2. Confirm server restart and reconnect restore the bounded saved set and preferred ID.
+3. Begin with legacy `profileNamespace` kits and an empty durable set; the next save/update must migrate valid local entries once without granting equipment.
+4. Attempt CRUD away from the mapboard, undeployed, from the wrong current representation, and with malformed IDs/names/loadout shapes; all must fail closed.
+5. Save a loadout containing a current rental, expire/remove the rental, then load and respawn; the old saved intent must not recreate entitlement.
+6. Repeat with a battlefield pickup, cross-side item, locked level/mastery item, and inactive perk item; every application must pass the current canonical validator or fall back safely.
+7. Corrupt only `saved_kits` in the database and verify the invalid kit set is dropped, valid progression remains loaded, and the next canonical save repairs the row without granting equipment.
+8. Review server/client RPT for duplicate writes, oversize codec rejection, malformed extDB rows, stale preference state, and RemoteExec direction failures.
+
+The AO validator, not the mission exporter, owns these repository checks.
+`build.py` remains limited to assembling exportable mission folders.
+
+### Pass 3 presentation and shared-rental acceptance
+
+On a dedicated server, retain enough human participants to exceed one results
+scoreboard viewport and verify:
+
+1. The completed-round scoreboard contains every registered participant using only the immutable server result rows, groups WEST before EAST, then sorts by objective points, kills, and name.
+2. Long names remain bounded; the local player and disconnected participants are marked; dead and disconnected objects are not required for rendering.
+3. K/D/A, objective points, best streak, signed XP/cash delta, level movement, final score, duration, and Live Leaders agree with server accounting for the same round.
+4. A JIP client entering during `ENDING` or `RESETTING` receives the same result and the result clears on the normal next-round boundary.
+5. With configured streak milestones, each threshold produces one feed entry per streak, death permits that threshold in a later streak, and suicide/teamkill never advances it.
+6. Mastery feed entries use the canonical weapon display name and kill threshold; completion does not claim purchase/rental availability while level, perk, side, or acquisition policy still blocks it.
+7. Vehicle Store categories and cards explain active-AO capability, side, level, perk, cash, active-rental, cooldown, and unconfigured-rental blocks using server projection state.
+8. Multiple simultaneous rentals are reclaimed by the one shared vehicle-manager sweep after configured abandonment/disconnect timeouts, with no per-rental monitor scripts or duplicate cooldowns.
+9. SOLO/GROUP insertion prompts, countdown, successful-departure charge wording, invitation/join state, boarding, egress, closure, and backpack restoration each appear once through the normal notification owner.

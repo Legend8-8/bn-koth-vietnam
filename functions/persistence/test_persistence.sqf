@@ -20,7 +20,8 @@ private _variables = [
     "BN_KOTH_persistenceMemoryBackend", "BN_KOTH_persistenceDirtyPlayers",
     "BN_KOTH_persistenceScheduledSaves", "BN_KOTH_persistenceLoadedUids",
     "BN_KOTH_persistenceTestFailLoad", "BN_KOTH_persistenceTestFailSave",
-    "BN_KOTH_playerProgression", "BN_KOTH_startingCash", "BN_KOTH_roundStats"
+    "BN_KOTH_playerProgression", "BN_KOTH_startingCash", "BN_KOTH_roundStats",
+    "BN_KOTH_playerLoadoutState"
 ];
 private _backup = createHashMap;
 {
@@ -31,7 +32,7 @@ private _backup = createHashMap;
     };
 } forEach _variables;
 
-missionNamespace setVariable ["BN_KOTH_persistenceSchemaVersion", 2];
+missionNamespace setVariable ["BN_KOTH_persistenceSchemaVersion", 3];
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "MEMORY"];
 missionNamespace setVariable ["BN_KOTH_persistenceBackendReady", true];
 missionNamespace setVariable ["BN_KOTH_persistenceSaveDebounceSeconds", 0];
@@ -56,7 +57,7 @@ private _firstState = _first getOrDefault ["state", createHashMap];
 private _knownUid = "PERSIST_KNOWN";
 private _rawKills = createHashMapFromArray [["VN_M1903", 7]];
 private _raw = createHashMapFromArray [
-    ["schemaVersion", 2], ["uid", _knownUid], ["xp", 12345], ["level", 999], ["cash", 4321],
+    ["schemaVersion", 3], ["uid", _knownUid], ["xp", 12345], ["level", 999], ["cash", 4321],
     ["ownedWeapons", ["VN_M1903"]], ["rentedWeapons", ["vn_m1911"]], ["weaponKills", _rawKills],
     ["ownedPerks", ["SUPPRESSOR", "unknown", "suppressor"]], ["activePerks", ["suppressor", "unknown"]]
 ];
@@ -92,6 +93,94 @@ private _projection = [_knownUid, _knownState] call bn_koth_fnc_persistence_proj
 [(_projection getOrDefault ["ownedPerks", []]) isEqualTo ["suppressor"] && {(_projection getOrDefault ["activePerks", []]) isEqualTo ["suppressor"]}, "Save projection omitted persistent perk state."] call _assert;
 [((_projection getOrDefault ["weaponKills", createHashMap]) getOrDefault ["vn_m1903", -1]) isEqualTo 7, "Save projection omitted persistent weapon mastery."] call _assert;
 
+private _savedLoadout = [[], [], [], [], [], [], "", "", [], []];
+private _savedKits = [["kit_test", "TEST KIT", _savedLoadout]];
+private _savedSerialized = [_savedKits, "kit_test"] call bn_koth_fnc_persistence_serializeSavedKits;
+private _savedParsed = [_savedSerialized getOrDefault ["value", ""]] call bn_koth_fnc_persistence_deserializeSavedKits;
+[_savedSerialized getOrDefault ["success", false]
+    && {_savedParsed getOrDefault ["success", false]}
+    && {(_savedParsed getOrDefault ["kits", []]) isEqualTo _savedKits}
+    && {(_savedParsed getOrDefault ["preferredId", ""]) isEqualTo "kit_test"}, "Saved kits did not round-trip through the restricted codec."] call _assert;
+[!((["001002bad"] call bn_koth_fnc_persistence_deserializeSavedKits) getOrDefault ["success", true]), "Malformed saved-kit text was accepted."] call _assert;
+[!(([[["bad id", "BAD", _savedLoadout]], ""] call bn_koth_fnc_persistence_serializeSavedKits) getOrDefault ["success", true]), "Malformed saved-kit ID was serialized."] call _assert;
+private _emptySavedParsed = ["-"] call bn_koth_fnc_persistence_deserializeSavedKits;
+[_emptySavedParsed getOrDefault ["success", false] && {(count (_emptySavedParsed getOrDefault ["kits", ["bad"]])) isEqualTo 0}, "Empty saved-kit storage marker did not decode safely."] call _assert;
+private _uninitializedSaved = [[], "", false] call bn_koth_fnc_persistence_serializeSavedKits;
+[_uninitializedSaved getOrDefault ["success", false]
+    && {(_uninitializedSaved getOrDefault ["value", ""]) isEqualTo "-"},
+    "Uninitialized saved-kit state did not preserve the one-time migration marker."] call _assert;
+private _tooManyKits = [];
+private _savedKitLimit = (getNumber (missionConfigFile >> "CfgBnKothPersistence" >> "savedKitMaxCount")) max 1;
+for "_index" from 0 to _savedKitLimit do {_tooManyKits pushBack [format ["kit_%1", _index], format ["KIT %1", _index], +_savedLoadout]};
+[!(([_tooManyKits, ""] call bn_koth_fnc_persistence_serializeSavedKits) getOrDefault ["success", true]), "Excessive saved-kit entries were serialized."] call _assert;
+[!(([[["kit_a", "DUPLICATE", _savedLoadout], ["kit_b", "duplicate", _savedLoadout]], ""] call bn_koth_fnc_persistence_serializeSavedKits) getOrDefault ["success", true]), "Duplicate saved-kit names were serialized."] call _assert;
+[!(([[["kit_bad_name", "", _savedLoadout]], ""] call bn_koth_fnc_persistence_serializeSavedKits) getOrDefault ["success", true]), "Empty saved-kit name was serialized."] call _assert;
+[!(([[["kit_short", "SHORT", [[], []]]], ""] call bn_koth_fnc_persistence_serializeSavedKits) getOrDefault ["success", true]), "Malformed Unit Loadout array was serialized."] call _assert;
+private _executableLoadout = +_savedLoadout;
+_executableLoadout set [6, "call compile preprocessFileLineNumbers 'payload.sqf';"];
+[!(([[["kit_payload", "PAYLOAD", _executableLoadout]], ""] call bn_koth_fnc_persistence_serializeSavedKits) getOrDefault ["success", true]), "Executable-looking saved-kit string payload was accepted."] call _assert;
+
+private _schemaTwo = [_knownUid, createHashMapFromArray [
+    ["schemaVersion", 2], ["uid", _knownUid], ["xp", 77], ["cash", 88],
+    ["ownedWeapons", ["vn_m1903"]], ["weaponKills", createHashMap],
+    ["ownedPerks", []], ["activePerks", []]
+]] call bn_koth_fnc_persistence_normalizePlayerState;
+private _schemaTwoState = _schemaTwo getOrDefault ["state", createHashMap];
+[(_schemaTwo getOrDefault ["code", ""]) isEqualTo "NORMALIZED_LEGACY"
+    && {(_schemaTwoState getOrDefault ["schemaVersion", -1]) isEqualTo 3}
+    && {(count (_schemaTwoState getOrDefault ["savedKits", ["bad"]])) isEqualTo 0}
+    && {(_schemaTwoState getOrDefault ["xp", -1]) isEqualTo 77}, "Schema v2 did not normalize to v3 without losing unrelated progression."] call _assert;
+
+private _mixedSaved = [_knownUid, createHashMapFromArray [
+    ["schemaVersion", 3], ["uid", _knownUid], ["xp", 91], ["cash", 92],
+    ["savedKits", [["good", "GOOD", _savedLoadout], ["bad id", "BAD", _savedLoadout]]]
+]] call bn_koth_fnc_persistence_normalizePlayerState;
+private _mixedState = _mixedSaved getOrDefault ["state", createHashMap];
+[(count (_mixedState getOrDefault ["savedKits", []])) isEqualTo 1
+    && {(_mixedState getOrDefault ["xp", -1]) isEqualTo 91}
+    && {(_mixedState getOrDefault ["cash", -1]) isEqualTo 92}, "Malformed saved-kit entry damaged unrelated progression during normalization."] call _assert;
+
+// Exercise the real server CRUD owner. Client-supplied legacy loadouts may be
+// migrated, but CREATE/UPDATE always capture current intendedLoadout.
+private _crudUid = "PERSIST_SAVED_KIT_CRUD";
+private _serverLoadoutOne = +_savedLoadout;
+_serverLoadoutOne set [6, "vn_server_headgear_one"];
+private _serverLoadoutTwo = +_savedLoadout;
+_serverLoadoutTwo set [6, "vn_server_headgear_two"];
+private _crudState = [_crudUid] call bn_koth_fnc_persistence_createDefaultState;
+private _crudByUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
+_crudByUid set [_crudUid, _crudState];
+missionNamespace setVariable ["BN_KOTH_playerProgression", _crudByUid];
+missionNamespace setVariable ["BN_KOTH_playerLoadoutState", createHashMapFromArray [[_crudUid, createHashMapFromArray [["intendedLoadout", _serverLoadoutOne]]]]];
+private _legacyKit = ["legacy", "LEGACY", _savedLoadout];
+private _createdKit = [_crudUid, "CREATE", "server", "SERVER", [_legacyKit], "legacy"] call bn_koth_fnc_loadouts_manageSavedKits;
+private _createdKits = _createdKit getOrDefault ["savedKits", []];
+[_createdKit getOrDefault ["success", false]
+    && {(count _createdKits) isEqualTo 2}
+    && {((_createdKits select 1) select 2) isEqualTo _serverLoadoutOne}, "Saved-kit CREATE did not migrate legacy intent and capture the canonical server loadout."] call _assert;
+missionNamespace setVariable ["BN_KOTH_playerLoadoutState", createHashMapFromArray [[_crudUid, createHashMapFromArray [["intendedLoadout", _serverLoadoutTwo]]]]];
+private _updatedKit = [_crudUid, "UPDATE", "server", "", [], ""] call bn_koth_fnc_loadouts_manageSavedKits;
+private _updatedKits = _updatedKit getOrDefault ["savedKits", []];
+private _updatedIndex = _updatedKits findIf {(_x select 0) isEqualTo "server"};
+[_updatedKit getOrDefault ["success", false]
+    && {_updatedIndex >= 0}
+    && {((_updatedKits select _updatedIndex) select 2) isEqualTo _serverLoadoutTwo}, "Saved-kit UPDATE did not capture the new canonical intended loadout."] call _assert;
+private _duplicateRename = [_crudUid, "RENAME", "server", "LEGACY", [], ""] call bn_koth_fnc_loadouts_manageSavedKits;
+[!(_duplicateRename getOrDefault ["success", true]), "Saved-kit duplicate-name rename was accepted."] call _assert;
+private _deletedKit = [_crudUid, "DELETE", "server", "", [], ""] call bn_koth_fnc_loadouts_manageSavedKits;
+[_deletedKit getOrDefault ["success", false]
+    && {((_deletedKit getOrDefault ["savedKits", []]) findIf {(_x select 0) isEqualTo "server"}) < 0}, "Saved-kit DELETE did not remove the authoritative entry."] call _assert;
+private _crudStateAfterDelete = (missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap]) getOrDefault [_crudUid, createHashMap];
+_crudStateAfterDelete set ["savedKits", []];
+_crudStateAfterDelete set ["savedKitsInitialized", true];
+private _crudByUidAfterDelete = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
+_crudByUidAfterDelete set [_crudUid, _crudStateAfterDelete];
+missionNamespace setVariable ["BN_KOTH_playerProgression", _crudByUidAfterDelete];
+private _staleLegacyReplay = [_crudUid, "DELETE", "missing", "", [_legacyKit], "legacy"] call bn_koth_fnc_loadouts_manageSavedKits;
+[!(_staleLegacyReplay getOrDefault ["success", true])
+    && {(count (_staleLegacyReplay getOrDefault ["savedKits", ["bad"]])) isEqualTo 0},
+    "A stale legacy cache resurrected saved kits after durable deletion."] call _assert;
+
 private _ownedSerialized = [["vn_m1911", "VN_M1903"]] call bn_koth_fnc_persistence_serializeOwnedWeapons;
 [_ownedSerialized getOrDefault ["success", false] && {(_ownedSerialized getOrDefault ["value", ""]) isEqualTo "vn_m1903,vn_m1911"}, "Owned weapons did not serialize deterministically."] call _assert;
 private _ownedParsed = [_ownedSerialized getOrDefault ["value", ""]] call bn_koth_fnc_persistence_deserializeOwnedWeapons;
@@ -112,19 +201,19 @@ private _roundTripKills = _killsParsed getOrDefault ["value", createHashMap];
 
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "EXTDB3"];
 private _invalidNumericSave = ["76561198000000000", createHashMapFromArray [
-    ["schemaVersion", 2], ["xp", "bad"], ["cash", 1000], ["ownedWeapons", []], ["weaponKills", createHashMap], ["ownedPerks", []], ["activePerks", []]
+    ["schemaVersion", 3], ["xp", "bad"], ["cash", 1000], ["ownedWeapons", []], ["weaponKills", createHashMap], ["ownedPerks", []], ["activePerks", []], ["savedKits", []]
 ]] call bn_koth_fnc_persistence_backendSavePlayer;
 [!(_invalidNumericSave getOrDefault ["success", true]) && {(_invalidNumericSave getOrDefault ["code", ""]) isEqualTo "INVALID_PERSISTENT_NUMERIC_FIELDS"}, "Malformed persistent numeric fields reached extDB3."] call _assert;
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "MEMORY"];
 
-private _extdbValid = ["[1,[[""76561198000000000"",2,12,34,""vn_m1903"",""vn_m1903=7"",""suppressor"",""suppressor""]]]"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _extdbValid = ["[1,[[""76561198000000000"",3,12,34,""vn_m1903"",""vn_m1903=7"",""suppressor"",""suppressor"",""-""]]]"] call bn_koth_fnc_persistence_parseExtdbResponse;
 [_extdbValid getOrDefault ["success", false] && {(count (_extdbValid getOrDefault ["rows", []])) isEqualTo 1}, "Valid extDB3 response was rejected."] call _assert;
 [!((["[0,""Error MariaDBQueryException Exception""]"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "extDB3 error response was accepted."] call _assert;
 [!((["not an array"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "Malformed extDB3 response was accepted."] call _assert;
 
 private _legacy = [_knownUid, createHashMapFromArray [["uid", _knownUid], ["xp", 5]]] call bn_koth_fnc_persistence_normalizePlayerState;
 [(_legacy getOrDefault ["code", ""]) isEqualTo "NORMALIZED_LEGACY", "Missing schemaVersion was not handled as legacy."] call _assert;
-private _future = [_knownUid, createHashMapFromArray [["schemaVersion", 3], ["uid", _knownUid]]] call bn_koth_fnc_persistence_normalizePlayerState;
+private _future = [_knownUid, createHashMapFromArray [["schemaVersion", 4], ["uid", _knownUid]]] call bn_koth_fnc_persistence_normalizePlayerState;
 [!(_future getOrDefault ["success", true]) && {(_future getOrDefault ["code", ""]) isEqualTo "UNSUPPORTED_FUTURE_SCHEMA"}, "Future schema did not fail closed."] call _assert;
 private _malformed = [_knownUid, createHashMapFromArray [["schemaVersion", 1], ["uid", _knownUid], ["xp", "bad"], ["cash", -4], ["ownedWeapons", "bad"], ["weaponKills", []]]] call bn_koth_fnc_persistence_normalizePlayerState;
 private _malformedState = _malformed getOrDefault ["state", createHashMap];
@@ -150,6 +239,11 @@ private _saved = [_knownUid, "test_success"] call bn_koth_fnc_persistence_savePl
 
 private _remoteCfg = missionConfigFile >> "CfgRemoteExec" >> "Functions";
 [!(isClass (_remoteCfg >> "bn_koth_fnc_persistence_loadPlayer")) && {!(isClass (_remoteCfg >> "bn_koth_fnc_persistence_savePlayer"))}, "Persistence functions were exposed to clients through CfgRemoteExec."] call _assert;
+private _loadoutRequestSource = preprocessFileLineNumbers "functions\loadouts\fn_request.sqf";
+private _stateReceiverSource = preprocessFileLineNumbers "functions\ui\state\fn_receiveState.sqf";
+[(_loadoutRequestSource find 'uiNamespace getVariable ["BN_KOTH_savedKitsServerSynced"') >= 0
+    && {(_stateReceiverSource find 'uiNamespace setVariable ["BN_KOTH_savedKitsServerSynced"') >= 0},
+    "Saved-kit server synchronization was not scoped to the current mission connection."] call _assert;
 
 {
     private _value = _backup get _x;
