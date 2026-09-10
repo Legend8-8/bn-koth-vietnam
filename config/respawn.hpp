@@ -7,6 +7,10 @@ class CfgBnKothRespawn
     friendlySafeZoneExitMessageSeconds = 5;
     corpseCleanupDelaySeconds = 300;
 
+    // Server validation bounds for native S.O.G. revive attribution.
+    reviveRewardDistanceMeters = 4;
+    reviveRewardCompletionWindowSeconds = 2;
+
     // Call For Help presentation. The 3D marker is never rendered beyond this range.
     casualtyHelp3DMaxDistance = 50;
 };

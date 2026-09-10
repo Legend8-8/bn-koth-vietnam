@@ -16,6 +16,8 @@ params ["_deadUnit"];
 if (!isServer) exitWith {false};
 if (isNull _deadUnit) exitWith {false};
 
+[_deadUnit, "PLAYER_DIED"] call bn_koth_fnc_respawn_clearReviveRewardCycle;
+
 private _uid = getPlayerUID _deadUnit;
 private _ownerId = owner _deadUnit;
 private _isPlayerEntity = isPlayer _deadUnit;

@@ -77,6 +77,11 @@ private _ownerConfirmed = !isNull _targetUnit && {(owner _targetUnit) isEqualTo 
 if (_ackStatus isEqualTo "CONFIRMED" && {_ownerConfirmed}) exitWith {
     [format ["Representation handoff success for UID %1 to unit %2 owner=%3 token=%4", _uid, _targetUnit, owner _targetUnit, _token], "INFO"] call bn_koth_fnc_common_log;
 
+    if (!isNull _oldUnit) then {
+        [_oldUnit, "REPRESENTATION_TRANSFERRED"] call bn_koth_fnc_respawn_clearReviveRewardCycle;
+    };
+    [_targetUnit, "REPRESENTATION_TRANSFER_TARGET"] call bn_koth_fnc_respawn_clearReviveRewardCycle;
+
     if (_deletePrevious && {!isNull _oldUnit} && {!(_oldUnit isEqualTo _targetUnit)}) then {
         private _oldGroup = group _oldUnit;
         deleteVehicle _oldUnit;

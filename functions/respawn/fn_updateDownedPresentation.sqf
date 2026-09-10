@@ -27,6 +27,7 @@ private _teardown = {
     uiNamespace setVariable ["BN_KOTH_casualtyHelpRequestPending", false];
     uiNamespace setVariable ["BN_KOTH_casualtyHelpRequestPendingAt", -1];
     uiNamespace setVariable ["BN_KOTH_casualtyHelpOwnRequestActive", false];
+    uiNamespace setVariable ["BN_KOTH_reviveRewardReportedUnit", objNull];
 };
 
 if (_forceTeardown) exitWith {
@@ -45,6 +46,19 @@ private _deployedActive = !isNull _unit
     && {_uid in _active}
     && {(missionNamespace getVariable ["BN_KOTH_roundState", ""]) isEqualTo "ACTIVE"};
 private _shouldPresent = _deployedActive && {[_unit] call bn_koth_fnc_respawn_isIncapacitated};
+private _reportedUnit = uiNamespace getVariable ["BN_KOTH_reviveRewardReportedUnit", objNull];
+
+if (_shouldPresent) then {
+    if !(_reportedUnit isEqualTo _unit) then {
+        uiNamespace setVariable ["BN_KOTH_reviveRewardReportedUnit", _unit];
+        [_unit] remoteExecCall ["bn_koth_fnc_respawn_reportReviveState", 2];
+    };
+} else {
+    if (!isNull _reportedUnit && {_reportedUnit isEqualTo _unit}) then {
+        uiNamespace setVariable ["BN_KOTH_reviveRewardReportedUnit", objNull];
+        [_unit] remoteExecCall ["bn_koth_fnc_respawn_reportReviveState", 2];
+    };
+};
 
 if (
     uiNamespace getVariable ["BN_KOTH_casualtyHelpRequestPending", false]

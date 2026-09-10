@@ -1,9 +1,8 @@
 /*
     File: fn_awardRevive.sqf
     Author: Legend
-    Description: Validates and awards one revive recovery from a future trusted
-        native S.O.G. completion record. This function intentionally has no
-        production caller until native reviver attribution is proven.
+    Description: Validates and awards one recovery from the server-owned revive
+        completion boundary after native S.O.G. recovery is observed.
     Execution: Server
     Parameters:
         0: Trusted native completion record <HASHMAP>
@@ -21,8 +20,8 @@ private _reject = {
 if (!isServer) exitWith {["NOT_SERVER"] call _reject};
 if ((count _completion) == 0) exitWith {["INVALID_COMPLETION"] call _reject};
 
-// These facts may only be authored by the future server-owned native
-// attribution boundary. This helper is not RemoteExec-exposed.
+// These facts may only be authored by the server-owned revive attribution
+// boundary. This mutation helper is not RemoteExec-exposed.
 if !(_completion getOrDefault ["trustedNativeCompletion", false]) exitWith {["UNTRUSTED_COMPLETION"] call _reject};
 if !(_completion getOrDefault ["wasIncapacitated", false]) exitWith {["CASUALTY_NOT_PREVIOUSLY_INCAPACITATED"] call _reject};
 if !(_completion getOrDefault ["nativeRecoveryConfirmed", false]) exitWith {["RECOVERY_NOT_CONFIRMED"] call _reject};
@@ -71,7 +70,7 @@ if (!_casualtyValid) exitWith {["CASUALTY_NOT_RECOVERED"] call _reject};
 if !(_reviverSide isEqualTo _casualtySide) exitWith {["CROSS_TEAM_REVIVE"] call _reject};
 
 // Tokens are minted once per native incapacitation/recovery cycle by the
-// future trusted owner. Keeping them on the casualty representation bounds
+// server lifecycle owner. Keeping them on the casualty representation bounds
 // dedupe state to that representation's lifetime.
 private _rewardedTokens = _casualty getVariable ["BN_KOTH_reviveRewardedCycleTokensServer", []];
 if !(_rewardedTokens isEqualType []) then {_rewardedTokens = []};
@@ -81,8 +80,10 @@ _casualty setVariable ["BN_KOTH_reviveRewardedCycleTokensServer", _rewardedToken
 
 private _xp = missionNamespace getVariable ["BN_KOTH_xpPerRevive", 25];
 private _cash = missionNamespace getVariable ["BN_KOTH_cashPerRevive", 25];
+// Apply cash first without a duplicate feed update. The following XP update
+// publishes the final combined progression state and one REVIVE feed entry.
+private _cashResult = if (_cash > 0) then {[_reviverUid, _cash, "revive", _xp <= 0] call bn_koth_fnc_progression_cash_addCash} else {createHashMapFromArray [["success", true]]};
 private _xpResult = if (_xp > 0) then {[_reviverUid, _xp, "revive"] call bn_koth_fnc_progression_xp_addXp} else {createHashMap};
-private _cashResult = if (_cash > 0) then {[_reviverUid, _cash, "revive"] call bn_koth_fnc_progression_cash_addCash} else {createHashMapFromArray [["success", true]]};
 private _xpOk = _xp <= 0 || {_xpResult isEqualType createHashMap && {(count _xpResult) > 0}};
 private _cashOk = _cash <= 0 || {_cashResult isEqualType createHashMap && {_cashResult getOrDefault ["success", false]}};
 private _success = _xpOk && {_cashOk};

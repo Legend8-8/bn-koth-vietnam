@@ -226,7 +226,15 @@ The Eden module configures S.O.G.'s native bleedout countdown to 600 seconds
 (ten minutes); KOTH does not run a separate bleedout timer.
 The Eden module enables native successful-Resuscitate item removal and accepts
 both S.O.G. faction FAKs plus the medikit; KOTH does not run an inventory
-transaction for revives. KOTH derives
+transaction for revives. KOTH's only native-completion extension is an
+idempotent client-local observer around `VN_fnc_revive_action_revive`. It calls
+the original function exactly once, then reports only the casualty object when
+invoked by S.O.G.'s genuine Resuscitate hold-action completion. The server
+derives the sender from `remoteExecutedOwner`, owns the incapacitation-cycle
+token, and accepts one casualty-owner report at each incapacitation/recovery
+transition rather than a heartbeat. It commits progression only after bounded
+authoritative recovery, lifecycle, team, representation, owner and distance
+validation. KOTH derives
 combat eligibility from the current representation through
 `bn_koth_fnc_respawn_isIncapacitated`; it does not remove a casualty from team,
 deployment, session, group or `currentUnit` state. The same folder owns the
@@ -339,12 +347,11 @@ Contains player progression systems:
 - persistent unlocks and mastery storage cross the progression/persistence
   boundary; future perks and reward multipliers belong there rather than in UI.
 
-The progression XP owner also contains dormant revive-reward validation and
-orchestration. It accepts only a server-internal trusted native completion
-record, revalidates the registered current reviver/casualty representations,
-and calls the existing XP and cash owners. No production call exists until the
-native S.O.G. Resuscitate interaction can identify its actual reviver; S.O.G.
-continues to own every revive mechanic and recovery transition.
+The progression XP owner contains live revive-reward validation and mutation.
+The respawn owner converts a casualty-only client observation into a
+server-internal completion record, consumes the server-minted cycle before
+mutation, and calls the existing XP and cash owners. S.O.G. continues to own
+every revive mechanic, item transaction and recovery transition.
 
 Current authoritative progression state is stored in the server-owned
 `BN_KOTH_playerProgression` map keyed by UID. Registration establishes it through

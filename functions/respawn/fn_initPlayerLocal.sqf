@@ -1,6 +1,7 @@
 /*
     File: fn_initPlayerLocal.sqf
     Author: Mongo
+    Edited: Legend
     Description: Installs locality-safe player enforcement for active base safe zones.
     Execution: Client
     Parameters:
@@ -15,6 +16,49 @@ if (isNull player) exitWith {false};
 
 private _unit = player;
 [_unit] call bn_koth_fnc_progression_perks_applyMedicTraitLocal;
+
+// S.O.G. completes Resuscitate on the acting client. Preserve the native
+// function as the sole revive/item owner and observe only its genuine hold-
+// action completion callback so the server can validate a reward candidate.
+if !(missionNamespace getVariable ["BN_KOTH_reviveRewardObserverInstalledLocal", false]) then {
+    if (isNil "VN_fnc_revive_action_revive") then {
+        ["S.O.G. revive reward observer could not find VN_fnc_revive_action_revive", "WARN"] call bn_koth_fnc_common_log;
+    } else {
+        missionNamespace setVariable ["BN_KOTH_nativeReviveActionReviveLocal", VN_fnc_revive_action_revive];
+        missionNamespace setVariable ["VN_fnc_revive_action_revive", {
+            params [
+                ["_object", objNull, [objNull]],
+                ["_type", -1, [0]]
+            ];
+
+            private _nativeCaller = if (isNil "_caller") then {objNull} else {_caller};
+            private _nativeTarget = if (isNil "_target") then {objNull} else {_target};
+            private _nativeActionId = if (isNil "_actionID") then {-1} else {_actionID};
+            private _nativeActionIds = if (isNull _object) then {
+                []
+            } else {
+                _object getVariable ["_vn_revive_actions_local_array", []]
+            };
+            private _isNativeCompletion = _type isEqualTo 3
+                && {!isNull _object}
+                && {_object isEqualTo _nativeTarget}
+                && {!isNull _nativeCaller}
+                && {_nativeCaller isEqualTo player}
+                && {_nativeActionIds isEqualType []}
+                && {_nativeActionId in _nativeActionIds};
+
+            private _nativeFunction = missionNamespace getVariable ["BN_KOTH_nativeReviveActionReviveLocal", {}];
+            private _result = _this call _nativeFunction;
+
+            if (_isNativeCompletion) then {
+                [_object] remoteExecCall ["bn_koth_fnc_respawn_reportReviveState", 2];
+            };
+
+            _result
+        }];
+        missionNamespace setVariable ["BN_KOTH_reviveRewardObserverInstalledLocal", true];
+    };
+};
 
 if !(_unit getVariable ["BN_KOTH_safeZoneDamageEhLocal", false]) then {
     private _damageEhId = _unit addEventHandler ["HandleDamage", {
