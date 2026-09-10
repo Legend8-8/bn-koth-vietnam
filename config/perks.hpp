@@ -47,14 +47,5 @@ class CfgBnKothPerks
             restrictionMessage = "Activate the MEDIC perk before applying a managed loadout containing the S.O.G. Medikit.";
         };
 
-        class logistics_placeholder
-        {
-            id = "logistics_placeholder";
-            displayName = "Logistics";
-            description = "Placeholder for a future perk.";
-            purchaseCost = -1;
-            purchasable = 0;
-            available = 0;
-        };
     };
 };

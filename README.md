@@ -6,19 +6,13 @@ The mission is being developed as a standalone Bro-Nation project using native A
 
 Status
 
-This project is in early development.
+The core game mode is established. Current development is focused on content,
+production polish, security review, and dedicated-server scale/soak validation.
 
-The initial goal is a small, reliable multiplayer prototype containing:
-
-- two playable teams;
-- protected faction bases;
-- one combat zone;
-- zone control;
-- team scoring;
-- a winning score;
-- round ending and resetting.
-
-Progression, currency, shops and database persistence will be added only after the core game mode works reliably.
+The repository includes server-authoritative teams and rotating AOs, protected
+faction bases, round scoring and reset, persistent progression and career
+statistics, validated loadouts, weapon and vehicle rentals, player groups,
+advanced traversal, mobile respawn, and player-flown air insertion.
 
 Core Concept
 
@@ -42,14 +36,16 @@ Requirements
 - Arma 3
 - S.O.G. Prairie Fire
 
-The initial project does not require:
+The mission runtime does not require:
 
 - Paradigm;
 - Mike Force;
 - CBA;
-- extDB3;
 - another KOTH framework;
 - client-side community mods.
+
+Production persistence uses the server-side extDB3 adapter. Local development
+may use the server-authoritative in-memory backend, which is not durable.
 
 Additional dependencies must not be introduced without a documented reason and maintainer agreement.
 

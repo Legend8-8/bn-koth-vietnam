@@ -14,6 +14,7 @@
 params ["_unit", ["_isTalking", false, [true]]];
 
 if (!hasInterface || {isNull _unit} || {!isPlayer _unit}) exitWith {false};
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo owner _unit}) exitWith {false};
 
 private _uid = getPlayerUID _unit;
 if (_uid isEqualTo "") exitWith {false};

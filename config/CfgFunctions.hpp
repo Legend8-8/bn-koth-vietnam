@@ -16,11 +16,14 @@ class CfgFunctions
             class combat_evaluateWeaponAttribution {file = "functions\combat\fn_evaluateWeaponAttribution.sqf";};
             class combat_evaluateKillAttributionEvidence {file = "functions\combat\fn_evaluateKillAttributionEvidence.sqf";};
             class combat_finalizeAttributionDiagnostic {file = "functions\combat\fn_finalizeAttributionDiagnostic.sqf";};
+            class combat_finalizeAssists {file = "functions\combat\fn_finalizeAssists.sqf";};
+            class combat_cleanupAssistUid {file = "functions\combat\fn_cleanupAssistUid.sqf";};
             class combat_handleKill {file = "functions\combat\fn_handleKill.sqf";};
             class combat_initAttributionDiagnostics {file = "functions\combat\fn_initAttributionDiagnostics.sqf";};
             class combat_publishKillFeed {file = "functions\combat\fn_publishKillFeed.sqf";};
             class combat_recordAttributionHit {file = "functions\combat\fn_recordAttributionHit.sqf";};
             class combat_testKillFeedAi {file = "functions\combat\fn_testKillFeedAi.sqf";};
+            class combat_testAssists {file = "functions\combat\test_assists.sqf";};
         };
 
         class curator
@@ -54,6 +57,10 @@ class CfgFunctions
             class roundStats_updateLeader {file = "functions\roundStats\fn_updateLeader.sqf";};
             class roundStats_recordKill {file = "functions\roundStats\fn_recordKill.sqf";};
             class roundStats_recordObjectiveTick {file = "functions\roundStats\fn_recordObjectiveTick.sqf";};
+            class roundStats_registerParticipant {file = "functions\roundStats\fn_registerParticipant.sqf";};
+            class roundStats_recordReward {file = "functions\roundStats\fn_recordReward.sqf";};
+            class roundStats_finalize {file = "functions\roundStats\fn_finalize.sqf";};
+            class roundStats_test {file = "functions\roundStats\test_roundStats.sqf";};
         };
 
         class teams
@@ -130,6 +137,9 @@ class CfgFunctions
             class progression_xp_addXp {file = "functions\progression\xp\fn_addXp.sqf";};
             class progression_xp_awardObjectiveTick {file = "functions\progression\xp\fn_awardObjectiveTick.sqf";};
             class progression_xp_awardKill {file = "functions\progression\xp\fn_awardKill.sqf";};
+            class progression_xp_awardAssists {file = "functions\progression\xp\fn_awardAssists.sqf";};
+            class progression_xp_applyTeamkillPenalty {file = "functions\progression\xp\fn_applyTeamkillPenalty.sqf";};
+            class progression_xp_applyPenalty {file = "functions\progression\xp\fn_applyPenalty.sqf";};
             class progression_xp_awardRevive {file = "functions\progression\xp\fn_awardRevive.sqf";};
             class progression_transport_initServer {file = "functions\progression\transport\fn_initServer.sqf";};
             class progression_transport_registerVehicle {file = "functions\progression\transport\fn_registerVehicle.sqf";};
@@ -144,6 +154,7 @@ class CfgFunctions
             class progression_cash_getCash {file = "functions\progression\cash\fn_getCash.sqf";};
             class progression_cash_addCash {file = "functions\progression\cash\fn_addCash.sqf";};
             class progression_cash_spendCash {file = "functions\progression\cash\fn_spendCash.sqf";};
+            class progression_cash_applyPenalty {file = "functions\progression\cash\fn_applyPenalty.sqf";};
             class progression_acquisition_initPlayer {file = "functions\progression\acquisition\fn_initPlayer.sqf";};
             class progression_acquisition_evaluateRules {file = "functions\progression\acquisition\fn_evaluateRules.sqf";};
             class progression_acquisition_acquireWeapon {file = "functions\progression\acquisition\fn_acquireWeapon.sqf";};
@@ -187,6 +198,9 @@ class CfgFunctions
             class persistence_deserializePerkIds {file = "functions\persistence\fn_deserializePerkIds.sqf";};
             class persistence_serializeWeaponKills {file = "functions\persistence\fn_serializeWeaponKills.sqf";};
             class persistence_deserializeWeaponKills {file = "functions\persistence\fn_deserializeWeaponKills.sqf";};
+            class persistence_normalizeSavedKits {file = "functions\persistence\fn_normalizeSavedKits.sqf";};
+            class persistence_serializeSavedKits {file = "functions\persistence\fn_serializeSavedKits.sqf";};
+            class persistence_deserializeSavedKits {file = "functions\persistence\fn_deserializeSavedKits.sqf";};
             class persistence_parseExtdbResponse {file = "functions\persistence\fn_parseExtdbResponse.sqf";};
             class persistence_extdbCall {file = "functions\persistence\fn_extdbCall.sqf";};
             class persistence_extdbInitialize {file = "functions\persistence\fn_extdbInitialize.sqf";};
@@ -280,6 +294,7 @@ class CfgFunctions
             class loadouts_buildWeaponSlot {file = "functions\loadouts\fn_buildWeaponSlot.sqf";};
             class loadouts_getSpawnLoadout {file = "functions\loadouts\fn_getSpawnLoadout.sqf";};
             class loadouts_buildValidatedLoadout {file = "functions\loadouts\fn_buildValidatedLoadout.sqf";};
+            class loadouts_manageSavedKits {file = "functions\loadouts\fn_manageSavedKits.sqf";};
             class loadouts_applyLoadout {file = "functions\loadouts\fn_applyLoadout.sqf";};
             class loadouts_request {file = "functions\loadouts\fn_request.sqf";};
             class loadouts_receiveValidatedLoadout {file = "functions\loadouts\fn_receiveValidatedLoadout.sqf";};

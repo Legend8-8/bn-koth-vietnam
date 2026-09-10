@@ -99,7 +99,7 @@ private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionL
 private _progressionAvailable = _progression isEqualType createHashMap
     && {"level" in _progression}
     && {"xp" in _progression};
-private _playerProgressText = "LEVEL --   XP SYNCING";
+private _playerProgressText = "LEVEL --   XP SYNCING   CASH --";
 private _playerXpRatio = 0;
 private _rankIcon = "";
 private _rankColor = [1, 1, 1, 0];
@@ -112,15 +112,17 @@ if (_progressionAvailable) then {
     private _level = _levelProgress getOrDefault ["level", 1];
     private _xp = _levelProgress getOrDefault ["xp", 0];
     private _maxLevel = _levelProgress getOrDefault ["maxLevel", 270];
+    private _cashText = [_progression getOrDefault ["cash", 0]] call bn_koth_fnc_ui_formatCash;
     _playerXpRatio = (_levelProgress getOrDefault ["ratio", 0]) max 0 min 1;
     if (_level >= _maxLevel) then {
-        _playerProgressText = format ["LEVEL %1   MAX LEVEL  %2 XP", _level, round _xp];
+        _playerProgressText = format ["LEVEL %1   MAX  %2 XP   %3", _level, round _xp, _cashText];
     } else {
         _playerProgressText = format [
-            "LEVEL %1   %2 / %3 XP",
+            "LEVEL %1   %2 / %3 XP   %4",
             _level,
             round (_levelProgress getOrDefault ["xpIntoLevel", 0]),
-            round (_levelProgress getOrDefault ["xpRequired", 0])
+            round (_levelProgress getOrDefault ["xpRequired", 0]),
+            _cashText
         ];
     };
     private _rank = [_level] call bn_koth_fnc_progression_resolveRankPresentation;
@@ -213,12 +215,13 @@ if (_insertionVisible) then {
     _insertionText = switch (_insertionPhase) do {
         case "OPEN": {
             private _remaining = ceil (((_insertionState getOrDefault ["departureAt", serverTime]) - serverTime) max 0);
+            private _mode = _insertionState getOrDefault ["mode", "GROUP"];
             private _action = switch (_insertionRole) do {
                 case "INVITED": {if (_passengerCount >= _capacity) then {"FULL"} else {"JOIN"}};
                 case "INITIATOR": {"CANCEL"};
                 default {"LEAVE"};
             };
-            format ["AIR INSERTION\nDeparting in %1\n%2 / %3 aboard — %4", _remaining, _passengerCount, _capacity, _action]
+            format ["%1 AIR INSERTION\nDeparting in %2\n%3 / %4 aboard — %5", _mode, _remaining, _passengerCount, _capacity, _action]
         };
         case "COMMITTING": {format ["AIR INSERTION\nDEPARTING\n%1 / %2 aboard", _passengerCount, _capacity]};
         default {""};

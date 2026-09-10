@@ -111,6 +111,10 @@ private _noRentEntitlement = [_uid, "WEST", _baseProgression, _noRentMetadata, "
 private _noRent = ["RENT", _uid, "vn_test_weapon", _baseProgression, _noRentMetadata, _noRentEntitlement] call bn_koth_fnc_progression_acquisition_evaluateRules;
 ["Unconfigured rental price rejects", (_noRent getOrDefault ["code", ""]) isEqualTo "RENTAL_NOT_CONFIGURED"] call _check;
 
+private _acquireSource = preprocessFileLineNumbers "functions\progression\acquisition\fn_acquireWeapon.sqf";
+["Acquisition owner requires authoritative ACTIVE deployment", (_acquireSource find '(_record getOrDefault ["state", ""]) isEqualTo "ACTIVE"') >= 0] call _check;
+["Acquisition owner requires configured team-mapboard proximity", (_acquireSource find 'teamMapboardAccessDistance') >= 0 && {(_acquireSource find 'distance2D _boardTarget) > _mapboardAccessDistance') >= 0}] call _check;
+
 private _progressionBackup = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
 missionNamespace setVariable ["BN_KOTH_playerProgression", createHashMapFromArray [[
     _uid, createHashMapFromArray [["cash", 1000], ["ownedWeapons", []], ["rentedWeapons", ["vn_test_weapon"]]]

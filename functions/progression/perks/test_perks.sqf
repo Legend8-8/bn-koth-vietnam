@@ -193,6 +193,10 @@ _state set ["activePerks", ["one", "two", "three"]];
 private _limit = [_uid, "suppressor", "ACTIVATE"] call bn_koth_fnc_progression_perks_setActive;
 [(_limit getOrDefault ["code", ""]) isEqualTo "ACTIVE_PERK_LIMIT", "Configured active-perk maximum was not enforced."] call _assert;
 
+private _requestSource = preprocessFileLineNumbers "functions\progression\perks\fn_request.sqf";
+[(_requestSource find '(_record getOrDefault ["state", ""]) isEqualTo "ACTIVE"') >= 0, "Perk request endpoint must require authoritative ACTIVE deployment."] call _assert;
+[(_requestSource find 'teamMapboardAccessDistance') >= 0 && {(_requestSource find 'distance2D _boardTarget) > _mapboardAccessDistance') >= 0}, "Perk request endpoint must require configured authoritative team-mapboard proximity."] call _assert;
+
 {
     private _entry = _backup get _x;
     missionNamespace setVariable [_x, if (_entry select 0) then {_entry select 1} else {nil}];

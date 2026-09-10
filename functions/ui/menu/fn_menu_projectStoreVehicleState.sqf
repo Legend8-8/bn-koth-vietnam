@@ -28,13 +28,18 @@ private _stateLabel = switch (_code) do {
     case "ELIGIBLE": {
         if (_active) then {"VEHICLE ACTIVE"} else {
             if (_anyActive) then {"ANOTHER VEHICLE IS ACTIVE"} else {
-                if (_cooldown > 0) then {format ["AVAILABLE IN %1 SECONDS", _cooldown]} else {if (_rentalPrice > _cash) then {"INSUFFICIENT CASH"} else {"AVAILABLE TO RENT"}}
+                if (_cooldown > 0) then {format ["AVAILABLE IN %1 SECONDS", _cooldown]} else {
+                    if (_rentalPrice < 0) then {"RENTAL NOT CONFIGURED"} else {if (_rentalPrice > _cash) then {"INSUFFICIENT CASH"} else {"AVAILABLE TO RENT"}}
+                }
             }
         }
     };
     case "LOCKED_SIDE": {"UNAVAILABLE FOR YOUR FACTION"};
     case "LOCKED_LEVEL": {format ["LOCKED - LEVEL %1", _metadata getOrDefault ["minLevel", 1]]};
-    case "LOCKED_PERK": {"LOCKED - PERK"};
+    case "LOCKED_PERK": {
+        private _missing = _eligibility getOrDefault ["missingPerks", []];
+        if ((count _missing) > 0) then {format ["LOCKED - %1", toUpper (_missing joinString " / ")]} else {"LOCKED - PERK"}
+    };
     default {"UNAVAILABLE"};
 };
 
@@ -45,7 +50,11 @@ createHashMapFromArray [
     ["purchasePrice", _metadata getOrDefault ["purchasePrice", -1]],
     ["rentalPrice", _rentalPrice],
     ["active", _active],
+    ["anyActive", _anyActive],
+    ["missingPerks", _eligibility getOrDefault ["missingPerks", []]],
     ["cooldownRemaining", _cooldown],
-    ["canRent", (_code isEqualTo "ELIGIBLE") && {!_anyActive} && {_cooldown <= 0}],
+    ["canAffordRental", _rentalPrice >= 0 && {_cash >= _rentalPrice}],
+    ["canRent", (_code isEqualTo "ELIGIBLE") && {_rentalPrice >= 0} && {!_anyActive} && {_cooldown <= 0}],
+    ["blocking", !(_code isEqualTo "ELIGIBLE") || {_rentalPrice < 0} || {_anyActive} || {_cooldown > 0} || {_cash < _rentalPrice}],
     ["actionsAvailable", _code isEqualTo "ELIGIBLE"]
 ]

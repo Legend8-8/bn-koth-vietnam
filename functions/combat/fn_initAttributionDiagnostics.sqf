@@ -23,6 +23,22 @@ private _maxHits = if (isNumber (_combatCfg >> "attributionMaxHitsPerVictim")) t
     (round (getNumber (_combatCfg >> "attributionMaxHitsPerVictim"))) max 4
 } else {16};
 missionNamespace setVariable ["BN_KOTH_combatAttributionMaxHits", _maxHits];
+private _assistsEnabled = isNumber (_combatCfg >> "assistsEnabled")
+    && {getNumber (_combatCfg >> "assistsEnabled") > 0};
+private _assistWindow = if (isNumber (_combatCfg >> "assistWindowSeconds")) then {
+    getNumber (_combatCfg >> "assistWindowSeconds") max 0
+} else {15};
+private _assistMinimumDamage = if (isNumber (_combatCfg >> "assistMinimumDamage")) then {
+    (getNumber (_combatCfg >> "assistMinimumDamage") max 0) min 1
+} else {0.20};
+private _assistMaxContributors = if (isNumber (_combatCfg >> "assistMaxContributorsPerVictim")) then {
+    (round (getNumber (_combatCfg >> "assistMaxContributorsPerVictim"))) max 1
+} else {8};
+missionNamespace setVariable ["BN_KOTH_assistsEnabled", _assistsEnabled];
+missionNamespace setVariable ["BN_KOTH_assistWindowSeconds", _assistWindow];
+missionNamespace setVariable ["BN_KOTH_assistMinimumDamage", _assistMinimumDamage];
+missionNamespace setVariable ["BN_KOTH_assistMaxContributors", _assistMaxContributors];
+missionNamespace setVariable ["BN_KOTH_combatAssistVictims", []];
 missionNamespace setVariable ["BN_KOTH_combatAttributionDiagnosticsInitialized", true];
 
 private _projectileCreatedId = addMissionEventHandler ["ProjectileCreated", {

@@ -15,7 +15,7 @@ remain in the server-local `extdb3-conf.ini`.
 2. Install any runtime/redistributable required by that extDB3 release.
 3. Create a MariaDB/MySQL database and a least-privilege user with `SELECT`,
    `INSERT`, and `UPDATE` on `bn_koth_player_progression`.
-4. Apply `database/migrations/001_create_player_progression.sql`.
+4. Apply every numbered file in `database/migrations/` in ascending order.
 5. Merge `database/extdb3/extdb3-conf.ini.example` into the server-local
    `@extDB3/extdb3-conf.ini`, replacing all placeholders. The section name must
    match `CfgBnKothPersistence.extdbDatabase` (`BN_KOTH` by default).
@@ -40,14 +40,21 @@ otherwise entries sorted by classname and encoded as
 `classname=non_negative_integer`, joined with commas. Tokens permit only ASCII
 lowercase letters, digits, and underscore. Parsing rejects duplicates,
 unexpected delimiters, invalid characters, negative/non-integral counts, and
-empty tokens. Database text is parsed as data only; it is never passed to
+empty tokens. `saved_kits` contains a bounded decimal-byte encoding of up to
+12 canonical Unit Loadout arrays plus the preferred kit ID. Its decoder uses
+`parseSimpleArray`, never `compile`, and the complete loadout is still checked
+against current side, level, ownership, mastery, perk, and rental entitlement
+every time it is loaded or used for spawn. Database text is parsed as data only; it is never passed to
 `compile`.
 
 ## Failure policy
 
 Missing extension, connection/protocol failure, malformed/error response,
-duplicate rows, invalid UID, invalid serialized data, and query duration beyond
-the configured threshold are explicit failures. The existing configured
+duplicate rows, invalid UID, invalid authoritative progression fields, and query duration beyond
+the configured threshold are explicit failures. A malformed `saved_kits` blob
+is the narrow exception: it is discarded as untrusted intent while valid
+XP/cash/ownership/perk/mastery fields load, then the record is scheduled for a
+canonical schema-v3 repair save. The existing configured
 session fallback may let the player continue with a server-owned default state,
 but it does not claim durability. A session created from any failed/malformed or
 future-schema load is write-blocked for the rest of that mission session, so its
@@ -65,16 +72,21 @@ server. Saves remain event-driven and debounced.
    correct `-serverMod` argument.
 2. Install required redistributables/native dependencies.
 3. Create the database and least-privilege user.
-4. Run the numbered migration.
+4. Run all numbered migrations in ascending order.
 5. Configure the `BN_KOTH` extDB3 connection section.
 6. Place `bn_koth.ini` under extDB3's `sql_custom` directory.
 7. Confirm the TCAdmin/Arma service account can read and load those files.
 8. Restart and verify `EXTDB_READY` in the server RPT and extDB3's own log.
 9. Join with a first-time Steam UID and verify one row is created.
-10. Earn XP/cash/mastery or acquire a weapon, then disconnect and verify the
+10. Earn XP/cash/mastery, acquire a weapon, and save a named loadout; then disconnect and verify the
     save-success RPT marker.
-11. Reconnect and confirm the values restore.
+11. Reconnect and confirm the values and saved loadout restore and remain entitlement-validated.
 12. Restart the entire server and confirm the values restore again.
+
+For the schema-v3 saved-kit deployment specifically: apply
+`003_add_saved_kits.sql`, copy the updated `bn_koth.ini` SQL_CUSTOM file, then
+restart and execute the reconnect/server-restart checks above. No repository-side
+statement or serializer work remains for the operator to author.
 
 The operator must supply privately: server OS/architecture, extDB3 build and
 install path, exact `-serverMod` configuration, MariaDB/MySQL host/port/database,

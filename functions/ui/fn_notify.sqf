@@ -13,6 +13,7 @@
 params ["_message"];
 
 if (!hasInterface) exitWith {};
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo 2}) exitWith {};
 if (_message isEqualTo "") exitWith {};
 
 systemChat format ["[BN_KOTH] %1", _message];

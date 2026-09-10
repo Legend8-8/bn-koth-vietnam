@@ -15,6 +15,7 @@ private _cfg=missionConfigFile >> "CfgBnKothVehicles";
 [(getNumber (_cfg >> "rentedWreckCleanupSeconds"))>=0,"Wreck cleanup config missing."] call _assert;
 [(getNumber (_cfg >> "rentedAbandonmentSeconds"))>0,"Abandonment config missing."] call _assert;
 [(getNumber (_cfg >> "rentedOwnerDisconnectCleanupSeconds"))>0,"Owner disconnect config missing."] call _assert;
+[(getNumber (_cfg >> "rentalMonitorIntervalSeconds"))>0,"Shared rental monitor cadence config missing."] call _assert;
 [(getNumber (_cfg >> "paidSpawnClearanceMeters"))>0,"Spawn clearance config missing."] call _assert;
 [(getNumber (_cfg >> "paidFallbackSpawnRadiusMeters"))>0,"Fallback radius config missing."] call _assert;
 
@@ -36,6 +37,13 @@ if (_pads isEqualType []) then {
 
 [isNil {missionNamespace getVariable "BN_KOTH_ownedVehicles"},"Permanent ownedVehicles state must not exist."] call _assert;
 [isNil {missionNamespace getVariable "BN_KOTH_vehiclePurchases"},"Permanent vehicle purchase state must not exist."] call _assert;
+
+private _rentSource=preprocessFileLineNumbers "functions\vehicles\fn_rentVehicle.sqf";
+private _monitorSource=preprocessFileLineNumbers "functions\vehicles\fn_monitorManagedVehicles.sqf";
+[(_rentSource find '(_record getOrDefault ["state",""]) isEqualTo "ACTIVE"')>=0,"Rental must require the authoritative ACTIVE player record."] call _assert;
+[(_rentSource find 'teamMapboardAccessDistance')>=0 && {(_rentSource find 'distance2D _boardTarget)>_mapboardAccessDistance')>=0},"Rental must enforce configured authoritative team-mapboard proximity."] call _assert;
+[(_rentSource find 'while {!isNull _vehicle')<0,"Rental creation must not spawn a per-vehicle monitor loop."] call _assert;
+[(_monitorSource find 'BN_KOTH_vehicleRentalLastSweepAt')>=0 && {(_monitorSource find 'BN_KOTH_vehicleActiveRentals')>=0},"Shared vehicle manager must own rental lifecycle sweeps."] call _assert;
 
 // Pre-commit rollback proof: a vehicle never registered in BN_KOTH_vehicleActiveRentals must not be
 // treated as a real rental life ending, no matter how its Deleted/Killed EH invokes fn_endRentalLife.

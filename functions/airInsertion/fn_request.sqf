@@ -28,12 +28,14 @@ private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", create
 private _requestRecord = _records getOrDefault [_uid, createHashMap];
 if !(_requestRecord isEqualType createHashMap) exitWith {["Player state is not ready."] call _notify};
 private _lastRequest = _requestRecord getOrDefault ["lastAirInsertionRequestAt", -999];
-if ((serverTime - _lastRequest) < 0.35) exitWith {["Please wait a moment."] call _notify};
+private _requestCooldown = (getNumber (missionConfigFile >> "CfgBnKothAirInsertion" >> "requestCooldownSeconds")) max 0.1;
+if ((serverTime - _lastRequest) < _requestCooldown) exitWith {["Please wait a moment."] call _notify};
 _requestRecord set ["lastAirInsertionRequestAt", serverTime];
 _records set [_uid, _requestRecord];
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 
 private _cfg = missionConfigFile >> "CfgBnKothAirInsertion";
+private _mapboardAccessDistance = (getNumber (missionConfigFile >> "CfgBnKothInteractions" >> "teamMapboardAccessDistance")) max 1;
 if !(missionNamespace getVariable ["BN_KOTH_airInsertionEnabled", false]) exitWith {["Air insertion is unavailable."] call _notify};
 
 private _sessions = missionNamespace getVariable ["BN_KOTH_airInsertionSessions", createHashMap];
@@ -70,13 +72,13 @@ if (_operation in ["START_SOLO", "START_GROUP"]) exitWith {
     private _board = missionNamespace getVariable [_boardRef, objNull];
     if (isNull _board && {!(_boardRef isEqualTo "")} && {!((markerShape _boardRef) isEqualTo "")}) then {
         private _boardPos = markerPos _boardRef;
-        private _candidates = nearestObjects [_boardPos, ["Static", "Thing", "House", "LandVehicle"], 8];
+        private _candidates = nearestObjects [_boardPos, ["Static", "Thing", "House", "LandVehicle"], _mapboardAccessDistance];
         if !(_candidates isEqualTo []) then {
             _candidates = [_candidates, [], {_boardPos distance2D _x}, "ASCEND"] call BIS_fnc_sortBy;
             _board = _candidates select 0;
         };
     };
-    if (isNull _board || {(_player distance2D _board) > 8}) exitWith {["Use your team mapboard."] call _notify};
+    if (isNull _board || {(_player distance2D _board) > _mapboardAccessDistance}) exitWith {["Use your team mapboard."] call _notify};
 
     private _aircraftClass = getText (_cfg >> "aircraftClass");
     private _aircraftCfg = configFile >> "CfgVehicles" >> _aircraftClass;
@@ -121,6 +123,7 @@ if (_operation in ["START_SOLO", "START_GROUP"]) exitWith {
 
     private _session = createHashMapFromArray [
         ["id", _sessionId], ["state", "OPEN"], ["initiatorUid", _uid],
+        ["mode", if (_isGroup) then {"GROUP"} else {"SOLO"}], ["cost", _cost],
         ["side", _side],
         ["departureAt", serverTime + _delay], ["passengerUids", [_uid]],
         ["aboardUids", []], ["invitedUids", _invited], ["capacity", _capacity],

@@ -1072,7 +1072,7 @@ class CfgBnKothArsenal
             };
         };
 
-        // Future generated factual compatibility data attaches here.
+        // Generated factual S.O.G. compatibility data is included here.
         class Compatibility
         {
             #include "generated\sog_catalogue.hpp"

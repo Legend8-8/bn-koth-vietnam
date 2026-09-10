@@ -8,6 +8,7 @@
     Parameters:
         0: Player UID <STRING>
         1: Progression state <HASHMAP>
+        2: Include durable saved-kit intent <BOOL> (default false)
     Returns:
         Player progression presentation payload <HASHMAP>
     Public: No
@@ -15,7 +16,8 @@
 
 params [
     ["_uid", "", [""]],
-    ["_progression", createHashMap, [createHashMap]]
+    ["_progression", createHashMap, [createHashMap]],
+    ["_includeSavedKits", false, [false]]
 ];
 
 // max() does not reliably sanitize NaN in this engine, so non-finite authoritative
@@ -31,12 +33,14 @@ private _ownedWeapons = _progression getOrDefault ["ownedWeapons", []];
 private _rentedWeapons = _progression getOrDefault ["rentedWeapons", []];
 private _ownedPerks = _progression getOrDefault ["ownedPerks", []];
 private _activePerks = _progression getOrDefault ["activePerks", []];
+private _savedKits = _progression getOrDefault ["savedKits", []];
 
 if !(_weaponKills isEqualType createHashMap) then {_weaponKills = createHashMap};
 if !(_ownedWeapons isEqualType []) then {_ownedWeapons = []};
 if !(_rentedWeapons isEqualType []) then {_rentedWeapons = []};
 if !(_ownedPerks isEqualType []) then {_ownedPerks = []};
 if !(_activePerks isEqualType []) then {_activePerks = []};
+if !(_savedKits isEqualType []) then {_savedKits = []};
 private _perkRoot = missionConfigFile >> "CfgBnKothPerks";
 private _perkCatalogue = [];
 if (isClass _perkRoot) then {
@@ -54,7 +58,7 @@ if (isClass _perkRoot) then {
     } forEach ("true" configClasses (_perkRoot >> "Perks"));
 };
 
-createHashMapFromArray [
+private _result = createHashMapFromArray [
     ["uid", _uid],
     ["xp", _xp],
     ["level", _level],
@@ -67,4 +71,11 @@ createHashMapFromArray [
     ["perks", _activePerks],
     ["maxActivePerks", if (isClass _perkRoot) then {floor ((getNumber (_perkRoot >> "maxActivePerks")) max 0)} else {0}],
     ["perkCatalogue", _perkCatalogue]
-]
+];
+if (_includeSavedKits) then {
+    _result set ["savedKits", _savedKits];
+    _result set ["preferredSavedKitId", _progression getOrDefault ["preferredSavedKitId", ""]];
+    _result set ["savedKitsInitialized", _progression getOrDefault ["savedKitsInitialized", false]];
+    _result set ["savedKitsAuthoritative", true];
+};
+_result

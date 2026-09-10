@@ -18,6 +18,7 @@
 params ["_targetUnit", ["_token", "", [""]]];
 
 if (!hasInterface) exitWith {false};
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo 2}) exitWith {false};
 
 private _reportAck = {
     params ["_targetUnit", "_token", "_confirmed"];

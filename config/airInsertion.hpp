@@ -13,4 +13,6 @@ class CfgBnKothAirInsertion
     boardingGraceSeconds = 2;
     abandonedCleanupDelay = 20;
     hardCleanupTimeout = 180;
+    requestCooldownSeconds = 0.35;
+    backpackAcknowledgementCooldownSeconds = 0.25;
 };

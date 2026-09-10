@@ -34,7 +34,7 @@ saveProfileNamespace;
 [createHashMapFromArray [
     ["spawnPreference", if (_kitId isEqualTo "") then {"CLEAR"} else {"SET"}],
     ["preferenceRevision", _revision],
-    ["mutation", createHashMapFromArray [["op", "load_local_kit"], ["savedLoadout", _saved]]]
+    ["mutation", createHashMapFromArray [["op", "load_local_kit"], ["kitId", _kitId], ["savedLoadout", _saved]]]
 ]] call bn_koth_fnc_loadouts_request;
 [] call bn_koth_fnc_menu_refresh;
 true

@@ -87,6 +87,23 @@ if ((count _activePerks) > _maxActivePerks) then {
     _warnings pushBackUnique "NORMALIZED_ACTIVE_PERK_LIMIT";
 };
 
+private _savedKitNormalization = [_raw getOrDefault ["savedKits", []]] call bn_koth_fnc_persistence_normalizeSavedKits;
+private _savedKits = _savedKitNormalization getOrDefault ["value", []];
+{
+    _warnings pushBackUnique _x;
+} forEach (_savedKitNormalization getOrDefault ["warnings", []]);
+private _preferredSavedKitId = _raw getOrDefault ["preferredSavedKitId", ""];
+if !(_preferredSavedKitId isEqualType ""
+    && {(_preferredSavedKitId isEqualTo "") || {(_savedKits findIf {(_x select 0) isEqualTo _preferredSavedKitId}) >= 0}}) then {
+    _preferredSavedKitId = "";
+    _warnings pushBackUnique "NORMALIZED_PREFERRED_SAVED_KIT";
+};
+private _savedKitsInitialized = _raw getOrDefault ["savedKitsInitialized", false];
+if !(_savedKitsInitialized isEqualType true) then {
+    _savedKitsInitialized = false;
+    _warnings pushBackUnique "NORMALIZED_SAVED_KIT_INITIALIZATION";
+};
+
 private _rawKills = _raw getOrDefault ["weaponKills", createHashMap];
 if !(_rawKills isEqualType createHashMap) then {
     _rawKills = createHashMap;
@@ -111,6 +128,9 @@ private _state = createHashMapFromArray [
     ["ownedWeapons", _normalizedOwned],
     ["ownedPerks", _ownedPerks],
     ["activePerks", _activePerks],
+    ["savedKits", _savedKits],
+    ["preferredSavedKitId", _preferredSavedKitId],
+    ["savedKitsInitialized", _savedKitsInitialized],
     ["rentedWeapons", []],
     ["weaponKills", _weaponKills]
 ];

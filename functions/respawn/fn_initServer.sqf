@@ -63,6 +63,7 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
     private _killRecord = [_killed, _killer, _instigator, _weaponAttribution] call bn_koth_fnc_combat_handleKill;
 
     if (_killRecord isEqualType createHashMap && {count _killRecord > 0}) then {
+        _killRecord set ["assistUids", [_killed, _killRecord] call bn_koth_fnc_combat_finalizeAssists];
         [_killRecord] call bn_koth_fnc_roundStats_recordKill;
         [_killRecord] call bn_koth_fnc_career_recordKill;
     };
@@ -70,6 +71,8 @@ private _entityKilledEhId = addMissionEventHandler ["EntityKilled", {
     if (_isPlayerEntity && {!alive _killed}) then {
         if (_killRecord isEqualType createHashMap && {count _killRecord > 0}) then {
             [_killRecord] call bn_koth_fnc_progression_xp_awardKill;
+            [_killRecord] call bn_koth_fnc_progression_xp_awardAssists;
+            [_killRecord] call bn_koth_fnc_progression_xp_applyTeamkillPenalty;
             [_killRecord] call bn_koth_fnc_progression_mastery_awardKill;
         };
         [_killed] spawn bn_koth_fnc_respawn_cleanupDeadBody;

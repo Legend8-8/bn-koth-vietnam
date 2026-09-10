@@ -18,6 +18,7 @@ if (_uid isEqualTo "") exitWith {};
 
 [_uid, "PLAYER_DISCONNECTED"] call bn_koth_fnc_airInsertion_cleanupPlayer;
 [_uid] call bn_koth_fnc_progression_transport_cleanup;
+[_uid] call bn_koth_fnc_combat_cleanupAssistUid;
 
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 private _record = _records getOrDefault [_uid, createHashMap];

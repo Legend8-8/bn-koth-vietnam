@@ -20,8 +20,9 @@ private _proximityDistance = missionNamespace getVariable ["BN_KOTH_player3DIcon
 private _drawData = uiNamespace getVariable ["BN_KOTH_player3DIconsDrawData", []];
 
 {
-    _x params ["_position", "_direction", "_label", "_iconTexture", "_color", "_isLocal"];
-    if !(_isLocal) then {
+    _x params ["_unit", "_direction", "_label", "_iconTexture", "_color", "_isLocal"];
+    if !(_isLocal || {isNull _unit} || {!alive _unit}) then {
+        private _position = _unit modelToWorldVisual (_unit selectionPosition "neck");
         private _drawPosition = [_position select 0, _position select 1, (_position select 2) + _height];
         private _screenPosition = worldToScreen _drawPosition;
         if (_screenPosition isEqualTo []) then {

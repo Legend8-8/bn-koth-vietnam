@@ -16,8 +16,9 @@ if (!hasInterface) exitWith {};
 if (missionNamespace getVariable ["BN_KOTH_commandBoardActionLoopRunning", false]) exitWith {};
 missionNamespace setVariable ["BN_KOTH_commandBoardActionLoopRunning", true];
 
+private _mapboardAccessDistance = (getNumber (missionConfigFile >> "CfgBnKothInteractions" >> "teamMapboardAccessDistance")) max 1;
 private _resolveBoardTarget = {
-    params ["_boardRef"];
+    params ["_boardRef", "_mapboardAccessDistance"];
 
     if (_boardRef isEqualTo "") exitWith {objNull};
 
@@ -27,15 +28,15 @@ private _resolveBoardTarget = {
     if ((markerShape _boardRef) isEqualTo "") exitWith {objNull};
 
     private _markerPos = markerPos _boardRef;
-    private _candidates = nearestObjects [_markerPos, ["Static", "Thing", "House", "LandVehicle"], 8];
+    private _candidates = nearestObjects [_markerPos, ["Static", "Thing", "House", "LandVehicle"], _mapboardAccessDistance];
     if (_candidates isEqualTo []) exitWith {objNull};
 
     _candidates = [_candidates, [], {_markerPos distance2D _x}, "ASCEND"] call BIS_fnc_sortBy;
     _candidates select 0
 };
 
-[_resolveBoardTarget] spawn {
-    params ["_resolveBoardTarget"];
+[_resolveBoardTarget, _mapboardAccessDistance] spawn {
+    params ["_resolveBoardTarget", "_mapboardAccessDistance"];
 
     while {hasInterface} do {
         private _defs = missionNamespace getVariable ["BN_KOTH_commandBoardDefs", []];
@@ -75,7 +76,7 @@ private _resolveBoardTarget = {
 
             if (_side isEqualTo sideUnknown) then {continue};
 
-            private _board = [_boardRef] call _resolveBoardTarget;
+            private _board = [_boardRef, _mapboardAccessDistance] call _resolveBoardTarget;
             if (isNull _board) then {continue};
 
             private _actionKey = format ["BN_KOTH_commandBoardAction_%1", _sideToken];

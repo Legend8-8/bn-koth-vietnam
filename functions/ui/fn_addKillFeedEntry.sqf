@@ -22,6 +22,7 @@
 params ["_type", "_killerName", "_killerSide", "_weapon", "_victimName", "_victimSide", "_distText", ["_weaponPicture", "", [""]]];
 
 if (!hasInterface) exitWith {};
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo 2}) exitWith {};
 
 #define BN_KOTH_KF_MAX_ENTRIES 5
 #define BN_KOTH_KF_LIFETIME    6

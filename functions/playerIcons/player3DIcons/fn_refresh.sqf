@@ -50,10 +50,10 @@ private _westColor = missionNamespace getVariable ["BN_KOTH_player3DIconsWestCol
 private _eastColor = missionNamespace getVariable ["BN_KOTH_player3DIconsEastColor", [0.95, 0.2, 0.15, 0.95]];
 private _sameGroupColor = missionNamespace getVariable ["BN_KOTH_player3DIconsSameGroupColor", [0.95, 0.9, 0.3, 0.9]];
 private _friendlyTexture = missionNamespace getVariable ["BN_KOTH_player3DIconsTexture", "\A3\ui_f\data\map\markers\military\triangle_CA.paa"];
-private _height = missionNamespace getVariable ["BN_KOTH_player3DIconsHeight", 2.2];
 private _drawEntries = [];
+private _players = allPlayers;
 
-private _eligiblePlayers = if (_friendlyIconsEnabled) then {allPlayers select {
+private _eligiblePlayers = if (_friendlyIconsEnabled) then {_players select {
     private _unit = _x;
     private _uid = getPlayerUID _unit;
     private _assignedSide = _playerAssignments getOrDefault [_uid, sideUnknown];
@@ -76,57 +76,54 @@ private _eligiblePlayers = if (_friendlyIconsEnabled) then {allPlayers select {
 }} else {[]};
 
 if (_friendlyIconsEnabled) then {
-{
-    private _unit = _x;
-    private _unitPos = _unit modelToWorldVisual (_unit selectionPosition "neck");
+    {
+        private _unit = _x;
+        private _sameGroup = group _unit isEqualTo group player;
+        private _color = if (_sameGroup) then {_sameGroupColor} else {
+            if (side group _unit isEqualTo west) then {_westColor} else {_eastColor}
+        };
 
-    private _sameGroup = group _unit isEqualTo group player;
-    private _color = if (_sameGroup) then {_sameGroupColor} else {
-        if (side group _unit isEqualTo west) then {_westColor} else {_eastColor}
-    };
+        _drawEntries pushBack [
+            _unit,
+            180,
+            "",
+            _friendlyTexture,
+            _color,
+            false
+        ];
+    } forEach _eligiblePlayers;
 
-    _drawEntries pushBack [
-        _unitPos,
-        180,
-        "",
-        _friendlyTexture,
-        _color,
-        false
-    ];
-} forEach _eligiblePlayers;
+    {
+        private _unit = _x;
+        private _markedUntil = _unit getVariable ["BN_KOTH_spottedUntil", -1];
+        private _markedBySide = _unit getVariable ["BN_KOTH_spottedBySide", sideUnknown];
 
-{
-    private _unit = _x;
-    private _markedUntil = _unit getVariable ["BN_KOTH_spottedUntil", -1];
-    private _markedBySide = _unit getVariable ["BN_KOTH_spottedBySide", sideUnknown];
+        if (isNull _unit || {!alive _unit} || {[_unit] call bn_koth_fnc_respawn_isIncapacitated} || {_unit isEqualTo player}) then {
+            continue;
+        };
+        if (time >= _markedUntil) then {
+            continue;
+        };
+        if !([_markedBySide] call bn_koth_fnc_teams_validateSide) then {
+            continue;
+        };
+        if (_markedBySide isNotEqualTo _mySide) then {
+            continue;
+        };
+        if (player distance2D _unit > _maxDistance) then {
+            continue;
+        };
 
-    if (isNull _unit || {!alive _unit} || {[_unit] call bn_koth_fnc_respawn_isIncapacitated} || {_unit isEqualTo player}) then {
-        continue;
-    };
-    if (time >= _markedUntil) then {
-        continue;
-    };
-    if !([_markedBySide] call bn_koth_fnc_teams_validateSide) then {
-        continue;
-    };
-    if (_markedBySide isNotEqualTo _mySide) then {
-        continue;
-    };
-    if (player distance2D _unit > _maxDistance) then {
-        continue;
-    };
-
-    private _unitPos = _unit modelToWorldVisual (_unit selectionPosition "neck");
-    private _color = if (side group _unit isEqualTo west) then {_westColor} else {_eastColor};
-    _drawEntries pushBack [
-        _unitPos,
-        180,
-        "",
-        _friendlyTexture,
-        _color,
-        false
-    ];
-} forEach allPlayers;
+        private _color = if (side group _unit isEqualTo west) then {_westColor} else {_eastColor};
+        _drawEntries pushBack [
+            _unit,
+            180,
+            "",
+            _friendlyTexture,
+            _color,
+            false
+        ];
+    } forEach _players;
 };
 
 private _helpDrawEntries = [];

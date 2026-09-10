@@ -590,13 +590,72 @@ copies remain audit rows, not progression products.
 
 `functions/vehicles/` owns config lookup, pure side/level/perk eligibility and
 the authoritative one-life rental lifecycle. RENT is the complete transaction:
-it validates eligibility and affordability, reserves an authored paid pad,
+it requires the current server-owned representation to be alive and actively
+deployed at its team mapboard, validates eligibility and affordability, reserves an authored paid pad,
 creates and sanitizes the exact curated vehicle, registers UID-owned access
 state, and only then charges cash exactly once. One UID may hold at most one
 active rented vehicle at a time; there is no pending/requisition stage. Rental
 state never persists. The managed free-vehicle and command-vehicle lifecycles
 remain separate, and a
 rented M577 receives no managed command capability.
+
+## Round accounting and results
+
+`BN_KOTH_roundStats` is the sole server-owned round-accounting map. It records
+participants, kills, deaths, assists, objective contribution, best streak, and
+canonical XP/cash reward deltas. On the score-limit win boundary, the round
+owner finalizes configured participation/winner bonuses exactly once through
+the existing progression owners, then publishes one immutable
+`BN_KOTH_roundResult` projection before entering `ENDING`. The projection is
+retained through the post-round lifecycle for JIP presentation and cleared on
+the next `ACTIVE` entry. The round remains score-limit driven; there is no
+round-duration or overtime gameplay owner.
+
+The same result projection supplies the all-player match scoreboard. Clients
+may sort and render those immutable rows but never reconstruct statistics from
+player objects. Rows retain participant name, side, connected-at-finalize
+status, K/D/A, objective contribution, best streak, and canonical round reward
+deltas, so death, disconnect and JIP presentation do not require the original
+unit to remain alive.
+
+## Persistent saved loadouts
+
+Saved loadouts are bounded intent inside the existing player progression
+record and persistence adapter. Server create/update operations capture the
+canonical intended loadout; legacy profile kits may be imported once as
+untrusted intent when the durable set is empty. Persistence never grants
+equipment entitlement. A saved Unit Loadout is revalidated through the normal
+side, level, ownership, mastery, perk, and rental checks every time it is
+loaded or selected for spawn. The schema-v3 extDB3 codec is data-only and is
+decoded with `parseSimpleArray`, never `compile`.
+
+The saved-kit blob also preserves whether that one-time legacy import has been
+initialized. An initialized empty set is therefore an authoritative deletion,
+not an invitation to restore stale `profileNamespace` entries after reconnect.
+The client/server synchronization flag is mission-connection-local so a prior
+server session cannot suppress a legitimate first import on another database.
+
+A malformed saved-kit blob is dropped to an empty saved set without discarding
+otherwise valid persistent XP, cash, ownership, perks, or mastery. The server
+marks that record dirty so the normal persistence owner rewrites a canonical
+schema-v3 representation.
+
+## Assist and teamkill consequences
+
+Assist evidence extends the existing server-local projectile attribution
+collector. Victim-centric contributor state is damage-thresholded, time
+bounded, contributor bounded, and cleared on death, disconnect, and round
+reset. Only current canonical opposing player records can be credited; the
+killer is excluded. Teamkill consequences consume the canonical combat kill
+record and apply configured, clamped XP/cash penalties through progression
+owners. Replay maps are round-bounded. Reward and penalty values live in
+`CfgBnKothScoring`, where zero cleanly disables a payout or deduction.
+
+Configured streak milestones are presentation-only and are emitted exactly
+once as the existing server-owned current streak crosses each threshold.
+Vehicle rentals are inspected by the single server vehicle-manager loop at a
+configured cadence; no monitor script is spawned per rental.
+
 # Perk ownership and activation
 
 Perks extend the existing progression/persistence boundary. `ownedPerks` is permanent purchase state; `activePerks` is the persisted, bounded subset whose gameplay effects are enabled. The server owns both arrays, purchase transactions, active-slot validation, and managed-loadout enforcement. Clients receive only a targeted presentation projection and submit narrow perk intents.

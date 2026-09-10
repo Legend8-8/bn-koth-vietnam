@@ -36,6 +36,19 @@ if !(remoteExecutedOwner isEqualTo 2) exitWith {
 
 if !(_validationResult isEqualType createHashMap) exitWith {};
 
+if (_validationResult getOrDefault ["savedKitSync", false]) exitWith {
+    if (_validationResult getOrDefault ["success", false]) then {
+        profileNamespace setVariable ["BN_KOTH_savedKits_v2", +(_validationResult getOrDefault ["savedKits", []])];
+        profileNamespace setVariable ["BN_KOTH_preferredSpawnKitId", _validationResult getOrDefault ["preferredSavedKitId", ""]];
+        uiNamespace setVariable ["BN_KOTH_savedKitsServerSynced", true];
+        saveProfileNamespace;
+        ["SAVED LOADOUTS SYNCHRONIZED."] call bn_koth_fnc_ui_notify;
+        ["LOADOUT_KITS"] call bn_koth_fnc_menu_refresh;
+    } else {
+        [format ["SERVER SAVE FAILED: %1", _validationResult getOrDefault ["message", "Request rejected."]]] call bn_koth_fnc_ui_notify;
+    };
+};
+
 if (_validationResult getOrDefault ["spawnPreference", false]) exitWith {
     private _current = missionNamespace getVariable ["BN_KOTH_spawnKitResponse", [0, "", false]];
     if !((_validationResult getOrDefault ["preferenceRevision", -1]) isEqualTo (_current select 0)) exitWith {};
@@ -59,11 +72,11 @@ if !(_validationResult getOrDefault ["success", false]) exitWith {
         uiNamespace setVariable ["BN_KOTH_menuPendingKitId", ""];
         uiNamespace setVariable ["BN_KOTH_menuPendingKitName", ""];
     };
-    systemChat format [
-        "[KOTH] %1: %2",
+    [format [
+        "%1: %2",
         if !(_pendingKitOperation isEqualTo "") then {"Saved loadout rejected"} else {"Loadout rejected"},
         _validationResult getOrDefault ["message", "Request rejected."]
-    ];
+    ]] call bn_koth_fnc_ui_notify;
 };
 
 if (isNull player) exitWith {};
@@ -105,10 +118,10 @@ if !(_applyResult getOrDefault ["success", false]) exitWith {
         "WARN"
     ] call bn_koth_fnc_common_log;
 
-    systemChat format [
-        "[KOTH] Loadout application failed: %1",
+    [format [
+        "Loadout application failed: %1",
         _applyResult getOrDefault ["message", "Unknown failure."]
-    ];
+    ]] call bn_koth_fnc_ui_notify;
 
     uiNamespace setVariable ["BN_KOTH_menuPendingKitOperation", ""];
     uiNamespace setVariable ["BN_KOTH_menuPendingKitId", ""];

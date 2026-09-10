@@ -6,6 +6,13 @@ class CfgBnKothCombat
     attributionDiagnostics = 0;
     attributionLethalWindowSeconds = 2;
     attributionMaxHitsPerVictim = 16;
+
+    // Server-owned assist attribution. Reward values are configured in
+    // CfgBnKothScoring; disabling or zero-valued rewards changes no balance.
+    assistsEnabled = 1;
+    assistWindowSeconds = 15;
+    assistMinimumDamage = 0.20;
+    assistMaxContributorsPerVictim = 8;
     attributionInfantryMagazineCategories[] = {
         "pistol_mag", "smg_mag", "rifle_mag", "lmg_mag", "shotgun_mag"
     };

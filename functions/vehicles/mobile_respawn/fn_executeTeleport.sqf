@@ -13,6 +13,7 @@
 params [["_vehicle", objNull, [objNull]]];
 
 if (!hasInterface) exitWith {};
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo 2}) exitWith {};
 if (isNull _vehicle || {!alive _vehicle}) exitWith {
     ["Command vehicle is unavailable."] call bn_koth_fnc_ui_notify;
 };

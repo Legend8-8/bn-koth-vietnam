@@ -12,6 +12,7 @@
 params [["_targetUnit", objNull, [objNull]]];
 
 if (!hasInterface) exitWith {false};
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo 2}) exitWith {false};
 
 private _config = missionConfigFile >> "CfgBnKothPlayer3DIcons";
 private _configuredEnabled = (getNumber (_config >> "enabled")) > 0;
@@ -29,6 +30,10 @@ missionNamespace setVariable ["BN_KOTH_player3DIconsSize", (getNumber (_config >
 missionNamespace setVariable ["BN_KOTH_player3DIconsNameSize", (getNumber (_config >> "nameSize")) max 0.01];
 missionNamespace setVariable ["BN_KOTH_player3DIconsShadow", (getNumber (_config >> "shadow")) > 0];
 missionNamespace setVariable ["BN_KOTH_player3DIconsMaxDistance", (getNumber (_config >> "maxDistance")) max 25];
+private _candidateRefreshInterval = getNumber (_config >> "candidateRefreshIntervalSeconds");
+if (_candidateRefreshInterval < 0.05) then {_candidateRefreshInterval = 0.1};
+missionNamespace setVariable ["BN_KOTH_player3DIconsCandidateRefreshInterval", _candidateRefreshInterval];
+missionNamespace setVariable ["BN_KOTH_player3DIconsNextCandidateRefreshAt", -1];
 missionNamespace setVariable ["BN_KOTH_player3DIconsProximityVisibilityDistance", (getNumber (_config >> "proximityVisibilityDistance")) max 0];
 missionNamespace setVariable ["BN_KOTH_player3DIconsWestColor", getArray (_config >> "westColor")];
 missionNamespace setVariable ["BN_KOTH_player3DIconsEastColor", getArray (_config >> "eastColor")];
@@ -48,10 +53,17 @@ missionNamespace setVariable ["BN_KOTH_casualtyHelp3DMaxDistance", (getNumber (m
 
 if !(missionNamespace getVariable ["BN_KOTH_player3DIconsRefreshLoopAdded", false]) then {
     private _refreshHandler = addMissionEventHandler ["EachFrame", {
-        try {
-            [] call bn_koth_fnc_player3DIcons_refresh;
-        } catch {
-            diag_log format ["[BN_KOTH][WARN] 3D icon refresh failed. Error: %1", _exception];
+        private _nextRefreshAt = missionNamespace getVariable ["BN_KOTH_player3DIconsNextCandidateRefreshAt", -1];
+        if (diag_tickTime >= _nextRefreshAt) then {
+            try {
+                [] call bn_koth_fnc_player3DIcons_refresh;
+            } catch {
+                diag_log format ["[BN_KOTH][WARN] 3D icon refresh failed. Error: %1", _exception];
+            };
+            missionNamespace setVariable [
+                "BN_KOTH_player3DIconsNextCandidateRefreshAt",
+                diag_tickTime + (missionNamespace getVariable ["BN_KOTH_player3DIconsCandidateRefreshInterval", 0.1])
+            ];
         };
 
         [] call bn_koth_fnc_player3DIcons_draw;

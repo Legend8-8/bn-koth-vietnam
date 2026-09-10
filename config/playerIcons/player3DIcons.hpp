@@ -9,6 +9,9 @@ class CfgBnKothPlayer3DIcons
     shadow = 4;
     shadowColor[] = {0.00, 0.00, 0.00, 1.00};
     maxDistance = 1000;
+    // Candidate membership is refreshed at 10 Hz; cached units are still
+    // positioned and drawn every frame for smooth presentation.
+    candidateRefreshIntervalSeconds = 0.1;
     // Nearby friendlies remain visible through thin geometry and vegetation.
     proximityVisibilityDistance = 50;
     westColor[] = {0.00, 0.00, 1.00, 1.00};

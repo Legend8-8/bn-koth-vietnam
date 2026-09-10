@@ -140,6 +140,7 @@ switch (_newState) do {
         } forEach _activeParticipants;
 
         missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+        {[_x] call bn_koth_fnc_roundStats_registerParticipant} forEach _activeParticipants;
         [] call bn_koth_fnc_teams_publishState;
     };
 

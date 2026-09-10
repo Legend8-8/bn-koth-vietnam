@@ -11,6 +11,7 @@
 */
 
 if (!hasInterface) exitWith {};
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo 2}) exitWith {};
 diag_log format ["[BN_KOTH][INFO] escMenu_initPlayerLocal begin owner=%1 unit=%2", clientOwner, typeOf player];
 private _firstInit = !(missionNamespace getVariable ["BN_KOTH_escMenuInitialized", false]);
 if (_firstInit) then {
