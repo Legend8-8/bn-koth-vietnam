@@ -253,6 +253,8 @@ class CfgFunctions
             class respawn_publishCasualtyHelpState {file = "functions\respawn\fn_publishCasualtyHelpState.sqf";};
             class respawn_receiveCasualtyHelpState {file = "functions\respawn\fn_receiveCasualtyHelpState.sqf";};
             class respawn_reconcileCasualtyHelp {file = "functions\respawn\fn_reconcileCasualtyHelp.sqf";};
+            class respawn_reportReviveState {file = "functions\respawn\fn_reportReviveState.sqf";};
+            class respawn_clearReviveRewardCycle {file = "functions\respawn\fn_clearReviveRewardCycle.sqf";};
         };
 
         class traversal

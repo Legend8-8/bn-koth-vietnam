@@ -19,7 +19,7 @@ class CfgBnKothScoring
 		xpRoundWinnerBonus = 0;
 		// Presentation-only kill-streak thresholds. Empty disables milestone notices.
 		streakMilestones[] = {};
-		// Provisional beta value; requires trusted native revive attribution before use.
+		// Native S.O.G. recovery reward; attribution commits server-side.
 		xpPerRevive = 25;
 
 		class transportInsertion
@@ -57,7 +57,7 @@ class CfgBnKothScoring
 		cashTeamkillPenalty = 0;
 		cashRoundParticipationBonus = 0;
 		cashRoundWinnerBonus = 0;
-		// Provisional beta value; requires trusted native revive attribution before use.
+		// Native S.O.G. recovery reward; attribution commits server-side.
 		cashPerRevive = 25;
 	};
 

@@ -14,6 +14,24 @@
 
 if (!isServer) exitWith {};
 
+if !((missionNamespace getVariable ["BN_KOTH_reviveRewardCycleCounter", objNull]) isEqualType 0) then {
+    missionNamespace setVariable ["BN_KOTH_reviveRewardCycleCounter", 0];
+};
+
+private _respawnCfg = missionConfigFile >> "CfgBnKothRespawn";
+private _reviveRewardDistance = if (isNumber (_respawnCfg >> "reviveRewardDistanceMeters")) then {
+    getNumber (_respawnCfg >> "reviveRewardDistanceMeters") max 0
+} else {
+    4
+};
+private _reviveRewardWindow = if (isNumber (_respawnCfg >> "reviveRewardCompletionWindowSeconds")) then {
+    getNumber (_respawnCfg >> "reviveRewardCompletionWindowSeconds") max 0.25
+} else {
+    2
+};
+missionNamespace setVariable ["BN_KOTH_reviveRewardDistanceMeters", _reviveRewardDistance];
+missionNamespace setVariable ["BN_KOTH_reviveRewardCompletionWindowSeconds", _reviveRewardWindow];
+
 if !((missionNamespace getVariable ["BN_KOTH_casualtyHelpRequests", objNull]) isEqualType createHashMap) then {
     missionNamespace setVariable ["BN_KOTH_casualtyHelpRequests", createHashMap];
 };
@@ -166,7 +184,6 @@ if (_existingEntityCreatedId < 0) then {
     [format ["Safe-zone EntityCreated cleanup EH registered: %1", _entityCreatedEhId], "INFO"] call bn_koth_fnc_common_log;
 };
 
-private _respawnCfg = missionConfigFile >> "CfgBnKothRespawn";
 private _safeZoneInterval = if (isNumber (_respawnCfg >> "safeZoneCheckIntervalSeconds")) then {
     (getNumber (_respawnCfg >> "safeZoneCheckIntervalSeconds")) max 0.05
 } else {

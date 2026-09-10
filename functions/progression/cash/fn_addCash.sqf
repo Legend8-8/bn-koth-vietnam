@@ -7,6 +7,7 @@
         0: Player UID <STRING>
         1: Positive cash amount <NUMBER>
         2: Reward reason <STRING>
+        3: Publish a separate progression/reward-feed update <BOOL>
     Returns:
         Structured operation result <HASHMAP>
     Public: Yes
@@ -15,7 +16,8 @@
 params [
     ["_uid", "", [""]],
     ["_amount", 0, [0]],
-    ["_reason", "", [""]]
+    ["_reason", "", [""]],
+    ["_publishReward", true, [true]]
 ];
 
 private _rejected = {
@@ -49,7 +51,9 @@ _progressionByUid set [_uid, _progression];
 missionNamespace setVariable ["BN_KOTH_playerProgression", _progressionByUid];
 [_uid, "cash"] call bn_koth_fnc_persistence_markDirty;
 
-[_uid, "cash", _amount, _reason] call bn_koth_fnc_progression_publishUpdate;
+if (_publishReward) then {
+    [_uid, "cash", _amount, _reason] call bn_koth_fnc_progression_publishUpdate;
+};
 [_uid, "cash", _amount] call bn_koth_fnc_roundStats_recordReward;
 [format ["Cash award UID=%1 reason=%2 amount=%3 total=%4", _uid, _reason, _amount, _newCash]] call bn_koth_fnc_common_log;
 

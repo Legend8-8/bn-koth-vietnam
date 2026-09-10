@@ -44,6 +44,7 @@ if !(_saveResult getOrDefault ["success", false]) then {
 if (_record isEqualType createHashMap) then {
     private _unit = _record getOrDefault ["currentUnit", objNull];
     if (!isNull _unit) then {
+        [_unit, "PLAYER_DISCONNECTED"] call bn_koth_fnc_respawn_clearReviveRewardCycle;
         _unit setVariable ["BN_KOTH_safeZoneProtected", false, true];
         _unit setVariable ["BN_KOTH_enemySafeZoneIntruder", false, true];
 

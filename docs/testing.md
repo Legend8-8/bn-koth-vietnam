@@ -207,23 +207,14 @@ Respawn-related changes must verify:
 - safe-zone status survives respawn representation handoff and is cleared outside active safe-zone states;
 - reconnecting does not produce invalid spawn state.
 
-## ADVANCED REVIVE FEATURE-COMPLETE BLOCKER
+## ADVANCED REVIVE RUNTIME ACCEPTANCE
 
-**Status: OUTSTANDING — REQUIRED BEFORE FEATURE COMPLETE.**
-
-Advanced Revive must not be marked feature-complete until all of the following
-have been implemented and multiplayer runtime-validated:
-
-- native S.O.G. Resuscitate is reliably attributed to the actual reviver for
-  the server-owned XP/cash reward.
-
-The dormant revive-reward helper is not a completion hook and does not resolve
-this blocker. The documented S.O.G. action function reports casualty and phase,
-but exposes no supported observer carrying the caller; hold-action callbacks
-carry caller identity only to the code that registered the action. KOTH does
-not replace or wrap that native action and therefore has no trusted production
-reward caller. Provisional rewards remain 25 XP and 25 cash for both normal and
-MEDIC recovery, with no MEDIC multiplier.
+The production revive-reward path observes S.O.G.'s local Resuscitate
+completion without changing native timing, interruption, recovery or item
+behavior. Its casualty-only RemoteExec request is treated as untrusted intent:
+the server derives the sender, owns the cycle token, and requires authoritative
+recovery within a two-second pending window before awarding 25 XP and 25 cash.
+Normal and MEDIC recovery use the same reward with no multiplier.
 
 Advanced Revive integration must additionally verify with two opposing-team
 clients and at least two same-team clients:
@@ -265,16 +256,16 @@ Expected result: `[]`. This verifies the central predicate and production
 ownership/security hooks; it does not establish S.O.G. lifecycle or
 multiplayer RemoteExec behavior.
 
-Run the dormant revive-reward source contract separately:
+Run the revive-reward source contract separately:
 
 ```sqf
 call compile preprocessFileLineNumbers "functions\progression\xp\test_reviveReward.sqf"
 ```
 
-Expected result: `[]`. It verifies configuration, server authority, validation,
-dedupe, existing reward-owner reuse, feed presentation and the absence of a
-premature production completion call. It does not fabricate trusted S.O.G.
-attribution or execute a reward.
+Expected result: `[]`. It verifies configuration, the casualty-only endpoint,
+sender derivation, server-owned cycles, bounded recovery confirmation, cleanup,
+dedupe, existing reward-owner reuse and feed presentation. It does not execute
+a real S.O.G. revive or establish multiplayer locality behavior.
 
 Starter-loadout configuration changes must additionally verify on a dedicated
 server that both WEST and EAST definitions initialize, receive the configured
@@ -708,9 +699,10 @@ Focused server tests: `call compile preprocessFileLineNumbers "functions\progres
 ## MEDIC and S.O.G. Advanced Revive dedicated matrix
 
 The focused perk test covers managed medikit/FAK entitlement and derived-trait
-wiring. The Eden module now uses S.O.G.'s native successful-Resuscitate item
-removal, matching Mike Force's runtime configuration mechanism. No KOTH revive
-consumption transaction or hold-action probe exists. Dedicated validation with
+wiring. The Eden module uses S.O.G.'s native successful-Resuscitate item
+removal, matching Mike Force's runtime configuration mechanism. KOTH observes
+the narrow native completion seam but owns no revive or inventory transaction.
+Dedicated validation with
 the casualty and reviver on separate clients must cover:
 
 1. Normal player, successful revive with either configured S.O.G. FAK: native
@@ -728,9 +720,11 @@ the casualty and reviver on separate clients must cover:
    player becomes eligible again normally.
 7. Call For Help and Give Up: existing KOTH presentation and lifecycle cleanup
    remain functional.
-8. Reward: no production revive reward is issued while trusted native reviver
-   attribution remains unresolved. Once a supported trusted seam exists, the
-   actual reviver must receive 25 XP and $25 exactly once.
+8. Reward: the accepted successful completer receives exactly 25 XP, $25 and
+   one REVIVE feed entry. Interrupted, Give Up, death, self-recovery, stale,
+   replayed, cross-team and out-of-range requests receive nothing. Two
+   simultaneous candidates produce one winner, and a later incapacitation may
+   reward again.
 9. Bleedout: leave a genuine casualty down beyond 120 seconds and confirm they
    remain incapacitated and reviveable, then confirm unattended bleedout reaches
    S.O.G.'s native terminal outcome at about 600 seconds. Separately verify

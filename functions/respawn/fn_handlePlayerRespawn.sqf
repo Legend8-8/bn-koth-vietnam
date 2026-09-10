@@ -17,6 +17,11 @@ params ["_newUnit", ["_oldUnit", objNull, [objNull]]];
 if (!isServer) exitWith {false};
 if (isNull _newUnit) exitWith {false};
 
+[_newUnit, "PLAYER_RESPAWNED"] call bn_koth_fnc_respawn_clearReviveRewardCycle;
+if (!isNull _oldUnit) then {
+    [_oldUnit, "PLAYER_RESPAWN_REPLACED"] call bn_koth_fnc_respawn_clearReviveRewardCycle;
+};
+
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 if !(_records isEqualType createHashMap) exitWith {
     ["Respawn handler rejected: BN_KOTH_playerRecords missing/invalid", "WARN"] call bn_koth_fnc_common_log;

@@ -42,6 +42,21 @@ if !(_newState in _allowedNext) exitWith {
 [format ["Round state -> %1", _newState]] call bn_koth_fnc_common_log;
 [] call bn_koth_fnc_respawn_reconcileCasualtyHelp;
 
+if !(_newState isEqualTo "ACTIVE") then {
+    private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
+    if (_records isEqualType createHashMap) then {
+        {
+            private _record = _records get _x;
+            if (_record isEqualType createHashMap) then {
+                [
+                    _record getOrDefault ["currentUnit", objNull],
+                    format ["ROUND_STATE_%1", _newState]
+                ] call bn_koth_fnc_respawn_clearReviveRewardCycle;
+            };
+        } forEach (keys _records);
+    };
+};
+
 if (_newState in ["PREPARING", "ENDING", "RESETTING"]) then {
     [] call bn_koth_fnc_scoring_resetProgress;
 };

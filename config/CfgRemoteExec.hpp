@@ -233,6 +233,12 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_respawn_reportReviveState
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
         // S.O.G. Advanced Revive installs/removes casualty actions globally and persists them for JIP.
         class VN_fnc_revive_actions_local
         {
