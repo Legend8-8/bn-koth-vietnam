@@ -19,6 +19,12 @@ class CfgBnKothPlayerMapMarkers
     micSize = 22;
     micNameSize = 0.04;
 
+    // Drawn on the full map and NAV/GPS map controls; never created as a map marker object.
+    casualtyHelpTexture = "\A3\ui_f\data\map\markers\military\warning_CA.paa";
+    casualtyHelpColor[] = {1, 0.25, 0.2, 1};
+    casualtyHelpSize = 28;
+    casualtyHelpNameSize = 0.04;
+
     // Overall visibility for local map markers.
     iconAlpha = 1;
 

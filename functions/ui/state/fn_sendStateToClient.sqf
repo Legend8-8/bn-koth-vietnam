@@ -90,3 +90,4 @@ private _payload = createHashMapFromArray [
 ];
 
 [_payload] remoteExecCall ["bn_koth_fnc_ui_receiveState", owner _targetPlayer];
+[owner _targetPlayer] call bn_koth_fnc_respawn_publishCasualtyHelpState;

@@ -9,6 +9,7 @@
 */
 
 if (!hasInterface || {isNull player} || {!alive player}) exitWith {false};
+if ([player] call bn_koth_fnc_respawn_isIncapacitated) exitWith {false};
 
 private _playerAssignments = missionNamespace getVariable ["BN_KOTH_playerTeamAssignments", createHashMap];
 if !(_playerAssignments isEqualType createHashMap) then {
@@ -23,7 +24,7 @@ if !([_myAssignedSide] call bn_koth_fnc_teams_validateSide) then {
 if !([_myAssignedSide] call bn_koth_fnc_teams_validateSide) exitWith {false};
 
 private _candidate = cursorTarget;
-if (isNull _candidate || {!alive _candidate}) then {
+if (isNull _candidate || {!alive _candidate} || {[_candidate] call bn_koth_fnc_respawn_isIncapacitated}) then {
     _candidate = objNull;
 };
 

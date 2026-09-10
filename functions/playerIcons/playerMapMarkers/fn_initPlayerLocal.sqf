@@ -57,6 +57,7 @@ missionNamespace setVariable ["BN_KOTH_playerMapMarkersShowPassengerCount", (get
 missionNamespace setVariable ["BN_KOTH_playerMapMarkersShowDriverName", (getNumber (_playerMapMarkersCfg >> "showDriverName")) > 0];
 missionNamespace setVariable ["BN_KOTH_playerMapMarkersMarkers", createHashMap];
 missionNamespace setVariable ["BN_KOTH_playerMapMarkersDisplayId", _displayId];
+uiNamespace setVariable ["BN_KOTH_casualtyHelpMapDrawEntries", []];
 
 if !(missionNamespace getVariable ["BN_KOTH_playerMapMarkersLocalMissionEhAdded", false]) then {
     private _eventId = addMissionEventHandler ["EntityRespawned", {
@@ -82,7 +83,8 @@ if (_refreshLoop isEqualTo scriptNull || {scriptDone _refreshLoop}) then {
             };
 
             private _mapDisplayId = missionNamespace getVariable ["BN_KOTH_playerMapMarkersDisplayId", 12];
-            private _intervalVariable = if (isNull (findDisplay _mapDisplayId)) then {"BN_KOTH_playerMapMarkersClosedRefreshInterval"} else {"BN_KOTH_playerMapMarkersRefreshInterval"};
+            private _hasOpenMapSurface = !isNull (findDisplay _mapDisplayId) || {visibleGPS};
+            private _intervalVariable = if (_hasOpenMapSurface) then {"BN_KOTH_playerMapMarkersRefreshInterval"} else {"BN_KOTH_playerMapMarkersClosedRefreshInterval"};
             private _interval = missionNamespace getVariable [_intervalVariable, 0.5];
             if (_interval < 0.1) then {
                 _interval = 0.1;

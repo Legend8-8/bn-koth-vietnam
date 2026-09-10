@@ -34,7 +34,7 @@ if (!alive _unit) exitWith {
     _response set ["reason", "PLAYER_DEAD"];
     _response
 };
-if ((lifeState _unit) isEqualTo "INCAPACITATED") exitWith {
+if ([_unit] call bn_koth_fnc_respawn_isIncapacitated) exitWith {
     _response set ["reason", "PLAYER_UNCONSCIOUS"];
     _response
 };

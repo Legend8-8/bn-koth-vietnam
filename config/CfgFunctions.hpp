@@ -130,6 +130,7 @@ class CfgFunctions
             class progression_xp_addXp {file = "functions\progression\xp\fn_addXp.sqf";};
             class progression_xp_awardObjectiveTick {file = "functions\progression\xp\fn_awardObjectiveTick.sqf";};
             class progression_xp_awardKill {file = "functions\progression\xp\fn_awardKill.sqf";};
+            class progression_xp_awardRevive {file = "functions\progression\xp\fn_awardRevive.sqf";};
             class progression_transport_initServer {file = "functions\progression\transport\fn_initServer.sqf";};
             class progression_transport_registerVehicle {file = "functions\progression\transport\fn_registerVehicle.sqf";};
             class progression_transport_handleGetIn {file = "functions\progression\transport\fn_handleGetIn.sqf";};
@@ -168,7 +169,9 @@ class CfgFunctions
             class progression_perks_isSuppressor {file = "functions\progression\perks\fn_isSuppressor.sqf";};
             class progression_perks_findRestrictedItems {file = "functions\progression\perks\fn_findRestrictedItems.sqf";};
             class progression_perks_findSuppressors {file = "functions\progression\perks\fn_findSuppressors.sqf";};
+            class progression_perks_removeRestrictedItems {file = "functions\progression\perks\fn_removeRestrictedItems.sqf";};
             class progression_perks_removeSuppressors {file = "functions\progression\perks\fn_removeSuppressors.sqf";};
+            class progression_perks_applyMedicTraitLocal {file = "functions\progression\perks\fn_applyMedicTraitLocal.sqf";};
             class progression_perks_test_perks {file = "functions\progression\perks\test_perks.sqf";};
         };
 
@@ -230,6 +233,12 @@ class CfgFunctions
             class respawn_applyVehicleProtection {file = "functions\respawn\fn_applyVehicleProtection.sqf";};
             class respawn_handlePlayerDeath {file = "functions\respawn\fn_handlePlayerDeath.sqf";};
             class respawn_handlePlayerRespawn {file = "functions\respawn\fn_handlePlayerRespawn.sqf";};
+            class respawn_isIncapacitated {file = "functions\respawn\fn_isIncapacitated.sqf";};
+            class respawn_updateDownedPresentation {file = "functions\respawn\fn_updateDownedPresentation.sqf";};
+            class respawn_requestCasualtyHelp {file = "functions\respawn\fn_requestCasualtyHelp.sqf";};
+            class respawn_publishCasualtyHelpState {file = "functions\respawn\fn_publishCasualtyHelpState.sqf";};
+            class respawn_receiveCasualtyHelpState {file = "functions\respawn\fn_receiveCasualtyHelpState.sqf";};
+            class respawn_reconcileCasualtyHelp {file = "functions\respawn\fn_reconcileCasualtyHelp.sqf";};
         };
 
         class traversal

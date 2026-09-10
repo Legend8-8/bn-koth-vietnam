@@ -8,8 +8,7 @@
     Public: No
 */
 
-if (!hasInterface || {isNull player} || {!alive player}) exitWith {};
-if !(missionNamespace getVariable ["BN_KOTH_player3DIconsEnabled", true]) exitWith {};
+if (!hasInterface || {isNull player} || {!alive player} || {[player] call bn_koth_fnc_respawn_isIncapacitated}) exitWith {};
 
 private _height = missionNamespace getVariable ["BN_KOTH_player3DIconsHeight", 2.2];
 private _size = missionNamespace getVariable ["BN_KOTH_player3DIconsSize", 0.7];
@@ -53,3 +52,12 @@ private _drawData = uiNamespace getVariable ["BN_KOTH_player3DIconsDrawData", []
         drawIcon3D [_iconTexture, _drawColor, _drawPosition, _size, _size, _direction, "", _shadow, _nameSize, "PuristaMedium", "center", false];
     };
 } forEach _drawData;
+
+private _helpTexture = missionNamespace getVariable ["BN_KOTH_casualtyHelp3DTexture", "\A3\ui_f\data\map\markers\military\warning_CA.paa"];
+private _helpColor = missionNamespace getVariable ["BN_KOTH_casualtyHelp3DColor", [1, 0.2, 0.15, 1]];
+private _helpSize = missionNamespace getVariable ["BN_KOTH_casualtyHelp3DSize", 0.85];
+{
+    _x params ["_position", "_label"];
+    private _drawPosition = [_position select 0, _position select 1, (_position select 2) + _height];
+    drawIcon3D [_helpTexture, _helpColor, _drawPosition, _helpSize, _helpSize, 0, _label, true, _nameSize, "PuristaMedium", "center", false];
+} forEach (uiNamespace getVariable ["BN_KOTH_casualtyHelp3DDrawData", []]);

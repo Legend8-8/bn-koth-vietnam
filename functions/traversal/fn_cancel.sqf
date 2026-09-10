@@ -26,6 +26,7 @@ if (!isNull _unit) then {
     private _safeToRollback = _rollback
         && {local _unit}
         && {alive _unit}
+        && {!([_unit] call bn_koth_fnc_respawn_isIncapacitated)}
         && {isNull (objectParent _unit)}
         && {isNull (attachedTo _unit)}
         && {(count _startPosition) isEqualTo 3};
@@ -51,6 +52,7 @@ if (!isNull _unit) then {
         private _selectedAnimation = _result getOrDefault ["selectedAnimation", ""];
         if (
             alive _unit
+            && {!([_unit] call bn_koth_fnc_respawn_isIncapacitated)}
             && {_selectedAnimation != ""}
             && {(animationState _unit) isEqualTo (toLower _selectedAnimation)}
         ) then {

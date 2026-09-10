@@ -44,32 +44,70 @@ if !(_id in _active) exitWith {["NOT_ACTIVE", "That perk is not active."] call _
 private _loadoutRegistry = missionNamespace getVariable ["BN_KOTH_playerLoadoutState", createHashMap];
 private _loadoutState = _loadoutRegistry getOrDefault [_uid, createHashMap];
 private _loadout = _loadoutState getOrDefault ["intendedLoadout", []];
-private _suppressors = if (_id isEqualTo "suppressor") then {[_loadout] call bn_koth_fnc_progression_perks_findSuppressors} else {[]};
+private _restrictedItems = [_loadout, _id] call bn_koth_fnc_progression_perks_findRestrictedItems;
+private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
+private _record = _records getOrDefault [_uid, createHashMap];
+private _currentUnit = _record getOrDefault ["currentUnit", objNull];
+private _physicalLoadout = if (_id isEqualTo "medic" && {!isNull _currentUnit}) then {getUnitLoadout _currentUnit} else {[]};
+{
+    _restrictedItems pushBackUnique _x;
+} forEach ([_physicalLoadout, _id] call bn_koth_fnc_progression_perks_findRestrictedItems);
+private _displayName = _metadata getOrDefault ["displayName", _id];
 
-if ((_op isEqualTo "DEACTIVATE") && {(count _suppressors) > 0}) exitWith {
-    ["CONFIRMATION_REQUIRED", "Suppressor perk is currently in use. Deactivating it will remove all suppressors from your equipped weapons and carried inventory. Continue?", createHashMapFromArray [["confirmationRequired", true], ["suppressors", _suppressors]]] call _reject
+if ((_op isEqualTo "DEACTIVATE") && {(count _restrictedItems) > 0}) exitWith {
+    private _warningMessage = if (_id isEqualTo "suppressor") then {
+        "Suppressor perk is currently in use. Deactivating it will remove all suppressors from your equipped weapons and carried inventory. Continue?"
+    } else {
+        format ["%1 is currently in use. Deactivating it will remove its restricted items from your equipped weapons and carried inventory. Continue?", _displayName]
+    };
+    [
+        "CONFIRMATION_REQUIRED",
+        _warningMessage,
+        createHashMapFromArray [["confirmationRequired", true], ["restrictedItems", _restrictedItems]]
+    ] call _reject
 };
-if ((_op isEqualTo "DEACTIVATE_CONFIRM") && {(count _suppressors) > 0}) exitWith {
-    private _clean = [_loadout] call bn_koth_fnc_progression_perks_removeSuppressors;
-    if ((count _clean) < 10 || {(count ([_clean] call bn_koth_fnc_progression_perks_findSuppressors)) > 0}) exitWith {["SUPPRESSOR_CLEANUP_FAILED", "Suppressors could not be removed safely; the perk remains active."] call _reject};
+if ((_op isEqualTo "DEACTIVATE_CONFIRM") && {(count _restrictedItems) > 0}) exitWith {
+    private _cleanIntended = if (_id isEqualTo "suppressor") then {
+        [_loadout] call bn_koth_fnc_progression_perks_removeSuppressors
+    } else {
+        [_loadout, _id] call bn_koth_fnc_progression_perks_removeRestrictedItems
+    };
+    private _cleanApplied = if (_id isEqualTo "medic" && {(count _physicalLoadout) >= 10}) then {
+        [_physicalLoadout, _id] call bn_koth_fnc_progression_perks_removeRestrictedItems
+    } else {
+        +_cleanIntended
+    };
+    if (
+        (count _cleanIntended) < 10
+        || {(count _cleanApplied) < 10}
+        || {(count ([_cleanIntended, _id] call bn_koth_fnc_progression_perks_findRestrictedItems)) > 0}
+        || {(count ([_cleanApplied, _id] call bn_koth_fnc_progression_perks_findRestrictedItems)) > 0}
+    ) exitWith {
+        private _failureCode = if (_id isEqualTo "suppressor") then {"SUPPRESSOR_CLEANUP_FAILED"} else {"PERK_CLEANUP_FAILED"};
+        [_failureCode, format ["%1 restricted items could not be removed safely; the perk remains active.", _displayName]] call _reject
+    };
+
+    private _cleanupCode = if (_id isEqualTo "suppressor") then {"SUPPRESSOR_CLEANUP_REQUIRED"} else {"PERK_CLEANUP_REQUIRED"};
 
     private _pendingByUid = missionNamespace getVariable ["BN_KOTH_pendingPerkCleanup", createHashMap];
     if !(_pendingByUid isEqualType createHashMap) then {_pendingByUid = createHashMap};
     private _existing = _pendingByUid getOrDefault [_uid, createHashMap];
     private _now = serverTime;
     if (_existing isEqualType createHashMap && {(_existing getOrDefault ["expiresAt", -1]) >= _now}) exitWith {
-        createHashMapFromArray [
-            ["success", true], ["code", "SUPPRESSOR_CLEANUP_REQUIRED"],
-            ["message", "Suppressor cleanup is already pending."], ["perkId", _id],
-            ["operation", _op], ["committed", false],
-            ["cleanupToken", _existing getOrDefault ["token", ""]],
-            ["cleanupValidation", _existing getOrDefault ["validation", createHashMap]]
-        ]
+        if ((_existing getOrDefault ["perkId", ""]) isNotEqualTo _id) then {
+            ["CLEANUP_ALREADY_PENDING", "Another perk cleanup is already pending; no state was changed."] call _reject
+        } else {
+            createHashMapFromArray [
+                ["success", true], ["code", _cleanupCode],
+                ["message", format ["%1 cleanup is already pending.", _displayName]], ["perkId", _id],
+                ["operation", _op], ["committed", false],
+                ["cleanupToken", _existing getOrDefault ["token", ""]],
+                ["cleanupValidation", _existing getOrDefault ["validation", createHashMap]]
+            ]
+        }
     };
     if (_existing isEqualType createHashMap) then {_pendingByUid deleteAt _uid};
 
-    private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
-    private _record = _records getOrDefault [_uid, createHashMap];
     private _ownerId = _record getOrDefault ["ownerId", -1];
     if (_ownerId <= 0) exitWith {["PLAYER_NOT_REGISTERED", "Player ownership is unavailable; the perk remains active."] call _reject};
 
@@ -79,17 +117,18 @@ if ((_op isEqualTo "DEACTIVATE_CONFIRM") && {(count _suppressors) > 0}) exitWith
     private _timeout = (getNumber (missionConfigFile >> "CfgBnKothPerks" >> "suppressorCleanupAckTimeoutSeconds")) max 1;
     private _validation = createHashMapFromArray [
         ["success", true], ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"],
-        ["validatedLoadout", +_clean], ["loadoutId", "perk_suppressor_cleanup"]
+        ["validatedLoadout", +_cleanApplied], ["loadoutId", format ["perk_%1_cleanup", _id]]
     ];
     _pendingByUid set [_uid, createHashMapFromArray [
         ["token", _token], ["perkId", _id], ["ownerId", _ownerId],
-        ["originalIntendedLoadout", +_loadout], ["sanitizedLoadout", +_clean],
+        ["originalIntendedLoadout", +_loadout], ["sanitizedIntendedLoadout", +_cleanIntended],
+        ["sanitizedLoadout", +_cleanApplied],
         ["validation", _validation], ["expiresAt", _now + _timeout]
     ]];
     missionNamespace setVariable ["BN_KOTH_pendingPerkCleanup", _pendingByUid];
     createHashMapFromArray [
-        ["success", true], ["code", "SUPPRESSOR_CLEANUP_REQUIRED"],
-        ["message", "Applying suppressor cleanup before deactivation."], ["perkId", _id],
+        ["success", true], ["code", _cleanupCode],
+        ["message", format ["Applying %1 cleanup before deactivation.", _displayName]], ["perkId", _id],
         ["operation", _op], ["committed", false], ["cleanupToken", _token],
         ["cleanupValidation", _validation]
     ]

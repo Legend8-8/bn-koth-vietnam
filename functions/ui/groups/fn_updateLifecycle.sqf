@@ -22,6 +22,7 @@ private _allowed = missionNamespace getVariable ["BN_KOTH_stateReady", false]
     && {(missionNamespace getVariable ["BN_KOTH_roundState", ""]) isEqualTo "ACTIVE"}
     && {[_side] call bn_koth_fnc_teams_validateSide}
     && {alive player}
+    && {!([player] call bn_koth_fnc_respawn_isIncapacitated)}
     && {!(uiNamespace getVariable ["BN_KOTH_transitionVisible", false])}
     && {!(uiNamespace getVariable ["BN_KOTH_resultsVisible", false])};
 if (!_allowed) then {[] call bn_koth_fnc_groupMenu_close};

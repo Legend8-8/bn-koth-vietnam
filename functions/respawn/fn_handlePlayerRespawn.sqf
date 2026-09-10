@@ -100,6 +100,7 @@ _record set ["safeZoneProtected", false];
 _record set ["enemySafeZoneIntruder", false];
 _records set [_uid, _record];
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+[] call bn_koth_fnc_respawn_reconcileCasualtyHelp;
 [] call bn_koth_fnc_teams_publishState;
 
 if (!isNull _oldUnit) then {

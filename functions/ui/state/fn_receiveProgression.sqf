@@ -43,6 +43,7 @@ if !(_localProgression isEqualType createHashMap) then {
 } forEach (keys _progression);
 
 missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", _localProgression];
+[] call bn_koth_fnc_progression_perks_applyMedicTraitLocal;
 
 private _rewardAmount = _progression getOrDefault ["rewardAmount", _progression getOrDefault ["amount", 0]];
 private _rewardReason = _progression getOrDefault ["rewardReason", _progression getOrDefault ["reason", ""]];
@@ -55,6 +56,7 @@ if !(_rewardAmount isEqualTo 0) then {
             case "control": {"OBJECTIVE"};
             case "priority": {"PRIORITY"};
             case "transport": {"TRANSPORT"};
+            case "revive": {"REVIVE"};
             default {toUpper _rewardReason};
         };
 

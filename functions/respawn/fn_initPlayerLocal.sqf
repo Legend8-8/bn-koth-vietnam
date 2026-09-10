@@ -14,12 +14,14 @@ if (!hasInterface) exitWith {false};
 if (isNull player) exitWith {false};
 
 private _unit = player;
+[_unit] call bn_koth_fnc_progression_perks_applyMedicTraitLocal;
 
 if !(_unit getVariable ["BN_KOTH_safeZoneDamageEhLocal", false]) then {
-    _unit addEventHandler ["HandleDamage", {
+    private _damageEhId = _unit addEventHandler ["HandleDamage", {
         _this call bn_koth_fnc_respawn_handleDamage
     }];
     _unit setVariable ["BN_KOTH_safeZoneDamageEhLocal", true, false];
+    _unit setVariable ["BN_KOTH_safeZoneDamageEhIdLocal", _damageEhId, false];
 };
 
 if !(_unit getVariable ["BN_KOTH_safeZoneFiredEhLocal", false]) then {
@@ -48,11 +50,22 @@ if !(_unit getVariable ["BN_KOTH_safeZoneGetInEhLocal", false]) then {
     _unit setVariable ["BN_KOTH_safeZoneGetInEhLocal", true, false];
 };
 
+if !(_unit getVariable ["BN_KOTH_downedKilledEhLocal", false]) then {
+    _unit addEventHandler ["Killed", {
+        params ["_killed"];
+        if (_killed isEqualTo player) then {
+            [true] call bn_koth_fnc_respawn_updateDownedPresentation;
+        };
+    }];
+    _unit setVariable ["BN_KOTH_downedKilledEhLocal", true, false];
+};
+
 if !(missionNamespace getVariable ["BN_KOTH_respawnLocalMissionEhAdded", false]) then {
     private _eventId = addMissionEventHandler ["EntityRespawned", {
         params ["_newEntity"];
 
         if (hasInterface && {!isNull _newEntity} && {_newEntity isEqualTo player}) then {
+            [true] call bn_koth_fnc_respawn_updateDownedPresentation;
             [] call bn_koth_fnc_respawn_initPlayerLocal;
         };
     }];

@@ -18,6 +18,7 @@ private _ownerId = remoteExecutedOwner;
 private _requester = [_ownerId] call bn_koth_fnc_teams_getPlayerByOwner;
 if (isNull _requester) exitWith {false};
 if (!alive _requester) exitWith {false};
+if ([_requester] call bn_koth_fnc_respawn_isIncapacitated) exitWith {false};
 
 private _requesterUid = getPlayerUID _requester;
 if (_requesterUid isEqualTo "") exitWith {false};
@@ -50,11 +51,13 @@ if !(_spotMap isEqualType createHashMap) then {
 
 private _targets = [];
 if (_targetObject isKindOf "Man") then {
-    _targets = [_targetObject];
+    if !([_targetObject] call bn_koth_fnc_respawn_isIncapacitated) then {
+        _targets = [_targetObject];
+    };
 } else {
     if !(_targetObject isKindOf "AllVehicles") exitWith {false};
     _targets = (crew _targetObject) select {
-        !isNull _x && {alive _x} && {_x isKindOf "Man"}
+        !isNull _x && {alive _x} && {_x isKindOf "Man"} && {!([_x] call bn_koth_fnc_respawn_isIncapacitated)}
     };
 };
 

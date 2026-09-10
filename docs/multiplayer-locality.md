@@ -83,6 +83,10 @@ Safe-zone physical inventory blocking| Owning client
 Safe-zone ground-loot and corpse cleanup| Server
 Respawn presentation| Owning client
 Respawn rules and validation| Server
+Advanced Revive mechanics| S.O.G. Advanced Revive module/runtime
+KOTH incapacitated combat eligibility| Server, derived from the current representation
+Call For Help approval and teammate projection| Server
+Casualty actions, full-map/GPS Draw overlays and bounded 3D overlay| Owning client
 Player safe-zone membership| Server
 Player firing and damage enforcement| Owning client
 Vehicle safe-zone membership| Server
@@ -165,13 +169,29 @@ On success, the lifecycle is:
 2. Server asks owning client to selectPlayer through bn_koth_fnc_ui_selectControlledUnit.
 3. Server waits until target-unit locality ownership matches the player owner.
 4. Server updates authoritative player record state.
-5. Server triggers post-handoff local reinitialization on the owning client (map icons, 3D icons, ESC menu), plus server-side curator setup.
+5. The client acknowledges successful representation selection from
+   `player isEqualTo _targetUnit`; transient same-frame `local` state does not
+   reject or delay that ACK. The handoff does not call
+   `VN_fnc_revive_coreinit`: that function is the S.O.G. incapacitated casualty
+   core loop. Once the newly selected representation becomes local, the client
+   invokes the module's local `VN_fnc_revive_addEventHandlers` installer once
+   for that representation. The existing Eden module remains the system owner.
+6. Server triggers post-handoff local reinitialization on the owning client (map icons, 3D icons, ESC menu), plus server-side curator setup.
 
 Any local-only system that creates actions, event handlers, UI, overlays, or state on the current unit must also be re-run after the handoff. A representation transfer changes the actual controlled unit, so a global flag is not enough: installation must be unit-bound and reattached to the transferred unit.
 
 Examples of reinit-after-transfer work include local UI hooks, per-unit addAction installs, local key handlers, and player-bound markers.
 
 This split keeps authority server-side while still ensuring client-local systems are reinstalled after ownership changes.
+
+Call For Help is a narrow client-to-server intent with no UID, side, target or
+incapacitation claim. The server derives the caller from `remoteExecutedOwner`,
+validates its player record and current representation, and stores only valid
+ACTIVE deployed casualties. It publishes conscious clients only same-team
+entries; an incapacitated requester receives only their own approved map/GPS
+entry and never an own 3D marker.
+The receiver rejects non-server callers; map and 3D renderers independently
+revalidate local lifecycle, team and incapacitation state before drawing.
 
 5. State Distribution
 
@@ -429,4 +449,6 @@ display name remain logical session state across round release.
 
 # Perk requests
 
-Perk purchase and activation requests are client intent only. The server derives the player from `remoteExecutedOwner`, reads configured price and authoritative progression, commits atomically, marks persistence dirty, and publishes only to that owner. Suppressor cleanup is server-derived; the owning client only applies the server-signed Unit Loadout because `setUnitLoadout` must execute where the player unit is local.
+Perk purchase and activation requests are client intent only. The server derives the player from `remoteExecutedOwner`, reads configured price and authoritative progression, commits atomically, marks persistence dirty, and publishes only to that owner. Restricted-item cleanup is server-derived; the owning client only applies the server-signed Unit Loadout because `setUnitLoadout` must execute where the player unit is local. Suppressor and MEDIC both use this transaction, and the perk stays active until the server observes the exact sanitized loadout.
+
+The MEDIC engine trait is client-local derived state. Progression publication, state snapshots, local representation initialization and representation handoff re-evaluate it from projected `activePerks` plus the authoritative `ACTIVE` player-state projection. Lobby/non-current representations receive no KOTH Medic authority, and all medikit validation continues to read the server progression registry rather than the trait.

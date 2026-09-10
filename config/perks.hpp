@@ -32,14 +32,19 @@ class CfgBnKothPerks
             available = 1;
         };
 
-        class field_medic_placeholder
+        class medic
         {
-            id = "field_medic_placeholder";
-            displayName = "Field Medic";
-            description = "Placeholder for a future perk.";
-            purchaseCost = -1;
-            purchasable = 0;
-            available = 0;
+            id = "medic";
+            displayName = "MEDIC";
+            description = "Allows the S.O.G. Medikit in managed loadouts and enables S.O.G.'s Medic-trait revive behavior while deployed.";
+            purchaseCost = 1;
+            purchasable = 1;
+            available = 1;
+
+            restrictedTraits[] = {};
+            restrictedClasses[] = {"vn_b_item_medikit_01"};
+            restrictionCode = "ERR_PERK_MEDIC_INACTIVE";
+            restrictionMessage = "Activate the MEDIC perk before applying a managed loadout containing the S.O.G. Medikit.";
         };
 
         class logistics_placeholder

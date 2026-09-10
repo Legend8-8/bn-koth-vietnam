@@ -207,6 +207,75 @@ Respawn-related changes must verify:
 - safe-zone status survives respawn representation handoff and is cleared outside active safe-zone states;
 - reconnecting does not produce invalid spawn state.
 
+## ADVANCED REVIVE FEATURE-COMPLETE BLOCKER
+
+**Status: OUTSTANDING — REQUIRED BEFORE FEATURE COMPLETE.**
+
+Advanced Revive must not be marked feature-complete until all of the following
+have been implemented and multiplayer runtime-validated:
+
+- native S.O.G. Resuscitate is reliably attributed to the actual reviver for
+  the server-owned XP/cash reward.
+
+The dormant revive-reward helper is not a completion hook and does not resolve
+this blocker. The documented S.O.G. action function reports casualty and phase,
+but exposes no supported observer carrying the caller; hold-action callbacks
+carry caller identity only to the code that registered the action. KOTH does
+not replace or wrap that native action and therefore has no trusted production
+reward caller. Provisional rewards remain 25 XP and 25 cash for both normal and
+MEDIC recovery, with no MEDIC multiplier.
+
+Advanced Revive integration must additionally verify with two opposing-team
+clients and at least two same-team clients:
+
+- later `selectPlayer` representation handoff does not manually enter the
+  S.O.G. incapacitated casualty core loop;
+- each newly selected representation receives the S.O.G. local event-handler
+  setup once after becoming local, and ordinary KOTH safe-zone damage handling
+  does not override the S.O.G. `HandleDamage` result;
+- real S.O.G. damage incapacitates without changing the KOTH team, deployed,
+  ACTIVE-participant, group, player-record or `currentUnit` identity;
+- a casualty immediately stops contributing to raw/weighted/Priority AO
+  population, control and scoring eligibility, then contributes again after a
+  successful revive;
+- native S.O.G. retains casualty-view ownership and no KOTH scripted casualty
+  camera overrides its presentation or action input;
+- a casualty remains incapacitated and reviveable beyond the former 120-second
+  limit, then reaches S.O.G.'s native terminal outcome at about 600 seconds if
+  neither successful Resuscitate nor Give Up occurs;
+- Give Up produces one normal S.O.G./engine death-respawn cycle;
+- no rescue marker exists before Call For Help, repeated requests remain
+  one-shot, conscious same-team clients receive the marker, and the requesting
+  casualty receives only their own approved map/GPS marker;
+- the casualty marker appears on the full M-map and normal NAV/GPS minimap
+  controls, follows a moved casualty, and its 3D counterpart disappears beyond the
+  configured 50-metre limit;
+- revive, death, respawn, disconnect, team/representation change, lobby return,
+  ENDING and RESETTING all clear actions and rescue presentation;
+- a downed client cannot open KOTH combat-intel UI, mutate/read group state,
+  spot targets, traverse, teleport or enter an air-insertion commit.
+
+Before runtime testing, run the focused server static contract:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\respawn\test_downedIntegration.sqf"
+```
+
+Expected result: `[]`. This verifies the central predicate and production
+ownership/security hooks; it does not establish S.O.G. lifecycle or
+multiplayer RemoteExec behavior.
+
+Run the dormant revive-reward source contract separately:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\xp\test_reviveReward.sqf"
+```
+
+Expected result: `[]`. It verifies configuration, server authority, validation,
+dedupe, existing reward-owner reuse, feed presentation and the absence of a
+premature production completion call. It does not fabricate trusted S.O.G.
+attribution or execute a reward.
+
 Starter-loadout configuration changes must additionally verify on a dedicated
 server that both WEST and EAST definitions initialize, receive the configured
 side-correct assigned equipment, derive each weapon's generated canonical
@@ -626,6 +695,44 @@ Run on hosted and dedicated servers with the extDB schema-v2 migration applied:
 - Dedicated security: invoke requests only from the owning client and confirm forged UID/cost/ownership/loadout data is neither accepted nor part of the endpoint schema.
 
 Focused server tests: `call compile preprocessFileLineNumbers "functions\progression\perks\test_perks.sqf"`. Expected result: `[]`.
+
+## MEDIC and S.O.G. Advanced Revive dedicated matrix
+
+The focused perk test covers managed medikit/FAK entitlement and derived-trait
+wiring. The Eden module now uses S.O.G.'s native successful-Resuscitate item
+removal, matching Mike Force's runtime configuration mechanism. No KOTH revive
+consumption transaction or hold-action probe exists. Dedicated validation with
+the casualty and reviver on separate clients must cover:
+
+1. Normal player, successful revive with either configured S.O.G. FAK: native
+   action completes, casualty recovers and exactly one possessed FAK is removed.
+   Repeat using a looted opposite-faction FAK; battlefield usability must not be
+   side-locked.
+2. Normal player, interrupted revive: casualty remains incapacitated and no FAK
+   is removed.
+3. Active MEDIC with medikit, successful revive: native Medic behavior recovers
+   the casualty, retains the medikit and consumes no FAK.
+4. Repeat the active MEDIC medikit revive: the retained medikit works again.
+5. Inactive MEDIC with medikit: managed-loadout validation removes/rejects the
+   medikit and the local Medic trait is false.
+6. AO/Priority eligibility: an incapacitated player is excluded and a revived
+   player becomes eligible again normally.
+7. Call For Help and Give Up: existing KOTH presentation and lifecycle cleanup
+   remain functional.
+8. Reward: no production revive reward is issued while trusted native reviver
+   attribution remains unresolved. Once a supported trusted seam exists, the
+   actual reviver must receive 25 XP and $25 exactly once.
+9. Bleedout: leave a genuine casualty down beyond 120 seconds and confirm they
+   remain incapacitated and reviveable, then confirm unattended bleedout reaches
+   S.O.G.'s native terminal outcome at about 600 seconds. Separately verify
+   successful Resuscitate and Give Up still complete before that deadline.
+
+Static inspection proves that native removal is enabled, both FAKs plus the
+medikit are configured revive items, and the module's native countdown uses the
+600-second value. The public S.O.G. documentation does not specify the internal
+Medic/medikit item-selection exception, so reusable medikit behavior remains a
+dedicated-runtime acceptance item rather than a reason to add custom inventory
+mutation.
 
 ## Cloak spotting matrix
 

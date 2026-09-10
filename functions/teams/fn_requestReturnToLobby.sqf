@@ -44,6 +44,9 @@ if !(_record isEqualType createHashMap) exitWith {
     [_ownerId, "Return to lobby failed: player is not registered."] call bn_koth_fnc_teams_notifyPlayer;
     [format ["Rejected return-to-lobby request: unregistered UID for owner %1", _ownerId], "WARN"] call bn_koth_fnc_common_log;
 };
+if ([_playerObj] call bn_koth_fnc_respawn_isIncapacitated) exitWith {
+    [_ownerId, "Use Respawn / Give Up while incapacitated."] call bn_koth_fnc_teams_notifyPlayer;
+};
 
 private _pending = missionNamespace getVariable ["BN_KOTH_returnToLobbyPending", []];
 if (_uid in _pending) exitWith {

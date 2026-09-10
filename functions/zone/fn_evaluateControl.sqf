@@ -16,6 +16,8 @@ params [["_skipScoringUpdate", false, [false]]];
 
 if (!isServer) exitWith {sideUnknown};
 
+[] call bn_koth_fnc_respawn_reconcileCasualtyHelp;
+
 private _roundState = [] call bn_koth_fnc_round_getState;
 if !(_roundState isEqualTo "ACTIVE") exitWith {
     missionNamespace setVariable ["BN_KOTH_zoneEligibleSnapshot", createHashMap];
@@ -96,7 +98,7 @@ private _players = allPlayers select {
     };
 
     alive _x
-    && {!(_x getVariable ["BIS_revive_incapacitated", false])}
+    && {!([_x] call bn_koth_fnc_respawn_isIncapacitated)}
     && {[(side group _x)] call bn_koth_fnc_teams_validateSide}
     && {_activeLookup getOrDefault [getPlayerUID _x, false]}
     && {_record isEqualType createHashMap}

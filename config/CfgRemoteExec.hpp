@@ -215,6 +215,46 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_respawn_requestCasualtyHelp
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_respawn_receiveCasualtyHelpState
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        // S.O.G. Advanced Revive installs/removes casualty actions globally and persists them for JIP.
+        class VN_fnc_revive_actions_local
+        {
+            allowedTargets = 0;
+            jip = 1;
+        };
+
+        // S.O.G. revive conversations play transient local audio on each required machine.
+        class VN_fnc_revive_dynamic_audio
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        // S.O.G. drag/carry cleanup must run where the detached unit is local.
+        class VN_fnc_revive_detachunit_local
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        // S.O.G. owns the global drop-action phases and their detach cleanup.
+        class VN_fnc_revive_action_dropplayer
+        {
+            allowedTargets = 0;
+            jip = 0;
+        };
+
         class bn_koth_fnc_vehicles_mobileRespawn_requestTeleport
         {
             allowedTargets = 2;
@@ -262,5 +302,13 @@ class CfgRemoteExec
     {
         mode = 1;
         jip = 0;
+
+        // S.O.G. synchronizes transient revive/drag/carry animations with this command.
+        // This permits animation execution only; it grants no gameplay-state authority.
+        class switchMove
+        {
+            allowedTargets = 0;
+            jip = 0;
+        };
     };
 };

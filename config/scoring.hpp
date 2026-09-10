@@ -11,6 +11,8 @@ class CfgBnKothScoring
 		xpPerControlBonus = 5;
 		xpPerPriorityBonus = 20;
 		xpPerKill = 25;
+		// Provisional beta value; requires trusted native revive attribution before use.
+		xpPerRevive = 25;
 
 		class transportInsertion
 		{
@@ -43,6 +45,8 @@ class CfgBnKothScoring
 		cashPerControlBonus = 5;
 		cashPerPriorityBonus = 20;
 		cashPerTransportPassenger = 25;
+		// Provisional beta value; requires trusted native revive attribution before use.
+		cashPerRevive = 25;
 	};
 
 	prepareDuration = 10;

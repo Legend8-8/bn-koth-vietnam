@@ -16,6 +16,9 @@ if (!isServer) exitWith {};
 
 private _player = [remoteExecutedOwner] call bn_koth_fnc_teams_getPlayerByOwner;
 if (isNull _player || {!alive _player}) exitWith {};
+if ([_player] call bn_koth_fnc_respawn_isIncapacitated) exitWith {
+    ["Command vehicle teleport is unavailable while incapacitated."] remoteExecCall ["bn_koth_fnc_ui_notify", owner _player];
+};
 
 private _requestedSide = switch (_sideToken) do {
     case "WEST": {west};

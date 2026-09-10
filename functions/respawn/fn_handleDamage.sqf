@@ -7,7 +7,7 @@
     Parameters:
         HandleDamage event payload <ARRAY>
     Returns:
-        Damage value to apply <NUMBER>
+        Damage value to preserve when blocked, otherwise nothing <NUMBER or NOTHING>
     Public: Yes
 */
 
@@ -23,7 +23,7 @@ params [
     ["_directHit", false, [false]]
 ];
 
-if (isNull _target) exitWith {_damage};
+if (isNull _target) exitWith {};
 
 private _targetMembership = [_target, true] call bn_koth_fnc_respawn_getSafeZoneMembership;
 private _targetSide = _target getVariable ["BN_KOTH_teamSide", sideUnknown];
@@ -61,7 +61,7 @@ private _collisionSourceProtected = (!isNull _sourceVehicle && {_sourceVehicle !
 private _intruderCollision = ((_target getVariable ["BN_KOTH_enemySafeZoneIntruder", false]) || {_targetIntruderByZone})
     && {_projectile isEqualTo ""}
     && {_collisionSourceProtected};
-if (_intruderCollision) exitWith {_damage};
+if (_intruderCollision) exitWith {};
 
 private _sourceBlocked = (!isNull _source && {
     _source getVariable ["BN_KOTH_safeZoneProtected", false]
@@ -86,5 +86,3 @@ private _sourceBlocked = (!isNull _source && {
 };
 
 if (_sourceBlocked) exitWith {_currentDamage};
-
-_damage

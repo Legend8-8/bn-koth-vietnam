@@ -6,4 +6,7 @@ class CfgBnKothRespawn
     blockedActionMessageCooldownSeconds = 1;
     friendlySafeZoneExitMessageSeconds = 5;
     corpseCleanupDelaySeconds = 300;
+
+    // Call For Help presentation. The 3D marker is never rendered beyond this range.
+    casualtyHelp3DMaxDistance = 50;
 };
