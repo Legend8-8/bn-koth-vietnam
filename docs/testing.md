@@ -427,6 +427,8 @@ Equipment-side policy changes must additionally verify:
 - opposing uniforms, vests, and backpacks are rejected in both directions;
 - headgear with `appearanceSide=BOTH` is usable by WEST and EAST alike,
   subject to `minLevel` only;
+- every public `vn_` `CfgGlasses` facewear class is available to WEST and EAST
+  at level 1 without appearance metadata;
 - missing appearance metadata fails closed while missing combat metadata
   remains temporarily uncontrolled;
 - level gates appearance entitlement regardless of side/appearance being

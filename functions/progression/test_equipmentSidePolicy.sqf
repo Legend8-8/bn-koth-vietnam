@@ -48,6 +48,20 @@ private _missingMetadata = createHashMapFromArray [
 ["Missing combat metadata remains uncontrolled", (["WEST", _missingMetadata, false] call bn_koth_fnc_progression_evaluateEquipmentSidePolicyRules) getOrDefault ["allowed", false]] call _check;
 ["Missing appearance metadata fails closed", !((["WEST", _missingMetadata, true] call bn_koth_fnc_progression_evaluateEquipmentSidePolicyRules) getOrDefault ["allowed", true])] call _check;
 
+private _levelOnePlayer = createHashMapFromArray [["level", 1]];
+private _facewearCount = 0;
+{
+    private _facewearClass = toLower (configName _x);
+    if ((_facewearClass find "vn_") != 0 || {(getNumber (_x >> "scope")) < 2}) then {continue};
+    _facewearCount = _facewearCount + 1;
+    private _facewearMetadata = ["Wearables", _facewearClass] call bn_koth_fnc_loadouts_getItemMetadata;
+    private _westFacewear = [_levelOnePlayer, _facewearMetadata, _facewearClass, "WEST", false] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+    private _eastFacewear = [_levelOnePlayer, _facewearMetadata, _facewearClass, "EAST", false] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+    [format ["%1 is level-one entitled on WEST", _facewearClass], (_westFacewear getOrDefault ["entitled", false]) && {(_westFacewear getOrDefault ["minLevel", 0]) isEqualTo 1}] call _check;
+    [format ["%1 is level-one entitled on EAST", _facewearClass], (_eastFacewear getOrDefault ["entitled", false]) && {(_eastFacewear getOrDefault ["minLevel", 0]) isEqualTo 1}] call _check;
+} forEach ("true" configClasses (configFile >> "CfgGlasses"));
+["Canonical public S.O.G. facewear catalogue is non-empty", _facewearCount > 0] call _check;
+
 private _variantMetadata = ["vn_l1a1_02"] call bn_koth_fnc_loadouts_getWeaponMetadata;
 ["Structural variant resolves canonical policy", (_variantMetadata getOrDefault ["canonicalClass", ""]) isEqualTo "vn_l1a1_01"] call _check;
 ["Structural variant inherits canonical allowedSides", (_variantMetadata getOrDefault ["allowedSides", []]) isEqualTo ["WEST"]] call _check;
@@ -77,33 +91,33 @@ private _headgearBoth = createHashMapFromArray [
 private _leveledPlayer = createHashMapFromArray [["level", 10]];
 private _underleveledPlayer = createHashMapFromArray [["level", 1]];
 
-// 1-4: uniform strictly follows its own side, never the opposite.
+// Uniform strictly follows its own side, never the opposite.
 ["WEST uniform on WEST at level is entitled", ([_leveledPlayer, _uniformWest, "vn_test_uniform_west", "WEST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", false]] call _check;
 ["WEST uniform on EAST is denied", !((([_leveledPlayer, _uniformWest, "vn_test_uniform_west", "EAST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", true]))] call _check;
 ["EAST uniform on EAST at level is entitled", ([_leveledPlayer, _uniformEast, "vn_test_uniform_east", "EAST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", false]] call _check;
 ["EAST uniform on WEST is denied", !((([_leveledPlayer, _uniformEast, "vn_test_uniform_east", "WEST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", true]))] call _check;
 
-// 5-6: vest/backpack use the identical rule; opposite side is always denied.
+// Vest/backpack use the identical rule; opposite side is always denied.
 ["WEST vest on EAST is denied", !((([_leveledPlayer, _vestWest, "vn_test_vest_west", "EAST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", true]))] call _check;
 ["EAST backpack on WEST is denied", !((([_leveledPlayer, _backpackEast, "vn_test_backpack_east", "WEST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", true]))] call _check;
 
-// 7-8: headgear appearanceSide=BOTH is usable by either side, subject to level.
+// Headgear appearanceSide=BOTH is usable by either side, subject to level.
 ["BOTH headgear on WEST at level is entitled", ([_leveledPlayer, _headgearBoth, "vn_test_headgear_both", "WEST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", false]] call _check;
 ["BOTH headgear on EAST at level is entitled", ([_leveledPlayer, _headgearBoth, "vn_test_headgear_both", "EAST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", false]] call _check;
 
-// 9: level gates regardless of side/appearance correctness.
+// Level gates regardless of side/appearance correctness.
 private _belowLevelResult = [_underleveledPlayer, _headgearBoth, "vn_test_headgear_both", "WEST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
 ["Below-level appearance item is denied regardless of side", !(_belowLevelResult getOrDefault ["entitled", true])] call _check;
 ["Below-level appearance item reports LOCKED_LEVEL", (_belowLevelResult getOrDefault ["code", ""]) isEqualTo "LOCKED_LEVEL"] call _check;
 
-// 10: sourceAffiliations[] must never be read by the side-policy interpreter, in either direction.
+// sourceAffiliations[] must never be read by the side-policy interpreter, in either direction.
 private _spoofedAffiliation = createHashMap;
 {_spoofedAffiliation set [_x, _uniformWest get _x];} forEach (keys _uniformWest);
 _spoofedAffiliation set ["sourceAffiliations", ["EAST"]];
 ["sourceAffiliations does not grant opposite-side entitlement", !((([_leveledPlayer, _spoofedAffiliation, "vn_test_uniform_west", "EAST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", true]))] call _check;
 ["sourceAffiliations does not revoke native-side entitlement", ([_leveledPlayer, _spoofedAffiliation, "vn_test_uniform_west", "WEST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules) getOrDefault ["entitled", false]] call _check;
 
-// 11: appearance entitlement result never carries a Mastery/ownership/rental signal.
+// Appearance entitlement result never carries a Mastery/ownership/rental signal.
 private _appearanceResult = [_leveledPlayer, _headgearBoth, "vn_test_headgear_both", "WEST", true] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
 ["Appearance entitlement never reports masteryKillsRequired", isNil {_appearanceResult get "masteryKillsRequired"}] call _check;
 ["Appearance entitlement never reports crossSideAllowed", isNil {_appearanceResult get "crossSideAllowed"}] call _check;
