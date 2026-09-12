@@ -14,6 +14,9 @@ BLACKLISTED_FOLDERS = [
     "__pycache__",
     "maps",
     "docs",
+    "tools",
+    "data",
+    "reports",
 ]
 
 # Local tooling files that should not ship in mission output.

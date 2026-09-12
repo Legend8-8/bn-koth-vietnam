@@ -1,0 +1,16 @@
+#include "defines.hpp"
+#include "announcements\controls.hpp"
+#include "lobby\lobby.hpp"
+#include "menu\menu.hpp"
+#include "groups\groups.hpp"
+#include "esc_menu\esc_menu.hpp"
+#include "announcements\popup.hpp"
+
+class RscTitles
+{
+    #include "transition\transition.hpp"
+    #include "results\results.hpp"
+    #include "hud\hud.hpp"
+    #include "hud\rewardfeed.hpp"
+    #include "hud\killfeed.hpp"
+};

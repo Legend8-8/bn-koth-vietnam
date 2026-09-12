@@ -38,9 +38,20 @@ if ((count _resolvedSides) < 2) then {
 
 missionNamespace setVariable ["BN_KOTH_playableSides", _resolvedSides, true];
 
-private _defaultLocationId = getText (missionConfigFile >> "CfgBnKothSettings" >> "defaultLocationId");
-[_defaultLocationId] call bn_koth_fnc_zone_setActiveLocation;
-
+[] call bn_koth_fnc_loadouts_initServer;
+[] call bn_koth_fnc_progression_xp_initServer;
+[] call bn_koth_fnc_progression_cash_initServer;
+[] call bn_koth_fnc_persistence_initServer;
+[] call bn_koth_fnc_career_initServer;
+[] call bn_koth_fnc_roundStats_initServer;
+[] call bn_koth_fnc_respawn_initServer;
+[] call bn_koth_fnc_teams_initServer;
+[] call bn_koth_fnc_groups_initServer;
+[] call bn_koth_fnc_enemySpotting_initServer;
+[] call bn_koth_fnc_vehicles_initServer;
+[] call bn_koth_fnc_airInsertion_initServer;
+[] call bn_koth_fnc_progression_transport_initServer;
+[] call bn_koth_fnc_vehicles_mobileRespawn_init;
 [] call bn_koth_fnc_round_initServer;
 [] call bn_koth_fnc_zone_initServer;
 [] call bn_koth_fnc_scoring_initServer;

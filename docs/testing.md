@@ -106,7 +106,29 @@ Zone-related changes must verify:
 - spectators do not count;
 - players leaving the zone are removed from the calculation;
 - disconnected players are removed from the calculation;
-- zone state updates at the expected interval.
+- zone state updates at the expected interval;
+- actual-player, weighted-control and Priority-occupancy values come from the same eligible-player pass;
+- the bottom-right HUD shows WEST/EAST team scores, AO status, round lead,
+  objective-cycle progress, local rank/level/XP, published WEST/EAST raw AO population,
+  and the published Priority counts as a visually distinct `+N` bonus without
+  independently scanning players;
+- missing progression state shows a safe syncing presentation and maximum level
+  never displays an invalid next-level requirement;
+- HUD presentation does not change published population values, Priority
+  weighting, zone control, scoring, or the debug display;
+- the configured battlefield pickup count is attempted once per active AO,
+  holders stay within the active marker with bounded placement attempts, factual
+  compatible ammunition is included, pavement/sidewalk surfaces do not bury the
+  holder, per-holder diagnostics identify RNG output and final position, and
+  active-location cleanup deletes all tracked holders without granting
+  progression entitlement;
+- occupied-AO objective progress uses the config-owned 30-second interval in
+  both CONTROLLED and CONTESTED states;
+- the Priority client-local Simple Task is created once without notification,
+  follows the global moving marker, and is removed outside ACTIVE state or when
+  the deployed HUD/AO/Priority marker is absent;
+- friendly 3D icons bypass geometry LOS only within the configured 25-metre
+  proximity threshold; maximum range and beyond-threshold LOS remain unchanged.
 
 If vehicle occupants count toward control, test players entering and leaving vehicles inside the zone.
 
@@ -123,18 +145,137 @@ Scoring-related changes must verify:
 - reaching the configured score limit triggers the expected win behaviour;
 - clients cannot directly award team score.
 
+Transport insertion XP must be tested on a dedicated server with at least two
+human clients. Use a configured ROTARY/TRANSPORT vehicle and verify: outside-AO
+boarding, the minimum time and distance, cargo exit followed by AO entry within
+the confirmation window, one reward per passenger, independent rewards for
+multiple passengers, pair cooldown rejection, edge hopping rejection, expired
+confirmation, AI exclusion, pilot change/exit rejection, and cleanup on death,
+disconnect, vehicle destruction, round end, and AO change. Inspect the server
+RPT for `Transport insertion rewarded`; clients must have no callable XP or
+transport-reward mutation path.
+
+Before dedicated testing, run the focused server cleanup contract in the server
+debug console:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\transport\test_transport.sqf"
+```
+
+Expected result: `[]`. This checks passenger-scoped cleanup, ordinary full
+candidate cleanup, pair-cooldown retention and BOARDED-only invalidation without
+claiming vehicle-event or multiplayer-locality acceptance.
+
 8. Respawn Testing
 
 Respawn-related changes must verify:
 
 - players respawn on the correct side;
 - enemy spawn positions cannot be used;
-- spawn protection begins correctly;
-- spawn protection expires correctly;
-- leaving the protected area ends protection where configured;
-- firing ends protection where configured;
-- damaging another player ends protection where configured;
+- protection is active only while a deployed player is spatially inside the player's own active safe zone;
+- leaving removes protection and re-entering restores it without a timer;
+- no friendly safe-zone status indicator is visible while protection is active;
+- leaving a friendly safe zone shows the exact `LEAVING SAFE ZONE` message in
+  green for five seconds in a centered, half-screen-width banner at the shared,
+  slightly lowered top position and then removes it;
+- re-entering the friendly safe zone removes the exit message immediately, and
+  death, respawn, enemy-safe-zone entry, or a non-active safe-zone round state
+  does not leave or create a false exit message;
+- protected players cannot fire, cause damage, or receive damage;
+- an enemy intruder cannot fire, cause damage, or enter a vehicle but remains damageable;
+- entering an opposing safe zone shows the exact persistent warning
+  `ENEMY SAFE ZONE LEAVE NOW` in red text in the same centered,
+  half-screen-width banner position, and leaving removes it;
+- the enemy warning does not interfere with the friendly exit notification or
+  unrelated HUD controls;
+- an enemy already in a vehicle is ejected when entering the opposing safe zone;
+- an enemy intruder can be run over by a protected friendly vehicle inside that safe zone;
+- friendly vehicles are protected only when their center is inside their own safe zone;
+- protected vehicles cannot fire or receive damage, including after vehicle locality changes;
+- enemy vehicles never gain opposing-safe-zone protection, remain damageable, and cannot cause damage while inside it;
+- protected collision damage remains blocked against every victim except an enemy intruder in that safe zone;
+- a player cannot open self, friendly, enemy, corpse, ground-holder, crate, static-weapon or vehicle inventory while either the player or container is inside either safe zone;
+- inventory access is also blocked when the player and container are on opposite sides of a safe-zone boundary;
+- an inventory opened outside closes when the player or container enters a safe zone and normal access returns after both leave;
+- vehicle cargo is preserved while inaccessible inside a safe zone and remains intact after leaving;
+- weapons, magazines, attachments and backpacks dropped inside a safe zone disappear for all clients and do not return for JIP players;
+- static-weapon assembly or disassembly cannot leave accessible weapon bags or physical inventory inside a safe zone;
+- safe-zone AI corpses are deleted immediately and player corpses are unlootable immediately, then deleted without breaking UID resolution or respawn;
+- corpses and dropped equipment created in the active AO outside safe zones remain available for normal scavenging;
+- the server-validated KOTH loadout path still works in a safe zone without opening physical inventory;
+- battlefield pickup and scavenging continue to work in the active AO outside safe zones even below level, unowned, or unmastered; the physical item remains usable while it grants no Arsenal, Store, ownership, rental, or saved-loadout entitlement;
+- safe-zone status survives respawn representation handoff and is cleared outside active safe-zone states;
 - reconnecting does not produce invalid spawn state.
+
+## ADVANCED REVIVE RUNTIME ACCEPTANCE
+
+The production revive-reward path observes S.O.G.'s local Resuscitate
+completion without changing native timing, interruption, recovery or item
+behavior. Its casualty-only RemoteExec request is treated as untrusted intent:
+the server derives the sender, owns the cycle token, and requires authoritative
+recovery within a two-second pending window before awarding 25 XP and 25 cash.
+Normal and MEDIC recovery use the same reward with no multiplier.
+
+Advanced Revive integration must additionally verify with two opposing-team
+clients and at least two same-team clients:
+
+- later `selectPlayer` representation handoff does not manually enter the
+  S.O.G. incapacitated casualty core loop;
+- each newly selected representation receives the S.O.G. local event-handler
+  setup once after becoming local, and ordinary KOTH safe-zone damage handling
+  does not override the S.O.G. `HandleDamage` result;
+- real S.O.G. damage incapacitates without changing the KOTH team, deployed,
+  ACTIVE-participant, group, player-record or `currentUnit` identity;
+- a casualty immediately stops contributing to raw/weighted/Priority AO
+  population, control and scoring eligibility, then contributes again after a
+  successful revive;
+- native S.O.G. retains casualty-view ownership and no KOTH scripted casualty
+  camera overrides its presentation or action input;
+- a casualty remains incapacitated and reviveable beyond the former 120-second
+  limit, then reaches S.O.G.'s native terminal outcome at about 600 seconds if
+  neither successful Resuscitate nor Give Up occurs;
+- Give Up produces one normal S.O.G./engine death-respawn cycle;
+- no rescue marker exists before Call For Help, repeated requests remain
+  one-shot, conscious same-team clients receive the marker, and the requesting
+  casualty receives only their own approved map/GPS marker;
+- the casualty marker appears on the full M-map and normal NAV/GPS minimap
+  controls, follows a moved casualty, and its 3D counterpart disappears beyond the
+  configured 50-metre limit;
+- revive, death, respawn, disconnect, team/representation change, lobby return,
+  ENDING and RESETTING all clear actions and rescue presentation;
+- a downed client cannot open KOTH combat-intel UI, mutate/read group state,
+  spot targets, traverse, teleport or enter an air-insertion commit.
+
+Before runtime testing, run the focused server static contract:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\respawn\test_downedIntegration.sqf"
+```
+
+Expected result: `[]`. This verifies the central predicate and production
+ownership/security hooks; it does not establish S.O.G. lifecycle or
+multiplayer RemoteExec behavior.
+
+Run the revive-reward source contract separately:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\xp\test_reviveReward.sqf"
+```
+
+Expected result: `[]`. It verifies configuration, the casualty-only endpoint,
+sender derivation, server-owned cycles, bounded recovery confirmation, cleanup,
+dedupe, existing reward-owner reuse and feed presentation. It does not execute
+a real S.O.G. revive or establish multiplayer locality behavior.
+
+Starter-loadout configuration changes must additionally verify on a dedicated
+server that both WEST and EAST definitions initialize, receive the configured
+side-correct assigned equipment, derive each weapon's generated canonical
+`baseMagazine`, load those compatible magazines at
+their actual `CfgMagazines` capacity, carry the configured spare counts in the
+configured containers, and remain the native respawn/deployment fallback.
+Invalid weapon compatibility, assigned-slot order, equipment classes, cargo
+classes, counts, or cargo-without-container definitions must be rejected with a
+clear server RPT warning rather than silently falling back to template gear.
 
 9. Join In Progress Testing
 
@@ -146,6 +287,8 @@ Where relevant, verify that a JIP player receives:
 - active combat location;
 - current zone information;
 - current zone owner;
+- current active safe-zone marker names;
+- current raw, weighted and Priority population;
 - current team scores;
 - configured winning score;
 - relevant timers;
@@ -163,6 +306,8 @@ For client-to-server requests, test:
 - insufficient requirements;
 - repeated request spam;
 - request after disconnect or death where relevant.
+
+For server-to-owner safe-zone endpoints, also verify that non-server remote callers are rejected and that listen-server players receive the same ejection and vehicle-protection behavior as dedicated clients. Verify safe-zone inventory and cleanup behavior with at least two clients so object deletion, container locality, respawn and JIP visibility are covered.
 
 The server must reject invalid requests without creating inconsistent state.
 
@@ -213,9 +358,197 @@ Examples:
 - UI changes must not alter authoritative state;
 - persistence changes must not alter live round logic.
 
+Persistence changes must also run
+`call compile preprocessFileLineNumbers "functions\persistence\test_persistence.sqf"`
+on a hosted server and expect `[]`. Verify first-time defaults, known-state load,
+XP-derived level, cash/ownership/mastery normalization, rental and round-state
+exclusion, legacy/future schema handling, repeated-registration idempotence, and
+dirty-state save success/failure. A failed save must remain dirty and produce a
+server RPT error; it must never be reported as successful. Dedicated testing must
+confirm disconnect and mission-end flush markers without any persistence RemoteExec
+entry or per-frame activity.
+
+Pure extDB3 adapter checks in the same test cover deterministic owned-weapon and
+weapon-kill serialization, malformed codec input, valid/error/malformed extDB3
+response parsing, and persistent projection exclusions. `MEMORY` is used only to
+exercise the service contract without a database. Before deployment, follow the
+live matrix in `docs/deployment-extdb3.md`: verify first-time insert, valid reload,
+mutation/disconnect UPSERT, reconnect, full server restart, unavailable database,
+and malformed/future-row fail-closed behavior. Inspect both the server RPT and
+extDB3 log; a session fallback is not proof of durability.
+
 Test the directly affected system and any system that depends on it.
 
-14. Definition of Tested
+For the Arsenal rework, also verify:
+
+- run `[testPlayer] call compile preprocessFileLineNumbers "functions\loadouts\test_weaponChangeCargo.sqf"`
+  on a hosted or dedicated server and expect `[]`; its managed weapon-change
+  checks validate direct and saved-kit Sidearm/Launcher clears without weapon
+  entitlement, build empty Unit Loadout indexes 2 and 1 respectively, and
+  continue to reject direct or saved-kit Primary clears. The saved-kit cases
+  cover the shared validation used by LOAD, Set Default, and spawn-time default
+  candidate revalidation;
+- opening at the correct team mapboard reconciles the overview from the
+  server-observed physical player loadout;
+- an unentitled battlefield pickup remains physically usable, but Arsenal
+  reconciliation does not retain it in the reusable intended-loadout baseline;
+- after that reconciliation, changing an unrelated wearable/cargo slot does not
+  reapply the picked-up weapon;
+- replacing the unentitled pickup with an entitled weapon remains possible;
+- saving a physical snapshot never grants entitlement: loading that local kit
+  without current authoritative entitlement is rejected;
+- death/respawn, reconnect, and server restart do not convert picked-up weapons
+  into ownership or rental state;
+- each browser opens on the currently applied item when one exists, without
+  repeatedly overriding manual pagination;
+- locked weapons, attachments, wearables, assigned items, and positive cargo
+  additions cannot be submitted successfully by an under-level client;
+- cargo removal remains possible when entitlement has subsequently been lost;
+- partial slot changes do not restore unrelated equipment;
+- locally named kits survive a client restart, while edited or malformed local
+  profile data is rejected by server validation;
+- repeated browser, Configure, cargo, assigned-item, and kit-manager entry and
+  exit does not leave stale controls, actions, pages, or draft state;
+- authoritative return to the lobby closes an open deployed menu through its
+  normal unload path from every page, while ACTIVE/RESPAWNING state leaves it
+  open and stale `BN_KOTH_menuDisplay` state is cleared;
+- lobby player-name presentation preserves short names and width-fits only
+  overflowing names with an ellipsis in the local-player header, both team
+  rosters, and all three Live Leaders cards. Test `Legend`, a clan/prefix name,
+  spaces and permitted punctuation, plus the 24-character `W`, `M`, and `i`
+  torture cases documented by the profile-name acceptance boundary;
+- the disabled operator preview creates no camera or render-to-texture view;
+- client and server RPT files remain free of Arsenal script errors throughout
+  the complete flow.
+
+Equipment-side policy changes must additionally verify:
+
+- WEST-only, EAST-only, and both-sides `allowedSides[]` decisions;
+- opposing uniforms, vests, and backpacks are rejected in both directions;
+- headgear with `appearanceSide=BOTH` is usable by WEST and EAST alike,
+  subject to `minLevel` only;
+- every public `vn_` `CfgGlasses` facewear class is available to WEST and EAST
+  at level 1 without appearance metadata;
+- missing appearance metadata fails closed while missing combat metadata
+  remains temporarily uncontrolled;
+- level gates appearance entitlement regardless of side/appearance being
+  otherwise correct, and no Mastery/ownership/rental signal is ever consulted
+  or reported for appearance items;
+- `sourceAffiliations[]` never grants or revokes entitlement in either
+  direction;
+- structural weapon variants inherit the canonical root policy;
+- direct slot mutation, saved-kit application, starter validation, respawn,
+  and deployment restore cannot bypass the authoritative decision;
+- client filtering agrees with the server but cannot grant entitlement.
+
+After mission functions and config initialize, the focused pure-policy checks
+can be run in an appropriate in-engine test context with:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_equipmentSidePolicy.sqf"
+```
+
+An empty returned array is a pass. This focused check does not replace hosted
+and dedicated two-side testing or client/server RPT review.
+
+Session cash API checks can be run on a hosted or dedicated server after
+mission functions initialize:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\cash\test_cash.sqf"
+```
+
+An empty array is a pass. Hosted and dedicated testing must additionally verify
+one cash award per validated kill/control/Priority event, no reward for rejected
+events, starting cash only once across respawn/side/round changes, targeted
+client updates, atomic insufficient-funds rejection, and clean server/client
+RPT output.
+
+Canonical weapon price authoring must additionally verify that every priced
+entry is a canonical root, no structural variant owns a manual price, rental is
+20% of purchase, Level 1 starter roots remain unpriced until starter ownership
+has an authoritative owner, and Store purchase/rent results agree with the
+server-owned cash and acquisition state.
+
+Weapon acquisition transaction rules and server-session initialization can be
+checked after mission functions initialize with:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\acquisition\test_weaponAcquisition.sqf"
+```
+
+An empty array is a pass. Dedicated testing must still verify the public
+purchase/rent APIs with explicitly priced test metadata, one targeted update
+per committed transaction, no charge on repeated requests, canonical
+structural-variant inheritance, no equipment application, rental survival
+across respawn/side/round transitions, and clean server/client RPT output.
+
+Weapon entitlement and mastery checks can be run after mission
+functions initialize:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_weaponEntitlementRules.sqf"
+call compile preprocessFileLineNumbers "functions\progression\mastery\test_weaponMastery.sqf"
+call compile preprocessFileLineNumbers "functions\progression\test_progressionMetadata.sqf"
+```
+
+Each must return `[]`. Dedicated testing must verify that one uniquely
+attributed valid PvP kill increments the canonical root once, structural
+variants share that root, ambiguous/non-infantry/explosive evidence awards
+nothing, and mastery survives respawn, side changes, and round transitions.
+Cross-side acquisition must fail before cash mutation until explicit
+permission, level, mastery, and perks all pass.
+
+Config-driven rank presentation checks can be run after mission functions
+initialize on a client or hosted session:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_rankPresentation.sqf"
+```
+
+An empty array is a pass. Hosted UI testing must additionally confirm that the
+lobby local-player card, WEST/EAST roster rows, every deployed-menu page, and
+each newly opened pause display show the same config-derived insignia shape and
+bronze/silver/gold tint. Recruit levels must preserve aligned blank roster icon
+columns and show no icon or textual fallback. Repeated pause opening must not
+duplicate controls. Rank presentation must not call `setRank`/`setUnitRank`,
+mutate progression, or add rank fields to persistence.
+
+14. Combat Attribution Probe
+
+The pure factual candidate checks can be run after mission initialization:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\combat\test_weaponAttribution.sqf"
+```
+
+An empty array is a pass.
+
+For a hosted or dedicated diagnostic session, execute on the server before
+shots are fired:
+
+```sqf
+missionNamespace setVariable ["BN_KOTH_combatAttributionDiagnostics", true];
+[] call bn_koth_fnc_combat_initAttributionDiagnostics;
+```
+
+Search the server RPT for `[BN_KOTH][ATTRIBUTION]`. The expected event sequence
+is `ENABLED`, `PROJECTILE`, `HIT`, `KILL`, and `PROJECTILE_DELETED`. The probe
+uses disabled-by-default verbose logging. Collection remains server-only,
+event-driven, and bounded per victim; only the separate mastery owner may
+consume a finalized unique result attached to a valid PvP kill.
+Run the dedicated matrix with: M16; M16 then pistol switch before impact; two
+carried roots sharing ammo; a structural/camo variant; pistol; grenade;
+handheld launcher; delayed explosive; vehicle MG; attack-helicopter cannon and
+rocket; multiple attackers; and shooter death/disconnect before impact. Record
+the `KILL.result`, `reason`, canonical candidates, hit-to-kill timing, and
+projectile lifetime for every case. Any missing server projectile/hit callback,
+multiple canonical candidates, non-infantry source, or non-infantry ammo
+category must remain `UNKNOWN`/`AMBIGUOUS`. `EntityKilled` supplies the lethal
+fact; projectile callbacks are expected to observe the victim before final
+damage/death state becomes visible.
+
+15. Definition of Tested
 
 A feature may be considered tested when:
 
@@ -226,3 +559,851 @@ A feature may be considered tested when:
 - client and server RPT files were reviewed;
 - no repeated script errors remain;
 - documentation reflects the implemented behaviour.
+
+16. Store V1 Checks
+
+Run `functions/ui/menu/test_storeV1.sqf` in a client debug context and
+`functions/progression/acquisition/test_weaponAcquisition.sqf` on the server;
+both return `[]` on success. The client test also requires exactly one
+first-entry Arsenal `NONE` for Sidearm and Launcher, and none for Primary.
+Hosted and dedicated tests must also verify
+root-to-category and category-to-product navigation, canonical-only weapon
+ordering by required level then case-insensitive display name and canonical class,
+global WEST/EAST/BOTH weapon visibility, level/mastery/perk
+locks, unconfigured-price safety, buy/rent outcomes, rental-to-owned upgrade,
+requester-only results, targeted progression repaint, the exact curated vehicle
+surface (37 Ground, 29 Rotary Wing, 18 Fixed Wing, no SEA), real config pictures,
+disabled vehicle actions while locked, four-card pagination, Store-only operator
+panel collapse/restoration, Primary/Handgun/Launcher Arsenal handoff with target
+page snap/highlight, and tab transitions without stale controls.
+
+Also cycle Store -> Loadout -> Arsenal -> Configure -> Saved Loadouts several
+times and verify canonical title/subtitle/BACK/action/pagination geometry is
+restored without cumulative drift. Cross-side mastery-capable cards must expose
+current/required progress even below level; prohibited products must say
+`FACTION RESTRICTED`; unusable cross-side discovery products must remain absent
+from Arsenal. Saved-loadout LOAD feedback must follow successful authoritative
+application. EDIT must establish context only after the same validation path
+succeeds; SAVE CHANGES must update the selected local record without creating a
+duplicate, while CANCEL EDIT or closing the menu must leave the stored record
+unchanged.
+
+17. Vehicle Progression Metadata Checks
+
+After mission functions and S.O.G. configuration initialize, run:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\vehicles\test_progressionMetadata.sqf"
+```
+
+An empty array is a pass. The focused check verifies valid explicit Store
+categories, roles, sides, finite non-negative levels/prices, resolvable and
+acyclic canonical links, policy-free structural entries, deterministic Store
+projection, curated product count, the reserved SEA category boundary,
+side/level eligibility and absence of weapon mastery policy.
+
+Hosted and dedicated testing must confirm that existing managed free and
+command vehicles still spawn and recycle exactly as before. For paid rentals,
+run:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\vehicles\test_rental.sqf"
+```
+
+An empty array is a pass. Then verify: requests from the lobby, a stale player
+representation, outside `ACTIVE`, while dead, or away from the authoritative
+team mapboard fail without a vehicle or charge. RENT is the complete transaction (a
+successful RENT immediately spawns the active vehicle in the same request,
+with no separate requisition/pending step); cash is deducted exactly once and
+only after the vehicle exists; a blocked spawn (occupied pads and no safe
+fallback) leaves no vehicle, no active record and no charge, and the player
+remains `AVAILABLE TO RENT`; destroyed/cleaned vehicles restore nothing and
+begin cooldown; cargo is empty while mounted armament remains; owner/group/
+public access is enforced; occupied pads cannot collide; disconnect does not
+instantly delete occupied vehicles; and restart clears all rental state.
+
+18. Development Progression Debug Script
+
+`functions/progression/test_setProgression.sqf` is a standalone, non-registered
+developer script for quickly staging Store/vehicle test states (level, cash,
+optionally one canonical weapon's mastery kill count) on a hosted or dedicated
+server. It grants no client-callable endpoint. Edit the `_targetPlayer`,
+`_targetLevel`, `_targetCash`, and optional `_debugWeaponClass`/
+`_debugMasteryKills` values at the top of the file, then paste the file's
+contents into the server-side debug console (select "Server" execution) and
+run it, or execute:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\progression\test_setProgression.sqf"
+```
+
+The target player must already be registered (joined and assigned a side).
+The script derives XP from the existing level curve, adds/reduces XP and cash
+through the existing authoritative progression APIs, marks persistence dirty
+normally, and publishes the normal targeted progression update. Result UID,
+XP, level and cash print to RPT and `systemChat`.
+
+19. Arsenal Direct Weapon Acquisition
+
+Native-side Arsenal browser cards now show `BUY $X`/`RENT $Y` in place of
+`APPLY`/`CONFIGURE` while entitlement is `REQUIRES_ACQUISITION` (side, level,
+mastery and perks already satisfied, ownership/rental still missing), and
+submit through the exact same `bn_koth_fnc_progression_requestWeaponAcquisition`
+endpoint Store uses. Verify:
+
+- forged BUY/RENT requests while dead, undeployed, outside `ACTIVE`, from a
+  stale representation, or away from the authoritative team mapboard fail
+  before cash or entitlement state changes;
+- a below-level native weapon shows `LOCKED · LEVEL N` with no BUY/RENT;
+- a level-eligible unacquired native weapon shows `AVAILABLE TO ACQUIRE` with
+  BUY/RENT enabled only up to the player's current cash;
+- BUY/RENT from Arsenal succeeds without a Store round-trip, and the card
+  becomes `OWNED`/`RENTED` with normal `APPLY`/`CONFIGURE` actions, staying on
+  the same browser slot/page;
+- an insufficient-cash attempt is rejected server-side with the existing
+  notification, and the card state is unchanged;
+- a cross-faction weapon with incomplete mastery never appears in the Arsenal
+  browser at all, while it remains discoverable/acquirable in Store;
+- once that cross-faction weapon is fully entitled (owned/rented, mastery
+  complete, perks satisfied), it appears in Arsenal like a native weapon;
+- Store weapon BUY/RENT continues to work unchanged from Store.
+
+20. Vehicle Rental RPT Audit Trail
+
+`functions/vehicles/fn_rentVehicle.sqf` logs every RENT outcome to RPT. A
+successful RENT logs UID, canonical class, pad id (or `FALLBACK`), spawn
+position, `netId` and cash charged; a failed RENT logs UID, requested class,
+code and exact reason, with no charge. Verify the Store card only ever shows
+`AVAILABLE TO RENT` (or `LOCKED`/`INSUFFICIENT CASH`/`COOLDOWN`) before a
+successful RENT, and `VEHICLE ACTIVE` only after a logged `RENTED` success with
+a real `netId`. There is no `REQUISITION` action, no `RENTAL READY` state, and
+no pending-rental state anywhere in the client or server rental payloads.
+# Perk foundation manual matrix
+
+Run on hosted and dedicated servers with the extDB schema-v2 migration applied:
+
+- forged perk purchase/activation/deactivation requests while dead, undeployed,
+  outside `ACTIVE`, from a stale representation, or away from the authoritative
+  team mapboard fail before cash, perk, intended-loadout, or physical-loadout
+  state changes;
+- Fresh/legacy player: `ownedPerks=[]`, `activePerks=[]`; malformed, duplicate, unknown, non-owned active, and over-limit persisted IDs normalize safely.
+- Purchase Suppressor at $1: cash falls once, ownership appears once, duplicate/spammed purchase does not charge again, reconnect restores it.
+- Activation: unowned is rejected; owned activates without a fee; repeated/rapid requests cannot exceed the configured maximum of three; reconnect restores the normalized active subset.
+- Inactive Suppressor: primary, handgun, launcher, uniform, vest, and backpack suppressors are rejected from managed requests with `ERR_PERK_SUPPRESSOR_INACTIVE`.
+- Active Suppressor: the same otherwise-valid managed loadouts succeed.
+- Deactivation with none present succeeds immediately. With any present it asks for confirmation; cancel changes nothing; confirm removes every factual suppressor from equipped slots and cargo, applies the sanitized intended loadout, then deactivates. Failed/incomplete cleanup leaves it active.
+- A saved kit containing a suppressor remains unchanged, fails while inactive, and succeeds while active if all other entitlement checks pass.
+- Battlefield pickup remains possible while inactive; death/redeployment returns to the existing starter/validated-loadout behavior.
+- Dedicated security: invoke requests only from the owning client and confirm forged UID/cost/ownership/loadout data is neither accepted nor part of the endpoint schema.
+
+Focused server tests: `call compile preprocessFileLineNumbers "functions\progression\perks\test_perks.sqf"`. Expected result: `[]`.
+
+## MEDIC and S.O.G. Advanced Revive dedicated matrix
+
+The focused perk test covers managed medikit/FAK entitlement and derived-trait
+wiring. The Eden module uses S.O.G.'s native successful-Resuscitate item
+removal, matching Mike Force's runtime configuration mechanism. KOTH observes
+the narrow native completion seam but owns no revive or inventory transaction.
+Dedicated validation with
+the casualty and reviver on separate clients must cover:
+
+1. Normal player, successful revive with either configured S.O.G. FAK: native
+   action completes, casualty recovers and exactly one possessed FAK is removed.
+   Repeat using a looted opposite-faction FAK; battlefield usability must not be
+   side-locked.
+2. Normal player, interrupted revive: casualty remains incapacitated and no FAK
+   is removed.
+3. Active MEDIC with medikit, successful revive: native Medic behavior recovers
+   the casualty, retains the medikit and consumes no FAK.
+4. Repeat the active MEDIC medikit revive: the retained medikit works again.
+5. Inactive MEDIC with medikit: managed-loadout validation removes/rejects the
+   medikit and the local Medic trait is false.
+6. AO/Priority eligibility: an incapacitated player is excluded and a revived
+   player becomes eligible again normally.
+7. Call For Help and Give Up: existing KOTH presentation and lifecycle cleanup
+   remain functional.
+8. Reward: the accepted successful completer receives exactly 25 XP, $25 and
+   one REVIVE feed entry. Interrupted, Give Up, death, self-recovery, stale,
+   replayed, cross-team and out-of-range requests receive nothing. Two
+   simultaneous candidates produce one winner, and a later incapacitation may
+   reward again.
+9. Bleedout: leave a genuine casualty down beyond 120 seconds and confirm they
+   remain incapacitated and reviveable, then confirm unattended bleedout reaches
+   S.O.G.'s native terminal outcome at about 600 seconds. Separately verify
+   successful Resuscitate and Give Up still complete before that deadline.
+
+Static inspection proves that native removal is enabled, both FAKs plus the
+medikit are configured revive items, and the module's native countdown uses the
+600-second value. The public S.O.G. documentation does not specify the internal
+Medic/medikit item-selection exception, so reusable medikit behavior remains a
+dedicated-runtime acceptance item rather than a reason to add custom inventory
+mutation.
+
+## Cloak spotting matrix
+
+- With `cloak` absent from the authoritative requester's `activePerks`, a valid infantry or vehicle-crew spot writes the normal mark and target warning deadlines.
+- With `cloak` active, the same valid spot writes the identical mark deadline and side but does not write a target warning deadline.
+- A Cloak spot followed by a valid non-Cloak spot warns the target; a non-Cloak warning is not cleared by a later Cloak spot.
+- Friendly, dead, out-of-range, cooldown, invalid-owner, and invalid-side requests remain rejected by the existing server path.
+- Client-local or presentation-state perk edits do not affect the server-only active-perk query.
+- Verify the marked target remains visible through the existing 3D and map paths for the configured duration, and that a Cloak user can still be spotted normally.
+
+21. Advanced Traversal Checks
+
+After mission functions and S.O.G. configuration initialize, run:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\traversal\test_traversal.sqf"
+```
+
+An empty array is a pass. The focused check verifies configured classification
+boundaries, the unbound-default gamemode action, required stock animation
+states, mantle climb-first/top-off-last phase selection, no finish phase for
+step-over/vault, and absence of a traversal RemoteExec endpoint.
+
+Hosted and dedicated testing must additionally bind the action and verify
+step-over, vault, low/medium/high mantle, on-top and over-obstacle landings with
+rifle, pistol, launcher and unarmed states. Every mantle must begin with the
+matching `Ladder*UpLoop` and call the matching `Ladder*TopOff` only after the
+unit reaches its final landing position; step-over and vault must never call a
+ladder top-off. Verify rejection while dead,
+incapacitated, prone, underwater, attached, in a vehicle, already traversing,
+inside the cooldown, without an obstacle, without landing support, and with
+blocked headroom. Death, respawn, `selectPlayer` representation handoff and
+locality loss during movement must release the traversal lock or safely cancel.
+With two clients, confirm movement is visible remotely, no traversal function
+is remotely executed, no persistent/JIP state is created, and client/server RPT
+files contain no repeated traversal errors. Enable `Diagnostics.debugDraw` only
+for a separate probe-visualization pass and confirm the handler is absent when
+the option is disabled.
+21. Deployment Transition Presentation
+
+The deployment transition is client-local presentation over the existing
+authoritative `WAITING -> PREPARING -> ACTIVE` lifecycle. On hosted and
+dedicated servers verify:
+
+- a selected player sees the transition before the lobby closes or the
+  PREPARING gameplay representation becomes visible;
+- the retained lobby blackout plus the transition's absolute-width opaque
+  background leaves no terrain, world object, HUD or screen-edge gap visible;
+- walking, sprinting, firing, interaction and gameplay controls are blocked
+  while the transition owns presentation, then return after normal reveal,
+  PREPARING abort and participation loss;
+- the theatre uses loaded-world metadata and the AO uses the selected
+  `CfgBnKothLocations` display name;
+- a fast preparation reaching `ACTIVE` first still plays the complete
+  typewriter sequence before fading into gameplay;
+- a slow preparation finishing the sequence first holds on `READY` and
+  `AWAITING DEPLOYMENT CLEARANCE` until authoritative `ACTIVE` arrives;
+- a PREPARING abort to `WAITING`, removal from the participating set, or a
+  failed deployment removes the transition and restores the normal lobby with
+  no permanent black screen;
+- repeated rounds and duplicate state publications create only one transition
+  resource and one typewriter script per client;
+- each run produces one controlled typo in an operational status line,
+  visibly backspaces and corrects it, and leaves the final order correct;
+- the slower variable cadence, selected blinking-cursor thought pauses and
+  brief `READY_` hold remain natural without spawning separate cursor scripts;
+- the normal BN KOTH score/AO/rank HUD is withdrawn as transition ownership
+  begins, remains absent through fast/slow preparation and the final fade, then
+  restarts exactly one animator only after successful transition cleanup;
+- a PREPARING abort leaves both transition and gameplay HUD hidden while the
+  normal lobby lifecycle resumes;
+- two or more clients animate independently without presentation traffic or
+  any effect on server readiness;
+- a JIP client during PREPARING either enters the same transition safely or
+  remains in the lobby when not selected, and no client joining directly into
+  ACTIVE receives a fabricated deployment sequence.
+
+During each case confirm the existing `BN_KOTH_LobbyBlackout` remains behind
+the transition with no visible frame of AO setup and that the transition's
+fade does not remove the HUD, lobby, or other named UI layers.
+
+The optional client-local operator-meltdown sequence is controlled by
+`CfgBnKothDeploymentTransition.meltdownChance` in `config/gameMode.hpp`.
+During visual approval it is deliberately `1` (100%); set it to `0.01` for an
+approximately one-percent production chance. Verify three believable theatre
+line failures, rapid bounded safe-ASCII keyboard slams filling most of the text
+area, a silent blinking-cursor hold, the temporary inverted selection state,
+instant deletion, slow accurate retyping with `;-)`, and normal AO/status
+typing afterward. ACTIVE arriving early must not cut the sequence short, while
+a PREPARING abort must cancel it through the existing lifecycle token and
+restore input/blackout normally. Repeated deployments must not retain text,
+selection colours, scripts, or handles from the previous run.
+
+22. Round-End Results Presentation
+
+The round-end results screen is client-local presentation over the existing
+authoritative `ACTIVE -> ENDING -> RESETTING -> WAITING` lifecycle. On hosted
+and dedicated servers verify:
+
+- normal round end shows the authoritative winning side, both final team
+  scores, and the same MOST DEADLY, OBJECTIVE and BEST STREAK values shown by
+  the lobby Live Leaders cards;
+- missing or zero-value leader entries render `NO LEADER` with the appropriate
+  zero-value `KILLS`/`PTS` fallback;
+- RESETTING and player return-to-lobby cleanup remain fully concealed by the
+  opaque results layer, with no gameplay HUD, deployed menu, world frame or
+  half-reset AO visible;
+- movement, firing and interaction remain blocked while results own
+  presentation, and input is restored after both the minimum results sequence
+  and authoritative lobby readiness have completed;
+- a fast reset reaching WAITING before the sequence finishes does not reveal
+  the lobby early, while a slow reset holds on `RETURNING TO OPERATIONS...`
+  until WAITING and the local lobby representation are ready;
+- long leader names remain within their cards through the existing width-aware
+  lobby name fitter;
+- repeated rounds show only the new winner/scores/leaders, create one results
+  resource and presentation script per client, and do not leave stale input,
+  blackout or HUD state;
+- display recreation during ENDING/RESETTING safely rebuilds the presentation
+  from the completed-round snapshot, and a JIP client during those states does
+  not expose cleanup or fabricate authoritative result data;
+- multiple clients render independently with no cosmetic network traffic and
+  no delay to the server round lifecycle.
+
+23. Population-Aware AO and Location Vehicle Capability
+
+Pure population-bound checks:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\round\test_populationEligibility.sqf"
+```
+
+Spawn-role capability checks:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\zone\test_vehicleCapabilities.sqf"
+```
+
+Both return `[]` on success. On a hosted and dedicated server also verify:
+
+- 1-3 connected humans receive only population-eligible choices;
+- 60 humans joining but remaining in LOBBY count immediately for AO sizing;
+- crossing 20/21 invalidates Son Tay, while movement inside the 15-20 overlap
+  does not reset still-valid candidates;
+- high-to-low crossing refreshes full-size candidates;
+- open and closed vote refreshes remove invalid votes and publish consistent totals;
+- resolution cannot select a newly ineligible AO;
+- the deterministic nearest-range fallback logs clearly when no range matches;
+- previous-location exclusion remains effective when an alternative exists;
+- JIP clients receive the current candidates, totals and votes;
+- an AO lacking vehicle roles keeps INFANTRY usable and shows GROUND, ROTARY
+  and FIXED WING as `DISABLED FOR THIS AO`;
+- disabled Store categories cannot be opened and a stale route returns to ROOT;
+- direct rental requests fail before spawn or cash mutation when the paid role
+  is absent;
+- missing free roles construct no managed slots and do not invalidate the AO;
+- missing command spawn roles create no command vehicle or teleport action,
+  while the mapboard's unrelated Open Menu action remains available;
+- direct command-teleport requests remain rejected server-side;
+- enabled-to-disabled AO changes delete old command vehicles/actions and JIP
+  receives the current command availability.
+Career persistence and leaderboard backend dedicated-server checks
+
+After a full mission restart with extDB3 ready, run on the server:
+
+```sqf
+[] call bn_koth_fnc_career_test
+```
+
+Expected result: `[]`.
+
+Then verify with two human clients and RPT/database inspection:
+
+1. Join with a new Steam UID and confirm `upsertCareerIdentity` creates one
+   career row; reconnect with a changed profile name and confirm the same UID
+   row is updated rather than duplicated.
+2. During `ACTIVE`, perform one valid enemy PvP kill. Confirm exactly one killer
+   kill, one victim death, and the new streak maximum reach both lifetime and
+   the current UTC hourly bucket. Suicide, teamkill, AI and ignored kill records
+   must add no career kill.
+3. Die once and confirm duplicate respawn/lifecycle callbacks do not add another
+   death. Confirm the live round streak still resets while the lifetime maximum
+   never decreases.
+4. Earn one physical objective score tick and confirm the exact team-score
+   points credited by `roundStats_recordObjectiveTick` become career objective
+   contribution. Priority bonus XP must not inflate that counter.
+5. Complete a round. Confirm each UID in the authoritative participant snapshot
+   receives one round played, winners receive one win, losers receive none, and
+   reconnect/reset notifications cannot repeat the result.
+6. Earn each existing XP reward type and confirm `total_xp_earned` increases by
+   the accepted positive award while current progression XP remains independently
+   stored in `bn_koth_player_progression`.
+7. Remain connected across at least two 60-second samples. Confirm playtime is
+   stored in seconds, no per-second DB writes occur, and disconnect performs a
+   final accumulation/flush without counting offline time.
+8. Temporarily make extDB3 unavailable. Confirm gameplay continues, career
+   mutations remain bounded/queued, leaderboard queries return a structured
+   unavailable result, and no fabricated leaderboard rows are returned.
+9. Exercise `bn_koth_fnc_career_queryLeaderboard` for metric IDs `1..9`, periods
+   `0..3` (`0` = all time), and `TOP`, `RANK`, `AROUND`, `COUNT`. Verify limits
+   cap at 25, K/D comes from the database query, ranking uses value descending
+   then UID ascending, and no caller-supplied SQL/query/table/column is accepted.
+10. Confirm hourly pruning runs no more frequently than the configured daily
+    interval and retains approximately 32 days.
+
+The external deployed `bn_koth.ini` must be checked against the parameter order
+used by the semantic adapter before release: UID followed by kills, deaths,
+wins, rounds played, objective contribution, highest streak, total XP earned
+and playtime seconds; rolling queries additionally consume the approved period
+ID as configured by their SQL_CUSTOM statements.
+
+24. Deployed Weapon Mastery Progression Page
+
+Run the focused catalogue/projection check in a client debug context:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\ui\menu\test_progressionMasteryUi.sqf"
+```
+
+Expected result: `[]`. With the deployed menu open, the same check also verifies
+that its dedicated fixed-control pool exists.
+
+For visual/runtime acceptance, use a hosted session with representative
+authoritative `weaponKills` values and verify:
+
+- opening `PROGRESSION` freshly always selects `IN PROGRESS`;
+- zero-progress weapons are absent from `IN PROGRESS`, partial progress shows
+  the exact kill count/requirement, and the most progressed entries
+  sort first;
+- `COMPLETED` contains only completed weapons with the `MASTERED` treatment;
+- `ALL` contains every mastery-capable weapon exactly once, with no structural-variant duplicates;
+- zero, tiny, near-complete and over-complete values render bars within 0-100%;
+- missing pictures leave a neutral image area, and long display names remain
+  within their card;
+- all empty states are intentional, filtering/paging creates no controls or
+  event handlers, and closing/reopening resets the filter;
+- `PROGRESSION -> LOADOUT/STORE/PERKS -> PROGRESSION` leaks no controls or
+  actions between views;
+- a received progression update refreshes the open page without mutating XP,
+  Level, weapon kills, ownership, rental, Perks or entitlement;
+- no script/config errors appear in RPT.
+
+Also exercise every deployed-menu return path: selector, configure,
+magazine/attachment, cargo/container, saved kits, Store, Perks and Progression.
+Each visible `BACK` control must retain its existing destination while matching
+the `EXIT MENU` control's size and bottom alignment at the opposite (bottom-right)
+edge. Repeatedly switch between those views and confirm only one `BACK` control
+is visible, no control overlaps it, and `ESC`/menu reopen behaviour is unchanged.
+
+No dedicated-server acceptance is claimed by this presentation test. A normal
+dedicated progression award should still be observed on a client to confirm
+the existing bounded projection refreshes the open page end to end.
+
+25. Stats And Leaderboard Page
+
+Run the focused contract/formatting checks from the debug console:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\ui\menu\test_stats.sqf"
+```
+
+Run the server-side single-row career-summary projection checks separately:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\career\test_careerSummary.sqf"
+```
+
+Expected result: `[]`. These checks cover the semantic metric/period/mode
+allowlists, bounded limits, K/D safety, duration formatting, and the distinction
+between legitimate zero values and unavailable data. Runtime menu acceptance
+must additionally verify fresh-entry defaults (`KILLS`, `ALL TIME`, `TOP`),
+clickable metric cards, all period/mode controls, local-row highlighting,
+loading/empty/unavailable states, control cleanup across every deployed-menu
+route, and the fixed `EXIT MENU` left / `BACK` right layout.
+
+Live persisted totals and leaderboard windows remain dedicated-server database
+acceptance and must not be claimed by the focused UI checks.
+
+
+26. Occupied-AO Objective Cycle
+
+Run on a hosted session and a dedicated server with multiple human clients.
+Capture XP/cash before and after completion, team scores, server
+BN_KOTH_scoreProgress (active, startedAt, duration), and both client/server RPT.
+Keep scoreTick = 1 and scoreTickInterval = 30; use enough supporting players
+to maintain the stated weighted controller when an opposing Priority player
+is present.
+
+| Completion state | Eligible player | XP | Cash | Team score |
+| --- | --- | ---: | ---: | --- |
+| NEUTRAL | none | 0 | 0 | none |
+| WEST controlled | WEST AO | 10 | 10 | WEST +1 |
+| WEST controlled | WEST Priority | 30 | 30 | WEST +1 |
+| WEST controlled | EAST AO | 5 | 5 | WEST +1 |
+| WEST controlled | EAST Priority | 25 | 25 | WEST +1 |
+| CONTESTED | either side AO | 5 | 5 | none |
+| CONTESTED | either side Priority | 25 | 25 | none |
+
+Also verify EAST control symmetrically. Priority remains an additive control
+weight; arrange equal weighted counts for contested cases.
+
+1. Empty AO: progress stays inactive at zero through more than 30 seconds,
+   with no personal rewards or team score.
+2. CONTROLLED -> CONTESTED at roughly 15 seconds: startedAt is unchanged,
+   yellow CONTESTED bar keeps filling; completion follows contested rows.
+3. CONTESTED -> CONTROLLED at roughly 15 seconds: startedAt is unchanged;
+   completion grants current controller bonus and team score. Repeat with
+   WEST -> EAST control to verify no ownership-triggered restart.
+4. Empty the AO midway: reset immediately on the next zone evaluation; no
+   incomplete reward. Re-entry starts a fresh full 30-second cycle.
+5. Observe at least three consecutive controlled and contested cycles.
+   Verify full-to-zero-to-filling motion without a visible hold or inactive
+   publication. Next startedAt advances by duration, not update latency.
+   Include network latency, lower server FPS and a JIP client near rollover.
+   A delayed publication must not snap the interpolated bar backward.
+6. With WEST one scoreTick below scoreLimit, complete a controlled cycle.
+   Confirm exactly one final reward/score/stat tick, correct winner, ENDING
+   resets progress, and no subsequent cycle or rewards. Start another round
+   and confirm fresh cycle state.
+7. At completion separately make a candidate dead, incapacitated, LOBBY,
+   not deployed, absent from activeParticipants, stale/currentUnit-mismatched,
+   disconnected, or outside the AO (including Priority without AO eligibility).
+   They must receive neither reward nor objective contribution. Restore valid
+   state and verify eligibility resumes through the zone owner.
+8. Reconnect/JIP mid-cycle: clients receive the current server epoch and own
+   progression, no historical participation reward, no duplicate payout.
+9. Verify contested rewards do not increment round/career objective points;
+   controlled points remain tied to actual team score. XP/cash still reach
+   targeted updates and persistence; valid PvP kills remain 25 XP / 50 cash.
+10. After a server stall spanning multiple intervals, verify no catch-up burst
+    of rewards for missed snapshots; one current completion and phase-aligned
+    active continuation. No extra timer, reward scan or RemoteExec is involved.
+
+Static inspection and delimiter checks do not establish runtime or visual
+acceptance of this checklist.
+
+27. Custom Player Groups
+
+Run the focused server-side invariant checks after mission initialization:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\groups\test_groups.sqf"
+```
+
+Expected result: `[]`. These checks cover undeployed-leader retention, no
+premature opposite-side removal, round native release without logical deletion,
+death/respawn leadership retention, deterministic succession after an actual
+leader removal, the `remoteExecutedOwner` request boundary, direct server-local
+leadership, remote-only owner endpoint checks, locality-owned native cleanup,
+empty-impact publication, ungrouped lifecycle non-fan-out, and the read-only
+snapshot ordering. They do not establish native group locality or UI behavior.
+
+Dedicated-server validation requires at least three human clients and both
+playable sides:
+
+1. Create a group, join from the same side, and verify a direct opposite-side
+   JOIN request fails server-side. Repeat CREATE/JOIN rapidly and verify one
+   logical membership per UID, no duplicates and no orphan native groups.
+2. Verify member leave, leader kick, non-leader kick rejection, explicit leader
+   transfer, leader leave and leader disconnect. Only real membership removal or
+   explicit transfer may change `leaderUid`; ordinary member disconnect removes
+   that member. Empty groups are deleted.
+3. Kill and respawn a member and then the leader. Membership and logical leader
+   remain unchanged, the replacement units regain native membership, and a
+   temporary native leader never becomes logical authority.
+4. Keep the logical leader connected but undeployed while one member deploys.
+   Verify `leaderUid` and membership remain unchanged and the deployed member is
+   left in a valid normal/singleton native group.
+5. With the leader still undeployed, deploy two members on opposite sides.
+   Verify no cross-side native group forms, neither member is removed, and
+   logical leadership remains unchanged.
+6. During that round, deploy the leader. Verify the leader's authoritative
+   `assignedSide` is then used: matching members remain and materialize together;
+   mismatching deployed members are removed and notified.
+7. Repeat with the leader never deploying. Complete reset and verify the same
+   logical group, leader and member order survive into the next round.
+8. Verify both members WEST -> both WEST, both WEST -> both EAST, and all-member
+   side changes preserve the logical group and rematerialize on the current side.
+   Then split leader/member sides and verify only mismatching deployed members
+   are removed. Undeployed/CIV members remain inconclusive and retained.
+9. Transfer leadership before the next deployment and verify the new leader's
+   real side controls reconciliation without moving any player's team.
+10. Verify ACTIVE JIP receives current group presentation and correct native
+    membership, while reconnect after disconnect does not restore membership.
+    AI, headless clients and stale units must never appear.
+11. Verify the menu cannot open in lobby, PREPARING, ENDING or RESETTING; closes
+    on death/round invalidation; and stale requests fail after state or side
+    changes. Opening/refreshing the menu must not be necessary for native repair.
+12. Verify default U opens only the custom menu, repeated presses leave one
+    display, remapping uses the new binding, U then follows the established
+    replacement policy, and persistence/modifier/conflict behavior matches other
+    gamemode bindings.
+13. Observe server and all client RPTs through deployment, respawn, disconnect,
+    JIP and reset. Confirm no recurring reconciliation loop or unchanged-state
+    network traffic exists and native leader selection succeeds on hosted and
+    dedicated locality owners.
+14. Release groups owned in turn by the dedicated server and each player client.
+    Verify direct cleanup occurs only for server-local groups, the validated
+    owner endpoint marks client-local groups for deletion, already-empty groups
+    disappear, and groups temporarily retaining dead units disappear after corpse
+    removal. Logical deletion/release must complete without waiting or polling.
+15. Record group presentation RemoteExec recipients. An ungrouped death/respawn
+    must send none; a grouped member status change must reach current members and
+    only the side(s) whose available-group projection can change. Repeat for
+    create, join, leave, kick, transfer, disband and side-reconciliation removal.
+16. Verify new groups default OPEN, only the logical leader can LOCK/UNLOCK, a
+    forged ordinary JOIN cannot enter a locked group, and unlocking restores
+    normal same-side joining. Locked groups remain visible and marked LOCKED.
+17. As leader, inspect invite candidates with same-side and opposite-side active
+    clients plus grouped, lobby, dead and disconnected clients. Only deployed
+    ACTIVE same-side ungrouped humans may appear; inspect the received projection
+    to confirm no enemy UID, name, status or existence is included.
+18. Forge INVITE and ACCEPT_INVITE operations for an opposite-side UID and after
+   target side change. Confirm both fail server-side. Verify valid invites can
+   be accepted into OPEN and LOCKED groups, DECLINE removes them, and expiry
+   removes the prompt after 60 seconds without recurring work. Confirm a valid
+   invite notifies the target to open Group Menu without naming a physical key,
+   immediately returns the leader's open menu to MY GROUP, and excludes the
+   pending target from subsequent invite choices while duplicate server requests
+   remain rejected.
+19. Verify target grouping/creation, target or leader death/disconnect/return to
+    lobby, leadership transfer, disband and round reset invalidate applicable
+    invites. Record recipients and confirm only the target and leaders whose
+    candidate projection changed receive updates; unrelated opposite-side death
+    or respawn causes no group/invite fan-out.
+20. Rename as leader using leading/trailing whitespace, a valid 24-character
+    name, empty/whitespace, 25 characters, newline/control characters and `<`,
+    `>` or `&`. Confirm only the trimmed valid name is accepted, non-leader rename
+    fails, the stable group ID never changes, and duplicate display names remain
+    allowed.
+21. Complete reset and whole-group WEST-to-EAST deployment cycles. Confirm display
+    name and lock survive while every outstanding invite is cleared and current
+    side candidate privacy is recalculated.
+
+Static checks do not establish dedicated multiplayer, native command locality,
+group chat/markers, UI layout, or lifecycle acceptance.
+
+Saved-kit spawn preference regression checks (isolated test mission):
+
+- Client debug console, menu closed: `[] call compile preprocessFileLineNumbers "functions\ui\menu\test_spawnPreference.sqf"`.
+  Exercises single selection, rename/delete, stale and matching rejection,
+  overwrite resubmission, and unchanged intended presentation with network calls stubbed.
+- Server debug console with a connected WEST starter-entitled player:
+  `[testPlayer] call compile preprocessFileLineNumbers "functions\loadouts\test_spawnPreference.sqf"`.
+  Exercises the real validator/resolver for valid/invalid candidates, side changes,
+  stale ownership and starter fallback without equipping the player.
+- Dedicated two-client validation remains required: ordinary LOAD/EDIT access
+  rejection away from mapboards; preference submission away from mapboards;
+  initial and late deployment, death/respawn, side switching back and forth,
+  complete disconnect/reconnect without opening the Arsenal followed by
+  deployment/spawn using the preferred kit, rapid selection/overwrite/delete,
+  current perk/acquisition/appearance rejection, and client/server RPT review.
+  Confirm rapid SET requests use their separate throttle while preference CLEAR
+  remains immediate and does not leave an older candidate active.
+  Confirm preference changes never equip or change intended state, only one
+  card shows `DEFAULT SPAWN LOADOUT ✓` with its `DEFAULT ✓` button disabled,
+  and no preference response delays deployment.
+
+28. Tactical Air Insertion
+
+Run the focused server checks after mission initialization:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\airInsertion\test_airInsertion.sqf"
+```
+
+Expected result: `[]`. The check covers production config defaults and aircraft
+resolution, configured distance/heading/terrain-relative AGL mathematics,
+request ownership and OPEN-state boundaries, capacity enforcement, asset-before-
+cash ordering, boarding-before-cash ordering, initiator-driver assignment, all
+four real human seats, absence of AI flight and vehicle locks, server-authorized
+seat movement and deterministic ordering, pre-boarding parachute preparation,
+physical slot-5 capture and restoration through the player's current full
+loadout, verified restore acknowledgement, native-Eject/freefall boundaries,
+mapboard/countdown/role presentation, bounded empty-aircraft abandonment,
+intended-loadout isolation, rental-state isolation, and session/player-index
+cleanup. Static source checks
+do not establish human flight controls, engine Eject behaviour, manual parachute
+deployment, network timing, physical inventory preservation or dedicated
+locality.
+
+Dedicated-server validation requires at least four human clients and both
+playable sides:
+
+1. Buy a solo insertion from the correct active team mapboard and verify only the initiator is manifested.
+2. Start a group insertion and verify every eligible same-side safe-zone player receives an opt-in invitation.
+3. Accept from multiple players and verify the authoritative seat count updates for all involved clients.
+4. Ignore an invitation and verify the player is not moved or charged.
+5. Leave as a passenger before departure and verify removal from the manifest.
+6. Cancel as initiator before departure and verify the whole OPEN session closes.
+7. Verify cancellation deducts no cash.
+8. Attempt with insufficient cash and verify server rejection before asset creation.
+9. Commit successfully and verify exactly one configured $500 charge to the initiator.
+10. Verify passengers pay nothing.
+11. Spend the initiator's remaining balance concurrently and verify a losing insertion commit returns boarded players, deletes the asset and charges nothing.
+12. Measure the aircraft's AO-relative spawn distance and verify it remains within 1500–2000 metres.
+13. Measure ASL against terrain height and verify approximately 500 metres AGL.
+14. Verify the initial heading targets the active AO.
+15. Verify the initiator occupies the driver seat and has normal flight controls immediately after commit.
+16. Fill pilot, copilot and both cargo seats with four humans and verify the displayed manifest never exceeds actual capacity.
+17. Attempt one additional JOIN and verify server-side full-session rejection.
+18. Verify no AI crew exists before or after boarding and no scripted waypoint or flight-control owner appears.
+19. Verify the copilot position is usable and normal seat changes remain available to manifested occupants.
+20. Before boarding, verify each manifested player's current backpack slot is captured and physically replaced with `B_Parachute`.
+21. Verify preparation changes no weapon, uniform, vest, headgear, goggles or assigned item.
+22. Force one preparation acknowledgement to fail and verify all changed backpacks are restored, boarded players are returned, the asset is removed and no cash is charged.
+23. Use native Eject from the driver seat and verify normal freefall begins without an already-deployed parachute.
+24. Delay deployment deliberately, then deploy manually and complete the descent.
+25. Verify the original backpack classname returns only after leaving/finishing the parachute at ground level, followed by owner acknowledgement and server physical verification.
+26. Verify every original backpack cargo entry and quantity returns exactly.
+27. Verify intended and saved loadout state never contains `B_Parachute` and all non-backpack equipment remains unchanged.
+28. Repeat native Eject, delayed manual deployment and restoration from copilot and both cargo positions.
+29. Have the pilot and passengers eject at different points and verify each temporary backpack state is independent.
+30. After the pilot ejects, verify a remaining manifested occupant can move into the driver seat and continue flying.
+31. Land the Caesar, use ordinary Get Out while the aircraft is grounded, and verify the original backpack is restored without forcing parachute deployment.
+32. Die separately during freefall and under the deployed chute; verify temporary state clears without restoring onto the dead representation or corrupting respawn loadout ownership.
+33. Disconnect before landing and verify temporary state clears without persisting `B_Parachute`.
+34. Attempt entry by a non-manifested player and verify server rejection without locking the aircraft for manifested occupants.
+35. Disconnect a passenger during OPEN and verify manifest removal.
+36. Disconnect the initiator during OPEN and verify session cancellation without charge.
+37. Disconnect an occupant while AIRBORNE and verify membership cleanup without destroying a still-occupied aircraft.
+38. Destroy the aircraft or end the round and verify session and aircraft state terminate safely without AI references.
+39. Exercise JIP/reconnect during OPEN and AIRBORNE; no stale invitation or membership may be reconstructed.
+40. Verify the empty Caesar continues naturally for the configured 20-second abandonment grace after the last occupant exits, then deletes; verify the hard timeout safely ejects remaining occupants before deletion and leaves no pilot-group or waypoint state.
+41. Complete RESETTING/WAITING and verify the server session, player-index and temporary-backpack maps are empty.
+42. Verify the Caesar is absent from command, free-managed, rental, ownership and persistent state.
+
+During preparation and restoration, replay the same valid backpack
+acknowledgement at high rate. Confirm the server accepts at most one scheduled
+verification per player per 0.25 seconds, creates no reward/charge duplication,
+and leaves the session and backpack state consistent.
+
+Review server and every client RPT for RemoteExec, locality, missing-class,
+undefined-variable and repeated-script errors. Hosted testing is useful for
+iteration but does not establish this feature's multiplayer acceptance.
+
+The corrected SOLO freefall and backpack-lifecycle regression must also be
+repeated in the runtime mission:
+
+1. Equip a normal backpack with a recognizable mix of items and magazines.
+2. Start a SOLO insertion.
+3. Confirm the original backpack is temporarily replaced with `B_Parachute`.
+4. Confirm all other combat equipment remains untouched.
+5. Spawn into the Caesar pilot seat and fly normally.
+6. Use native Eject.
+7. Confirm freefall rather than an immediate deployed chute.
+8. Delay deployment deliberately.
+9. Deploy the parachute manually and complete the descent.
+10. Land and finish/leave the parachute state.
+11. Confirm the exact original backpack classname returns.
+12. Confirm every original backpack cargo entry and quantity returns.
+13. Confirm weapons, vest, uniform and assigned items remain unchanged.
+14. Confirm intended/saved loadout state never contains `B_Parachute`.
+15. Repeat from the copilot position.
+16. Repeat from cargo seat 0.
+17. Repeat from cargo seat 1.
+18. Die during freefall and verify normal respawn ownership with no temporary state leak.
+19. Die under the deployed chute and verify normal respawn ownership with no temporary state leak.
+20. Disconnect before landing and verify no stale server state or persistent parachute backpack.
+21. End the round while airborne and verify safe restoration/clear through the round lifecycle.
+22. Review server and every client RPT for locality errors, restore mismatch or acknowledgement-timeout warnings, duplicate restoration and state leaks. A successful insertion/restoration should not emit serialized backpack diagnostics.
+
+Polish validation should additionally confirm the short preparation blackout
+hides the safe-zone backpack/boarding swap, the view returns with the player
+already seated in a flying aircraft, the countdown changes to `DEPARTING`, each
+occupant receives only one concise role/egress notification, and no stale AIR
+INSERTION HUD or action remains after any lifecycle exit.
+
+### Static AO configuration validation
+
+Run the repository AO validator without building or copying a mission:
+
+```powershell
+    python tools/validate_ao_config.py
+```
+
+The command validates every mission-ready map's configured location IDs,
+rotation membership, population ranges, required zone/respawn/base/mapboard
+references, explicitly authored vehicle-capability references, and image
+paths. Structural failures return a non-zero process status. Missing optional
+presentation images are reported as warnings until their authored assets are
+added.
+
+### Pass 2 round accounting and combat acceptance
+
+On a dedicated server with at least three players, verify:
+
+1. Two opposing contributors damage one victim and a third player lands the kill; only contributors meeting the configured damage/window rules receive an assist.
+2. The killer, teammates, suicide damage, team damage, stale hits, and below-threshold hits receive no assist.
+3. Replaying the same canonical event key awards no second assist or teamkill penalty.
+4. Death, respawn, disconnect, reconnect, and the next `ACTIVE` round leave no stale victim contributor state.
+5. Configured XP/cash assist rewards and teamkill deductions use the normal progression feed and survive reconnect; zero values change no balance.
+6. XP/cash penalties clamp at zero and cannot create negative canonical state.
+7. A dead or respawning participant still appears in the completed-round result, while a disconnected player receives no late payout.
+8. Participation and winning-team bonuses award exactly once at the score-limit winner boundary and do not repeat in `ENDING` or `RESETTING`.
+9. The after-action report shows winner, both final scores, local K/D/A, objective contribution, best streak through Live Leaders, signed round XP/cash delta, level transition, and elapsed round duration.
+10. A JIP client during `ENDING`/`RESETTING` receives the same immutable result projection.
+11. The lobby exposes only the score limit; no round time-limit setting or timer is presented.
+
+### Persistent saved-loadout acceptance
+
+After applying migration `003_add_saved_kits.sql` and deploying the updated
+extDB3 SQL_CUSTOM file:
+
+1. Create, rename, update, delete, and select a default saved loadout at the active team mapboard.
+2. Confirm server restart and reconnect restore the bounded saved set and preferred ID.
+3. Begin with legacy `profileNamespace` kits and an empty durable set; the next save/update must migrate valid local entries once without granting equipment.
+4. Attempt CRUD away from the mapboard, undeployed, from the wrong current representation, and with malformed IDs/names/loadout shapes; all must fail closed.
+5. Save a loadout containing a current rental, expire/remove the rental, then load and respawn; the old saved intent must not recreate entitlement.
+6. Repeat with a battlefield pickup, cross-side item, locked level/mastery item, and inactive perk item; every application must pass the current canonical validator or fall back safely.
+7. Corrupt only `saved_kits` in the database and verify the invalid kit set is dropped, valid progression remains loaded, and the next canonical save repairs the row without granting equipment.
+8. Review server/client RPT for duplicate writes, oversize codec rejection, malformed extDB rows, stale preference state, and RemoteExec direction failures.
+
+The AO validator, not the mission exporter, owns these repository checks.
+`build.py` remains limited to assembling exportable mission folders.
+
+### Pass 3 presentation and shared-rental acceptance
+
+On a dedicated server, retain enough human participants to exceed one results
+scoreboard viewport and verify:
+
+1. The completed-round scoreboard contains every registered participant using only the immutable server result rows, groups WEST before EAST, then sorts by objective points, kills, and name.
+2. Long names remain bounded; the local player and disconnected participants are marked; dead and disconnected objects are not required for rendering.
+3. K/D/A, objective points, best streak, signed XP/cash delta, level movement, final score, duration, and Live Leaders agree with server accounting for the same round.
+4. A JIP client entering during `ENDING` or `RESETTING` receives the same result and the result clears on the normal next-round boundary.
+5. With configured streak milestones, each threshold produces one feed entry per streak, death permits that threshold in a later streak, and suicide/teamkill never advances it.
+6. Mastery feed entries use the canonical weapon display name and kill threshold; completion does not claim purchase/rental availability while level, perk, side, or acquisition policy still blocks it.
+7. Vehicle Store categories and cards explain active-AO capability, side, level, perk, cash, active-rental, cooldown, and unconfigured-rental blocks using server projection state.
+8. Multiple simultaneous rentals are reclaimed by the one shared vehicle-manager sweep after configured abandonment/disconnect timeouts, with no per-rental monitor scripts or duplicate cooldowns.
+9. SOLO/GROUP insertion prompts, countdown, successful-departure charge wording, invitation/join state, boarding, egress, closure, and backpack restoration each appear once through the normal notification owner.
+
+### Player-facing announcements
+
+For the configured active announcement, verify the lobby, deployed menu, Group
+Menu, pause menu, gamemode keybindings and gamemode options each show one notice
+using the configured title and subtitle. Open the popup from every surface,
+close it with the visible CLOSE button, reopen it repeatedly, and confirm no
+duplicate controls, handlers or orphaned displays remain. Set the announcement's
+`enabled` value to `0`, reload the mission and confirm every notice is hidden and
+cannot open a popup. Check client RPT for missing config, function, display and
+control errors. Static inspection does not establish layout at all interface
+sizes or in-game popup behaviour.
+
+### QoL notification, map and Arsenal acceptance
+
+On a hosted session and then a dedicated server with two clients, verify that
+after each deployment, the first successful map open animates once to the active
+AO; later opens must preserve manual pan/zoom until the next deployment.
+
+Cross one equipment level, several same-level entries, and several levels in one
+award. Confirm every canonical metadata crossing is queued, at most four cards
+are visible, oldest cards expire first, and no message claims ownership. Send
+overlapping group invites and confirm their cards share the queue while the
+server invite expiry remains unchanged.
+
+Verify baseline faction grenades/smoke remain uncontrolled and available managed
+consumables become usable once their level, side and perk gates pass, without
+purchase, rental, ownership, or persisted quantities. Verify cargo preserves
+current-weapon and initial-kit priority before sorting by level then name/class,
+WP classes never appear,
+and 20/22/40 mm or flare-launcher ammunition appears only with a compatible
+intended weapon. Submit incompatible cargo directly and through a saved kit; the
+server must reject it. Remove GPS and populate NVG in saved intent, then confirm
+validation restores `ItemGPS`, clears NVG, and exposes neither fixed slot in the
+assigned-equipment browser. Check the BETA notice at 4:3, 16:9 and ultrawide: its
+button centre must match the LOADOUT column centre and its complete two-line text
+block must remain horizontally centred with the menu-only downward inset applied.
+Open the native pause menu and confirm its announcement text remains visible at
+the existing position without inheriting the main-menu inset.

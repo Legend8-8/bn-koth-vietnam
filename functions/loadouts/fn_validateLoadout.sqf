@@ -1,0 +1,1199 @@
+/*
+    File: fn_validateLoadout.sqf
+    Author: Legend
+    Description: Server-authoritative validation for configured loadouts and weapon composition requests.
+    Execution: Server
+    Parameters:
+        0: Requesting player object <OBJECT>
+        1: Loadout request <HASHMAP|ARRAY>
+           HASHMAP schema (exactly one intent):
+             loadoutId <STRING>
+             primary <HASHMAP> (legacy single-slot composition)
+             weapons <HASHMAP> (primary/launcher/handgun slot maps)
+                         mutation <HASHMAP> (authoritative intent op)
+             side <STRING> (optional, cross-check only)
+    Returns:
+        Validation result <HASHMAP>
+    Public: Yes
+*/
+
+params [
+    ["_player", objNull, [objNull]],
+    ["_request", createHashMap, [createHashMap, []]]
+];
+
+private _fail = {
+    params ["_code", "_message", ["_loadoutId", "", [""]], ["_sideToken", "", [""]]];
+
+    createHashMapFromArray [
+        ["success", false],
+        ["code", _code],
+        ["message", _message],
+        ["loadoutId", _loadoutId],
+        ["sideToken", _sideToken],
+        ["validatedLoadout", []],
+        ["validatedPrimary", createHashMap],
+        ["validatedWeapons", createHashMap],
+        ["validatedBy", ""]
+    ]
+};
+
+if (!isServer) exitWith {
+    ["ERR_NOT_SERVER", "Loadout validation must run on server."] call _fail
+};
+
+if (isNull _player || {!isPlayer _player}) exitWith {
+    ["ERR_INVALID_PLAYER", "Loadout validation requires a connected player object."] call _fail
+};
+
+private _requestedLoadoutId = "";
+private _requestedLoadoutIdRaw = objNull;
+private _requestedSideRaw = "";
+private _requestedSideToken = "";
+private _primaryRequest = createHashMap;
+private _weaponsRequest = createHashMap;
+private _mutationRequest = createHashMap;
+private _hasLoadoutIntent = false;
+private _hasPrimaryIntent = false;
+private _hasWeaponsIntent = false;
+private _hasMutationIntent = false;
+private _requestMode = "";
+
+if (_request isEqualType createHashMap) then {
+    private _requestKeys = keys _request;
+    _hasLoadoutIntent = "loadoutId" in _requestKeys;
+    if (_hasLoadoutIntent) then {
+        _requestedLoadoutIdRaw = _request get "loadoutId";
+    };
+    _requestedSideRaw = _request getOrDefault ["side", ""];
+    _hasPrimaryIntent = "primary" in _requestKeys;
+    if (_hasPrimaryIntent) then {
+        _primaryRequest = _request getOrDefault ["primary", objNull];
+    };
+    _hasWeaponsIntent = "weapons" in _requestKeys;
+    if (_hasWeaponsIntent) then {
+        _weaponsRequest = _request getOrDefault ["weapons", objNull];
+    };
+
+    _hasMutationIntent = "mutation" in _requestKeys;
+    if (_hasMutationIntent) then {
+        _mutationRequest = _request getOrDefault ["mutation", objNull];
+    };
+} else {
+    if ((_request isEqualType []) && {(count _request) > 0}) then {
+        _hasLoadoutIntent = true;
+        _requestedLoadoutIdRaw = _request select 0;
+    };
+};
+
+if !(_requestedSideRaw isEqualType "") exitWith {
+    ["ERR_MALFORMED_REQUEST", "Requested side must be a string."] call _fail
+};
+
+_requestedSideToken = toUpper _requestedSideRaw;
+
+private _intentCount =
+    (if (_hasLoadoutIntent) then {1} else {0}) +
+    (if (_hasPrimaryIntent) then {1} else {0}) +
+    (if (_hasWeaponsIntent) then {1} else {0}) +
+    (if (_hasMutationIntent) then {1} else {0});
+
+if (_intentCount != 1) exitWith {
+    ["ERR_MALFORMED_REQUEST", "Loadout request must choose exactly one mode: loadoutId, primary, weapons, or mutation."] call _fail
+};
+
+if (_hasPrimaryIntent) then {
+    _requestMode = "primary";
+} else {
+    if (_hasWeaponsIntent) then {
+        _requestMode = "weapons";
+    } else {
+        if (_hasMutationIntent) then {
+            _requestMode = "mutation";
+        } else {
+            _requestMode = "configured";
+        };
+    };
+};
+
+if ((_requestMode isEqualTo "primary") && {!(_primaryRequest isEqualType createHashMap)}) exitWith {
+    ["ERR_MALFORMED_REQUEST", "Primary validation request must provide primary as a map."] call _fail
+};
+
+if ((_requestMode isEqualTo "weapons") && {!(_weaponsRequest isEqualType createHashMap)}) exitWith {
+    ["ERR_MALFORMED_REQUEST", "Weapons validation request must provide weapons as a map."] call _fail
+};
+
+if ((_requestMode isEqualTo "mutation") && {!(_mutationRequest isEqualType createHashMap)}) exitWith {
+    ["ERR_MALFORMED_REQUEST", "Mutation validation request must provide mutation as a map."] call _fail
+};
+
+if ((_requestMode isEqualTo "configured") && {!(_requestedLoadoutIdRaw isEqualType "")}) exitWith {
+    ["ERR_MALFORMED_REQUEST", "Configured loadout request requires loadoutId as a non-empty string."] call _fail
+};
+
+if ((_requestMode isEqualTo "configured") && {_requestedLoadoutIdRaw isEqualTo ""}) exitWith {
+    ["ERR_MALFORMED_REQUEST", "Configured loadout request requires loadoutId as a non-empty string."] call _fail
+};
+
+if (_requestMode isEqualTo "configured") then {
+    _requestedLoadoutId = toLower _requestedLoadoutIdRaw;
+};
+
+private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
+if !(_records isEqualType createHashMap) exitWith {
+    ["ERR_RECORDS_UNAVAILABLE", "Player records are unavailable.", _requestedLoadoutId] call _fail
+};
+
+private _uid = getPlayerUID _player;
+private _record = _records getOrDefault [_uid, createHashMap];
+if !(_record isEqualType createHashMap) exitWith {
+    ["ERR_PLAYER_NOT_REGISTERED", "Player is not registered in authoritative team records.", _requestedLoadoutId] call _fail
+};
+
+private _authoritativeBaselineLoadout = [];
+private _authoritativeBaselineSideToken = "";
+
+private _loadoutStateByUid = missionNamespace getVariable ["BN_KOTH_playerLoadoutState", createHashMap];
+if (_loadoutStateByUid isEqualType createHashMap) then {
+    private _loadoutState = _loadoutStateByUid getOrDefault [_uid, createHashMap];
+
+    if (_loadoutState isEqualType createHashMap) then {
+        _authoritativeBaselineLoadout = _loadoutState getOrDefault ["intendedLoadout", []];
+        if !(_authoritativeBaselineLoadout isEqualType []) then {
+            _authoritativeBaselineLoadout = [];
+        };
+
+        _authoritativeBaselineSideToken = toUpper (_loadoutState getOrDefault ["sideToken", ""]);
+    };
+};
+
+private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
+if !([_assignedSide] call bn_koth_fnc_teams_validateSide) exitWith {
+    ["ERR_ASSIGNED_SIDE_INVALID", "Player does not have a valid assigned playable side.", _requestedLoadoutId] call _fail
+};
+
+private _authoritativeSideToken = switch (_assignedSide) do {
+    case west: {"WEST"};
+    case east: {"EAST"};
+    case resistance: {"RESISTANCE"};
+    case civilian: {"CIVILIAN"};
+    default {""};
+};
+
+if (_authoritativeSideToken isEqualTo "") exitWith {
+    ["ERR_SIDE_TOKEN_UNMAPPED", "Assigned side does not map to a supported side token.", _requestedLoadoutId] call _fail
+};
+
+if !(_authoritativeBaselineSideToken isEqualTo _authoritativeSideToken) then {
+    _authoritativeBaselineLoadout = [];
+};
+
+if (
+    !(_requestedSideToken isEqualTo "") &&
+    {!(_requestedSideToken isEqualTo _authoritativeSideToken)}
+) exitWith {
+    [
+        "ERR_REQUEST_SIDE_MISMATCH",
+        format [
+            "Requested side '%1' does not match authoritative assigned side '%2'.",
+            _requestedSideToken,
+            _authoritativeSideToken
+        ],
+        _requestedLoadoutId,
+        _authoritativeSideToken
+    ] call _fail
+};
+
+private _definitions = missionNamespace getVariable ["BN_KOTH_loadoutDefinitions", createHashMap];
+if !(_definitions isEqualType createHashMap) then {
+    _definitions = createHashMap;
+};
+
+private _settingsCfg = missionConfigFile >> "CfgBnKothArsenalSettings";
+private _catalogueClass = if (isClass _settingsCfg) then {
+    getText (_settingsCfg >> "catalogueClass")
+} else {
+    "CfgBnKothArsenal"
+};
+if (_catalogueClass isEqualTo "") then {
+    _catalogueClass = "CfgBnKothArsenal";
+};
+
+private _arsenalCfg = missionConfigFile >> _catalogueClass;
+if !(isClass _arsenalCfg) exitWith {
+    ["ERR_CATALOGUE_MISSING", format ["Canonical arsenal config class '%1' is missing.", _catalogueClass], _requestedLoadoutId, _authoritativeSideToken] call _fail
+};
+
+private _compatibilityCfg = _arsenalCfg >> "Equipment" >> "Compatibility";
+
+private _enforceManagedPerks = {
+    params [["_result", createHashMap, [createHashMap]]];
+    if !(_result getOrDefault ["success", false]) exitWith {_result};
+
+    private _loadout = _result getOrDefault ["validatedLoadout", []];
+    private _progressionRegistry = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
+    private _progression = _progressionRegistry getOrDefault [_uid, createHashMap];
+    private _activePerks = if (_progression isEqualType createHashMap) then {
+        _progression getOrDefault ["activePerks", []]
+    } else {
+        []
+    };
+    if !(_activePerks isEqualType []) then {_activePerks = []};
+
+    private _perkRoot = missionConfigFile >> "CfgBnKothPerks" >> "Perks";
+    private _failure = createHashMap;
+
+    if (isClass _perkRoot) then {
+        {
+            private _metadata = [configName _x] call bn_koth_fnc_progression_perks_getConfig;
+            private _perkId = _metadata getOrDefault ["perkId", ""];
+            private _restrictedTraits = _metadata getOrDefault ["restrictedTraits", []];
+            private _restrictedClasses = _metadata getOrDefault ["restrictedClasses", []];
+
+            if (
+                (_metadata getOrDefault ["success", false]) &&
+                {_metadata getOrDefault ["available", false]} &&
+                {!(_perkId in _activePerks)} &&
+                {((count _restrictedTraits) > 0) || {(count _restrictedClasses) > 0}}
+            ) then {
+                private _restrictedItems = [_loadout, _perkId] call bn_koth_fnc_progression_perks_findRestrictedItems;
+                if ((count _restrictedItems) > 0) then {
+                    private _code = _metadata getOrDefault ["restrictionCode", "ERR_PERK_RESTRICTION_INACTIVE"];
+                    private _message = _metadata getOrDefault [
+                        "restrictionMessage",
+                        format ["Activate perk '%1' before applying this managed loadout.", _perkId]
+                    ];
+                    if (_code isEqualTo "") then {_code = "ERR_PERK_RESTRICTION_INACTIVE"};
+                    if (_message isEqualTo "") then {
+                        _message = format ["Activate perk '%1' before applying this managed loadout.", _perkId];
+                    };
+
+                    _failure = [
+                        _code,
+                        _message,
+                        _result getOrDefault ["loadoutId", ""],
+                        _authoritativeSideToken
+                    ] call _fail;
+                };
+            };
+
+            if ((count _failure) > 0) exitWith {};
+        } forEach ("true" configClasses _perkRoot);
+    };
+
+    if ((count _failure) > 0) exitWith {_failure};
+    _result
+};
+
+private _enforceManagedConsumables = {
+    params [["_result", createHashMap, [createHashMap]]];
+    if !(_result getOrDefault ["success", false]) exitWith {_result};
+
+    private _loadout = _result getOrDefault ["validatedLoadout", []];
+    private _failure = createHashMap;
+
+    // Loaded magazines are managed loadout content too. Apply the same
+    // server-owned level/side/perk policy as cargo.
+    {
+        private _weapon = _loadout param [_x, []];
+        if (_weapon isEqualType []) then {
+            {
+                private _magazine = _weapon param [_x, []];
+                private _magazineClass = if (_magazine isEqualType [] && {(count _magazine) > 0}) then {
+                    _magazine param [0, "", [""]]
+                } else {
+                    ""
+                };
+
+                if !(_magazineClass isEqualTo "") then {
+                    private _entitlement = [
+                        _uid,
+                        "Consumables",
+                        _magazineClass
+                    ] call bn_koth_fnc_progression_evaluateItemEntitlement;
+
+                    if !(_entitlement getOrDefault ["entitled", false]) then {
+                        _failure = [
+                            _entitlement getOrDefault ["code", "ERR_CONSUMABLE_ENTITLEMENT"],
+                            _entitlement getOrDefault ["message", "Loaded magazine is not entitled."],
+                            _result getOrDefault ["loadoutId", ""],
+                            _authoritativeSideToken
+                        ] call _fail;
+                    };
+                };
+
+                if ((count _failure) > 0) exitWith {};
+            } forEach [4, 5];
+        };
+
+        if ((count _failure) > 0) exitWith {};
+    } forEach [0, 1, 2];
+
+    if ((count _failure) > 0) exitWith {_failure};
+    _result
+};
+
+private _enforceManagedLoadout = {
+    params [["_result", createHashMap, [createHashMap]]];
+    [[_result] call _enforceManagedPerks] call _enforceManagedConsumables
+};
+
+private _validateWeaponEntitlement = {
+    params ["_validatedWeapon"];
+
+    if !(_validatedWeapon isEqualType createHashMap) exitWith {
+        createHashMapFromArray [
+            ["success", false],
+            ["entitled", false],
+            ["code", "ERR_WEAPON_ENTITLEMENT_INPUT"],
+            ["message", "Validated weapon payload is invalid."]
+        ]
+    };
+
+    if (_validatedWeapon getOrDefault ["clear", false]) exitWith {
+        createHashMapFromArray [
+            ["success", true],
+            ["entitled", true],
+            ["code", "ENTITLED_CLEAR"],
+            ["message", "Empty weapon slot requires no entitlement."]
+        ]
+    };
+
+    private _weaponClass = _validatedWeapon getOrDefault ["weaponClass", ""];
+    if (_weaponClass isEqualTo "") then {
+        _weaponClass = _validatedWeapon getOrDefault ["baseWeaponClass", ""];
+    };
+
+    [_uid, _weaponClass] call bn_koth_fnc_progression_evaluateWeaponEntitlement
+};
+
+private _validateAttachmentEntitlements = {
+    params ["_validatedWeapon"];
+
+    private _failure = createHashMap;
+    private _attachments = _validatedWeapon getOrDefault ["attachments", []];
+    if !(_attachments isEqualType []) exitWith {
+        createHashMapFromArray [
+            ["success", false],
+            ["entitled", false],
+            ["code", "ERR_VALIDATED_ATTACHMENTS_TYPE"],
+            ["message", "Validated attachment payload is invalid."]
+        ]
+    };
+
+    {
+        if ((count _failure) isEqualTo 0) then {
+            private _entitlement = [
+                _uid,
+                _x
+            ] call bn_koth_fnc_progression_evaluateAttachmentEntitlement;
+
+            if !(_entitlement getOrDefault ["entitled", false]) then {
+                _failure = _entitlement;
+            };
+        };
+    } forEach _attachments;
+
+    if ((count _failure) > 0) then {
+        _failure
+    } else {
+        createHashMapFromArray [
+            ["success", true],
+            ["entitled", true],
+            ["code", "ENTITLED_ATTACHMENTS"],
+            ["message", "Attachment minimum-level entitlement satisfied."]
+        ]
+    }
+};
+
+if !(_requestMode isEqualTo "configured") then {
+    if !(isClass _compatibilityCfg) exitWith {
+        ["ERR_COMPATIBILITY_MISSING", "Weapon composition validation requires canonical compatibility config.", _requestedLoadoutId, _authoritativeSideToken] call _fail
+    };
+};
+
+// Only explicit managed weapon changes clean retained spare magazines. Saved
+// kits must still reject incompatible cargo rather than silently repairing it.
+private _removeIncompatibleWeaponCargo = {
+    params ["_loadout"];
+    private _cleaned = +_loadout;
+    private _allowedMagazines = [];
+    {
+        private _slot = _cleaned select _x;
+        if ((_slot isEqualType []) && {(count _slot) >= 7}) then {
+            private _weaponClass = toLower (_slot select 0);
+            {
+                _allowedMagazines pushBackUnique (toLower _x);
+            } forEach getArray (_compatibilityCfg >> "WeaponMagazines" >> _weaponClass >> "values");
+        };
+    } forEach [0, 1, 2];
+
+    {
+        private _container = _cleaned select _x;
+        if ((_container isEqualType []) && {(count _container) >= 2} && {(_container select 1) isEqualType []}) then {
+            private _cargo = (_container select 1) select {
+                private _keep = true;
+                if ((_x isEqualType []) && {(count _x) >= 2} && {(_x select 0) isEqualType ""}) then {
+                    private _class = toLower (_x select 0);
+                    private _magCfg = _compatibilityCfg >> "SourceMagazines" >> _class;
+                    if (isClass _magCfg) then {
+                        private _category = toLower (getText (_magCfg >> "category"));
+                        private _compatibleWeapons = if (isArray (_magCfg >> "compatibleWeapons")) then {
+                            getArray (_magCfg >> "compatibleWeapons")
+                        } else {
+                            []
+                        };
+                        private _standaloneThrowable = ((count _compatibleWeapons) isEqualTo 0) && {
+                            ((_category find "grenade") >= 0) ||
+                            {(_category find "smoke") >= 0} ||
+                            {(_category find "flare") >= 0}
+                        };
+                        _keep = (_class in _allowedMagazines) ||
+                            {_standaloneThrowable};
+                    };
+                };
+                _keep
+            };
+            _container set [1, _cargo];
+            _cleaned set [_x, _container];
+        };
+    } forEach [3, 4, 5];
+    _cleaned
+};
+
+if (_requestMode isEqualTo "primary") exitWith {
+    private _compositionResult = [
+        _primaryRequest,
+        _compatibilityCfg,
+        "PRIMARY",
+        "Primary"
+    ] call bn_koth_fnc_loadouts_validateWeaponComposition;
+
+    if !(_compositionResult getOrDefault ["success", false]) exitWith {
+        [
+            _compositionResult getOrDefault ["code", "ERR_WEAPON_COMPOSITION"],
+            _compositionResult getOrDefault ["message", "Primary weapon composition validation failed."],
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    private _validatedPrimary = _compositionResult getOrDefault [
+        "validatedWeapon",
+        createHashMap
+    ];
+
+    private _entitlement = [_validatedPrimary] call _validateWeaponEntitlement;
+    if !(_entitlement getOrDefault ["entitled", false]) exitWith {
+        [
+            _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"],
+            _entitlement getOrDefault ["message", "Primary weapon is not entitled for this player."],
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    private _attachmentEntitlement = [_validatedPrimary] call _validateAttachmentEntitlements;
+    if !(_attachmentEntitlement getOrDefault ["entitled", false]) exitWith {
+        [
+            _attachmentEntitlement getOrDefault ["code", "ERR_ATTACHMENT_ENTITLEMENT"],
+            _attachmentEntitlement getOrDefault ["message", "Primary attachment is not entitled for this player."],
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    private _validatedWeapons = createHashMapFromArray [
+        ["primary", _validatedPrimary]
+    ];
+
+    private _buildResult = [
+        _assignedSide,
+        _validatedWeapons,
+        _authoritativeBaselineLoadout
+    ] call bn_koth_fnc_loadouts_buildValidatedLoadout;
+
+    if !(_buildResult getOrDefault ["success", false]) exitWith {
+        [
+            _buildResult getOrDefault ["code", "ERR_LOADOUT_BUILD"],
+            _buildResult getOrDefault ["message", "Validated primary weapon could not be built into a complete loadout."],
+            _buildResult getOrDefault ["loadoutId", ""],
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    [createHashMapFromArray [
+        ["success", true],
+        ["code", "OK"],
+        ["message", "Primary composition request validated and built."],
+        ["loadoutId", _buildResult getOrDefault ["loadoutId", ""]],
+        ["sideToken", _authoritativeSideToken],
+        ["validatedLoadout", [_buildResult getOrDefault ["loadout", []]] call _removeIncompatibleWeaponCargo],
+        ["validatedPrimary", _validatedPrimary],
+        ["validatedWeapons", _validatedWeapons],
+        ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
+    ]] call _enforceManagedLoadout
+};
+
+
+if (_requestMode isEqualTo "weapons") exitWith {
+    private _slotKeys = keys _weaponsRequest;
+    private _supportedSlots = ["primary", "launcher", "handgun", "uniform", "vest", "backpack", "headgear", "facewear"];
+    private _unknownSlotIndex = _slotKeys findIf {!(_x in _supportedSlots)};
+
+    if (_unknownSlotIndex >= 0) exitWith {
+        [
+            "ERR_MALFORMED_REQUEST",
+            format ["Weapons request contains unsupported slot '%1'.", _slotKeys select _unknownSlotIndex],
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    if ((count _slotKeys) <= 0) exitWith {
+        [
+            "ERR_MALFORMED_REQUEST",
+            "Weapons request must contain at least one of: primary, launcher, handgun, uniform, vest, backpack, headgear, facewear.",
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    private _validatedWeapons = createHashMap;
+    private _slotFailure = createHashMap;
+
+    private _validateSlot = {
+        params ["_slotName", "_slotToken", "_slotLabel"];
+
+        private _slotRequest = _weaponsRequest getOrDefault [_slotName, objNull];
+        if !(_slotRequest isEqualType createHashMap) exitWith {
+            createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", format ["Weapons.%1 must be a map.", _slotName]]
+            ]
+        };
+
+        [
+            _slotRequest,
+            _compatibilityCfg,
+            _slotToken,
+            _slotLabel
+        ] call bn_koth_fnc_loadouts_validateWeaponComposition
+    };
+
+    private _validateOptionalSlot = {
+        params ["_slotName", "_slotToken", "_slotLabel"];
+
+        private _slotRequest = _weaponsRequest getOrDefault [_slotName, objNull];
+        if !(_slotRequest isEqualType createHashMap) exitWith {
+            createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", format ["Weapons.%1 must be a map.", _slotName]]
+            ]
+        };
+
+        private _weaponClassRaw = _slotRequest getOrDefault ["weaponClass", ""];
+        if !(_weaponClassRaw isEqualType "") exitWith {
+            createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", format ["%1 weaponClass must be a string.", _slotLabel]]
+            ]
+        };
+
+        if ((toLower _weaponClassRaw) isEqualTo "") exitWith {
+            private _magazines = _slotRequest getOrDefault ["magazines", []];
+            private _attachments = _slotRequest getOrDefault ["attachments", []];
+
+            if !((_magazines isEqualType []) && {_attachments isEqualType []}) exitWith {
+                createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", format ["%1 clear intent requires magazines/attachments arrays.", _slotLabel]]
+                ]
+            };
+
+            if ((count _magazines) > 0 || {(count _attachments) > 0}) exitWith {
+                createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", format ["%1 clear intent must not provide magazines or attachments.", _slotLabel]]
+                ]
+            };
+
+            createHashMapFromArray [
+                ["success", true],
+                ["code", "OK"],
+                ["message", format ["%1 clear intent validated.", _slotLabel]],
+                ["validatedWeapon", createHashMapFromArray [["clear", true]]]
+            ]
+        };
+
+        private _slotResult = [_slotName, _slotToken, _slotLabel] call _validateSlot;
+        if !(_slotResult getOrDefault ["success", false]) exitWith {_slotResult};
+
+        private _validatedWeapon = _slotResult getOrDefault ["validatedWeapon", createHashMap];
+        private _entitlement = [_validatedWeapon] call _validateWeaponEntitlement;
+        if !(_entitlement getOrDefault ["entitled", false]) exitWith {
+            createHashMapFromArray [
+                ["success", false],
+                ["code", _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"]],
+                ["message", _entitlement getOrDefault ["message", format ["%1 is not entitled for this player.", _slotLabel]]]
+            ]
+        };
+
+        private _attachmentEntitlement = [_validatedWeapon] call _validateAttachmentEntitlements;
+        if !(_attachmentEntitlement getOrDefault ["entitled", false]) exitWith {_attachmentEntitlement};
+
+        createHashMapFromArray [
+            ["success", true],
+            ["validatedWeapon", _validatedWeapon]
+        ]
+    };
+
+    if ("primary" in _slotKeys) then {
+        private _primaryResult = ["primary", "PRIMARY", "Primary"] call _validateSlot;
+        if (_primaryResult getOrDefault ["success", false]) then {
+            private _validatedPrimary = _primaryResult getOrDefault ["validatedWeapon", createHashMap];
+            private _entitlement = [_validatedPrimary] call _validateWeaponEntitlement;
+
+            if (_entitlement getOrDefault ["entitled", false]) then {
+                private _attachmentEntitlement = [_validatedPrimary] call _validateAttachmentEntitlements;
+                if (_attachmentEntitlement getOrDefault ["entitled", false]) then {
+                    _validatedWeapons set ["primary", _validatedPrimary];
+                } else {
+                    _slotFailure = _attachmentEntitlement;
+                };
+            } else {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"]],
+                    ["message", _entitlement getOrDefault ["message", "Primary weapon is not entitled for this player."]]
+                ];
+            };
+        } else {
+            _slotFailure = _primaryResult;
+        };
+    };
+
+    {
+        _x params ["_slotName", "_slotToken", "_slotLabel"];
+        if (((count _slotFailure) isEqualTo 0) && {_slotName in _slotKeys}) then {
+            private _slotResult = [_slotName, _slotToken, _slotLabel] call _validateOptionalSlot;
+            if (_slotResult getOrDefault ["success", false]) then {
+                _validatedWeapons set [_slotName, _slotResult getOrDefault ["validatedWeapon", createHashMap]];
+            } else {
+                _slotFailure = _slotResult;
+            };
+        };
+    } forEach [
+        ["launcher", "LAUNCHER", "Launcher"],
+        ["handgun", "HANDGUN", "Handgun"]
+    ];
+
+    if (((count _slotFailure) isEqualTo 0) && {"uniform" in _slotKeys}) then {
+        private _uniformRequest = _weaponsRequest getOrDefault ["uniform", objNull];
+        if !(_uniformRequest isEqualType createHashMap) then {
+            _slotFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", "Weapons.uniform must be a map."]
+            ];
+        } else {
+            private _uniformClassRaw = _uniformRequest getOrDefault ["uniformClass", ""];
+
+            if !(_uniformClassRaw isEqualType "") then {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", "Uniform uniformClass must be a string."]
+                ];
+            } else {
+                private _uniformClass = toLower _uniformClassRaw;
+
+                if (_uniformClass isEqualTo "") then {
+                    _slotFailure = createHashMapFromArray [
+                        ["success", false],
+                        ["code", "ERR_MALFORMED_REQUEST"],
+                        ["message", "Uniform uniformClass must be non-empty."]
+                    ];
+                } else {
+                    if !((_uniformClass find "vn_") isEqualTo 0) then {
+                        _slotFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_UNIFORM_NOT_CANONICAL"],
+                            ["message", format ["Uniform '%1' is not a canonical S.O.G. uniform class.", _uniformClass]]
+                        ];
+                    } else {
+                        private _uniformCfg = configFile >> "CfgWeapons" >> _uniformClass;
+
+                        if !(isClass _uniformCfg) then {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", "ERR_UNIFORM_CONFIG_MISSING"],
+                                ["message", format ["Uniform '%1' is missing from CfgWeapons.", _uniformClass]]
+                            ];
+                        } else {
+                            if ((getNumber (_uniformCfg >> "scope")) < 2) then {
+                                _slotFailure = createHashMapFromArray [
+                                    ["success", false],
+                                    ["code", "ERR_UNIFORM_NOT_PUBLIC"],
+                                    ["message", format ["Uniform '%1' is not publicly available.", _uniformClass]]
+                                ];
+                            } else {
+                                private _uniformItemInfoCfg = _uniformCfg >> "ItemInfo";
+
+                                if !(isClass _uniformItemInfoCfg) then {
+                                    _slotFailure = createHashMapFromArray [
+                                        ["success", false],
+                                        ["code", "ERR_UNIFORM_ITEMINFO_MISSING"],
+                                        ["message", format ["Uniform '%1' is missing ItemInfo metadata.", _uniformClass]]
+                                    ];
+                                } else {
+                                    if !((getNumber (_uniformItemInfoCfg >> "type")) isEqualTo 801) then {
+                                        _slotFailure = createHashMapFromArray [
+                                            ["success", false],
+                                            ["code", "ERR_UNIFORM_ITEMINFO_INVALID"],
+                                            ["message", format ["Class '%1' is not a uniform item.", _uniformClass]]
+                                        ];
+                                    } else {
+                                        private _uniformEntitlement = [
+                                            _uid,
+                                            "Wearables",
+                                            _uniformClass,
+                                            true
+                                        ] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        if !(_uniformEntitlement getOrDefault ["entitled", false]) then {
+                                            _slotFailure = createHashMapFromArray [
+                                                ["success", false],
+                                                ["code", _uniformEntitlement getOrDefault ["code", "ERR_WEARABLE_ENTITLEMENT"]],
+                                                ["message", _uniformEntitlement getOrDefault ["message", "Uniform is not entitled for this player."]]
+                                            ];
+                                        } else {
+                                            _validatedWeapons set [
+                                                "uniform",
+                                                createHashMapFromArray [["uniformClass", _uniformClass]]
+                                            ];
+                                        };
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+
+    if (((count _slotFailure) isEqualTo 0) && {"vest" in _slotKeys}) then {
+        private _vestRequest = _weaponsRequest getOrDefault ["vest", objNull];
+        if !(_vestRequest isEqualType createHashMap) then {
+            _slotFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", "Weapons.vest must be a map."]
+            ];
+        } else {
+            private _vestClassRaw = _vestRequest getOrDefault ["vestClass", ""];
+
+            if !(_vestClassRaw isEqualType "") then {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", "Vest vestClass must be a string."]
+                ];
+            } else {
+                private _vestClass = toLower _vestClassRaw;
+
+                if (_vestClass isEqualTo "") then {
+                    _slotFailure = createHashMapFromArray [
+                        ["success", false],
+                        ["code", "ERR_MALFORMED_REQUEST"],
+                        ["message", "Vest vestClass must be non-empty."]
+                    ];
+                } else {
+                    if !((_vestClass find "vn_") isEqualTo 0) then {
+                        _slotFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_VEST_NOT_CANONICAL"],
+                            ["message", format ["Vest '%1' is not a canonical S.O.G. vest class.", _vestClass]]
+                        ];
+                    } else {
+                        private _vestCfg = configFile >> "CfgWeapons" >> _vestClass;
+
+                        if !(isClass _vestCfg) then {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", "ERR_VEST_CONFIG_MISSING"],
+                                ["message", format ["Vest '%1' is missing from CfgWeapons.", _vestClass]]
+                            ];
+                        } else {
+                            if ((getNumber (_vestCfg >> "scope")) < 2) then {
+                                _slotFailure = createHashMapFromArray [
+                                    ["success", false],
+                                    ["code", "ERR_VEST_NOT_PUBLIC"],
+                                    ["message", format ["Vest '%1' is not publicly available.", _vestClass]]
+                                ];
+                            } else {
+                                private _vestItemInfoCfg = _vestCfg >> "ItemInfo";
+
+                                if !(isClass _vestItemInfoCfg) then {
+                                    _slotFailure = createHashMapFromArray [
+                                        ["success", false],
+                                        ["code", "ERR_VEST_ITEMINFO_MISSING"],
+                                        ["message", format ["Vest '%1' is missing ItemInfo metadata.", _vestClass]]
+                                    ];
+                                } else {
+                                    // 701 is the factual Arma 3 ItemInfo type for vests.
+                                    if !((getNumber (_vestItemInfoCfg >> "type")) isEqualTo 701) then {
+                                        _slotFailure = createHashMapFromArray [
+                                            ["success", false],
+                                            ["code", "ERR_VEST_ITEMINFO_INVALID"],
+                                            ["message", format ["Class '%1' is not a vest item.", _vestClass]]
+                                        ];
+                                    } else {
+                                        private _entitlement = [_uid,"Wearables",_vestClass,true] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        if !(_entitlement getOrDefault ["entitled",false]) then {
+                                            _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Vest is not entitled for this player."]]];
+                                        } else {
+                                            _validatedWeapons set ["vest",createHashMapFromArray [["vestClass",_vestClass]]];
+                                        };
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+
+    if (((count _slotFailure) isEqualTo 0) && {"backpack" in _slotKeys}) then {
+        private _backpackRequest = _weaponsRequest getOrDefault ["backpack", objNull];
+        if !(_backpackRequest isEqualType createHashMap) then {
+            _slotFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", "Weapons.backpack must be a map."]
+            ];
+        } else {
+            private _backpackClassRaw = _backpackRequest getOrDefault ["backpackClass", "UNSET"];
+
+            if !(_backpackClassRaw isEqualType "") then {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", "Backpack backpackClass must be a string."]
+                ];
+            } else {
+                private _backpackClass = toLower _backpackClassRaw;
+
+                if (_backpackClass isEqualTo "") then {
+                    // Explicit NONE intent: clear the backpack slot.
+                    _validatedWeapons set ["backpack", createHashMapFromArray [["clear", true]]];
+                } else {
+                    if !((_backpackClass find "vn_") isEqualTo 0) then {
+                        _slotFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_BACKPACK_NOT_CANONICAL"],
+                            ["message", format ["Backpack '%1' is not a canonical S.O.G. backpack class.", _backpackClass]]
+                        ];
+                    } else {
+                        // Factual Arma 3 engine rule: backpacks inherit from Bag_Base in CfgVehicles.
+                        if !(_backpackClass isKindOf ["Bag_Base", configFile >> "CfgVehicles"]) then {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", "ERR_BACKPACK_NOT_A_BAG"],
+                                ["message", format ["Class '%1' is not a backpack (does not inherit Bag_Base).", _backpackClass]]
+                            ];
+                        } else {
+                            private _backpackCfg = configFile >> "CfgVehicles" >> _backpackClass;
+
+                            if !(isClass _backpackCfg) then {
+                                _slotFailure = createHashMapFromArray [
+                                    ["success", false],
+                                    ["code", "ERR_BACKPACK_CONFIG_MISSING"],
+                                    ["message", format ["Backpack '%1' is missing from CfgVehicles.", _backpackClass]]
+                                ];
+                            } else {
+                                if ((getNumber (_backpackCfg >> "scope")) < 2) then {
+                                    _slotFailure = createHashMapFromArray [
+                                        ["success", false],
+                                        ["code", "ERR_BACKPACK_NOT_PUBLIC"],
+                                        ["message", format ["Backpack '%1' is not publicly available.", _backpackClass]]
+                                    ];
+                                } else {
+                                    private _backpackEntitlement = [
+                                        _uid,
+                                        "Wearables",
+                                        _backpackClass,
+                                        true
+                                    ] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                    if !(_backpackEntitlement getOrDefault ["entitled", false]) then {
+                                        _slotFailure = createHashMapFromArray [
+                                            ["success", false],
+                                            ["code", _backpackEntitlement getOrDefault ["code", "ERR_WEARABLE_ENTITLEMENT"]],
+                                            ["message", _backpackEntitlement getOrDefault ["message", "Backpack is not entitled for this player."]]
+                                        ];
+                                    } else {
+                                        _validatedWeapons set [
+                                            "backpack",
+                                            createHashMapFromArray [["backpackClass", _backpackClass]]
+                                        ];
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+
+    if (((count _slotFailure) isEqualTo 0) && {"headgear" in _slotKeys}) then {
+        private _headgearRequest = _weaponsRequest getOrDefault ["headgear", objNull];
+        if !(_headgearRequest isEqualType createHashMap) then {
+            _slotFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", "Weapons.headgear must be a map."]
+            ];
+        } else {
+            private _headgearClassRaw = _headgearRequest getOrDefault ["headgearClass", "UNSET"];
+
+            if !(_headgearClassRaw isEqualType "") then {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", "Headgear headgearClass must be a string."]
+                ];
+            } else {
+                private _headgearClass = toLower _headgearClassRaw;
+
+                if (_headgearClass isEqualTo "") then {
+                    // Explicit NONE intent: clear the headgear slot.
+                    _validatedWeapons set ["headgear", createHashMapFromArray [["clear", true]]];
+                } else {
+                    if !((_headgearClass find "vn_") isEqualTo 0) then {
+                        _slotFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_HEADGEAR_NOT_CANONICAL"],
+                            ["message", format ["Headgear '%1' is not a canonical S.O.G. headgear class.", _headgearClass]]
+                        ];
+                    } else {
+                        private _headgearCfg = configFile >> "CfgWeapons" >> _headgearClass;
+
+                        if !(isClass _headgearCfg) then {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", "ERR_HEADGEAR_CONFIG_MISSING"],
+                                ["message", format ["Headgear '%1' is missing from CfgWeapons.", _headgearClass]]
+                            ];
+                        } else {
+                            if ((getNumber (_headgearCfg >> "scope")) < 2) then {
+                                _slotFailure = createHashMapFromArray [
+                                    ["success", false],
+                                    ["code", "ERR_HEADGEAR_NOT_PUBLIC"],
+                                    ["message", format ["Headgear '%1' is not publicly available.", _headgearClass]]
+                                ];
+                            } else {
+                                private _headgearItemInfoCfg = _headgearCfg >> "ItemInfo";
+
+                                if !(isClass _headgearItemInfoCfg) then {
+                                    _slotFailure = createHashMapFromArray [
+                                        ["success", false],
+                                        ["code", "ERR_HEADGEAR_ITEMINFO_MISSING"],
+                                        ["message", format ["Headgear '%1' is missing ItemInfo metadata.", _headgearClass]]
+                                    ];
+                                } else {
+                                    // 605 is the factual Arma 3 ItemInfo type for headgear (uniform=801, vest=701).
+                                    if !((getNumber (_headgearItemInfoCfg >> "type")) isEqualTo 605) then {
+                                        _slotFailure = createHashMapFromArray [
+                                            ["success", false],
+                                            ["code", "ERR_HEADGEAR_ITEMINFO_INVALID"],
+                                            ["message", format ["Class '%1' is not a headgear item.", _headgearClass]]
+                                        ];
+                                    } else {
+                                        private _entitlement = [_uid,"Wearables",_headgearClass,true] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                        if !(_entitlement getOrDefault ["entitled",false]) then {
+                                            _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Headgear is not entitled for this player."]]];
+                                        } else {
+                                            _validatedWeapons set ["headgear",createHashMapFromArray [["headgearClass",_headgearClass]]];
+                                        };
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+
+    if (((count _slotFailure) isEqualTo 0) && {"facewear" in _slotKeys}) then {
+        private _facewearRequest = _weaponsRequest getOrDefault ["facewear", objNull];
+        if !(_facewearRequest isEqualType createHashMap) then {
+            _slotFailure = createHashMapFromArray [
+                ["success", false],
+                ["code", "ERR_MALFORMED_REQUEST"],
+                ["message", "Weapons.facewear must be a map."]
+            ];
+        } else {
+            private _facewearClassRaw = _facewearRequest getOrDefault ["facewearClass", "UNSET"];
+
+            if !(_facewearClassRaw isEqualType "") then {
+                _slotFailure = createHashMapFromArray [
+                    ["success", false],
+                    ["code", "ERR_MALFORMED_REQUEST"],
+                    ["message", "Facewear facewearClass must be a string."]
+                ];
+            } else {
+                private _facewearClass = toLower _facewearClassRaw;
+
+                if (_facewearClass isEqualTo "") then {
+                    // Explicit NONE intent: clear the facewear slot.
+                    _validatedWeapons set ["facewear", createHashMapFromArray [["clear", true]]];
+                } else {
+                    if !((_facewearClass find "vn_") isEqualTo 0) then {
+                        _slotFailure = createHashMapFromArray [
+                            ["success", false],
+                            ["code", "ERR_FACEWEAR_NOT_CANONICAL"],
+                            ["message", format ["Facewear '%1' is not a canonical S.O.G. facewear class.", _facewearClass]]
+                        ];
+                    } else {
+                        // Facewear/goggles in Arma 3 are defined in CfgGlasses.
+                        private _facewearCfg = configFile >> "CfgGlasses" >> _facewearClass;
+
+                        if !(isClass _facewearCfg) then {
+                            _slotFailure = createHashMapFromArray [
+                                ["success", false],
+                                ["code", "ERR_FACEWEAR_CONFIG_MISSING"],
+                                ["message", format ["Facewear '%1' is missing from CfgGlasses.", _facewearClass]]
+                            ];
+                        } else {
+                            if ((getNumber (_facewearCfg >> "scope")) < 2) then {
+                                _slotFailure = createHashMapFromArray [
+                                    ["success", false],
+                                    ["code", "ERR_FACEWEAR_NOT_PUBLIC"],
+                                    ["message", format ["Facewear '%1' is not publicly available.", _facewearClass]]
+                                ];
+                            } else {
+                                private _entitlement = [_uid,"Wearables",_facewearClass,false] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                if !(_entitlement getOrDefault ["entitled",false]) then {
+                                    _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Facewear is not entitled for this player."]]];
+                                } else {
+                                    _validatedWeapons set ["facewear",createHashMapFromArray [["facewearClass",_facewearClass]]];
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+
+    if ((count _slotFailure) > 0) exitWith {
+        [
+            _slotFailure getOrDefault ["code", "ERR_WEAPON_COMPOSITION"],
+            _slotFailure getOrDefault ["message", "Weapon composition validation failed."],
+            _requestedLoadoutId,
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    private _buildResult = [
+        _assignedSide,
+        _validatedWeapons,
+        _authoritativeBaselineLoadout
+    ] call bn_koth_fnc_loadouts_buildValidatedLoadout;
+
+    if !(_buildResult getOrDefault ["success", false]) exitWith {
+        [
+            _buildResult getOrDefault ["code", "ERR_LOADOUT_BUILD"],
+            _buildResult getOrDefault ["message", "Validated weapon composition could not be built into a complete loadout."],
+            _buildResult getOrDefault ["loadoutId", ""],
+            _authoritativeSideToken
+        ] call _fail
+    };
+
+    private _loadout = _buildResult getOrDefault ["loadout", []];
+    if ((["primary", "launcher", "handgun"] findIf {_x in _slotKeys}) >= 0) then {
+        _loadout = [_loadout] call _removeIncompatibleWeaponCargo;
+    };
+
+    [createHashMapFromArray [
+        ["success", true],
+        ["code", "OK"],
+        ["message", "Weapon composition request validated and built."],
+        ["loadoutId", _buildResult getOrDefault ["loadoutId", ""]],
+        ["sideToken", _authoritativeSideToken],
+        ["validatedLoadout", _loadout],
+        ["validatedPrimary", _validatedWeapons getOrDefault ["primary", createHashMap]],
+        ["validatedWeapons", _validatedWeapons],
+        ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
+    ]] call _enforceManagedLoadout
+};
+
+if (_requestMode isEqualTo "mutation") exitWith {
+    [[
+        _player,
+        _mutationRequest,
+        _compatibilityCfg,
+        _arsenalCfg,
+        _assignedSide,
+        _authoritativeSideToken,
+        _authoritativeBaselineLoadout
+    ] call bn_koth_fnc_loadouts_validateMutation] call _enforceManagedLoadout
+};
+
+private _definition = _definitions getOrDefault [_requestedLoadoutId, objNull];
+if !(_definition isEqualType createHashMap) exitWith {
+    ["ERR_UNKNOWN_LOADOUT", format ["Loadout '%1' is not configured in canonical catalogue.", _requestedLoadoutId], _requestedLoadoutId, _authoritativeSideToken] call _fail
+};
+
+private _loadoutSideToken = _definition getOrDefault ["sideToken", ""];
+if !(_loadoutSideToken isEqualTo _authoritativeSideToken) exitWith {
+    ["ERR_SIDE_RESTRICTED", format ["Loadout '%1' is restricted to side '%2'.", _requestedLoadoutId, _loadoutSideToken], _requestedLoadoutId, _authoritativeSideToken] call _fail
+};
+
+private _itemsCfg = _arsenalCfg >> "Equipment" >> "Items";
+private _unitClass = _definition getOrDefault ["unitClass", ""];
+
+if !(_unitClass isEqualTo "") then {
+    if !(isClass (_itemsCfg >> _unitClass)) exitWith {
+        ["ERR_CATALOGUE_ITEM_MISSING", format ["Template unit class '%1' is not present in canonical equipment items.", _unitClass], _requestedLoadoutId, _authoritativeSideToken] call _fail
+    };
+
+    private _allowedSides = getArray ((_itemsCfg >> _unitClass) >> "allowedSides");
+    if ((count _allowedSides) > 0 && {!(_authoritativeSideToken in _allowedSides)}) exitWith {
+        ["ERR_ITEM_SIDE_RESTRICTED", format ["Template unit class '%1' is not allowed for side '%2'.", _unitClass, _authoritativeSideToken], _requestedLoadoutId, _authoritativeSideToken] call _fail
+    };
+};
+
+private _validatedLoadout = _definition getOrDefault ["loadout", []];
+if !(_validatedLoadout isEqualType []) then {
+    _validatedLoadout = [];
+};
+
+if ((count _validatedLoadout) <= 0) exitWith {
+    ["ERR_LOADOUT_EMPTY", format ["Loadout '%1' resolved empty.", _requestedLoadoutId], _requestedLoadoutId, _authoritativeSideToken] call _fail
+};
+
+// Deliberate future boundary:
+// progression entitlement will be checked here via an explicit registered
+// progression API function owned by functions/progression when implemented.
+
+[createHashMapFromArray [
+    ["success", true],
+    ["code", "OK"],
+    ["message", "Loadout request validated."],
+    ["loadoutId", _requestedLoadoutId],
+    ["sideToken", _authoritativeSideToken],
+    ["validatedLoadout", _validatedLoadout],
+    ["validatedPrimary", createHashMap],
+    ["validatedWeapons", createHashMap],
+    ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
+]] call _enforceManagedLoadout

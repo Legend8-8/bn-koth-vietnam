@@ -1,0 +1,34 @@
+class CfgBnKothCombat
+{
+    // Dedicated-server attribution probe. Disabled in normal play. It records
+    // bounded, server-local projectile/damage correlation diagnostics only;
+    // it never awards progression or changes combat results.
+    attributionDiagnostics = 0;
+    attributionLethalWindowSeconds = 2;
+    attributionMaxHitsPerVictim = 16;
+
+    // Server-owned assist attribution. Reward values are configured in
+    // CfgBnKothScoring; disabling or zero-valued rewards changes no balance.
+    assistsEnabled = 1;
+    assistWindowSeconds = 15;
+    assistMinimumDamage = 0.20;
+    assistMaxContributorsPerVictim = 8;
+    attributionInfantryMagazineCategories[] = {
+        "pistol_mag", "smg_mag", "rifle_mag", "lmg_mag", "shotgun_mag"
+    };
+
+    // "killfeed" = full detail, shown to everyone: "Killer [Weapon] Victim ~120m"
+    // "deathfeed" = hardcore: only the victim's own team is notified
+    //               ("Victim is down"). Killer identity, weapon, and range
+    //               are never sent to any client - forces a manual kill
+    //               check rather than relying on the feed.
+    mode = "killfeed";
+
+    // Per kill-method gate. 0 = no feed entry generated for that kill at
+    // all, for anyone, in either mode - not filtered client-side, never
+    // broadcast in the first place.
+    showDirectKills = 1;    // infantry: rifles, launchers, grenades, melee
+    showVehicleKills = 1;   // vehicle-mounted weapons (tank/car/boat/static)
+    showCasKills = 1;       // aircraft-delivered kills
+    showArtilleryKills = 1; // indirect fire: mortars/artillery
+};

@@ -1,0 +1,262 @@
+#include "idcs.hpp"
+
+#define BN_KOTH_HUD_W (safeZoneW * 0.19)
+#define BN_KOTH_HUD_H (safeZoneH * 0.12)
+
+#define BN_KOTH_HUD_X (safeZoneX + safeZoneW - BN_KOTH_HUD_W - safeZoneW * 0.012)
+#define BN_KOTH_HUD_Y (safeZoneY + safeZoneH - BN_KOTH_HUD_H - safeZoneH * 0.025)
+
+#define BN_KOTH_SAFE_ZONE_BANNER_W (safeZoneW * 0.50)
+#define BN_KOTH_SAFE_ZONE_BANNER_X (safeZoneX + safeZoneW * 0.25)
+#define BN_KOTH_SAFE_ZONE_BANNER_Y (safeZoneY + safeZoneH * 0.04)
+#define BN_KOTH_AIR_INSERTION_BANNER_W (safeZoneW * 0.40)
+#define BN_KOTH_AIR_INSERTION_BANNER_X (safeZoneX + safeZoneW * 0.30)
+#define BN_KOTH_AIR_INSERTION_BANNER_Y (safeZoneY + safeZoneH * 0.115)
+
+class BN_KOTH_RscHud
+{
+    idd = -1;
+    duration = 1e10;
+    fadeIn = 0;
+    fadeOut = 0;
+    movingEnable = 0;
+    enableSimulation = 1;
+
+    onLoad = "uiNamespace setVariable ['BN_KOTH_hudDisplay', _this select 0]; uiNamespace setVariable ['BN_KOTH_hudStaticKey', []]; uiNamespace setVariable ['BN_KOTH_hudSafeZonePreviousProtected', false]; uiNamespace setVariable ['BN_KOTH_hudSafeZoneExitUntil', -1]; [] call bn_koth_fnc_ui_refreshHud;";
+    onUnload = "uiNamespace setVariable ['BN_KOTH_hudDisplay', displayNull]; uiNamespace setVariable ['BN_KOTH_hudSafeZonePreviousProtected', false]; uiNamespace setVariable ['BN_KOTH_hudSafeZoneExitUntil', -1];";
+
+    class controls
+    {
+        class AirInsertion: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_AIR_INSERTION;
+            text = "";
+            style = 18;
+            font = "PuristaSemiBold";
+            x = BN_KOTH_AIR_INSERTION_BANNER_X;
+            y = BN_KOTH_AIR_INSERTION_BANNER_Y;
+            w = BN_KOTH_AIR_INSERTION_BANNER_W;
+            h = safeZoneH * 0.070;
+            sizeEx = "0.017 * safeZoneH";
+            colorText[] = {0.88, 0.86, 0.80, 1};
+            colorBackground[] = {0.03, 0.03, 0.03, 0.82};
+        };
+
+        class HudBackground: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_BACKGROUND;
+            text = "";
+            x = BN_KOTH_HUD_X;
+            y = BN_KOTH_HUD_Y;
+            w = BN_KOTH_HUD_W;
+            h = BN_KOTH_HUD_H;
+            colorBackground[] = {0.03, 0.03, 0.03, 0.72};
+        };
+
+        class WestScore: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_WEST_SCORE;
+            text = "WEST 0";
+            style = 0;
+            font = "EtelkaMonospaceProBold";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.06;
+            w = BN_KOTH_HUD_W * 0.30;
+            h = BN_KOTH_HUD_H * 0.28;
+            sizeEx = "0.015 * safeZoneH";
+            colorText[] = {0.45, 0.77, 1, 1};
+            colorBackground[] = {0, 0, 0, 0};
+        };
+
+        class HudStatus: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_STATUS;
+            text = "NEUTRAL";
+            style = 2;
+            font = "PuristaSemiBold";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.30;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.06;
+            w = BN_KOTH_HUD_W * 0.40;
+            h = BN_KOTH_HUD_H * 0.28;
+            sizeEx = "0.014 * safeZoneH";
+            colorText[] = {0.88, 0.86, 0.80, 0.95};
+            colorBackground[] = {0, 0, 0, 0};
+        };
+
+        class EastScore: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_EAST_SCORE;
+            text = "0 EAST";
+            style = 1;
+            font = "EtelkaMonospaceProBold";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.65;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.06;
+            w = BN_KOTH_HUD_W * 0.30;
+            h = BN_KOTH_HUD_H * 0.28;
+            sizeEx = "0.015 * safeZoneH";
+            colorText[] = {1, 0.48, 0.48, 1};
+            colorBackground[] = {0, 0, 0, 0};
+        };
+
+        class HudRoundLead: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_ROUND_LEAD;
+            text = "ROUND: TIED";
+            style = 2;
+            font = "PuristaSemiBold";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.25;
+            w = BN_KOTH_HUD_W * 0.90;
+            h = BN_KOTH_HUD_H * 0.14;
+            sizeEx = "0.011 * safeZoneH";
+            colorText[] = {0.88, 0.86, 0.80, 0.95};
+            colorBackground[] = {0, 0, 0, 0};
+        };
+
+        class HudWeightedPlayerCountWest: BN_KOTH_RscStructuredText
+        {
+            idc = BN_KOTH_IDC_HUD_WEIGHTED_PLAYER_COUNT_WEST;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.30;
+            w = BN_KOTH_HUD_W * 0.40;
+            h = BN_KOTH_HUD_H * 0.28;
+            size = "0.02 * safeZoneH";
+            colorBackground[] = {0, 0, 0, 0};
+        };
+
+        class HudWeightedPlayerCountEast: BN_KOTH_RscStructuredText
+        {
+            idc = BN_KOTH_IDC_HUD_WEIGHTED_PLAYER_COUNT_EAST;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.56;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.30;
+            w = BN_KOTH_HUD_W * 0.40;
+            h = BN_KOTH_HUD_H * 0.28;
+            size = "0.02 * safeZoneH";
+            colorBackground[] = {0, 0, 0, 0};
+        };
+
+        class HudRankIcon: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_HUD_RANK_ICON;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.68;
+            w = BN_KOTH_HUD_H * 0.18;
+            h = BN_KOTH_HUD_H * 0.18;
+            colorText[] = {1, 1, 1, 1};
+        };
+
+        class HudEarplugs: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_HUD_EARPLUGS;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.80;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.67;
+            w = BN_KOTH_HUD_H * 0.16;
+            h = BN_KOTH_HUD_H * 0.16;
+            colorText[] = {0.85, 0.40, 0.00, 1.00};
+        };
+
+        class HudSpotted: BN_KOTH_RscPicture
+        {
+            idc = BN_KOTH_IDC_HUD_SPOTTED;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.12;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.67;
+            w = BN_KOTH_HUD_H * 0.16;
+            h = BN_KOTH_HUD_H * 0.16;
+            colorText[] = {0.90, 0.00, 0.00, 1.00};
+        };
+
+        class HudPlayerProgress: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_PLAYER_PROGRESS;
+            text = "LEVEL --   XP SYNCING   CASH --";
+            style = 2;
+            font = "PuristaSemiBold";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.18;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.70;
+            w = BN_KOTH_HUD_W * 0.64;
+            h = BN_KOTH_HUD_H * 0.08;
+            sizeEx = "0.011 * safeZoneH";
+            colorText[] = {0.88, 0.86, 0.80, 0.95};
+            colorBackground[] = {0, 0, 0, 0};
+        };
+
+        class HudProgressBg: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_PROGRESS_BG;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.88;
+            w = BN_KOTH_HUD_W * 0.90;
+            h = BN_KOTH_HUD_H * 0.10;
+            colorBackground[] = {0.08, 0.08, 0.08, 0.92};
+        };
+
+        class HudProgressFill: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_PROGRESS_FILL;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.05;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.88;
+            w = 0;
+            h = BN_KOTH_HUD_H * 0.10;
+            colorBackground[] = {0.45, 0.77, 1, 0.95};
+        };
+
+        class HudXpProgressBg: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_XP_PROGRESS_BG;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.22;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.80;
+            w = BN_KOTH_HUD_W * 0.56;
+            h = BN_KOTH_HUD_H * 0.04;
+            colorBackground[] = {0.08, 0.08, 0.08, 0.92};
+        };
+
+        class HudXpProgressFill: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_XP_PROGRESS_FILL;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.22;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.80;
+            w = 0;
+            h = BN_KOTH_HUD_H * 0.04;
+            colorBackground[] = {0.76, 0.58, 0.20, 1};
+        };
+
+        class HudSafeZone: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_SAFE_ZONE;
+            text = "";
+            style = 2;
+            font = "PuristaSemiBold";
+            x = BN_KOTH_SAFE_ZONE_BANNER_X;
+            y = BN_KOTH_SAFE_ZONE_BANNER_Y;
+            w = BN_KOTH_SAFE_ZONE_BANNER_W;
+            h = safeZoneH * 0.055;
+            sizeEx = "0.03 * safeZoneH";
+            colorText[] = {0.10, 1, 0.20, 1};
+            colorBackground[] = {0.02, 0.02, 0.02, 0.82};
+        };
+
+        class HudEnemySafeZone: BN_KOTH_RscText
+        {
+            idc = BN_KOTH_IDC_HUD_ENEMY_SAFE_ZONE;
+            text = "";
+            style = 2;
+            font = "PuristaSemiBold";
+            x = BN_KOTH_SAFE_ZONE_BANNER_X;
+            y = BN_KOTH_SAFE_ZONE_BANNER_Y;
+            w = BN_KOTH_SAFE_ZONE_BANNER_W;
+            h = safeZoneH * 0.055;
+            sizeEx = "0.03 * safeZoneH";
+            colorText[] = {1, 0.10, 0.10, 1};
+            colorBackground[] = {0.02, 0.02, 0.02, 0.82};
+        };
+    };
+};

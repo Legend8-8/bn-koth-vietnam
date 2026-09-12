@@ -1,1 +1,391 @@
-// Placeholder: validate and process client loadout requests on server.
+/*
+    File: fn_request.sqf
+    Author: Legend
+    Description: Accepts client loadout intent, resolves the authoritative caller, validates it on the server, and returns only the validated payload to that player's machine.
+    Execution: Client/Server
+    Parameters:
+        0: Loadout request <HASHMAP|ARRAY>
+    Returns:
+        None
+    Public: Yes
+*/
+
+params [
+    ["_request", createHashMap, [createHashMap, []]]
+];
+
+// Client entry point: send intent only. Never send a player object or side as authority.
+if (hasInterface && {!isServer}) exitWith {
+    if (_request isEqualType createHashMap) then {
+        _request set ["arsenalBoardNetId", uiNamespace getVariable ["BN_KOTH_menuArsenalBoardNetId", ""]];
+        if (!((_request getOrDefault ["savedKitOperation", ""]) isEqualTo "")
+            && {!(uiNamespace getVariable ["BN_KOTH_savedKitsServerSynced", false])}) then {
+            _request set ["legacySavedKits", profileNamespace getVariable ["BN_KOTH_savedKits_v2", []]];
+            _request set ["legacyPreferredSavedKitId", profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""]];
+        };
+    };
+    [_request] remoteExecCall ["bn_koth_fnc_loadouts_request", 2];
+};
+
+// Hosted-server player entry point: force the same remote-exec path so
+// remoteExecutedOwner is authoritative exactly as it will be on dedicated.
+if (hasInterface && {isServer} && {remoteExecutedOwner <= 0}) exitWith {
+    if (_request isEqualType createHashMap) then {
+        _request set ["arsenalBoardNetId", uiNamespace getVariable ["BN_KOTH_menuArsenalBoardNetId", ""]];
+        if (!((_request getOrDefault ["savedKitOperation", ""]) isEqualTo "")
+            && {!(uiNamespace getVariable ["BN_KOTH_savedKitsServerSynced", false])}) then {
+            _request set ["legacySavedKits", profileNamespace getVariable ["BN_KOTH_savedKits_v2", []]];
+            _request set ["legacyPreferredSavedKitId", profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""]];
+        };
+    };
+    [_request] remoteExecCall ["bn_koth_fnc_loadouts_request", 2];
+};
+
+if (!isServer) exitWith {};
+
+private _ownerId = remoteExecutedOwner;
+if (_ownerId <= 0) exitWith {
+    ["Rejected loadout request without valid remoteExecutedOwner.", "WARN"] call bn_koth_fnc_common_log;
+};
+
+private _playerObj = [_ownerId] call bn_koth_fnc_teams_getPlayerByOwner;
+if (isNull _playerObj) exitWith {
+    [format ["Rejected loadout request: no connected player for owner %1.", _ownerId], "WARN"] call bn_koth_fnc_common_log;
+};
+
+private _uid = getPlayerUID _playerObj;
+if (_uid isEqualTo "") exitWith {
+    [format ["Rejected loadout request: resolved owner %1 has no UID.", _ownerId], "WARN"] call bn_koth_fnc_common_log;
+};
+
+private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
+if !(_records isEqualType createHashMap) exitWith {
+    [format ["Rejected loadout request for UID %1: player records unavailable.", _uid], "WARN"] call bn_koth_fnc_common_log;
+};
+
+private _record = _records getOrDefault [_uid, createHashMap];
+if !(_record isEqualType createHashMap) exitWith {
+    [format ["Rejected loadout request for UID %1: player not registered.", _uid], "WARN"] call bn_koth_fnc_common_log;
+};
+private _mapboardAccessDistance = (getNumber (missionConfigFile >> "CfgBnKothInteractions" >> "teamMapboardAccessDistance")) max 1;
+
+// Preference intent has no equipment-mutation capability. Derive the caller
+// above, validate only through saved-kit LOAD, and return before Arsenal writes.
+private _preference = if (_request isEqualType createHashMap) then {_request getOrDefault ["spawnPreference", ""]} else {""};
+if (_preference in ["SET", "CLEAR"]) exitWith {
+    private _correlation = _request getOrDefault ["preferenceRevision", -1];
+    if !(_correlation isEqualType 0) exitWith {};
+    if !((_record getOrDefault ["ownerId", -1]) isEqualTo _ownerId) exitWith {};
+
+    private _preferenceThrottled = false;
+    if (_preference isEqualTo "SET") then {
+        private _now = serverTime;
+        private _lastRequestAt = _record getOrDefault ["lastSpawnPreferenceRequestAt", -999];
+        _preferenceThrottled = (_now - _lastRequestAt) < 0.25;
+        if (!_preferenceThrottled) then {
+            _record set ["lastSpawnPreferenceRequestAt", _now];
+        };
+    };
+
+    if (_preferenceThrottled) exitWith {
+        // A rejected replacement must not leave an older candidate active.
+        _record deleteAt "preferredSpawnCandidate";
+        _records set [_uid, _record];
+        missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+        [format ["Throttled rapid spawn-preference request from UID %1.", _uid], "WARN"] call bn_koth_fnc_common_log;
+        [createHashMapFromArray [
+            ["spawnPreference", true], ["preferenceRevision", _correlation],
+            ["success", false], ["message", "Spawn preference requests are arriving too quickly."]
+        ]] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
+    };
+
+    _record deleteAt "preferredSpawnCandidate";
+    private _result = createHashMapFromArray [["success", true]];
+    private _preferredPersistedId = "";
+    private _preferenceStateChanged = false;
+    private _progressionByUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
+    private _progression = _progressionByUid getOrDefault [_uid, createHashMap];
+    if (_preference isEqualTo "SET") then {
+        private _mutation = _request getOrDefault ["mutation", createHashMap];
+        // Do not accept a client-selected validation operation in this branch.
+        private _saved = if (_mutation isEqualType createHashMap) then {_mutation getOrDefault ["savedLoadout", []]} else {[]};
+        private _kitId = if (_mutation isEqualType createHashMap) then {_mutation getOrDefault ["kitId", ""]} else {""};
+        if (_progression isEqualType createHashMap) then {
+            private _serverKits = _progression getOrDefault ["savedKits", []];
+            private _serverIndex = _serverKits findIf {_x isEqualType [] && {count _x >= 3} && {(_x select 0) isEqualTo _kitId}};
+            if (_serverIndex >= 0) then {
+                _saved = +((_serverKits select _serverIndex) select 2);
+                _preferredPersistedId = _kitId;
+            };
+        };
+        _result = [_playerObj, createHashMapFromArray [["mutation", createHashMapFromArray [
+            ["op", "load_local_kit"], ["savedLoadout", _saved]
+        ]]]] call bn_koth_fnc_loadouts_validateLoadout;
+        if (_result getOrDefault ["success", false]) then {
+            _record set ["preferredSpawnCandidate", +(_result get "validatedLoadout")];
+            if (_progression isEqualType createHashMap && {!(_preferredPersistedId isEqualTo "")}) then {
+                _preferenceStateChanged = !((_progression getOrDefault ["preferredSavedKitId", ""]) isEqualTo _preferredPersistedId);
+                _progression set ["preferredSavedKitId", _preferredPersistedId];
+            };
+        };
+    } else {
+        if (_progression isEqualType createHashMap) then {
+            _preferenceStateChanged = !((_progression getOrDefault ["preferredSavedKitId", ""]) isEqualTo "");
+            _progression set ["preferredSavedKitId", ""];
+        };
+    };
+    if (_preferenceStateChanged) then {
+        _progressionByUid set [_uid, _progression];
+        missionNamespace setVariable ["BN_KOTH_playerProgression", _progressionByUid];
+        [_uid, "saved_kit_preference"] call bn_koth_fnc_persistence_markDirty;
+    };
+    _records set [_uid, _record];
+    missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+    [createHashMapFromArray [
+        ["spawnPreference", true], ["preferenceRevision", _correlation],
+        ["success", _result getOrDefault ["success", false]],
+        ["message", _result getOrDefault ["message", ""]]
+    ]] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
+};
+
+// Narrow server-side anti-spam guard. This is request hygiene, not gameplay entitlement.
+private _now = serverTime;
+private _lastRequestAt = _record getOrDefault ["lastLoadoutRequestAt", -999];
+if ((_now - _lastRequestAt) < 0.25) exitWith {
+    [format ["Throttled rapid loadout request from UID %1.", _uid], "WARN"] call bn_koth_fnc_common_log;
+};
+
+_record set ["lastLoadoutRequestAt", _now];
+_records set [_uid, _record];
+missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+
+// Every remaining operation capable of changing or storing intended loadout state requires
+// authoritative access at the player's active team mapboard. The client-side
+// menu capability flag is presentation only and is never trusted here.
+private _requiresArsenalAccess = true;
+private _savedKitOperation = if (_request isEqualType createHashMap) then {
+    toUpper (_request getOrDefault ["savedKitOperation", ""])
+} else {""};
+
+// Snapshot intent contains no client inventory. The server reads the player
+// object and returns that observation without applying equipment.
+if (_request isEqualType createHashMap) then {
+    private _mutation = _request getOrDefault ["mutation", createHashMap];
+    if (_mutation isEqualType createHashMap) then {
+        _requiresArsenalAccess = !((toLower (_mutation getOrDefault ["op", ""])) isEqualTo "snapshot");
+    };
+};
+
+private _arsenalBoardNetId = if (_request isEqualType createHashMap) then {_request getOrDefault ["arsenalBoardNetId", ""]} else {""};
+if (_request isEqualType createHashMap) then {_request deleteAt "arsenalBoardNetId";};
+
+private _arsenalAccessFailure = "";
+
+if (_requiresArsenalAccess) then {
+    if (!alive _playerObj) then {
+        _arsenalAccessFailure = "player_not_alive";
+    };
+
+    private _deployed = _record getOrDefault ["deployed", false];
+    private _playerState = _record getOrDefault ["state", ""];
+
+    if ((_arsenalAccessFailure isEqualTo "") && {!_deployed || {!(_playerState isEqualTo "ACTIVE")}}) then {
+        _arsenalAccessFailure = "player_not_deployed_active";
+    };
+
+    private _assignedSide = _record getOrDefault ["assignedSide", sideUnknown];
+
+    if ((_arsenalAccessFailure isEqualTo "") && {!([_assignedSide] call bn_koth_fnc_teams_validateSide)}) then {
+        _arsenalAccessFailure = "invalid_assigned_side";
+    };
+
+    private _activeLocationId = "";
+    private _activeCfg = configNull;
+    private _boardRef = "";
+    private _boardTarget = objNull;
+
+    if (_arsenalAccessFailure isEqualTo "") then {
+        _activeLocationId = missionNamespace getVariable ["BN_KOTH_activeLocationId", ""];
+        _activeCfg = missionConfigFile >> "CfgBnKothLocations" >> _activeLocationId;
+
+        if !(isClass _activeCfg) then {
+            _arsenalAccessFailure = "active_location_unavailable";
+        };
+    };
+
+    if (_arsenalAccessFailure isEqualTo "") then {
+        private _locationData = [_activeLocationId] call bn_koth_fnc_zone_getLocationData;
+        _boardRef = switch (_assignedSide) do {
+            case west: {_locationData getOrDefault ["westCommand_mapboard", ""]};
+            case east: {_locationData getOrDefault ["eastCommand_mapboard", ""]};
+            default {""};
+        };
+
+        if (_boardRef isEqualTo "") then {
+            _arsenalAccessFailure = "team_mapboard_unconfigured";
+        };
+    };
+
+    if (_arsenalAccessFailure isEqualTo "") then {
+        if (_arsenalBoardNetId isEqualType "" && {!(_arsenalBoardNetId isEqualTo "")}) then {
+            _boardTarget = objectFromNetId _arsenalBoardNetId;
+        };
+
+        private _configuredBoard = missionNamespace getVariable [_boardRef, objNull];
+        if (!isNull _boardTarget && {!isNull _configuredBoard} && {!(_boardTarget isEqualTo _configuredBoard)}) then {
+            _boardTarget = objNull;
+        };
+
+        if (!isNull _boardTarget && {!((markerShape _boardRef) isEqualTo "")} && {(_boardTarget distance2D (markerPos _boardRef)) > _mapboardAccessDistance}) then {
+            _boardTarget = objNull;
+        };
+
+        if (isNull _boardTarget) then {_boardTarget = _configuredBoard;};
+
+        if (isNull _boardTarget && {!((markerShape _boardRef) isEqualTo "")}) then {
+            private _boardPos = markerPos _boardRef;
+            private _boardCandidates = nearestObjects [
+                _boardPos,
+                ["Static", "Thing", "House", "LandVehicle"],
+                _mapboardAccessDistance
+            ];
+
+            if !(_boardCandidates isEqualTo []) then {
+                _boardCandidates = [
+                    _boardCandidates,
+                    [],
+                    {_boardPos distance2D _x},
+                    "ASCEND"
+                ] call BIS_fnc_sortBy;
+
+                _boardTarget = _boardCandidates select 0;
+            };
+        };
+
+        if (isNull _boardTarget) then {
+            _arsenalAccessFailure = "team_mapboard_not_resolved";
+        };
+    };
+
+    // addAction uses <5 m client-side. The server keeps a small tolerance for
+    // movement/network timing while remaining authoritative.
+    if (
+        (_arsenalAccessFailure isEqualTo "") &&
+        {(_playerObj distance2D _boardTarget) > _mapboardAccessDistance}
+    ) then {
+        _arsenalAccessFailure = "player_not_at_team_mapboard";
+    };
+};
+
+if !(_arsenalAccessFailure isEqualTo "") exitWith {
+    [
+        format [
+            "Rejected arsenal request UID=%1 reason=%2",
+            _uid,
+            _arsenalAccessFailure
+        ],
+        "WARN"
+    ] call bn_koth_fnc_common_log;
+
+    [
+        createHashMapFromArray [
+            ["success", false],
+            ["code", "ERR_ARSENAL_ACCESS"],
+            ["message", "Loadout changes require access through your active team mapboard."],
+            ["loadoutId", ""]
+        ]
+    ] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
+};
+
+if !(_savedKitOperation isEqualTo "") exitWith {
+    private _savedResult = [
+        _uid,
+        _savedKitOperation,
+        _request getOrDefault ["savedKitId", ""],
+        _request getOrDefault ["savedKitName", ""],
+        _request getOrDefault ["legacySavedKits", []],
+        _request getOrDefault ["legacyPreferredSavedKitId", ""]
+    ] call bn_koth_fnc_loadouts_manageSavedKits;
+    [_savedResult] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
+};
+
+// Prefer the persisted server copy when a stable saved-kit ID is known. Local
+// profile kits remain a backward-compatible untrusted fallback and still pass
+// the same complete entitlement validator below.
+if (_request isEqualType createHashMap) then {
+    private _mutation = _request getOrDefault ["mutation", createHashMap];
+    if (_mutation isEqualType createHashMap && {(toLower (_mutation getOrDefault ["op", ""])) isEqualTo "load_local_kit"}) then {
+        private _kitId = _mutation getOrDefault ["kitId", ""];
+        private _progression = (missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap]) getOrDefault [_uid, createHashMap];
+        private _serverKits = _progression getOrDefault ["savedKits", []];
+        private _serverIndex = _serverKits findIf {_x isEqualType [] && {count _x >= 3} && {(_x select 0) isEqualTo _kitId}};
+        if (_serverIndex >= 0) then {
+            _mutation set ["savedLoadout", +((_serverKits select _serverIndex) select 2)];
+            _request set ["mutation", _mutation];
+        };
+    };
+};
+
+private _validation = [
+    _playerObj,
+    _request
+] call bn_koth_fnc_loadouts_validateLoadout;
+
+if !(_validation getOrDefault ["success", false]) exitWith {
+    [
+        format [
+            "Rejected loadout request UID=%1 code=%2 message=%3",
+            _uid,
+            _validation getOrDefault ["code", "ERR_VALIDATION"],
+            _validation getOrDefault ["message", "Loadout validation failed."]
+        ],
+        "WARN"
+    ] call bn_koth_fnc_common_log;
+
+    [
+        createHashMapFromArray [
+            ["success", false],
+            ["code", _validation getOrDefault ["code", "ERR_VALIDATION"]],
+            ["message", _validation getOrDefault ["message", "Loadout validation failed."]],
+            ["loadoutId", _validation getOrDefault ["loadoutId", ""]]
+        ]
+    ] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
+};
+
+private _validatedLoadout = _validation getOrDefault ["validatedLoadout", []];
+if !(_validatedLoadout isEqualType [] && {(count _validatedLoadout) > 0}) exitWith {
+    [format ["Rejected validated loadout for UID %1: validator returned no complete loadout.", _uid], "WARN"] call bn_koth_fnc_common_log;
+};
+
+private _loadoutStateByUid = missionNamespace getVariable ["BN_KOTH_playerLoadoutState", createHashMap];
+if !(_loadoutStateByUid isEqualType createHashMap) then {
+    _loadoutStateByUid = createHashMap;
+};
+
+_loadoutStateByUid set [_uid, createHashMapFromArray [
+    ["intendedLoadout", +_validatedLoadout],
+    ["sideToken", toUpper (_validation getOrDefault ["sideToken", ""])]
+]];
+
+missionNamespace setVariable ["BN_KOTH_playerLoadoutState", _loadoutStateByUid];
+
+// Any accepted managed-loadout mutation invalidates an older perk-cleanup
+// transaction whose original authoritative snapshot is no longer current.
+private _pendingCleanup = missionNamespace getVariable ["BN_KOTH_pendingPerkCleanup", createHashMap];
+if (_pendingCleanup isEqualType createHashMap) then {
+    _pendingCleanup deleteAt _uid;
+    missionNamespace setVariable ["BN_KOTH_pendingPerkCleanup", _pendingCleanup];
+};
+
+[
+    format [
+        "Accepted loadout request UID=%1 loadoutId=%2",
+        _uid,
+        _validation getOrDefault ["loadoutId", ""]
+    ],
+    "INFO"
+] call bn_koth_fnc_common_log;
+
+// The client receiver only accepts packets that originate from the server.
+// It then applies through the existing single local application path.
+[_validation] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];

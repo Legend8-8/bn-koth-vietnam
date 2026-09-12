@@ -6,6 +6,12 @@ Bro-Nation KOTH Vietnam is a team-versus-team multiplayer game mode for Arma 3 u
 
 Players fight to control a designated combat zone. A team earns score while it controls the zone. The first team to reach the configured score limit wins the round.
 
+Upcoming AO choices are filtered by inclusive per-location connected-player
+ranges. Registered connected humans count before team selection so a large
+lobby cannot retain a tiny AO merely because players have not chosen teams.
+Optional convention-based vehicle spawn roles determine which free, paid and
+command vehicle capabilities actually exist for each AO.
+
 The initial version uses two teams:
 
 - WEST: United States and allied forces
@@ -63,15 +69,80 @@ The score interval, points awarded per interval and winning score must be config
 
 The server is responsible for calculating and awarding all team score.
 
+The deployed bottom-right HUD presents WEST and EAST team scores, current AO
+control status, the round lead, objective-cycle progress, the local server-provided
+rank/level/XP/cash presentation, raw WEST/EAST main-AO population, and a visually
+distinct `+N` Priority bonus row. Weighted control and personal Priority status
+remain authoritative gameplay state but are not displayed directly in that panel.
+
+Occupied-AO objective cycles complete every 30 seconds. CONTROLLED and CONTESTED
+both advance the cycle without freezing or restarting on ownership changes.
+NEUTRAL stops/resets it. Completion uses current eligibility and control; only
+CONTROLLED completion awards the configured team score. A player in Priority
+already contributes one normal AO unit plus one bonus control unit; the HUD bonus
+row explains that existing weighting without changing it.
+
 5. Player Progression
 
-Persistent progression is not part of the first playable version.
+XP, derived level, cash, permanent canonical weapon ownership, and weapon mastery
+are server-owned by player UID. The persistence service now defines their durable
+schema and lifecycle; its current in-memory adapter does not survive a server
+restart. Level is derived from XP. Rentals deliberately remain server-session-only
+and reset on restart. Round statistics remain separate and are never projected
+into persistent player data.
+
+The current implementation awards XP for:
+
+- every eligible AO player: 5 XP / 5 cash per completed objective cycle;
+- controlling-side players: an additional 5 XP / 5 cash;
+- eligible Priority players of either side: an additional 20 XP / 20 cash;
+- validated opposing player kills: unchanged at 25 XP / 50 cash.
+- validated human-passenger transport insertions into the active AO: 25 XP /
+  25 cash per passenger.
+
+Thus controlling AO/Priority players receive 10/30 of each currency; other
+AO/Priority players receive 5/25. Contested cycles grant participation and
+Priority rewards to both sides, with no control bonus or team score. Incomplete
+cycles grant nothing when the AO empties.
+
+Transport insertion rewards are limited by authored vehicle metadata to
+rotary-wing transports. A passenger must board outside the AO, travel for the
+configured minimum time and displacement with the same-team human pilot,
+exit normally while landed, and enter the AO within the confirmation window.
+A server-owned pilot/passenger cooldown prevents rapid repeat rewards.
+
+The same validated events provisionally award config-owned cash amounts. Cash
+is initialized once when a player first enters server progression state.
+Canonical weapons with explicit `purchasePrice` or `rentalPrice` metadata may
+be permanently purchased or rented through server-authoritative APIs. Cash and
+entitlement change in one transaction, and acquisition never auto-equips the
+weapon. Rentals last for the current server session. Store V1 exposes
+configured canonical-weapon acquisition. Canonical weapons now have provisional
+playtest prices with rental set to 20% of purchase; final price balance and stock
+are not implemented yet. Weapon-specific mastery
+and the cross-side mastery gate are implemented; only uniquely attributed
+canonical infantry-weapon PvP kills progress mastery.
+
+The current level cap is configurable and defaults to 270. The Arsenal now
+supports human-authored level and perk requirements for canonical weapons,
+attachments, wearable/assigned items, and cargo additions. The server repeats
+all entitlement checks before accepting equipment intent. Canonical weapon
+ownership is part of the persistent schema, while rentals remain session state;
+vehicles, final equipment prices, stock, wider mastery content/population, and a
+durable database adapter remain unfinished.
+
+Military rank is icon-only presentation derived from account level, not another
+progression currency or authoritative engine rank. The config-driven 1-270
+ladder reuses built-in Arma 3 insignia shapes and config-owned bronze, silver,
+and gold tints. No military rank name or abbreviation is shown. During the
+configurable recruit period before the first insignia threshold, `LEVEL N`
+remains visible but no rank icon appears. The same derived icon is used in the
+lobby local-player card, WEST/EAST roster rows, shared deployed-menu header,
+and pause-menu panel. Rank is neither persisted nor applied to engine units.
 
 Future progression may include:
 
-- experience;
-- levels or ranks;
-- currency;
+- persistent currency and economy sinks;
 - equipment unlocks;
 - vehicle unlocks;
 - player statistics.
@@ -91,39 +162,93 @@ Possible future rewards include:
 
 Players respawn at their team base after a configurable delay.
 
-Team bases are protected areas.
+Phase 3 deliberately replaces the former action- and timeout-based spawn-protection design with spatial safe-zone protection.
 
-Spawn protection must end when the player:
+- A living, deployed player is protected while inside the active safe zone assigned to that player's team.
+- Leaving the team's safe zone removes protection immediately; re-entering restores it.
+- Protection does not expire on a timer and is not consumed by attempting to fire or cause damage. Those actions are blocked while protection is active.
+- Protected players cannot fire weapons or cause outgoing damage and cannot receive incoming damage.
+- No HUD indicator is displayed while friendly safe-zone protection is active.
+- Leaving the friendly safe zone displays a centered, half-screen-width green
+  `LEAVING SAFE ZONE` banner slightly below the top of the deployed HUD for five
+  seconds. Re-entering the safe zone, dying, entering an enemy safe zone, or
+  leaving an active safe-zone round state removes the message immediately.
+- Players must not be able to spawn at an enemy base.
 
-- leaves the protected area;
-- fires a weapon;
-- damages another player; or
-- reaches the configured protection timeout.
+An enemy inside the opposing team's safe zone is an intruder:
 
-Players must not be able to spawn at an enemy base.
+- the intruder immediately loses the ability to fire, cause damage, or enter a vehicle;
+- an intruder already in a vehicle is ejected when the vehicle enters the opposing safe zone;
+- no countdown, execution, or forced relocation is used;
+- the intruder remains vulnerable to damage and may be run over inside the opposing safe zone;
+- a persistent, centered, half-screen-width warning with red text displays
+  `ENEMY SAFE ZONE LEAVE NOW` slightly below the top of the deployed HUD while
+  the player remains an intruder; the warning disappears after leaving, and the
+  entry and blocked-action notifications identify the weapon, vehicle and
+  vulnerability restrictions.
+
+Vehicle protection is also spatial:
+
+- a friendly vehicle is protected while the vehicle's center is inside its own active safe zone;
+- a protected vehicle cannot be damaged or fire, and all friendly occupants receive player protection;
+- an enemy vehicle never receives protection from the opposing safe zone, remains damageable, and cannot cause weapon or collision damage while inside it;
+- protected outgoing damage is blocked except for vehicle collision damage whose victim is an enemy intruder inside that safe zone.
+
+Physical inventory access is disabled inside both active safe zones:
+
+- a player cannot open their own inventory or any player, corpse, ground-holder, static-container or vehicle inventory while the player or target container is inside either safe zone;
+- an inventory opened outside a safe zone closes if the player or target container crosses the boundary;
+- vehicle cargo is preserved while the vehicle passes through a safe zone and becomes accessible again after leaving;
+- dropped equipment and dead bodies inside a safe zone are removed by the server, with player corpses deleted at the earliest engine-safe respawn transition;
+- the server-validated KOTH loadout path remains available and does not expose physical container access;
+- equipment scavenging in the active AO remains allowed, including equipment above a player's current progression level and weapons that are unowned or not yet mastered. This temporary physical possession never grants Arsenal, Store, rental, ownership, or saved-loadout entitlement. Properly attributed pickup-weapon kills may still build mastery. Safe-zone restrictions do not change battlefield pickup rules outside the bases, and progression alone does not require confiscating the physical weapon.
 
 7. Equipment
 
-The first playable version uses preset faction-appropriate loadouts.
+The Arsenal provides server-validated selection of faction-appropriate S.O.G.
+Prairie Fire weapons, compatible magazines and attachments, wearable and
+assigned equipment, and container cargo. Clients present candidates and submit
+intent; the server owns validation and application.
 
 Equipment must be defined in configuration rather than spread throughout gameplay functions.
 
-Future versions may include equipment shops and progression-based unlocks.
+Future versions may include equipment shops, purchases, rentals, and broader
+progression balance. No economy behavior is implied by current availability or
+entitlement presentation.
 
 8. Vehicles
 
-The first version may use a limited selection of pre-placed vehicles.
+The current mission uses a server-managed limited free-vehicle selection.
+Human-authored metadata defines provisional level, side, rental price, Store
+category and role policy for the one-time imported public EAST/WEST S.O.G.
+factual audit's curated combat-vehicle progression set. Curated vehicles are
+rent-only: one RENT press is the complete transaction, spawning the vehicle and
+charging cash together, and destruction or authoritative cleanup ends that life
+without refund. There is no permanent vehicle ownership or server-session
+unlimited vehicle unlock. The free lifecycle remains separate.
 
-Future vehicle systems may include:
-
-- faction-specific vehicle shops;
-- level requirements;
-- vehicle costs;
-- active vehicle limits;
-- abandoned vehicle cleanup;
-- transport rewards.
+The initial product surface uses ground, rotary-wing and fixed-wing categories;
+sea remains reserved for a later curated pass. Vehicle unlocks are broad
+account milestones and do not use weapon mastery. Purchase/rental balance is
+provisional. Active purchased-vehicle limits, persistence and final prices
+remain future work.
 
 Helicopter transport should be an important part of the Vietnam setting.
+
+The active team mapboard also offers a one-shot AIR INSERTION service during
+ACTIVE rounds. The initiator pays the configured charter cost once; invited
+same-side players in that side's safe zone may opt in without charge. The
+initiator pilots the temporary Caesar BTT and the manifest may fill all four
+human positions: pilot, copilot and two cargo seats. There is no AI pilot or
+scripted flight path. Manifested players use the aircraft's normal controls and
+native Eject action. Before boarding, each player temporarily wears the standard
+parachute backpack while their exact current physical backpack and its contents
+are retained for restoration. Eject produces normal freefall, and the player
+chooses when to deploy the parachute. The original backpack returns only after
+the completed descent and landing. The aircraft grants no rental or ownership
+state and is removed after a short abandonment grace once its last manifested
+occupant exits. Temporary backpack handling never changes intended, saved,
+owned or persistent loadout state.
 
 9. Round States
 
@@ -171,3 +296,59 @@ The first playable version does not include:
 - New locations can be added without duplicating the game mode.
 - Features are introduced in small, testable stages.
 - A feature is not complete until it works on a dedicated server.
+
+12. Store V1
+
+The Arsenal remains the current faction's usable equipment surface. The Store
+is global weapon discovery and may show WEST, EAST and BOTH canonical roots.
+Cross-side access still requires the configured passive mastery path.
+Configured purchases and server-session rentals are server-authoritative,
+never auto-equip, and repaint from the targeted player progression update.
+Final pricing, stock and persistence remain later release work. Vehicle
+metadata prepares non-weapon Store grouping, but Store V1 still implements
+canonical weapon products only.
+
+13. Advanced Traversal
+
+The mission includes client-local step-over, vault and low/medium/high mantle
+movement using only animation states supplied by Arma 3 or S.O.G. Prairie Fire.
+No separate climbing addon, custom movement state, or RTM file is required.
+
+The action is intentionally unbound by default. Players bind `Advanced Climb
+(Vanilla/SOG)` through the pause menu's `GAMEMODE KEYBINDINGS` screen. Traversal
+is unavailable while dead, incapacitated, prone, underwater, attached, already
+traversing, or inside a vehicle. Geometry probing must find a supported, clear
+destination before movement begins.
+
+14. Player Groups
+
+The custom Group Menu replaces player-facing vanilla team switching/group
+management and is available only to living, authoritatively deployed players in
+`ACTIVE`. `Group Menu` uses the existing gamemode keybinding system, defaults to
+U, and follows the existing remapping, modifier and conflict behavior. Opening
+the menu is presentation only; it does not make gameplay state correct.
+
+Logical KOTH groups are server-session state keyed by stable player UID. A UID
+belongs to at most one group; every non-empty group has exactly one leader who
+is also a member. Empty groups are deleted. Clients cannot mutate membership,
+leadership or side eligibility directly. Respawn and unit replacement do not
+change logical membership, and group reconciliation never changes a player's
+team. Disconnect and explicit leave remove membership; removal of the current
+leader selects the earliest still-deployed member when one exists, otherwise the
+earliest remaining member. Explicit transfer is permitted only to a deployed
+same-side member.
+
+Groups survive `ENDING`, `RESETTING`, `WAITING` and the next deployment within
+the same server session. Native Arma groups are released during round reset and
+recreated only for compatible deployed members. The logical leader's real
+authoritative deployed `assignedSide` takes precedence: matching deployed
+members materialize together and mismatching deployed members are removed and
+notified. Lobby, CIV and otherwise undeployed members remain logically retained
+because their round side is inconclusive.
+
+If the logical leader remains connected but never deploys, the group is neither
+dissolved nor transferred. No leader side is guessed, no member is removed for
+side mismatch, and deployed members remain in normal/singleton native groups for
+the round. If the leader deploys later, reconciliation then uses the leader's
+actual side. Native leadership may temporarily differ while the logical leader
+is dead, respawning or unmaterialized, but this never changes `leaderUid`.

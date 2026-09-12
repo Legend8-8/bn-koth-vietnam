@@ -1,0 +1,354 @@
+classname,displayName,category,reason
+vn_b_pack_01_02_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_02_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_02_m60_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_02_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_02_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_eng_m1897_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_eng_m45_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_hp_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_m45_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_medic_mat49_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_medic_rpd_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_01_xm177_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_02_m1918_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_02_m1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_02_m2_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_02_m60_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_02_medic_xm177_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_02_rpd_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_02_xm177_eng_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_02_xm177_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_eng_xm177_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_m1897_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_m60_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_mat49_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_medic_m45_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_medic_xm177_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_rpd_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_sten_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_xm148_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_02_xm177_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_03_02_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_03_02_m63a_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_03_02_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_03_02_type64_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_03_02_xm177_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_03_m3a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_03_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_03_xm177_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_04_02_l2a3_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_04_02_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_04_02_m1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_04_02_m2_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_04_02_m45_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_04_02_sten_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_05_02_eng_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_05_02_eng_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_05_02_eng_m1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_05_02_eng_mat49_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_05_02_m1897_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_05_02_type64_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_01_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_01_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_01_m1918_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_01_m1_garand_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_01_m45_eng_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_01_m45_m72_eng_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_01_m60_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_01_medic_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_01_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_m14_eng_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_m14_m72_eng_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_m16_eng_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_m16_m72_eng_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_m1897_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_m1_garand_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_m36_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_m40a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_medic_pps_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_02_sks_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_03_eng_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_03_eng_m1897_m72_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_03_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_03_m16_m20_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_03_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_03_medic_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_03_medic_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_03_medic_m1carbine_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_03_ppsh_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_04_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_04_m16_m72_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_04_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_04_m1897_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_04_m1_garand_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_04_m1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_arvn_04_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_01_m16_m72_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_01_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_01_m1_carbine_gl_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_01_m1_garand_gl_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_01_m21_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_01_m2_carbine_gl_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_01_m2_carbine_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_01_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_02_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_02_m1918_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_02_m60_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_02_rpd_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_03_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_03_m1897_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_03_m1_carbine_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_03_m1_garand_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_03_m1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_03_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_03_xm148_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_04_eng_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_04_eng_m1897_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_04_eng_m1_garand_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_04_eng_m1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_04_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_04_m1903_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_04_m1_garand_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_04_m36_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_05_m1897_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_05_m1_carbine_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_05_m1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_06_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_07_mat49_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_07_medic_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_lw_07_medic_mat49_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_01_m14_m20_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_01_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_01_m16_m20_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_01_m16_m72_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_01_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_01_m1_garand_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_01_medic_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_01_medic_m1911_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_02_eng_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_02_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_02_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_02_m1_garand_gl_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_03_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_03_m16_m20_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_03_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_03_m1897_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_03_m20_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_03_m40a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_03_m60_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_04_eng_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_04_eng_m2_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_04_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_04_m16_m72_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_04_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_04_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_05_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m41_05_m2_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m5_01_medic_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m5_01_medic_m1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m5_01_medic_m45_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m5_medic_m1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_m5_medic_mat49_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p08_01_l1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p08_01_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p08_02_m16_m203_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p08_02_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p08_03_eng_f1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p08_03_l1a1_gl_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_01_eng_l34a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_01_eng_sten_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_01_f1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_01_l1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_01_l1a1_xm148_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_01_l2a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_01_m16_m203_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_01_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_01_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_01_medic_l1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_02_eng_f1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_02_eng_m3a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_02_l1a1_gl_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_02_l2a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_02_m60_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_02_medic_l1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_p44_03_eng_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_pfield_01_f1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_pfield_01_l1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_pfield_01_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_pfield_01_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_pfield_01_m60_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_pfield_02_eng_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_pfield_02_l2a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_pfield_02_medic_l1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_prc77_01_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_prc77_01_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_prc77_01_m1_garand_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_prc77_01_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_prc77_01_ppsh_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_static_ammo_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_base_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_m1919a4_high_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_m1919a4_low_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_m1919a6_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_m29_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_m2_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_m2_high_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_m2_low_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_m2_scoped_high_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_m2_scoped_low_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_m60_high_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_m60_low_01,,backpack,Static-weapon/support bag.
+vn_b_pack_static_mk18,,backpack,Static-weapon/support bag.
+vn_b_pack_static_tow,,backpack,Static-weapon/support bag.
+vn_b_pack_trp_01_02_m60_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_01_m60_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_02_02_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_02_02_m1897_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_02_02_m21_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_02_02_m40a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_02_02_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_02_02_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_02_medic_m14_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_03_02_eng_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_03_02_eng_m16_xm148_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_03_02_eng_m1897_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_03_02_eng_m1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_03_02_eng_m3a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_03_02_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_03_02_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_03_eng_m16_xm148_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_04_02_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_b_pack_trp_04_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_c_pack_01,,backpack,Civilian/non-player utility bag.
+vn_c_pack_01_engineer_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_c_pack_01_medic_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_c_pack_02,,backpack,Civilian/non-player utility bag.
+vn_i_pack_parachute_01,,backpack,Parachute bag.
+vn_o_pack_01_ish54_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_m16_m72_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_m1_garand_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_m1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_m38_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_medic_ish54_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_medic_m712_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_medic_pps_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_mp40_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_ppsh_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_sks_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_sten_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_tt33_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_01_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_eng_pps_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_eng_ppsh_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_m16_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_m1918_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_m1_garand_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_m1a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_m36_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_m38_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_m4956_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_mat49_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_medic_mat49_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_medic_pps_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_medic_ppsh_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_ppsh_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_sks_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_02_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_03_rpg2_ish54_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_03_rpg2_m4956_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_03_rpg2_pps_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_03_rpg2_sks_gl_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_03_rpg2_sks_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_03_rpg2_tt33_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_03_rpg7_ish54_gl_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_03_rpg7_sks_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_03_rpg7_tt33_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_03_rpg7_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_03_sa7_sks_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_04_dp28_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_04_kbkg_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_04_m1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_04_m1a1_eng_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_04_m3a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_04_m4956_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_04_mat49_eng_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_04_mg42_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_04_pps_eng_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_04_rpd_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_04_sks_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_05_eng_m3a1_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_05_eng_sks_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_05_eng_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_05_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_06_m38_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_06_m4956_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_06_medic_pps_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_06_medic_ppsh_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_06_rpd_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_06_sks_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_06_svd_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_07_m79_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_07_pps_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_07_ppsh_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_07_type56_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_parachute_01,,backpack,Parachute bag.
+vn_o_pack_static_ammo_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_at3_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_base_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_dp28_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_dshkm_high_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_dshkm_high_02,,backpack,Static-weapon/support bag.
+vn_o_pack_static_dshkm_low_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_dshkm_low_02,,backpack,Static-weapon/support bag.
+vn_o_pack_static_m1910_high_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_m1910_low_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_m1910_low_02,,backpack,Static-weapon/support bag.
+vn_o_pack_static_mg42_high,,backpack,Static-weapon/support bag.
+vn_o_pack_static_mg42_low,,backpack,Static-weapon/support bag.
+vn_o_pack_static_pk_high_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_pk_low_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_rpd_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_sgm_high_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_sgm_low_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_sgm_low_02,,backpack,Static-weapon/support bag.
+vn_o_pack_static_type53_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_type56rr_01,,backpack,Static-weapon/support bag.
+vn_o_pack_static_type63_01,,backpack,Static-weapon/support bag.
+vn_o_pack_t884_ish54_01_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_t884_m1_01_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_t884_m36_01_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_t884_m38_01_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_t884_pps_01_pl,,backpack,Preloaded/role backpack variant (_pl).
+vn_o_pack_t884_ppsh_01_pl,,backpack,Preloaded/role backpack variant (_pl).
+Vest_NoCamo_Base,,excluded,Non-S.O.G. base/helper record with no display name.
+vn_default_helmetbase_09,Savage,excluded,"Base/helper helmet record, not a curated player item."
+vn_b_uniform_basecharacter_01,Underwear (MACV),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_01_05,BDU MACV 1 (Tiger green),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_01_16,BDU RLA 1 (Lizard),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_01_17,BDU ARVN 1 (BDQ),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_02_05,BDU MACV 2 (Tiger green),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_02_07,BDU MACV 2 (Olive),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_02_16,BDU RLA 2 (Lizard),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_02_17,BDU ARVN 2 (BDQ),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_03_05,BDU MACV 3 (Tiger green),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_03_16,BDU RLA 3 (Lizard),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_03_17,BDU ARVN 3 (BDQ),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_04_05,BDU MACV 4 (Tiger green),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_04_16,BDU RLA 4 (Lizard),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_04_17,BDU ARVN 4 (BDQ),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_05_05,BDU MACV 5 (Tiger green),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_05_16,BDU RLA 5 (Lizard),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_05_17,BDU ARVN 5 (BDQ),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_06_05,BDU MACV 6 (Tiger green),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_06_16,BDU RLA 6 (Lizard),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_b_uniform_macv_06_17,BDU ARVN 6 (BDQ),uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_o_uniform_basecharacter_01,Underwear,uniform,No unique WEST/EAST side can be authored from official Used by evidence.
+vn_o_vest_04,Vest - VPN,vest,No unique WEST/EAST side can be authored from official Used by evidence.

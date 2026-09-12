@@ -14,9 +14,8 @@ class CfgBnKothLocations
     class khe_sanh
     {
         displayName = "Khe Sanh";
-        zoneMarker = "khe_sanh_zone";
-        respawnWestMarker = "khe_sanh_respawn_west";
-        respawnEastMarker = "khe_sanh_respawn_east";
+        description = "Highland combat around the airbase.";
+        image = "images\ui\lobby\khe_sanh.jpg";
 
         // Use Eden variable prefix khe_sanh_ for map-specific objects.
         objects[] = {};
