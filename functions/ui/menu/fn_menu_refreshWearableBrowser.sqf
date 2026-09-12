@@ -39,7 +39,9 @@ private _sideToken = switch (_assignedSide) do {
     case east: {"EAST"};
     default {""};
 };
-private _requiresAppearance = _slotLower in ["uniform", "vest", "backpack", "headgear", "facewear"];
+// Facewear is cosmetic and deliberately uses the unrestricted default wearable
+// entitlement; faction appearance identity remains mandatory for the other slots.
+private _requiresAppearance = _slotLower in ["uniform", "vest", "backpack", "headgear"];
 private _intendedLoadout = uiNamespace getVariable ["BN_KOTH_menuIntendedLoadout", []];
 private _appliedClass = "";
 private _loadoutIndex = switch (_slotLower) do {case "uniform": {3}; case "vest": {4}; case "backpack": {5}; case "headgear": {6}; case "facewear": {7}; default {8};};
@@ -93,7 +95,13 @@ private _title = switch (_slotLower) do {case "uniform":{"UNIFORMS"};case "vest"
 (_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL) ctrlSetText format ["PAGE %1 / %2", _page + 1, _pageCount];
 private _previous = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_PREVIOUS;
 private _next = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_NEXT;
-(_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_BACK) buttonSetAction "['LOADOUT'] call bn_koth_fnc_menu_refresh;";
+private _returnDestination = uiNamespace getVariable ["BN_KOTH_menuSelectorReturnPage", "LOADOUT"];
+private _backAction = if (_returnDestination isEqualTo "LOADOUT_ASSIGNED") then {
+    "private _returnPage=uiNamespace getVariable ['BN_KOTH_menuSelectorReturnBrowserPage',0];if !(_returnPage isEqualType 0) then {_returnPage=0};uiNamespace setVariable ['BN_KOTH_menuBrowserSlot','assigned'];uiNamespace setVariable ['BN_KOTH_menuBrowserPage',_returnPage max 0];uiNamespace setVariable ['BN_KOTH_menuBrowserSnapPending',false];uiNamespace setVariable ['BN_KOTH_menuSelectorReturnPage','LOADOUT'];uiNamespace setVariable ['BN_KOTH_menuSelectorReturnBrowserPage',0];['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;"
+} else {
+    "['LOADOUT'] call bn_koth_fnc_menu_refresh;"
+};
+(_display displayCtrl BN_KOTH_IDC_MENU_BROWSER_BACK) buttonSetAction _backAction;
 _previous ctrlEnable (_page > 0);
 _next ctrlEnable (_page < (_pageCount - 1));
 _previous buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBrowserPage', 0]; uiNamespace setVariable ['BN_KOTH_menuBrowserPage', (_page - 1) max 0]; ['LOADOUT_BROWSER'] call bn_koth_fnc_menu_refresh;";

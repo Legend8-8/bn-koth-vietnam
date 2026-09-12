@@ -1081,7 +1081,7 @@ if (_requestMode isEqualTo "weapons") exitWith {
                                     ["message", format ["Facewear '%1' is not publicly available.", _facewearClass]]
                                 ];
                             } else {
-                                private _entitlement = [_uid,"Wearables",_facewearClass,true] call bn_koth_fnc_progression_evaluateItemEntitlement;
+                                private _entitlement = [_uid,"Wearables",_facewearClass,false] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                 if !(_entitlement getOrDefault ["entitled",false]) then {
                                     _slotFailure = createHashMapFromArray [["success",false],["code",_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"]],["message",_entitlement getOrDefault ["message","Facewear is not entitled for this player."]]];
                                 } else {

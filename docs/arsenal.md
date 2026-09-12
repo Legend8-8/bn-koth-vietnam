@@ -395,9 +395,11 @@ appearanceSide = "WEST"; // or "EAST", or "BOTH" (headgear-only, provisional)
 ```
 
 `appearanceSide` identifies which KOTH faction the item visually represents.
-Uniforms, vests, backpacks, headgear, and facewear fail closed when this field
-is absent or invalid; opposing appearance equipment is rejected even if its
-`allowedSides[]` value is broader. `BOTH` is a deliberate, narrow exception:
+Uniforms, vests, backpacks, and headgear fail closed when this field is absent
+or invalid; opposing appearance equipment is rejected even if its
+`allowedSides[]` value is broader. FACEWEAR is cosmetic and unrestricted
+between WEST/EAST; canonical S.O.G. facewear is available from level 1 and does
+not require appearance-side metadata. `BOTH` is a deliberate, narrow exception:
 it is currently authored for headgear only, never inferred, and never used
 for uniforms/vests/backpacks, which always stay strictly WEST-only or
 EAST-only. Appearance entitlement never consults Mastery, ownership, or
@@ -1660,7 +1662,9 @@ its own factual catalogue and applied-state lookup. Backpack `NONE` is an
 explicit clear intent, and only an applied non-empty container may open its
 cargo configuration view. Human-authored `Metadata >> Wearables` requirements
 are evaluated for presentation and repeated by the server before a selection
-is accepted. Assigned equipment remains slot-first for configurable map, radio,
+is accepted, except that canonical public `CfgGlasses` facewear deliberately
+uses the unconfigured level-1, cross-side cosmetic policy. Assigned equipment
+remains slot-first for configurable map, radio,
 compass and watch fields. The server normalizes the native six-slot array with
 `ItemGPS` in the baseline GPS field and an empty unsupported NVG field. Those two
 fixed fields are not exposed as selectors, so a saved intended kit cannot make
