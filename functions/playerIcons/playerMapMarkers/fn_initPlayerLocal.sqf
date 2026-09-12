@@ -24,6 +24,32 @@ if (!isNull _targetUnit && {!(_targetUnit isEqualTo player)}) then {
 
 if (isNull player) exitWith {false};
 
+if !(missionNamespace getVariable ["BN_KOTH_initialMapFocusHandlerAdded", false]) then {
+    private _mapEventId = addMissionEventHandler ["Map", {
+        params ["_mapIsOpened"];
+        if (!_mapIsOpened || {!(uiNamespace getVariable ["BN_KOTH_mapInitialFocusNeeded", false])}) exitWith {};
+
+        [] spawn {
+            uiSleep 0;
+            if !(uiNamespace getVariable ["BN_KOTH_mapInitialFocusNeeded", false]) exitWith {};
+
+            private _markerName = missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""];
+            if (_markerName isEqualTo "" || {(markerShape _markerName) isEqualTo ""}) exitWith {};
+
+            private _mapDisplay = findDisplay 12;
+            private _mapControl = if (isNull _mapDisplay) then {controlNull} else {_mapDisplay displayCtrl 51};
+            if (isNull _mapControl) exitWith {};
+
+            uiNamespace setVariable ["BN_KOTH_mapInitialFocusNeeded", false];
+            _mapControl ctrlMapAnimAdd [0.35, 0.12, markerPos _markerName];
+            ctrlMapAnimCommit _mapControl;
+        };
+    }];
+
+    missionNamespace setVariable ["BN_KOTH_initialMapFocusHandlerAdded", true];
+    missionNamespace setVariable ["BN_KOTH_initialMapFocusHandlerId", _mapEventId];
+};
+
 private _playerMapMarkersCfg = missionConfigFile >> "CfgBnKothPlayerMapMarkers";
 private _refreshInterval = getNumber (_playerMapMarkersCfg >> "refreshIntervalSeconds");
 if (_refreshInterval < 0.1) then {

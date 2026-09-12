@@ -634,8 +634,9 @@ canonical intended loadout; legacy profile kits may be imported once as
 untrusted intent when the durable set is empty. Persistence never grants
 equipment entitlement. A saved Unit Loadout is revalidated through the normal
 side, level, ownership, mastery, perk, and rental checks every time it is
-loaded or selected for spawn. The schema-v3 extDB3 codec is data-only and is
-decoded with `parseSimpleArray`, never `compile`.
+loaded or selected for spawn. Fixed GPS/NVG assigned slots are normalized inside
+that validation before saved assigned entries are checked. The schema-v3 extDB3
+codec is data-only and is decoded with `parseSimpleArray`, never `compile`.
 
 The saved-kit blob also preserves whether that one-time legacy import has been
 initialized. An initialized empty set is therefore an authoritative deletion,

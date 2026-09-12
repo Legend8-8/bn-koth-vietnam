@@ -33,6 +33,7 @@ private _compatibilityCfg = _arsenalCfg >> "Equipment" >> "Compatibility";
         [_oldMagazine, 4, 1], [_newMagazine, 2, 1],
         ["vn_m1911_mag", 1, 7], ["vn_rpg7_mag", 1, 1],
         ["vn_m61_grenade_mag", 3, 1], ["vn_m18_white_mag", 2, 1],
+        ["vn_40mm_m406_he_mag", 1, 1],
         ["vn_b_item_firstaidkit", 2]
     ];
     private _loadout = [
@@ -44,11 +45,14 @@ private _compatibilityCfg = _arsenalCfg >> "Equipment" >> "Compatibility";
     ];
     private _original = +_loadout;
     private _cleaned = [_loadout] call _cleanup;
+    private _expectedCargo = _cargo select {
+        !((toLower (_x select 0)) in [toLower _oldMagazine, "vn_40mm_m406_he_mag"])
+    };
     [format ["%1 cleanup does not mutate its input", _newWeapon], _loadout isEqualTo _original] call _check;
     {
         private _remaining = (_cleaned select _x) select 1;
-        [format ["%1 container %2 removes only stale magazines", _newWeapon, _x],
-            _remaining isEqualTo (_cargo select [1])
+        [format ["%1 container %2 removes stale and weapon-dependent incompatible magazines", _newWeapon, _x],
+            _remaining isEqualTo _expectedCargo
         ] call _check;
     } forEach [3, 4, 5];
 } forEach [
@@ -64,6 +68,29 @@ if (isNull _player || {!isPlayer _player} || {(getPlayerUID _player) isEqualTo "
     if !(_starter getOrDefault ["success", false]) then {
         _failures pushBack "WEST starter unavailable for saved-kit rejection test.";
     } else {
+        private _baseline = +(_starter get "loadout");
+        private _baselineAssigned = +(_baseline select 9);
+        _baselineAssigned set [1, ""];
+        _baselineAssigned set [5, "vn_test_stale_saved_nvg"];
+        _baseline set [9, _baselineAssigned];
+        private _baselineNormalization = [_player, createHashMapFromArray [["mutation", createHashMapFromArray [
+            ["op", "load_local_kit"], ["savedLoadout", _baseline]
+        ]]]] call bn_koth_fnc_loadouts_validateLoadout;
+        private _normalizedAssigned = (_baselineNormalization getOrDefault ["validatedLoadout", []]) param [9, []];
+        ["Saved-kit LOAD restores baseline GPS and clears stale NVG before apply",
+            (_baselineNormalization getOrDefault ["success", false]) &&
+            {(_normalizedAssigned param [1, ""]) isEqualTo "itemgps"} &&
+            {(_normalizedAssigned param [5, "invalid"]) isEqualTo ""}] call _check;
+
+        private _gpsMutation = [
+            _player,
+            createHashMapFromArray [["op", "set_assigned"], ["assignedIndex", 1], ["itemClass", ""]],
+            _compatibilityCfg, _arsenalCfg, west, "WEST", _starter get "loadout"
+        ] call bn_koth_fnc_loadouts_validateMutation;
+        ["Direct GPS-slot mutation is rejected as fixed baseline",
+            !(_gpsMutation getOrDefault ["success", true]) &&
+            {(_gpsMutation getOrDefault ["code", ""]) isEqualTo "ERR_ASSIGNED_SLOT_FIXED"}] call _check;
+
         {
             _x params ["_slotName", "_slotIndex"];
             private _clearRequest = createHashMapFromArray [["weapons", createHashMapFromArray [
@@ -158,7 +185,7 @@ if (isNull _player || {!isPlayer _player} || {(getPlayerUID _player) isEqualTo "
         private _saved = +(_starter get "loadout");
         private _vest = _saved select 4;
         private _cargo = +(_vest select 1);
-        _cargo pushBack ["vn_m1903_mag", 1, 5];
+        _cargo pushBack ["vn_40mm_m406_he_mag", 1, 1];
         _vest set [1, _cargo];
         _saved set [4, _vest];
         private _result = [

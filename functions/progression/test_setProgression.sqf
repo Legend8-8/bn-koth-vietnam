@@ -10,7 +10,7 @@
         endpoint; paste it into the SERVER-side hosted/dedicated debug
         console.
     Execution: Server debug console only
-    Returns: None (prints RPT + systemChat)
+    Returns: None (always prints RPT; systemChat only when debug is enabled)
 */
 
 // ---- Configure before running ----
@@ -107,4 +107,6 @@ private _report = format [
     _uid, _finalXp, _finalLevel, _finalCash
 ];
 [_report] call bn_koth_fnc_common_log;
-systemChat _report;
+if ((getNumber (missionConfigFile >> "CfgBnKothDebug" >> "enabled")) > 0) then {
+    systemChat _report;
+};

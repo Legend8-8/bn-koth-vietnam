@@ -64,8 +64,41 @@ while {_safety < 16} do {
     _safety = _safety + 1;
 };
 
-private _metadataCfg = _arsenalCfg >> "Metadata" >> "Weapons" >> _canonicalClass;
+private _technicalClass = _canonicalClass;
+private _metadataRoot = _arsenalCfg >> "Metadata" >> "Weapons";
+private _metadataCfg = _metadataRoot >> _technicalClass;
 private _configured = isClass _metadataCfg;
+private _metadataError = "";
+private _technicalMinLevel = if (_configured && {isNumber (_metadataCfg >> "minLevel")}) then {
+    (getNumber (_metadataCfg >> "minLevel")) max 1
+} else {-1};
+
+// A technical root may deliberately share another canonical progression root
+// without pretending an integral S.O.G. configuration is attachment-derived.
+if (_configured) then {
+    private _progressionRoot = toLower (getText (_metadataCfg >> "progressionRoot"));
+    if !(_progressionRoot isEqualTo "") then {
+        private _progressionCfg = _metadataRoot >> _progressionRoot;
+        if (isClass _progressionCfg) then {
+            _canonicalClass = _progressionRoot;
+            _metadataCfg = _progressionCfg;
+        } else {
+            _configured = false;
+            _metadataError = "ERR_WEAPON_PROGRESSION_ROOT";
+        };
+    };
+};
+
+if !(_metadataError isEqualTo "") exitWith {
+    createHashMapFromArray [
+        ["success", false],
+        ["code", _metadataError],
+        ["requestedClass", _requestedClass],
+        ["technicalClass", _technicalClass],
+        ["canonicalClass", _canonicalClass],
+        ["configured", false]
+    ]
+};
 
 private _allowedSides = [];
 private _crossSideAllowed = false;
@@ -86,6 +119,9 @@ if (_configured) then {
 
     if (isNumber (_metadataCfg >> "minLevel")) then {
         _minLevel = (getNumber (_metadataCfg >> "minLevel")) max 1;
+    };
+    if (_technicalMinLevel >= 1) then {
+        _minLevel = _technicalMinLevel;
     };
 
     if (isNumber (_metadataCfg >> "masteryKillsRequired")) then {
@@ -109,6 +145,7 @@ createHashMapFromArray [
     ["success", true],
     ["code", "OK"],
     ["requestedClass", _requestedClass],
+    ["technicalClass", _technicalClass],
     ["canonicalClass", _canonicalClass],
     ["configured", _configured],
     ["allowedSides", _allowedSides],

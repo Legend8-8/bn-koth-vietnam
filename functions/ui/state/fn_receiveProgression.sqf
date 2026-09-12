@@ -38,12 +38,75 @@ if !(_localProgression isEqualType createHashMap) then {
     _localProgression = createHashMap;
 };
 
+private _oldLevel = _localProgression getOrDefault ["level", -1];
+
 {
     _localProgression set [_x, _progression get _x];
 } forEach (keys _progression);
 
 missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", _localProgression];
 [] call bn_koth_fnc_progression_perks_applyMedicTraitLocal;
+
+// Level changes arrive only through the server-owned progression projection.
+// Presentation discovers crossings from canonical metadata rather than a
+// second notification unlock list.
+if (_oldLevel isEqualType 0 && {_oldLevel >= 1} && {_level > _oldLevel}) then {
+    private _equipmentCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment";
+    private _metadataCfg = _equipmentCfg >> "Metadata";
+    private _compatibilityCfg = _equipmentCfg >> "Compatibility";
+    private _unlockEntries = [];
+
+    {
+        private _groupName = _x;
+        private _groupCfg = _metadataCfg >> _groupName;
+        if !(isClass _groupCfg) then {continue};
+
+        {
+            private _itemCfg = _x;
+            if (
+                _groupName isEqualTo "Weapons" &&
+                {!((getText (_itemCfg >> "progressionRoot")) isEqualTo "")} &&
+                {!(isNumber (_itemCfg >> "minLevel"))}
+            ) then {continue};
+            if !(isNumber (_itemCfg >> "minLevel")) then {continue};
+            if (isNumber (_itemCfg >> "available") && {(getNumber (_itemCfg >> "available")) <= 0}) then {continue};
+
+            private _requiredLevel = getNumber (_itemCfg >> "minLevel");
+            if !(_oldLevel < _requiredLevel && {_requiredLevel <= _level}) then {continue};
+
+            private _className = toLower (configName _itemCfg);
+            private _engineCfg = configFile >> "CfgWeapons" >> _className;
+            if !(isClass _engineCfg) then {_engineCfg = configFile >> "CfgMagazines" >> _className};
+            private _displayName = if (isClass _engineCfg) then {getText (_engineCfg >> "displayName")} else {""};
+            if (_displayName isEqualTo "") then {
+                private _sourceCfg = if (_groupName isEqualTo "Weapons") then {
+                    _compatibilityCfg >> "SourceWeapons" >> _className
+                } else {
+                    private _sourceItem = _compatibilityCfg >> "SourceItems" >> _className;
+                    if (isClass _sourceItem) then {_sourceItem} else {_compatibilityCfg >> "SourceMagazines" >> _className}
+                };
+                if (isClass _sourceCfg) then {_displayName = getText (_sourceCfg >> "displayName")};
+            };
+            if (_displayName isEqualTo "") then {_displayName = toUpper _className};
+
+            private _levelText = str _requiredLevel;
+            private _levelSortKey = ("000000" + _levelText) select [(count _levelText), 6];
+            _unlockEntries pushBack [
+                format ["%1|%2|%3", _levelSortKey, toLower _displayName, _className],
+                _displayName
+            ];
+        } forEach ("true" configClasses _groupCfg);
+    } forEach ["Weapons", "Attachments", "Wearables", "Consumables"];
+
+    _unlockEntries sort true;
+    {
+        [createHashMapFromArray [
+            ["title", "NEW EQUIPMENT AVAILABLE"],
+            ["body", _x select 1],
+            ["footer", "Level requirement met"]
+        ]] call bn_koth_fnc_ui_notify;
+    } forEach _unlockEntries;
+};
 
 if (_progression getOrDefault ["savedKitsAuthoritative", false]) then {
     private _serverKits = _progression getOrDefault ["savedKits", []];

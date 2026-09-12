@@ -478,7 +478,7 @@ if (
                     } else {
                         private _nextSlot = _selected getOrDefault ['assignedIndex', -1];
 
-                        if (_nextSlot in [0, 1, 2, 3, 4, 5]) then {
+                        if (_nextSlot in [0, 2, 3, 4]) then {
                         uiNamespace setVariable ['BN_KOTH_menuAssignedStage', 2];
                         uiNamespace setVariable ['BN_KOTH_menuAssignedSlot', _nextSlot];
                         uiNamespace setVariable ['BN_KOTH_menuPendingAssigned', createHashMapFromArray [['available', false]]];

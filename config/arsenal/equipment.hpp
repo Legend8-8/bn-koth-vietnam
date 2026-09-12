@@ -112,9 +112,12 @@ class CfgBnKothArsenal
         //     and backpacks must always author WEST or EAST, never BOTH.
         //   minLevel = <number>;
         //   masteryKillsRequired = <number>; // weapons only; never appearance
-        //   purchasePrice = <number>;   // optional until economy is implemented
-        //   rentalPrice = <number>;     // optional until economy is implemented
+        //   purchasePrice = <number>;   // weapons only; permanent acquisition
+        //   rentalPrice = <number>;     // weapons only; server-session access
         //   requiredPerks[] = {...};    // optional; progression owns perk state
+        //   available = 0; // explicitly exclude from managed selection
+        //   progressionRoot = "class"; // optional technical-root alias sharing
+        //     one canonical weapon's progression, ownership and mastery policy
         //
         // Structural variants do not receive separate progression metadata.
         // Runtime lookup resolves them to their canonical base weapon first.
@@ -160,7 +163,14 @@ class CfgBnKothArsenal
                     rentalPrice = 200;
                 };
 
-                // vn_fkb1_pm remains unconfigured pending manual review.
+                // Integral flashlight configuration: technically selectable as
+                // its own S.O.G. weapon root, but progression/mastery remains PM.
+                class vn_fkb1_pm
+                {
+                    progressionRoot = "vn_pm";
+                    minLevel = 5;
+                };
+
                 class vn_gau5a
                 {
                     allowedSides[] = {"WEST"};
@@ -1046,11 +1056,69 @@ class CfgBnKothArsenal
                     minLevel = 1;
                     requiredPerks[] = {"medic"};
                 };
+                class vn_chicom_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 5;};
+                class vn_f1_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 3;};
+                class vn_m14_early_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 8;};
+                class vn_m14_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 10;};
+                class vn_m18_green_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 3;};
+                class vn_m18_purple_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 6;};
+                class vn_m18_red_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 6;};
                 class vn_m18_white_mag {allowedSides[] = {"WEST"}; minLevel = 1;};
+                class vn_m18_yellow_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 6;};
+                class vn_m34_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 1; available = 0;};
+                class vn_m20a1b1_wp_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 1; available = 0;};
+                class vn_mine_m18_wp_fuze10_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 1; available = 0;};
+                class vn_mine_m18_wp_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 1; available = 0;};
+                class vn_mine_m18_wp_range_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 1; available = 0;};
                 class vn_m61_grenade_mag {allowedSides[] = {"WEST"}; minLevel = 1;};
+                class vn_m67_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 12;};
+                class vn_m7_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 25;};
+                class vn_molotov_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 8;};
                 class vn_o_item_firstaidkit {allowedSides[] = {"EAST"}; minLevel = 1;};
                 class vn_rdg2_mag {allowedSides[] = {"EAST"}; minLevel = 1;};
+                class vn_rg42_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 8;};
+                class vn_rgd33_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 15;};
                 class vn_rgd5_grenade_mag {allowedSides[] = {"EAST"}; minLevel = 1;};
+                class vn_rkg3_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 35;};
+                class vn_t67_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 18;};
+                class vn_v40_grenade_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 20;};
+
+                // Weapon-dependent munitions remain selectable only while a
+                // compatible intended weapon/configuration is present.
+                class vn_20mm_dgn_wp_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 1; available = 0;};
+                class vn_20mm_f1n60_frag_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 38;};
+                class vn_20mm_kgn_frag_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 38;};
+                class vn_20mm_pgn60_heat_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 50;};
+                class vn_22mm_cs_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 25;};
+                class vn_22mm_he_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 30;};
+                class vn_22mm_lume_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 8;};
+                class vn_22mm_m17_frag_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 10;};
+                class vn_22mm_m19_wp_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 1; available = 0;};
+                class vn_22mm_m1a2_frag_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 10;};
+                class vn_22mm_m22_smoke_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 8;};
+                class vn_22mm_m60_frag_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 20;};
+                class vn_22mm_m60_heat_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 35;};
+                class vn_22mm_m61_frag_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 20;};
+                class vn_22mm_m9_heat_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 30;};
+                class vn_22mm_n94_heat_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 35;};
+                class vn_40mm_m381_he_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_40mm_m397_ab_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 60;};
+                class vn_40mm_m406_he_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_40mm_m433_hedp_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 60;};
+                class vn_40mm_m576_buck_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_40mm_m583_flare_w_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_40mm_m651_cs_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 55;};
+                class vn_40mm_m661_flare_g_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_40mm_m662_flare_r_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_40mm_m680_smoke_w_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_40mm_m682_smoke_r_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_40mm_m695_flare_y_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_40mm_m715_smoke_g_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_40mm_m716_smoke_y_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_40mm_m717_smoke_p_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 45;};
+                class vn_m127_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 25;};
+                class vn_m128_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 25;};
+                class vn_m129_mag {allowedSides[] = {"WEST", "EAST"}; minLevel = 25;};
             };
         };
 

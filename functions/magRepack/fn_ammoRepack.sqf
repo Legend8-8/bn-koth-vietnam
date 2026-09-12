@@ -39,6 +39,4 @@ if (_rem > 0) then {
     player addMagazine [_mag, _rem];
 };
 
-hintSilent "Mags Repacked";
-sleep 2;
-hintSilent "";
+["MAGS REPACKED."] call bn_koth_fnc_ui_notify;

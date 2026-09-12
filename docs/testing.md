@@ -1378,3 +1378,30 @@ duplicate controls, handlers or orphaned displays remain. Set the announcement's
 cannot open a popup. Check client RPT for missing config, function, display and
 control errors. Static inspection does not establish layout at all interface
 sizes or in-game popup behaviour.
+
+### QoL notification, map and Arsenal acceptance
+
+On a hosted session and then a dedicated server with two clients, verify that
+after each deployment, the first successful map open animates once to the active
+AO; later opens must preserve manual pan/zoom until the next deployment.
+
+Cross one equipment level, several same-level entries, and several levels in one
+award. Confirm every canonical metadata crossing is queued, at most four cards
+are visible, oldest cards expire first, and no message claims ownership. Send
+overlapping group invites and confirm their cards share the queue while the
+server invite expiry remains unchanged.
+
+Verify baseline faction grenades/smoke remain uncontrolled and available managed
+consumables become usable once their level, side and perk gates pass, without
+purchase, rental, ownership, or persisted quantities. Verify cargo preserves
+current-weapon and initial-kit priority before sorting by level then name/class,
+WP classes never appear,
+and 20/22/40 mm or flare-launcher ammunition appears only with a compatible
+intended weapon. Submit incompatible cargo directly and through a saved kit; the
+server must reject it. Remove GPS and populate NVG in saved intent, then confirm
+validation restores `ItemGPS`, clears NVG, and exposes neither fixed slot in the
+assigned-equipment browser. Check the BETA notice at 4:3, 16:9 and ultrawide: its
+button centre must match the LOADOUT column centre and its complete two-line text
+block must remain horizontally centred with the menu-only downward inset applied.
+Open the native pause menu and confirm its announcement text remains visible at
+the existing position without inheriting the main-menu inset.

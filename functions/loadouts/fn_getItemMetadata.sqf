@@ -38,6 +38,7 @@ private _minLevel = 1;
 private _requiredPerks = [];
 private _allowedSides = [];
 private _appearanceSide = "";
+private _available = true;
 
 if (_configured) then {
     if (isNumber (_cfg >> "minLevel")) then {
@@ -50,6 +51,9 @@ if (_configured) then {
         _allowedSides = (getArray (_cfg >> "allowedSides")) apply {toUpper _x};
     };
     _appearanceSide = toUpper (getText (_cfg >> "appearanceSide"));
+    if (isNumber (_cfg >> "available")) then {
+        _available = (getNumber (_cfg >> "available")) > 0;
+    };
 };
 
 createHashMapFromArray [
@@ -58,6 +62,7 @@ createHashMapFromArray [
     ["metadataGroup", _groupConfigName],
     ["itemClass", _class],
     ["configured", _configured],
+    ["available", _available],
     ["allowedSides", _allowedSides],
     ["appearanceSide", _appearanceSide],
     ["minLevel", _minLevel],

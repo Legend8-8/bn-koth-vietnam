@@ -646,6 +646,17 @@ class BN_KOTH_RscMenu
             sizeEx = "0.017 * safeZoneH";
         };
 
+        class StoreDetail: BN_KOTH_RscStructuredText
+        {
+            idc = BN_KOTH_IDC_MENU_STORE_DETAIL;
+            text = "";
+            x = BN_KOTH_MENU_CENTER_X + safeZoneW * 0.012;
+            y = BN_KOTH_MENU_MAIN_Y + safeZoneH * 0.404;
+            w = BN_KOTH_MENU_CENTER_W * 0.92;
+            h = safeZoneH * 0.085;
+            size = "0.024 * safeZoneH";
+        };
+
         class PrimaryBack: BN_KOTH_Menu_BackButton
         {
             idc = BN_KOTH_IDC_MENU_PRIMARY_BACK;
@@ -1613,9 +1624,9 @@ class BN_KOTH_RscMenu
 
         class Announcement: BN_KOTH_AnnouncementNotice
         {
-            x = BN_KOTH_MENU_X + BN_KOTH_MENU_W * 0.36;
+            x = BN_KOTH_MENU_CENTER_X;
             y = BN_KOTH_MENU_BOTTOM_Y + safeZoneH * 0.008;
-            w = BN_KOTH_MENU_W * 0.28;
+            w = BN_KOTH_MENU_CENTER_W;
             h = BN_KOTH_MENU_BOTTOM_H - safeZoneH * 0.016;
         };
 

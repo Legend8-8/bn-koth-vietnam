@@ -27,7 +27,7 @@ if !(_weaponSlot in ["PRIMARY", "HANDGUN", "LAUNCHER"]) exitWith {_entries};
 private _sourceWeaponsCfg = _compatibilityCfg >> "SourceWeapons";
 if !(isClass _sourceWeaponsCfg) exitWith {_entries};
 
-private _seenCanonicalClasses = [];
+private _seenTechnicalClasses = [];
 private _sortable = [];
 private _allowedWeaponTypes = switch (_weaponSlot) do {
     case "HANDGUN": {["handgun"]};
@@ -42,38 +42,39 @@ private _cfgWeaponType = switch (_weaponSlot) do {
 
 {
     private _weaponClass = toLower (configName _x);
+    if !((toLower (getText (_x >> "variantOf"))) isEqualTo "") then {continue};
     private _weaponType = toLower (getText (_x >> "weaponType"));
     if !(_weaponType in _allowedWeaponTypes) then {continue;};
 
     private _metadata = [_weaponClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
     if !(_metadata getOrDefault ["success", false]) then {continue;};
 
-    private _canonicalClass = _metadata getOrDefault ["canonicalClass", ""];
-    if (_canonicalClass isEqualTo "" || {_canonicalClass in _seenCanonicalClasses}) then {continue;};
+    private _technicalClass = _metadata getOrDefault ["technicalClass", _weaponClass];
+    if (_technicalClass isEqualTo "" || {_technicalClass in _seenTechnicalClasses}) then {continue;};
 
-    private _weaponCfg = configFile >> "CfgWeapons" >> _canonicalClass;
+    private _weaponCfg = configFile >> "CfgWeapons" >> _technicalClass;
     if !(isClass _weaponCfg) then {continue;};
     if !((getNumber (_weaponCfg >> "type")) isEqualTo _cfgWeaponType) then {continue;};
 
     private _displayName = getText (_weaponCfg >> "displayName");
     if (_displayName isEqualTo "") then {
-        _displayName = toUpper _canonicalClass;
+        _displayName = toUpper _technicalClass;
     };
 
     private _minLevel = (_metadata getOrDefault ["minLevel", 1]) max 1;
     private _levelText = str _minLevel;
     private _levelSortKey = ("000000" + _levelText) select [(count _levelText), 6];
 
-    _seenCanonicalClasses pushBack _canonicalClass;
+    _seenTechnicalClasses pushBack _technicalClass;
     private _entry = createHashMapFromArray [
-        ["weaponClass", _canonicalClass],
+        ["weaponClass", _technicalClass],
         ["displayName", _displayName],
         ["picture", getText (_weaponCfg >> "picture")],
         ["metadata", _metadata]
     ];
 
     _sortable pushBack [
-        format ["%1|%2|%3", _levelSortKey, toLower _displayName, _canonicalClass],
+        format ["%1|%2|%3", _levelSortKey, toLower _displayName, _technicalClass],
         _entry
     ];
 } forEach ("true" configClasses _sourceWeaponsCfg);
