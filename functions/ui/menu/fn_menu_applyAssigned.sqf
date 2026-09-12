@@ -18,7 +18,7 @@ if !(_pending isEqualType createHashMap) exitWith {false};
 private _available = _pending getOrDefault ["available", false];
 private _assignedIndex = _pending getOrDefault ["assignedIndex", -1];
 
-if (!_available || {!(_assignedIndex isEqualType 0)} || {!(_assignedIndex in [0, 1, 2, 3, 4, 5])}) exitWith {
+if (!_available || {!(_assignedIndex isEqualType 0)} || {!(_assignedIndex in [0, 2, 3, 4])}) exitWith {
     ["ASSIGNED EQUIPMENT SELECTION UNAVAILABLE."] call bn_koth_fnc_ui_notify;
     false
 };

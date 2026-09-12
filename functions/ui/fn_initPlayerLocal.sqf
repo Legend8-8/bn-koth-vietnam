@@ -72,6 +72,10 @@ uiNamespace setVariable ["BN_KOTH_lobbyContainedUnit", objNull];
 uiNamespace setVariable ["BN_KOTH_lobbyContainmentApplied", false];
 uiNamespace setVariable ["BN_KOTH_hudVisible", false];
 uiNamespace setVariable ["BN_KOTH_hudDisplay", displayNull];
+if (isNil {uiNamespace getVariable "BN_KOTH_notificationQueue"}) then {uiNamespace setVariable ["BN_KOTH_notificationQueue", []]};
+if (isNil {uiNamespace getVariable "BN_KOTH_notificationVisible"}) then {uiNamespace setVariable ["BN_KOTH_notificationVisible", []]};
+if (isNil {uiNamespace getVariable "BN_KOTH_mapInitialFocusNeeded"}) then {uiNamespace setVariable ["BN_KOTH_mapInitialFocusNeeded", false]};
+if (isNil {uiNamespace getVariable "BN_KOTH_mapLifecycleWasDeployed"}) then {uiNamespace setVariable ["BN_KOTH_mapLifecycleWasDeployed", false]};
 
 [_debugEnabled] call bn_koth_fnc_ui_toggleDebugDisplay;
 [] call bn_koth_fnc_ui_updateLobbyBlackout;

@@ -64,6 +64,11 @@ private _myState = _playerStates getOrDefault [_uid, "LOBBY"];
 [] call bn_koth_fnc_ui_results_update;
 [] call bn_koth_fnc_ui_transition_update;
 private _isDeployed = (_uid in _activeParticipants) || {_myState in ["ACTIVE", "RESPAWNING"]};
+private _wasDeployed = uiNamespace getVariable ["BN_KOTH_mapLifecycleWasDeployed", false];
+if (_isDeployed && {!_wasDeployed}) then {
+    uiNamespace setVariable ["BN_KOTH_mapInitialFocusNeeded", true];
+};
+uiNamespace setVariable ["BN_KOTH_mapLifecycleWasDeployed", _isDeployed];
 [_isDeployed] call _syncHud;
 
 if (!_isDeployed) then {

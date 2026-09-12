@@ -1,8 +1,8 @@
 /*
     File: test_progressionMetadata.sqf
     Author: Legend
-    Description: Focused in-engine checks for human-authored weapon and
-        attachment progression metadata. This file is not registered as a
+    Description: Focused in-engine checks for human-authored weapon, attachment,
+        and consumable progression metadata. This file is not registered as a
         runtime function.
     Execution: Hosted or dedicated server debug/test context
     Returns: Array of failed assertion labels <ARRAY>
@@ -129,11 +129,52 @@ private _entitlement = ["test_uid", "WEST", _level5Unowned, _l1a1Metadata, "vn_l
     {!(_entitlement getOrDefault ["owned", true])} &&
     {(_entitlement getOrDefault ["code", ""]) isEqualTo "REQUIRES_ACQUISITION"}] call _check;
 
-private _unresolvedMetadata = ["vn_fkb1_pm"] call bn_koth_fnc_loadouts_getWeaponMetadata;
-["PM flashlight remains unconfigured", !(_unresolvedMetadata getOrDefault ["configured", true])] call _check;
+private _pmFlashlightMetadata = ["vn_fkb1_pm"] call bn_koth_fnc_loadouts_getWeaponMetadata;
+["PM flashlight shares canonical PM progression", (_pmFlashlightMetadata getOrDefault ["configured", false]) && {(_pmFlashlightMetadata getOrDefault ["technicalClass", ""]) isEqualTo "vn_fkb1_pm"} && {(_pmFlashlightMetadata getOrDefault ["canonicalClass", ""]) isEqualTo "vn_pm"}] call _check;
+["PM flashlight inherits PM mastery policy", (_pmFlashlightMetadata getOrDefault ["masteryKillsRequired", 0]) isEqualTo 30] call _check;
+["PM flashlight technical root unlocks after base PM", (_pmFlashlightMetadata getOrDefault ["minLevel", 0]) isEqualTo 5] call _check;
 ["PM flashlight remains acquisition-uncontrolled",
-    (_unresolvedMetadata getOrDefault ["purchasePrice", 0]) < 0 &&
-    {(_unresolvedMetadata getOrDefault ["rentalPrice", 0]) < 0}] call _check;
+    (_pmFlashlightMetadata getOrDefault ["purchasePrice", 0]) < 0 &&
+    {(_pmFlashlightMetadata getOrDefault ["rentalPrice", 0]) < 0}] call _check;
+private _pmFlashlightSuppressedMetadata = ["vn_fkb1_pm_sd"] call bn_koth_fnc_loadouts_getWeaponMetadata;
+["Suppressed PM flashlight variant retains technical family and PM progression",
+    (_pmFlashlightSuppressedMetadata getOrDefault ["technicalClass", ""]) isEqualTo "vn_fkb1_pm" &&
+    {(_pmFlashlightSuppressedMetadata getOrDefault ["canonicalClass", ""]) isEqualTo "vn_pm"} &&
+    {(_pmFlashlightSuppressedMetadata getOrDefault ["minLevel", 0]) isEqualTo 5}] call _check;
+
+private _managedGrenadeMetadata = ["Consumables", "vn_f1_grenade_mag"] call bn_koth_fnc_loadouts_getItemMetadata;
+private _managedGrenadeLocked = [
+    createHashMapFromArray [["level", 2]],
+    _managedGrenadeMetadata, "vn_f1_grenade_mag", "WEST", false
+] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+["Managed grenade remains locked below its minimum level",
+    (_managedGrenadeLocked getOrDefault ["code", ""]) isEqualTo "LOCKED_LEVEL" &&
+    {!(_managedGrenadeLocked getOrDefault ["entitled", true])}] call _check;
+private _managedGrenadeEntitled = [
+    createHashMapFromArray [["level", 3]],
+    _managedGrenadeMetadata, "vn_f1_grenade_mag", "WEST", false
+] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+["Managed grenade becomes entitled when its level and policy gates pass",
+    (_managedGrenadeEntitled getOrDefault ["entitled", false]) &&
+    {(_managedGrenadeEntitled getOrDefault ["code", ""]) isEqualTo "ENTITLED"}] call _check;
+
+{
+    private _wpMetadata = ["Consumables", _x] call bn_koth_fnc_loadouts_getItemMetadata;
+    private _wpEntitlement = [createHashMapFromArray [["level", 999]], _wpMetadata, _x, "WEST", false] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+    [format ["WP class %1 remains explicitly unavailable", _x],
+        (_wpMetadata getOrDefault ["configured", false]) &&
+        {!(_wpMetadata getOrDefault ["available", true])} &&
+        {!(_wpEntitlement getOrDefault ["entitled", true])} &&
+        {(_wpEntitlement getOrDefault ["code", ""]) isEqualTo "NOT_AVAILABLE"}] call _check;
+} forEach [
+    "vn_m34_grenade_mag",
+    "vn_20mm_dgn_wp_mag",
+    "vn_22mm_m19_wp_mag",
+    "vn_m20a1b1_wp_mag",
+    "vn_mine_m18_wp_fuze10_mag",
+    "vn_mine_m18_wp_mag",
+    "vn_mine_m18_wp_range_mag"
+];
 
 private _svdOpticMetadata = ["Attachments", "vn_o_4x_svd"] call bn_koth_fnc_loadouts_getItemMetadata;
 ["SVD optic uses adjusted level 135",

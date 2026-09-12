@@ -306,15 +306,26 @@ private _validateCargoClass = {
         };
 
         private _allowedMagazines = [_loadout] call _resolveAllowedCargoMagazines;
-        private _magCategory = toLower (getText ((_sourceMagazinesCfg >> _classLower) >> "category"));
+        private _sourceMagazineCfg = _sourceMagazinesCfg >> _classLower;
+        private _magCategory = toLower (getText (_sourceMagazineCfg >> "category"));
+        private _compatibleWeapons = if (isArray (_sourceMagazineCfg >> "compatibleWeapons")) then {
+            getArray (_sourceMagazineCfg >> "compatibleWeapons")
+        } else {
+            []
+        };
+        private _weaponDependent = (count _compatibleWeapons) > 0;
         private _isGrenadeCategory = (_magCategory find "grenade") >= 0;
         private _isSmokeCategory = (_magCategory find "smoke") >= 0;
+        private _isFlareCategory = (_magCategory find "flare") >= 0;
+        private _isStandaloneThrowable = !_weaponDependent && {
+            _isGrenadeCategory || {_isSmokeCategory} || {_isFlareCategory}
+        };
 
-        if !((_classLower in _allowedMagazines) || {_isGrenadeCategory} || {_isSmokeCategory}) exitWith {
+        if !((_classLower in _allowedMagazines) || {_isStandaloneThrowable}) exitWith {
             createHashMapFromArray [
                 ["success", false],
                 ["code", "ERR_CARGO_MAGAZINE_INCOMPATIBLE"],
-                ["message", format ["Cargo magazine '%1' is not compatible with intended weapons and is not a grenade/smoke magazine.", _classLower]],
+                ["message", format ["Cargo magazine '%1' is not compatible with the intended weapons.", _classLower]],
                 ["kind", ""],
                 ["ammoCount", 0]
             ]
@@ -707,6 +718,12 @@ private _mutationCaseResult = switch (_op) do {
         while {(count _assignedSlot) < 6} do {
             _assignedSlot pushBack "";
         };
+        _assignedSlot resize 6;
+        // Fixed KOTH navigation policy is normalized before saved assigned
+        // entries are validated, so stale/edited NVG intent cannot reject or
+        // survive the authoritative LOAD path.
+        _assignedSlot set [1, "itemgps"];
+        _assignedSlot set [5, ""];
 
         for "_i" from 0 to 5 do {
             private _itemClass = toLower (_assignedSlot select _i);
@@ -934,8 +951,8 @@ private _mutationCaseResult = switch (_op) do {
         };
 
         private _assignedIndex = _assignedIndexRaw;
-        if !(_assignedIndex in [0, 1, 2, 3, 4, 5]) exitWith {
-            ["ERR_MALFORMED_REQUEST", "assignedIndex must be between 0 and 5.", _baseLoadoutId] call _resultFail
+        if !(_assignedIndex in [0, 2, 3, 4]) exitWith {
+            ["ERR_ASSIGNED_SLOT_FIXED", "The GPS slot is a fixed baseline and the NVG slot is unsupported.", _baseLoadoutId] call _resultFail
         };
 
         private _itemClassRaw = _mutation getOrDefault ["itemClass", "UNSET"];
@@ -1304,6 +1321,16 @@ if !(_resultCode isEqualTo "OK") exitWith {
 if !((_mutatedLoadout isEqualType []) && {(count _mutatedLoadout) >= 10}) exitWith {
     ["ERR_MUTATED_LOADOUT_SHAPE", "Mutated loadout shape is invalid.", _baseLoadoutId] call _resultFail
 };
+
+// Navigation baseline is server-owned. Preserve the native six-slot shape,
+// repair older saved kits, and keep the unsupported NVG slot empty.
+private _normalizedAssigned = _mutatedLoadout select 9;
+if !(_normalizedAssigned isEqualType []) then {_normalizedAssigned = []};
+while {(count _normalizedAssigned) < 6} do {_normalizedAssigned pushBack ""};
+_normalizedAssigned resize 6;
+_normalizedAssigned set [1, "itemgps"];
+_normalizedAssigned set [5, ""];
+_mutatedLoadout set [9, _normalizedAssigned];
 
 createHashMapFromArray [
     ["success", true],

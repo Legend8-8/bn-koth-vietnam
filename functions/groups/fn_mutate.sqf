@@ -225,7 +225,11 @@ switch (_operation) do {
         private _targetOwnerId = if (_targetRecord isEqualType createHashMap) then {_targetRecord getOrDefault ["ownerId", -1]} else {-1};
         private _groupName = _logical getOrDefault ["displayName", format ["SQUAD %1", _logical getOrDefault ["sequence", 0]]];
         private _leaderName = _record getOrDefault ["name", _uid];
-        [_targetOwnerId, format ["Group invite from %1 to %2. Open Group Menu to respond.", _leaderName, _groupName]] call bn_koth_fnc_teams_notifyPlayer;
+        [_targetOwnerId, createHashMapFromArray [
+            ["title", "GROUP INVITE"],
+            ["body", format ["%1 invited you to %2", _leaderName, _groupName]],
+            ["footer", "Open Group Menu to respond"]
+        ]] call bn_koth_fnc_teams_notifyPlayer;
         [true, "INVITED", "Invitation sent.", true, [_target, _uid]] call _result
     };
     case "ACCEPT_INVITE": {

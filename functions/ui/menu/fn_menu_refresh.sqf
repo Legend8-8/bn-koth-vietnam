@@ -139,6 +139,7 @@ private _ctrlPrimaryTitle = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_TITLE;
 private _ctrlPrimaryCurrent = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_CURRENT;
 private _ctrlPrimaryList = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_LIST;
 private _ctrlPrimaryDetail = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_DETAIL;
+private _ctrlStoreDetail = _display displayCtrl BN_KOTH_IDC_MENU_STORE_DETAIL;
 private _ctrlPrimaryBack = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_BACK;
 private _ctrlCargoMinus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_MINUS;
 private _ctrlCargoPlus = _display displayCtrl BN_KOTH_IDC_MENU_CARGO_PLUS;
@@ -381,7 +382,7 @@ private _kitManagerControls = [
 // visibility, geometry, text, and actions while STORE is active.
 private _storeViewControls = [
     _ctrlPrimaryPreview,
-    _ctrlPrimaryDetail,
+    _ctrlStoreDetail,
     _ctrlPrimaryBack,
     _ctrlPrimaryApply,
     _ctrlBrowserTitle,
@@ -391,6 +392,10 @@ private _storeViewControls = [
     _ctrlBrowserPageNext,
     _ctrlBrowserPageLabel
 ];
+
+// The Store has one structured detail surface. Other routes retain the shared
+// plain selector detail control and never inherit Store-specific formatting.
+_ctrlStoreDetail ctrlShow false;
 
 private _perkViewControls = [
     _ctrlPerksTitle,

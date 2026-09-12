@@ -50,7 +50,7 @@ if (isNull _display) exitWith {
             format ["[XP] %1 %2%3 XP", _reasonLabel, if (_amount >= 0) then {"+"} else {""}, _amount]
         } else {_reasonLabel}
     };
-    systemChat _fallback;
+    [_fallback] call bn_koth_fnc_ui_notify;
 };
 
 private _color = if (_type isEqualTo "xp") then {"#D8B04B"} else {if (_type isEqualTo "cash") then {"#75D66D"} else {"#E3C56A"}};

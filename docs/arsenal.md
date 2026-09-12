@@ -708,12 +708,16 @@ weapons at comparable levels. Rental is currently exactly 20% of purchase
 price. These are playtest values for the current provisional cash cadence, not
 final economy balance.
 
-The configured Level 1 starter roots (`vn_m1903`, `vn_m1911`, `vn_k98k`, and
-`vn_pm`) remain acquisition-uncontrolled. Deployment applies their configured
-starter loadouts directly and the current acquisition initializer does not seed
-starter ownership, so pricing them would make those guaranteed baseline kits
-fail later entitlement checks. `vn_fkb1_pm` also remains unpriced with its wider
-metadata pending manual review.
+The configured Level 1 starter roots (`vn_m3a1`, `vn_m1903`, `vn_m1911`,
+`vn_pps43`, `vn_k98k`, and `vn_pm`) remain acquisition-uncontrolled. Deployment
+applies their configured starter loadouts directly and the current acquisition
+initializer does not seed starter ownership, so pricing them would make those
+guaranteed baseline kits fail later entitlement checks. `vn_fkb1_pm` is a
+separately selectable technical root because its flashlight is integral rather
+than an ordinary attachment. Its `progressionRoot = "vn_pm"` policy shares PM
+side, mastery, ownership and acquisition state instead of creating duplicate
+progression. Its technical root has a level-5 override, so the flashlight form
+appears after the level-1 base PM while remaining the same progression family.
 
 ---
 
@@ -1629,15 +1633,26 @@ Wearable container selection and container contents are separate concerns.
   player can always clean up an existing kit.
 
 Unconfigured wearable and consumable metadata is deliberately uncontrolled. No
-level, perk, price, ownership, stock, or economy rule may be inferred from the
-factual catalogue or from a presentation category.
+level, perk, ownership, stock, or economy rule may be inferred from the factual
+catalogue or from a presentation category. Managed consumables may author
+`available`, `allowedSides`, `minLevel`, and `requiredPerks`; once those gates
+and weapon compatibility pass, they are entitled loadout supplies without
+purchase, rental, or ownership state. WP classes remain factual catalogue
+entries but use `available = 0`, so managed selection and positive cargo
+mutation fail closed.
 
 Cargo presentation uses the shared two-column card workspace. Factual candidates
 are grouped for navigation as ammunition, grenades, smoke/flares, medical,
 navigation/comms, or equipment. Cards display the authoritative intended-kit
 quantity and submit one-unit add/remove intents. Empty categories are disabled.
-These categories organize presentation only; the server continues to own class
-validity, entitlement, quantity limits, container capacity, and application.
+Cargo preserves current-weapon-ammunition priority first and initial-kit
+priority second, then sorts by minimum level and display name/class. Munitions
+whose factual `compatibleWeapons[]` is non-empty enter the browser only through
+the current intended weapons' canonical magazine sets. The server repeats that
+compatibility check, so grenade-like category text cannot bypass weapon
+compatibility. These categories organize presentation only; the server continues
+to own class validity, entitlement, quantity limits, container capacity, and
+application.
 
 Uniforms, vests, backpacks, headgear, facewear, and binoculars share the
 large-card item browser. Each slot keeps
@@ -1645,10 +1660,14 @@ its own factual catalogue and applied-state lookup. Backpack `NONE` is an
 explicit clear intent, and only an applied non-empty container may open its
 cargo configuration view. Human-authored `Metadata >> Wearables` requirements
 are evaluated for presentation and repeated by the server before a selection
-is accepted. Assigned equipment remains slot-first because map, navigation,
-radio, compass, watch, and NVG positions are independent loadout fields; both
-its slot and candidate stages use the card workspace, and candidates use the
-same entitlement rules.
+is accepted. Assigned equipment remains slot-first for configurable map, radio,
+compass and watch fields. The server normalizes the native six-slot array with
+`ItemGPS` in the baseline GPS field and an empty unsupported NVG field. Those two
+fixed fields are not exposed as selectors, so a saved intended kit cannot make
+GPS removal persistent while the required array shape remains unchanged. The
+`load_local_kit` owner performs that normalization before it validates saved
+assigned entries, and every menu load, preferred-kit selection and spawn reuse
+passes through that same authoritative validator.
 
 Weapon art may use the overview row's wide framing, while uniform, vest,
 headgear, and backpack art preserves its source aspect ratio in both overview
@@ -1675,8 +1694,9 @@ replaces it, but an unrelated Arsenal mutation cannot reapply it.
 
 Accepted managed primary, handgun, and launcher composition requests remove
 retained cargo magazines incompatible with all resulting weapon slots, using
-canonical compatibility data. Compatible magazines, grenade/smoke categories,
-and non-magazine cargo remain unchanged. This cleanup applies to managed
+canonical compatibility data. Compatible magazines, standalone throwables, and
+non-magazine cargo remain unchanged; weapon-dependent grenade/smoke/flare rounds
+do not receive a category-based exemption. This cleanup applies to managed
 weapon requests only; saved-kit loading continues to reject incompatible cargo.
 
 Saved kits are bounded server-persistent intent within the existing progression

@@ -136,12 +136,15 @@ if (isClass _sourceMagazinesCfg) then {
     {
         private _class = toLower (configName _x);
         private _category = toLower (getText (_x >> "category"));
+        private _compatibleWeapons = if (isArray (_x >> "compatibleWeapons")) then {getArray (_x >> "compatibleWeapons")} else {[]};
         if (
-            ((_category find "grenade") >= 0) ||
-            ((_category find "smoke") >= 0) ||
-            (_category isEqualTo "throwable_grenade") ||
-            (_category isEqualTo "throwable_smoke") ||
-            (_category isEqualTo "throwable_flare")
+            ((count _compatibleWeapons) isEqualTo 0) && {
+                ((_category find "grenade") >= 0) ||
+                ((_category find "smoke") >= 0) ||
+                (_category isEqualTo "throwable_grenade") ||
+                (_category isEqualTo "throwable_smoke") ||
+                (_category isEqualTo "throwable_flare")
+            }
         ) then {_candidates pushBackUnique _class;};
     } forEach ("true" configClasses _sourceMagazinesCfg);
 };
@@ -221,6 +224,7 @@ private _sideToken = if (_assignedSide isEqualTo west) then {"WEST"} else {if (_
             };
         };
         private _metadata = ["Consumables", _className] call bn_koth_fnc_loadouts_getItemMetadata;
+        if !(_metadata getOrDefault ["available", true]) then {continue};
         private _entitlement = [_progression, _metadata, _className, _sideToken, false] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
         private _entitled = _entitlement getOrDefault ["entitled", false];
         private _priority = 2;
@@ -235,7 +239,6 @@ private _sideToken = if (_assignedSide isEqualTo west) then {"WEST"} else {if (_
                 _reason = "IN KIT";
             };
         };
-
         private _entry = createHashMapFromArray [
             ["displayName", format ["%1  x%2", _displayName, _currentCount]],
             ["itemName", _displayName],
@@ -256,7 +259,10 @@ private _sideToken = if (_assignedSide isEqualTo west) then {"WEST"} else {if (_
             ["missingPerks", _entitlement getOrDefault ["missingPerks", []]],
             ["equipped", _currentCount > 0]
         ];
-        _sortable pushBack [format ["%1|%2", _priority, toLower _displayName], _entry];
+        private _requiredLevel = _metadata getOrDefault ["minLevel", 1];
+        private _levelText = str _requiredLevel;
+        private _levelSortKey = ("000000" + _levelText) select [(count _levelText), 6];
+        _sortable pushBack [format ["%1|%2|%3|%4", _priority, _levelSortKey, toLower _displayName, _className], _entry];
     } forEach _candidates;
 } forEach _containers;
 

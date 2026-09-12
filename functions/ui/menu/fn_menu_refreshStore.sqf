@@ -24,7 +24,7 @@ private _previous = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_PREVIOUS;
 private _next = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_NEXT;
 private _pageLabel = _display displayCtrl BN_KOTH_IDC_MENU_BROWSER_PAGE_LABEL;
 private _preview = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_PREVIEW;
-private _detail = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_DETAIL;
+private _detail = _display displayCtrl BN_KOTH_IDC_MENU_STORE_DETAIL;
 private _primaryAction = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_BACK;
 private _secondaryAction = _display displayCtrl BN_KOTH_IDC_MENU_PRIMARY_APPLY;
 
@@ -38,6 +38,41 @@ private _padX = safeZoneW * 0.012;
 private _catalogueW = _menuW * 0.61;
 private _detailX = _menuX + _menuW * 0.64;
 private _detailW = _menuX + _menuW - _padX - _detailX;
+
+private _escapeStructuredText = {
+    params [["_value", "", [""]]];
+    private _escaped = "";
+    {
+        _escaped = _escaped + (switch (_x) do {
+            case 38: {"&amp;"};
+            case 60: {"&lt;"};
+            case 62: {"&gt;"};
+            default {toString [_x]};
+        });
+    } forEach (toArray _value);
+    _escaped
+};
+
+private _setPlainDetail = {
+    params ["_lines"];
+    private _escapedLines = _lines apply {[_x] call _escapeStructuredText};
+    _detail ctrlSetStructuredText parseText (_escapedLines joinString "<br/>");
+};
+
+private _setWeaponDetail = {
+    params ["_entry", "_state"];
+    private _name = [_entry getOrDefault ["displayName", "UNKNOWN WEAPON"]] call _escapeStructuredText;
+    private _status = [_state getOrDefault ["detailStatus", "UNAVAILABLE"]] call _escapeStructuredText;
+    private _markup = format [
+        "<t font='PuristaSemiBold' size='1.35' color='#F2EEE6'>%1</t><br/><t font='PuristaSemiBold' size='1.05' color='#E5B849'>%2</t>",
+        _name,
+        _status
+    ];
+    {
+        _markup = _markup + format ["<br/><t font='RobotoCondensed' size='0.90' color='#AAA99F'>%1</t>", [_x] call _escapeStructuredText];
+    } forEach (_state getOrDefault ["detailLines", []]);
+    _detail ctrlSetStructuredText parseText _markup;
+};
 
 _title ctrlSetPosition [_menuX + _padX, _mainY + safeZoneH * 0.016, _catalogueW, safeZoneH * 0.040];
 _subtitle ctrlSetPosition [_menuX + _padX, _mainY + safeZoneH * 0.054, _catalogueW, safeZoneH * 0.026];
@@ -107,7 +142,7 @@ if !(_cachedEntries isEqualType []) then {_cachedEntries = []};
 switch (_route) do {
     case "ROOT": {
         _entries = [
-            ["INFANTRY", "INFANTRY", "Canonical infantry weapons grouped by operational role."] call _makeCategory,
+            ["INFANTRY", "INFANTRY", "Infantry weapons grouped by operational role."] call _makeCategory,
             ["GROUND", "GROUND VEHICLES", if (["GROUND"] call _vehicleRouteEnabled) then {"Curated ground combat and transport progression products."} else {"NO PAID GROUND SPAWN FOR THIS AO"}, ["GROUND"] call _vehicleRouteEnabled] call _makeCategory,
             ["ROTARY", "ROTARY WING", if (["ROTARY"] call _vehicleRouteEnabled) then {"Curated S.O.G. helicopter progression products."} else {"NO PAID AIR SPAWN FOR THIS AO"}, ["ROTARY"] call _vehicleRouteEnabled] call _makeCategory,
             ["FIXED_WING", "FIXED WING", if (["FIXED_WING"] call _vehicleRouteEnabled) then {"Curated S.O.G. aircraft progression products."} else {"NO PAID AIR SPAWN FOR THIS AO"}, ["FIXED_WING"] call _vehicleRouteEnabled] call _makeCategory
@@ -117,8 +152,8 @@ switch (_route) do {
         _breadcrumb = "STORE > INFANTRY";
         _entries = [
             ["INFANTRY_PRIMARY", "PRIMARY", "Rifles, SMGs, shotguns, marksman and support weapons."] call _makeCategory,
-            ["INFANTRY_SIDEARMS", "SIDEARMS", "Canonical infantry handguns."] call _makeCategory,
-            ["INFANTRY_LAUNCHERS", "LAUNCHERS", "Canonical shoulder-fired launcher weapons."] call _makeCategory
+            ["INFANTRY_SIDEARMS", "SIDEARMS", "Infantry handguns."] call _makeCategory,
+            ["INFANTRY_LAUNCHERS", "LAUNCHERS", "Shoulder-fired launcher weapons."] call _makeCategory
         ];
     };
     case "INFANTRY_PRIMARY";
@@ -127,7 +162,7 @@ switch (_route) do {
         _entryKind = "WEAPON";
         private _category = _route select [9];
         _breadcrumb = format ["STORE > INFANTRY > %1", _category];
-        _routeSubtitle = "DISCOVER, PURCHASE OR RENT CANONICAL WEAPONS";
+        _routeSubtitle = "DISCOVER, PURCHASE OR RENT WEAPONS";
         _entries = if (_cachedRoute isEqualTo _route) then {_cachedEntries} else {
             ([] call bn_koth_fnc_menu_buildStoreWeaponEntries) select {(_x getOrDefault ["storeCategory", ""]) isEqualTo _category}
         };
@@ -274,14 +309,14 @@ _secondaryAction buttonSetAction "";
 _preview ctrlSetText "";
 
 if ((count _pageEntries) isEqualTo 0) exitWith {
-    _detail ctrlSetText "NO PRODUCTS ARE CONFIGURED FOR THIS CATEGORY";
+    [["NO PRODUCTS ARE CONFIGURED FOR THIS CATEGORY"]] call _setPlainDetail;
 };
 
 private _selected = _pageEntries select _selectedOnPage;
 _preview ctrlSetText (_selected getOrDefault ["picture", ""]);
 switch (_entryKind) do {
     case "CATEGORY": {
-        _detail ctrlSetText ([_selected getOrDefault ["displayName", "CATEGORY"], "", _selected getOrDefault ["description", ""]] joinString endl);
+        [[_selected getOrDefault ["displayName", "CATEGORY"], "", _selected getOrDefault ["description", ""]]] call _setPlainDetail;
     };
     case "WEAPON": {
         private _weaponClass = _selected getOrDefault ["weaponClass", ""];
@@ -292,41 +327,7 @@ switch (_entryKind) do {
         private _rentalPrice = _state getOrDefault ["rentalPrice", -1];
         private _purchaseText = if (_purchasePrice >= 0) then {[_purchasePrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
         private _rentalText = if (_rentalPrice >= 0) then {[_rentalPrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
-        private _missingPerks = _entitlement getOrDefault ["missingPerks", []];
-        private _crossSide = _state getOrDefault ["crossSide", false];
-        private _crossSideAllowed = _state getOrDefault ["crossSideAllowed", false];
-        private _sideText = if (!_crossSide) then {
-            "NATIVE FACTION"
-        } else {
-            if (_crossSideAllowed) then {"CROSS-FACTION MASTERY"} else {"FACTION RESTRICTED"}
-        };
-        private _masteryText = if (_crossSide && {_crossSideAllowed}) then {
-            format ["%1 / %2 KILLS", _state getOrDefault ["masteryKills", 0], _state getOrDefault ["masteryRequired", 0]]
-        } else {
-            if (_crossSide) then {"N/A - FACTION RESTRICTED"} else {"N/A - NATIVE FACTION"}
-        };
-        private _ownershipText = if (_state getOrDefault ["owned", false]) then {"OWNED"} else {if (_state getOrDefault ["rented", false]) then {"RENTED"} else {"NOT ACQUIRED"}};
-        private _detailLines = [
-            _selected getOrDefault ["displayName", toUpper _weaponClass],
-            "",
-            format ["TYPE / CATEGORY: %1 / %2", toUpper (_selected getOrDefault ["weaponType", "weapon"]), _selected getOrDefault ["storeCategory", "INFANTRY"]],
-            format ["LEVEL: %1 / %2", _progression getOrDefault ["level", 1], _metadata getOrDefault ["minLevel", 1]],
-            format ["MASTERY: %1", _masteryText],
-            format ["SIDE: %1", _sideText]
-        ];
-        _detailLines append [
-            "",
-            "ACQUISITION",
-            format ["PURCHASE %1", _purchaseText],
-            format ["RENTAL %1", _rentalText],
-            format ["OWNERSHIP %1", _ownershipText],
-            "",
-            format ["PERKS: %1", if ((count _missingPerks) > 0) then {_missingPerks joinString ", "} else {"READY"}],
-            "",
-            "STATUS",
-            _state getOrDefault ["stateLabel", "UNAVAILABLE"]
-        ];
-        _detail ctrlSetText (_detailLines joinString endl);
+        [_selected, _state] call _setWeaponDetail;
         private _owned = _state getOrDefault ["owned",false];
         private _rented = _state getOrDefault ["rented",false];
         private _canEquipInArsenal = (_owned || {_rented}) && {_entitlement getOrDefault ["entitled", false]};
@@ -355,7 +356,7 @@ switch (_entryKind) do {
         private _rentalPrice = _state getOrDefault ["rentalPrice",-1];
         private _rentalText=if (_rentalPrice>=0) then {[_rentalPrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
         private _missingPerks = _state getOrDefault ["missingPerks", []];
-        _detail ctrlSetText ([
+        [[
             _selected getOrDefault ["displayName","VEHICLE"],"",
             format ["CATEGORY: %1",_metadata getOrDefault ["storeCategory",""]],
             format ["ROLE: %1",_metadata getOrDefault ["vehicleRole",""]],
@@ -363,7 +364,7 @@ switch (_entryKind) do {
             format ["LEVEL: %1 / %2",_progression getOrDefault ["level",1],_metadata getOrDefault ["minLevel",1]],
             format ["PERKS: %1",if ((count _missingPerks)>0) then {_missingPerks joinString ", "} else {"READY"}],"",
             "RENTAL",_rentalText,"","ACCESS","ONE VEHICLE LIFE","","STATUS",_state getOrDefault ["stateLabel","UNAVAILABLE"]
-        ] joinString endl);
+        ]] call _setPlainDetail;
         if (_state getOrDefault ["canRent",false]) then {
             _primaryAction ctrlShow true;_primaryAction ctrlEnable (_state getOrDefault ["canAffordRental",false]);_primaryAction ctrlSetText format ["RENT %1",_rentalText];
             _primaryAction buttonSetAction format ["['RENT',%1,''] call bn_koth_fnc_vehicles_requestRental;",str _vehicleClass];

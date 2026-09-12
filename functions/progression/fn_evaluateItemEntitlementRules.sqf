@@ -38,6 +38,10 @@ if !(_metadata getOrDefault ["success", false]) exitWith {
     [false, false, "LOCKED_STATE", "Item metadata is unavailable."] call _finish
 };
 
+if !(_metadata getOrDefault ["available", true]) exitWith {
+    [true, false, "NOT_AVAILABLE", "Item is not available in the KOTH Arsenal."] call _finish
+};
+
 private _sidePolicy = [
     _sideToken,
     _metadata,

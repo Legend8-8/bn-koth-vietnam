@@ -286,6 +286,59 @@ private _enforceManagedPerks = {
     _result
 };
 
+private _enforceManagedConsumables = {
+    params [["_result", createHashMap, [createHashMap]]];
+    if !(_result getOrDefault ["success", false]) exitWith {_result};
+
+    private _loadout = _result getOrDefault ["validatedLoadout", []];
+    private _failure = createHashMap;
+
+    // Loaded magazines are managed loadout content too. Apply the same
+    // server-owned level/side/perk policy as cargo.
+    {
+        private _weapon = _loadout param [_x, []];
+        if (_weapon isEqualType []) then {
+            {
+                private _magazine = _weapon param [_x, []];
+                private _magazineClass = if (_magazine isEqualType [] && {(count _magazine) > 0}) then {
+                    _magazine param [0, "", [""]]
+                } else {
+                    ""
+                };
+
+                if !(_magazineClass isEqualTo "") then {
+                    private _entitlement = [
+                        _uid,
+                        "Consumables",
+                        _magazineClass
+                    ] call bn_koth_fnc_progression_evaluateItemEntitlement;
+
+                    if !(_entitlement getOrDefault ["entitled", false]) then {
+                        _failure = [
+                            _entitlement getOrDefault ["code", "ERR_CONSUMABLE_ENTITLEMENT"],
+                            _entitlement getOrDefault ["message", "Loaded magazine is not entitled."],
+                            _result getOrDefault ["loadoutId", ""],
+                            _authoritativeSideToken
+                        ] call _fail;
+                    };
+                };
+
+                if ((count _failure) > 0) exitWith {};
+            } forEach [4, 5];
+        };
+
+        if ((count _failure) > 0) exitWith {};
+    } forEach [0, 1, 2];
+
+    if ((count _failure) > 0) exitWith {_failure};
+    _result
+};
+
+private _enforceManagedLoadout = {
+    params [["_result", createHashMap, [createHashMap]]];
+    [[_result] call _enforceManagedPerks] call _enforceManagedConsumables
+};
+
 private _validateWeaponEntitlement = {
     params ["_validatedWeapon"];
 
@@ -386,9 +439,18 @@ private _removeIncompatibleWeaponCargo = {
                     private _magCfg = _compatibilityCfg >> "SourceMagazines" >> _class;
                     if (isClass _magCfg) then {
                         private _category = toLower (getText (_magCfg >> "category"));
+                        private _compatibleWeapons = if (isArray (_magCfg >> "compatibleWeapons")) then {
+                            getArray (_magCfg >> "compatibleWeapons")
+                        } else {
+                            []
+                        };
+                        private _standaloneThrowable = ((count _compatibleWeapons) isEqualTo 0) && {
+                            ((_category find "grenade") >= 0) ||
+                            {(_category find "smoke") >= 0} ||
+                            {(_category find "flare") >= 0}
+                        };
                         _keep = (_class in _allowedMagazines) ||
-                            {(_category find "grenade") >= 0} ||
-                            {(_category find "smoke") >= 0};
+                            {_standaloneThrowable};
                     };
                 };
                 _keep
@@ -471,7 +533,7 @@ if (_requestMode isEqualTo "primary") exitWith {
         ["validatedPrimary", _validatedPrimary],
         ["validatedWeapons", _validatedWeapons],
         ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
-    ]] call _enforceManagedPerks
+    ]] call _enforceManagedLoadout
 };
 
 
@@ -1072,7 +1134,7 @@ if (_requestMode isEqualTo "weapons") exitWith {
         ["validatedPrimary", _validatedWeapons getOrDefault ["primary", createHashMap]],
         ["validatedWeapons", _validatedWeapons],
         ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
-    ]] call _enforceManagedPerks
+    ]] call _enforceManagedLoadout
 };
 
 if (_requestMode isEqualTo "mutation") exitWith {
@@ -1084,7 +1146,7 @@ if (_requestMode isEqualTo "mutation") exitWith {
         _assignedSide,
         _authoritativeSideToken,
         _authoritativeBaselineLoadout
-    ] call bn_koth_fnc_loadouts_validateMutation] call _enforceManagedPerks
+    ] call bn_koth_fnc_loadouts_validateMutation] call _enforceManagedLoadout
 };
 
 private _definition = _definitions getOrDefault [_requestedLoadoutId, objNull];
@@ -1134,4 +1196,4 @@ if ((count _validatedLoadout) <= 0) exitWith {
     ["validatedPrimary", createHashMap],
     ["validatedWeapons", createHashMap],
     ["validatedBy", "bn_koth_fnc_loadouts_validateLoadout"]
-]] call _enforceManagedPerks
+]] call _enforceManagedLoadout
