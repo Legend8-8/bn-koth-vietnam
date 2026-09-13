@@ -201,6 +201,7 @@ class CfgFunctions
             class persistence_normalizeSavedKits {file = "functions\persistence\fn_normalizeSavedKits.sqf";};
             class persistence_serializeSavedKits {file = "functions\persistence\fn_serializeSavedKits.sqf";};
             class persistence_deserializeSavedKits {file = "functions\persistence\fn_deserializeSavedKits.sqf";};
+            class persistence_parseExtdbSystemResponse {file = "functions\persistence\fn_parseExtdbSystemResponse.sqf";};
             class persistence_parseExtdbResponse {file = "functions\persistence\fn_parseExtdbResponse.sqf";};
             class persistence_extdbCall {file = "functions\persistence\fn_extdbCall.sqf";};
             class persistence_extdbInitialize {file = "functions\persistence\fn_extdbInitialize.sqf";};

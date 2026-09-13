@@ -28,9 +28,25 @@ remain in the server-local `extdb3-conf.ini`.
    changes.
 
 The mission performs `9:VERSION`, `9:ADD_DATABASE`, then
-`9:ADD_DATABASE_PROTOCOL` for the `SQL_CUSTOM` protocol. It does not log
-credentials or raw query parameters. A successful RPT marker includes
-`backend=EXTDB3`, `ready=true`, and `code=EXTDB_READY`.
+`9:ADD_DATABASE_PROTOCOL` for the `SQL_CUSTOM` protocol. Because extDB3 keeps
+database and protocol registrations alive for the server-process lifetime, a
+same-process mission reload returns `[0,"Already Connected to Database"]` for
+the database and `[0,"Error Protocol Name Already Taken"]` for the protocol.
+The extDB3 log spells the former message with an additional `a`, but that is not
+the `callExtension` return value. The adapter accepts only those exact
+source-defined duplicate responses; `Failed to Load Protocol`, unknown-protocol,
+other rejection, and malformed responses fail immediately. A reuse candidate
+must still complete the existing read-only `healthCheck` query against
+`bn_koth_player_progression` and return the exact BN KOTH schema-v3 protocol
+marker before publishing readiness.
+This probe is also required after cold registration, so a registered but stale,
+wrong, or unusable SQL_CUSTOM path fails closed. It does not log credentials or
+raw query parameters.
+
+A successful RPT marker includes `backend=EXTDB3`, `ready=true`,
+`code=EXTDB_READY`, and `lifecycle=COLD_INIT` or
+`lifecycle=MISSION_RELOAD_REUSE`. The preceding bounded registration messages
+identify database and protocol state as `COLD_REGISTERED` or `REUSED_EXISTING`.
 
 ## Serialization
 
@@ -81,7 +97,12 @@ server. Saves remain event-driven and debounced.
 10. Earn XP/cash/mastery, acquire a weapon, and save a named loadout; then disconnect and verify the
     save-success RPT marker.
 11. Reconnect and confirm the values and saved loadout restore and remain entitlement-validated.
-12. Restart the entire server and confirm the values restore again.
+12. Reload the mission without stopping `arma3server_x64.exe`; confirm
+    `MISSION_RELOAD_REUSE`, `EXTDB_READY`, durable values, subsequent saves, and
+    statistics/leaderboard queries all remain available without session fallback.
+13. Repeat the same-process mission reload at least once more.
+14. Restart the entire server and confirm `COLD_INIT` and the durable values
+    restore again.
 
 For the schema-v3 saved-kit deployment specifically: apply
 `003_add_saved_kits.sql`, copy the updated `bn_koth.ini` SQL_CUSTOM file, then

@@ -1,12 +1,12 @@
 /*
     File: fn_parseExtdbResponse.sqf
     Author: Legend
-    Description: Parses one bounded extDB3 response as data and rejects malformed/error replies.
+    Description: Parses one bounded extDB3 query response and optionally validates the persistence health-check contract.
     Execution: Server
     Public: No
 */
 
-params [["_raw", "", [""]]];
+params [["_raw", "", [""]], ["_expectedHealthMarker", "", [""]]];
 
 if (_raw isEqualTo "") exitWith {createHashMapFromArray [["success", false], ["code", "EXTENSION_NO_RESPONSE"], ["rows", []]]};
 private _parsed = [];
@@ -22,5 +22,18 @@ if (_parseFailed || {!(_parsed isEqualType [])} || {(count _parsed) < 1} || {!((
 if ((_parsed select 0) != 1) exitWith {createHashMapFromArray [["success", false], ["code", "EXTDB_QUERY_REJECTED"], ["rows", []]]};
 if ((count _parsed) != 2 || {!((_parsed select 1) isEqualType [])}) exitWith {
     createHashMapFromArray [["success", false], ["code", "MALFORMED_EXTDB_SUCCESS"], ["rows", []]]
+};
+if !(_expectedHealthMarker isEqualTo "") exitWith {
+    private _rows = _parsed select 1;
+    private _valid = (count _rows) isEqualTo 1
+        && {(_rows select 0) isEqualType []}
+        && {(count (_rows select 0)) isEqualTo 2}
+        && {((_rows select 0) select 0) isEqualTo _expectedHealthMarker}
+        && {((_rows select 0) select 1) isEqualTo 0};
+    if (_valid) then {
+        createHashMapFromArray [["success", true], ["code", "EXTDB_HEALTH_OK"], ["rows", _rows]]
+    } else {
+        createHashMapFromArray [["success", false], ["code", "HEALTH_CHECK_MISMATCH"], ["rows", _rows]]
+    }
 };
 createHashMapFromArray [["success", true], ["code", "EXTDB_OK"], ["rows", _parsed select 1]]
