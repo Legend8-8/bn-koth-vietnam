@@ -379,6 +379,15 @@ malformed records, and backend failures are logged explicitly. Configured sessio
 fallback remains server-authoritative, is write-blocked from durable storage, and
 never treats a failed save as a success.
 
+extDB3 registrations live for the lifetime of the server process, while the
+mission's readiness flags and progression maps are recreated on mission load.
+The persistence adapter therefore recognizes extDB3's exact duplicate database
+and protocol responses on same-process mission reload, then proves the
+configured SQL_CUSTOM protocol with a read-only `healthCheck` query against the
+canonical table before publishing readiness. The returned BN KOTH schema-v3
+marker also identifies the expected protocol file contract. A duplicate
+response alone never makes the backend ready.
+
 "functions/career/"
 
 Owns server-only lifetime career delta batching, connected-session playtime,

@@ -370,12 +370,15 @@ entry or per-frame activity.
 
 Pure extDB3 adapter checks in the same test cover deterministic owned-weapon and
 weapon-kill serialization, malformed codec input, valid/error/malformed extDB3
-response parsing, and persistent projection exclusions. `MEMORY` is used only to
+query and system-response parsing, and persistent projection exclusions. `MEMORY` is used only to
 exercise the service contract without a database. Before deployment, follow the
 live matrix in `docs/deployment-extdb3.md`: verify first-time insert, valid reload,
-mutation/disconnect UPSERT, reconnect, full server restart, unavailable database,
-and malformed/future-row fail-closed behavior. Inspect both the server RPT and
-extDB3 log; a session fallback is not proof of durability.
+mutation/disconnect UPSERT, reconnect, repeated same-process mission reloads,
+full server restart, unavailable database, and malformed/future-row fail-closed
+behavior. Each same-process reload must return to `EXTDB_READY`, restore the same
+durable values, permit another save, and keep statistics/leaderboards available.
+Inspect both the server RPT and extDB3 log; a session fallback is not proof of
+durability.
 
 Test the directly affected system and any system that depends on it.
 

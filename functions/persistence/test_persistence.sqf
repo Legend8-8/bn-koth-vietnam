@@ -210,6 +210,47 @@ private _extdbValid = ["[1,[[""76561198000000000"",3,12,34,""vn_m1903"",""vn_m19
 [_extdbValid getOrDefault ["success", false] && {(count (_extdbValid getOrDefault ["rows", []])) isEqualTo 1}, "Valid extDB3 response was rejected."] call _assert;
 [!((["[0,""Error MariaDBQueryException Exception""]"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "extDB3 error response was accepted."] call _assert;
 [!((["not an array"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "Malformed extDB3 response was accepted."] call _assert;
+private _databaseCold = ["[1]", "DATABASE"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
+private _databaseDuplicate = ["[0,""Already Connected to Database""]", "DATABASE"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
+private _databaseRejected = ["[0,""Database Connection Error""]", "DATABASE"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
+private _databaseMalformed = ["not an array", "DATABASE"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
+[(_databaseCold getOrDefault ["state", "FAILED"]) isEqualTo "COLD_REGISTERED", "Canonical database registration success was rejected."] call _assert;
+[(_databaseDuplicate getOrDefault ["state", "FAILED"]) isEqualTo "REUSE_CANDIDATE", "Exact extDB3 duplicate-database response was not accepted as a reuse candidate."] call _assert;
+[(_databaseRejected getOrDefault ["state", ""]) isEqualTo "FAILED", "Unrelated database rejection was accepted as reuse."] call _assert;
+[!(_databaseMalformed getOrDefault ["valid", true]) && {(_databaseMalformed getOrDefault ["state", ""]) isEqualTo "FAILED"}, "Malformed database response was accepted."] call _assert;
+
+private _protocolCold = ["[1]", "PROTOCOL"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
+private _protocolDuplicate = ["[0,""Error Protocol Name Already Taken""]", "PROTOCOL"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
+private _protocolLoadFailed = ["[0,""Failed to Load Protocol""]", "PROTOCOL"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
+private _protocolUnknown = ["[0,""Error Unknown Protocol""]", "PROTOCOL"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
+private _protocolMalformed = ["[1,""unexpected""]", "PROTOCOL"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
+[(_protocolCold getOrDefault ["state", "FAILED"]) isEqualTo "COLD_REGISTERED", "Canonical protocol registration success was rejected."] call _assert;
+[(_protocolDuplicate getOrDefault ["state", "FAILED"]) isEqualTo "REUSE_CANDIDATE", "Exact extDB3 duplicate-protocol response was not accepted as a reuse candidate."] call _assert;
+[(_protocolLoadFailed getOrDefault ["state", ""]) isEqualTo "FAILED" && {(_protocolUnknown getOrDefault ["state", ""]) isEqualTo "FAILED"}, "Known hard protocol failure was accepted as reuse."] call _assert;
+[!(_protocolMalformed getOrDefault ["valid", true]) && {(_protocolMalformed getOrDefault ["state", ""]) isEqualTo "FAILED"}, "Malformed protocol response was accepted."] call _assert;
+
+private _healthValid = ["[1,[[""BN_KOTH_PERSISTENCE_V3"",0]]]", "BN_KOTH_PERSISTENCE_V3"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _healthWrongMarker = ["[1,[[""OTHER_PROTOCOL"",0]]]", "BN_KOTH_PERSISTENCE_V3"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _healthWrongShape = ["[1,[]]", "BN_KOTH_PERSISTENCE_V3"] call bn_koth_fnc_persistence_parseExtdbResponse;
+[_healthValid getOrDefault ["success", false], "Valid persistence health response was rejected."] call _assert;
+[!(_healthWrongMarker getOrDefault ["success", true]) && {!(_healthWrongShape getOrDefault ["success", true])}, "Wrong health marker or shape was accepted."] call _assert;
+[(_protocolDuplicate getOrDefault ["state", "FAILED"]) isEqualTo "REUSE_CANDIDATE"
+    && {!(_healthWrongMarker getOrDefault ["success", true])},
+    "Protocol reuse candidate could become ready without successful health verification."] call _assert;
+private _extdbInitializerSource = preprocessFileLineNumbers "functions\persistence\fn_extdbInitialize.sqf";
+private _sqlCustomSource = preprocessFileLineNumbers "database\extdb3\bn_koth.ini.example";
+private _healthParseAt = _extdbInitializerSource find "private _probeResult = [_probeRaw, ""BN_KOTH_PERSISTENCE_V3""]";
+private _healthRejectAt = _extdbInitializerSource find "if !(_probeResult getOrDefault [""success"", false])";
+private _reusePromotionAt = _extdbInitializerSource find "if (_protocolState isEqualTo ""REUSE_CANDIDATE"") then {_protocolState = ""REUSED_EXISTING""}";
+[(_extdbInitializerSource find "healthCheck") >= 0
+    && {(_extdbInitializerSource find "BN_KOTH_PERSISTENCE_V3") >= 0}
+    && {_healthParseAt >= 0}
+    && {_healthRejectAt > _healthParseAt}
+    && {_reusePromotionAt > _healthRejectAt}
+    && {(_sqlCustomSource find "[healthCheck]") >= 0}
+    && {(_sqlCustomSource find "BN_KOTH_PERSISTENCE_V3") >= 0}
+    && {(_sqlCustomSource find "bn_koth_player_progression") >= 0},
+    "extDB3 initialization is missing its read-only BN KOTH protocol health check contract."] call _assert;
 
 private _legacy = [_knownUid, createHashMapFromArray [["uid", _knownUid], ["xp", 5]]] call bn_koth_fnc_persistence_normalizePlayerState;
 [(_legacy getOrDefault ["code", ""]) isEqualTo "NORMALIZED_LEGACY", "Missing schemaVersion was not handled as legacy."] call _assert;

@@ -8,6 +8,11 @@ Strip Chars Mode = 2
 Input SQF Parser = false
 Number of Retrys = 1
 
+[healthCheck]
+Prepared Statement = true
+SQL1_1 = SELECT 'BN_KOTH_PERSISTENCE_V3', COUNT(*) FROM bn_koth_player_progression WHERE 1 = 0;
+OUTPUT = 1-STRING,2
+
 [loadPlayer]
 Prepared Statement = true
 SQL1_1 = SELECT uid, schema_version, xp, cash, owned_weapons, weapon_kills, owned_perks, active_perks, saved_kits

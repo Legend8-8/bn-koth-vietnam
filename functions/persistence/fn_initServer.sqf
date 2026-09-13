@@ -47,4 +47,4 @@ private _backendResult = switch (_backend) do {
 private _ready = _backendResult getOrDefault ["success", false];
 missionNamespace setVariable ["BN_KOTH_persistenceBackendReady", _ready];
 private _level = if (_ready) then {"INFO"} else {"ERROR"};
-[format ["Persistence service initialized backend=%1 schemaVersion=%2 fallback=%3 ready=%4 code=%5", _backend, missionNamespace getVariable ["BN_KOTH_persistenceSchemaVersion", 1], _fallback, _ready, _backendResult getOrDefault ["code", "UNKNOWN"]], _level] call bn_koth_fnc_common_log;
+[format ["Persistence service initialized backend=%1 schemaVersion=%2 fallback=%3 ready=%4 code=%5 lifecycle=%6 databaseState=%7 protocolState=%8", _backend, missionNamespace getVariable ["BN_KOTH_persistenceSchemaVersion", 1], _fallback, _ready, _backendResult getOrDefault ["code", "UNKNOWN"], _backendResult getOrDefault ["lifecycle", "NOT_APPLICABLE"], _backendResult getOrDefault ["databaseState", "NOT_APPLICABLE"], _backendResult getOrDefault ["protocolState", "NOT_APPLICABLE"]], _level] call bn_koth_fnc_common_log;
