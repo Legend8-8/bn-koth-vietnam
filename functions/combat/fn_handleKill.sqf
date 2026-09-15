@@ -132,6 +132,13 @@ _kill set ["eventKey", format ["%1:%2:%3", _victimUid, netId _killed, diag_tickT
 // Weapon mastery must use weaponAttribution only, never the display-grade
 // method/weapon fields above.
 
+if (_validPvp && {_roundState isEqualTo "ACTIVE"} && {_killerInVehicle}) then {
+    private _vehicleMetadata = [typeOf (vehicle _effKiller)] call bn_koth_fnc_vehicles_getProgressionMetadata;
+    if (_vehicleMetadata getOrDefault ["success", false]) then {
+        [_killerUid, _vehicleMetadata getOrDefault ["familyId", ""], "infantryKills", 1, "valid_pvp_vehicle_kill"] call bn_koth_fnc_vehicles_awardMastery;
+    };
+};
+
 [_kill] call bn_koth_fnc_combat_publishKillFeed;
 
 _kill

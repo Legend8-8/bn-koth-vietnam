@@ -16,9 +16,10 @@ if (_vehicle getVariable ["BN_KOTH_transportInsertionRegistered", false]) exitWi
 private _metadata = [typeOf _vehicle] call bn_koth_fnc_vehicles_getProgressionMetadata;
 if !(_metadata getOrDefault ["success", false]) exitWith {false};
 private _categories = missionNamespace getVariable ["BN_KOTH_transportEligibleCategories", ["ROTARY"]];
-private _roles = missionNamespace getVariable ["BN_KOTH_transportEligibleRoles", ["TRANSPORT"]];
+private _requiredCapabilities = missionNamespace getVariable ["BN_KOTH_transportEligibleCapabilities", ["TRANSPORT"]];
 if !((_metadata getOrDefault ["storeCategory", ""]) in _categories) exitWith {false};
-if !((_metadata getOrDefault ["vehicleRole", ""]) in _roles) exitWith {false};
+private _capabilities = _metadata getOrDefault ["capabilities", []];
+if ((_requiredCapabilities findIf {_x in _capabilities}) < 0) exitWith {false};
 
 _vehicle setVariable ["BN_KOTH_transportInsertionRegistered", true, false];
 _vehicle addEventHandler ["GetIn", {

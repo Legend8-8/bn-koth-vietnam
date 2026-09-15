@@ -84,10 +84,10 @@ row explains that existing weighting without changing it.
 
 5. Player Progression
 
-XP, derived level, cash, permanent canonical weapon ownership, and weapon mastery
+XP, derived level, cash, permanent canonical weapon and logical vehicle-family ownership, and weapon/vehicle mastery
 are server-owned by player UID. The persistence service now defines their durable
 schema and lifecycle; its current in-memory adapter does not survive a server
-restart. Level is derived from XP. Rentals deliberately remain server-session-only
+restart. Level is derived from XP. Weapon and vehicle rentals deliberately remain server-session-only
 and reset on restart. Round statistics remain separate and are never projected
 into persistent player data.
 
@@ -218,20 +218,39 @@ entitlement presentation.
 
 8. Vehicles
 
-The current mission uses a server-managed limited free-vehicle selection.
-Human-authored metadata defines provisional level, side, rental price, Store
-category and role policy for the one-time imported public EAST/WEST S.O.G.
-factual audit's curated combat-vehicle progression set. Curated vehicles are
-rent-only: one RENT press is the complete transaction, spawning the vehicle and
-charging cash together, and destruction or authoritative cleanup ends that life
-without refund. There is no permanent vehicle ownership or server-session
-unlimited vehicle unlock. The free lifecycle remains separate.
+The current mission keeps server-managed free AO vehicles and the command
+vehicle as team assets. A separate curated paid-player surface is authored
+directly in `config/vehicles.hpp` and maps physical classes to stable logical
+families and loadouts. That config is the maintained progression catalogue;
+tests audit it without rewriting it. Purchasing the base product grants
+permanent family ownership and includes that first spawn; later owned lives use
+a lower loadout-specific replacement/requisition fee and cooldown. Non-owners
+may rent any product with `rentable = 1` once its native side, level, perk and
+authored mastery prerequisite chain is satisfied; rental evaluation does not
+require family ownership. One UID may have only one active personal paid vehicle
+life across both paths.
+
+Vehicle economy values are authored per product rather than derived from one
+formula. Family purchase prices reflect durable ownership, loadout replacement
+prices reflect recurring life cost, and configured rentals remain above
+replacement cost. Balance considers progression tier, armament, survivability,
+mobility, troop utility and native-side context.
 
 The initial product surface uses ground, rotary-wing and fixed-wing categories;
-sea remains reserved for a later curated pass. Vehicle unlocks are broad
-account milestones and do not use weapon mastery. Purchase/rental balance is
-provisional. Active purchased-vehicle limits, persistence and final prices
-remain future work.
+sea remains reserved for a later curated pass. Stronger loadouts are earned from
+family mastery prerequisites rather than bought separately. Current authoritative
+contributions are valid PvP infantry kills while operating the family and fully
+validated transport insertions/passengers/distance. Non-Cobra rotary chains use
+validated insertions; infantry-facing weapon, CAS, bomber and mortar chains may
+use valid infantry kills. Specialist AA, AT, CAP, SEAD and armour steps add no
+contrived infantry-kill task and are deliberately provisional until a suitable
+server-authoritative award owner exists. Other generic counters stay available
+for future evidence owners but are not awarded speculatively.
+
+Helicopter roles are multi-capability. All 24 curated non-AH-1G rotary products
+have `TRANSPORT`, `COMBAT` and `CAS`; all five AH-1G Cobra products have only
+`COMBAT` and `CAS`. Native `allowedSides[]` restrictions remain active. Cross-side access,
+captured vehicles and reskins are not enabled, and current appearance is unchanged.
 
 Helicopter transport should be an important part of the Vietnam setting.
 

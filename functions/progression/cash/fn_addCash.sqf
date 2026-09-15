@@ -8,6 +8,7 @@
         1: Positive cash amount <NUMBER>
         2: Reward reason <STRING>
         3: Publish a separate progression/reward-feed update <BOOL>
+        4: Record as a round reward (false for compensating rollback) <BOOL>
     Returns:
         Structured operation result <HASHMAP>
     Public: Yes
@@ -17,7 +18,8 @@ params [
     ["_uid", "", [""]],
     ["_amount", 0, [0]],
     ["_reason", "", [""]],
-    ["_publishReward", true, [true]]
+    ["_publishReward", true, [true]],
+    ["_recordRoundReward", true, [true]]
 ];
 
 private _rejected = {
@@ -54,7 +56,7 @@ missionNamespace setVariable ["BN_KOTH_playerProgression", _progressionByUid];
 if (_publishReward) then {
     [_uid, "cash", _amount, _reason] call bn_koth_fnc_progression_publishUpdate;
 };
-[_uid, "cash", _amount] call bn_koth_fnc_roundStats_recordReward;
+if (_recordRoundReward) then {[_uid, "cash", _amount] call bn_koth_fnc_roundStats_recordReward};
 [format ["Cash award UID=%1 reason=%2 amount=%3 total=%4", _uid, _reason, _amount, _newCash]] call bn_koth_fnc_common_log;
 
 createHashMapFromArray [

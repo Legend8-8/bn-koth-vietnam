@@ -32,7 +32,7 @@ private _backup = createHashMap;
     };
 } forEach _variables;
 
-missionNamespace setVariable ["BN_KOTH_persistenceSchemaVersion", 3];
+missionNamespace setVariable ["BN_KOTH_persistenceSchemaVersion", 4];
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "MEMORY"];
 missionNamespace setVariable ["BN_KOTH_persistenceBackendReady", true];
 missionNamespace setVariable ["BN_KOTH_persistenceSaveDebounceSeconds", 0];
@@ -57,7 +57,7 @@ private _firstState = _first getOrDefault ["state", createHashMap];
 private _knownUid = "PERSIST_KNOWN";
 private _rawKills = createHashMapFromArray [["VN_M1903", 7]];
 private _raw = createHashMapFromArray [
-    ["schemaVersion", 3], ["uid", _knownUid], ["xp", 12345], ["level", 999], ["cash", 4321],
+    ["schemaVersion", 4], ["uid", _knownUid], ["xp", 12345], ["level", 999], ["cash", 4321],
     ["ownedWeapons", ["VN_M1903"]], ["rentedWeapons", ["vn_m1911"]], ["weaponKills", _rawKills],
     ["ownedPerks", ["SUPPRESSOR", "unknown", "suppressor"]], ["activePerks", ["suppressor", "unknown"]]
 ];
@@ -127,7 +127,7 @@ private _schemaTwo = [_knownUid, createHashMapFromArray [
 ]] call bn_koth_fnc_persistence_normalizePlayerState;
 private _schemaTwoState = _schemaTwo getOrDefault ["state", createHashMap];
 [(_schemaTwo getOrDefault ["code", ""]) isEqualTo "NORMALIZED_LEGACY"
-    && {(_schemaTwoState getOrDefault ["schemaVersion", -1]) isEqualTo 3}
+    && {(_schemaTwoState getOrDefault ["schemaVersion", -1]) isEqualTo 4}
     && {(count (_schemaTwoState getOrDefault ["savedKits", ["bad"]])) isEqualTo 0}
     && {(_schemaTwoState getOrDefault ["xp", -1]) isEqualTo 77}, "Schema v2 did not normalize to v3 without losing unrelated progression."] call _assert;
 
@@ -206,7 +206,7 @@ private _invalidNumericSave = ["76561198000000000", createHashMapFromArray [
 [!(_invalidNumericSave getOrDefault ["success", true]) && {(_invalidNumericSave getOrDefault ["code", ""]) isEqualTo "INVALID_PERSISTENT_NUMERIC_FIELDS"}, "Malformed persistent numeric fields reached extDB3."] call _assert;
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "MEMORY"];
 
-private _extdbValid = ["[1,[[""76561198000000000"",3,12,34,""vn_m1903"",""vn_m1903=7"",""suppressor"",""suppressor"",""-""]]]"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _extdbValid = ["[1,[[""76561198000000000"",4,12,34,""vn_m1903"",""vn_m1903=7"",""suppressor"",""suppressor"",""-"",""-""]]]"] call bn_koth_fnc_persistence_parseExtdbResponse;
 [_extdbValid getOrDefault ["success", false] && {(count (_extdbValid getOrDefault ["rows", []])) isEqualTo 1}, "Valid extDB3 response was rejected."] call _assert;
 [!((["[0,""Error MariaDBQueryException Exception""]"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "extDB3 error response was accepted."] call _assert;
 [!((["not an array"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "Malformed extDB3 response was accepted."] call _assert;
@@ -229,9 +229,9 @@ private _protocolMalformed = ["[1,""unexpected""]", "PROTOCOL"] call bn_koth_fnc
 [(_protocolLoadFailed getOrDefault ["state", ""]) isEqualTo "FAILED" && {(_protocolUnknown getOrDefault ["state", ""]) isEqualTo "FAILED"}, "Known hard protocol failure was accepted as reuse."] call _assert;
 [!(_protocolMalformed getOrDefault ["valid", true]) && {(_protocolMalformed getOrDefault ["state", ""]) isEqualTo "FAILED"}, "Malformed protocol response was accepted."] call _assert;
 
-private _healthValid = ["[1,[[""BN_KOTH_PERSISTENCE_V3"",0]]]", "BN_KOTH_PERSISTENCE_V3"] call bn_koth_fnc_persistence_parseExtdbResponse;
-private _healthWrongMarker = ["[1,[[""OTHER_PROTOCOL"",0]]]", "BN_KOTH_PERSISTENCE_V3"] call bn_koth_fnc_persistence_parseExtdbResponse;
-private _healthWrongShape = ["[1,[]]", "BN_KOTH_PERSISTENCE_V3"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _healthValid = ["[1,[[""BN_KOTH_PERSISTENCE_V4"",0]]]", "BN_KOTH_PERSISTENCE_V4"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _healthWrongMarker = ["[1,[[""OTHER_PROTOCOL"",0]]]", "BN_KOTH_PERSISTENCE_V4"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _healthWrongShape = ["[1,[]]", "BN_KOTH_PERSISTENCE_V4"] call bn_koth_fnc_persistence_parseExtdbResponse;
 [_healthValid getOrDefault ["success", false], "Valid persistence health response was rejected."] call _assert;
 [!(_healthWrongMarker getOrDefault ["success", true]) && {!(_healthWrongShape getOrDefault ["success", true])}, "Wrong health marker or shape was accepted."] call _assert;
 [(_protocolDuplicate getOrDefault ["state", "FAILED"]) isEqualTo "REUSE_CANDIDATE"
@@ -239,22 +239,22 @@ private _healthWrongShape = ["[1,[]]", "BN_KOTH_PERSISTENCE_V3"] call bn_koth_fn
     "Protocol reuse candidate could become ready without successful health verification."] call _assert;
 private _extdbInitializerSource = preprocessFileLineNumbers "functions\persistence\fn_extdbInitialize.sqf";
 private _sqlCustomSource = preprocessFileLineNumbers "database\extdb3\bn_koth.ini.example";
-private _healthParseAt = _extdbInitializerSource find "private _probeResult = [_probeRaw, ""BN_KOTH_PERSISTENCE_V3""]";
+private _healthParseAt = _extdbInitializerSource find "private _probeResult = [_probeRaw, ""BN_KOTH_PERSISTENCE_V4""]";
 private _healthRejectAt = _extdbInitializerSource find "if !(_probeResult getOrDefault [""success"", false])";
 private _reusePromotionAt = _extdbInitializerSource find "if (_protocolState isEqualTo ""REUSE_CANDIDATE"") then {_protocolState = ""REUSED_EXISTING""}";
 [(_extdbInitializerSource find "healthCheck") >= 0
-    && {(_extdbInitializerSource find "BN_KOTH_PERSISTENCE_V3") >= 0}
+    && {(_extdbInitializerSource find "BN_KOTH_PERSISTENCE_V4") >= 0}
     && {_healthParseAt >= 0}
     && {_healthRejectAt > _healthParseAt}
     && {_reusePromotionAt > _healthRejectAt}
     && {(_sqlCustomSource find "[healthCheck]") >= 0}
-    && {(_sqlCustomSource find "BN_KOTH_PERSISTENCE_V3") >= 0}
+    && {(_sqlCustomSource find "BN_KOTH_PERSISTENCE_V4") >= 0}
     && {(_sqlCustomSource find "bn_koth_player_progression") >= 0},
     "extDB3 initialization is missing its read-only BN KOTH protocol health check contract."] call _assert;
 
 private _legacy = [_knownUid, createHashMapFromArray [["uid", _knownUid], ["xp", 5]]] call bn_koth_fnc_persistence_normalizePlayerState;
 [(_legacy getOrDefault ["code", ""]) isEqualTo "NORMALIZED_LEGACY", "Missing schemaVersion was not handled as legacy."] call _assert;
-private _future = [_knownUid, createHashMapFromArray [["schemaVersion", 4], ["uid", _knownUid]]] call bn_koth_fnc_persistence_normalizePlayerState;
+private _future = [_knownUid, createHashMapFromArray [["schemaVersion", 5], ["uid", _knownUid]]] call bn_koth_fnc_persistence_normalizePlayerState;
 [!(_future getOrDefault ["success", true]) && {(_future getOrDefault ["code", ""]) isEqualTo "UNSUPPORTED_FUTURE_SCHEMA"}, "Future schema did not fail closed."] call _assert;
 private _malformed = [_knownUid, createHashMapFromArray [["schemaVersion", 1], ["uid", _knownUid], ["xp", "bad"], ["cash", -4], ["ownedWeapons", "bad"], ["weaponKills", []]]] call bn_koth_fnc_persistence_normalizePlayerState;
 private _malformedState = _malformed getOrDefault ["state", createHashMap];

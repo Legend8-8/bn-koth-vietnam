@@ -69,5 +69,5 @@ if ((count _missingPerks) > 0) exitWith {
         ["purchasePrice", _metadata getOrDefault ["purchasePrice", -1]],
         ["rentalPrice", _metadata getOrDefault ["rentalPrice", -1]],
         ["storeCategory", _metadata getOrDefault ["storeCategory", ""]],
-        ["vehicleRole", _metadata getOrDefault ["vehicleRole", ""]]
+        ["capabilities", +(_metadata getOrDefault ["capabilities", []])]
     ]] call _finish

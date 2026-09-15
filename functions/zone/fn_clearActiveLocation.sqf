@@ -88,6 +88,7 @@ missionNamespace setVariable ["BN_KOTH_warnedPriorityZoneTooLarge", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZonePosition", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMarker", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneSize", nil];
+["AO_RESET"] call bn_koth_fnc_vehicles_cleanupPersonalVehicles;
 [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
 private _pickupCleanupCount = [] call bn_koth_fnc_zone_cleanupBattlefieldPickups;
 private _runtimeCleanupCount = [] call bn_koth_fnc_zone_cleanupRuntimeObjects;

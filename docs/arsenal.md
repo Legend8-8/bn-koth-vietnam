@@ -1823,13 +1823,17 @@ Once a cross-faction weapon becomes entitled (side, level, mastery, perks all
 satisfied and owned/rented), it appears in Arsenal like any native weapon under
 the existing filtering; Arsenal never lists a locked cross-faction weapon.
 
-Vehicle progression preparation is owned separately by
-`CfgBnKothVehicles >> Metadata >> Vehicles`. Canonical vehicle roots explicitly
-declare `allowedSides[]`, `minLevel`, provisional purchase/rental prices,
-`storeCategory`, and `vehicleRole`; structural relationships may be declared
+Vehicle progression preparation is owned separately by the authoritative,
+human-authored `config/vehicles.hpp` catalogue under
+`CfgBnKothVehicles >> Metadata >> Vehicles`. Validation of this config is
+strictly read-only. Canonical vehicle roots explicitly
+declare stable family/loadout IDs, `allowedSides[]`, `minLevel`, family purchase,
+loadout rental/replacement prices, prerequisites, `storeCategory`, and
+`capabilities[]`; structural relationships may be declared
 only with `variantOf` and inherit root policy. The current taxonomy is
-`GROUND`, `SEA`, `ROTARY`, and `FIXED_WING`, with a separate role such as
-`TRANSPORT`, `LOGISTICS`, `COMMAND`, or `COMBAT`.
+`GROUND`, `SEA`, `ROTARY`, and `FIXED_WING`. Capabilities are non-exclusive:
+all 24 non-Cobra rotary products have exactly `TRANSPORT`, `COMBAT` and `CAS`,
+while all five AH-1G products have exactly `COMBAT` and `CAS`.
 
 The factual audit of public physical classes from the official S.O.G.
 EAST/WEST CfgVehicles tables lives in `data/vehicle_inventory.csv`. The Store
@@ -1841,16 +1845,29 @@ exposes no dependable inheritance graph, so no vehicle `variantOf` links are
 authored. Factual table side and faction remain evidence only, while config
 owns deliberate KOTH availability and balance.
 
-Only those curated metadata entries are discoverable in the vehicle Store
-categories. Vehicles are RENT-only and the displayed price buys one vehicle
-life. RENT is one immediate authoritative transaction: successful server-side
-spawn and cash deduction happen together, so a single RENT press either ends
-with a live active vehicle or with nothing charged. An active life ends on
-destruction or authoritative cleanup, with no refund or entitlement
-restoration. There is no BUY action, permanent vehicle ownership, persisted
-rental, or session-wide unlimited unlock. M577 rental grants only the normal
-vehicle object and never
-managed command/teleport capability. Vehicles do not use weapon mastery.
+Only those curated metadata entries are discoverable in vehicle Store
+categories. An unowned base card offers PURCHASE and, where configured, RENT.
+Purchase grants permanent logical-family ownership and includes the immediate
+first base spawn. Owned/unlocked cards offer a lower-priced REPLACEMENT;
+mastery-locked cards show the prerequisite chain and current/required counters.
+Some top loadouts are explicitly non-rentable. AO category, side, level, perk,
+cooldown, cash and the one-active-personal-vehicle rule remain server-enforced.
+Mastery requirements use only currently awarded server evidence; specialist AA,
+AT, CAP, SEAD and armour steps remain provisional instead of borrowing an
+unrelated infantry-kill counter.
+
+Vehicle catalogue presentation groups each human-readable family with its base
+loadout first and advanced products in prerequisite order. Base cards identify
+the purchase/ownership boundary without inventing a prerequisite. Advanced
+cards resolve their required product to its configured vehicle display name;
+logical family/loadout identifiers remain internal and never appear in Store
+detail text.
+
+Vehicle Store actions never mutate managed free AO vehicles or the command
+vehicle. Physical paid vehicles and rentals remain transient. Ownership,
+first-spawn use and family mastery persist through schema v4. Future cross-side
+and visual-profile fields are dormant/default-deny; Store does not expose a
+cross-side spawn and the current spawn path applies no texture changes.
 # Perk-gated managed equipment
 
 Attachment facts continue to come from the generated S.O.G. compatibility catalogue. The Suppressor perk uses factual `SourceItems.itemType = "suppressor"` metadata. While inactive, any complete managed loadout containing such an item in a weapon slot or uniform/vest/backpack cargo is rejected with `ERR_PERK_SUPPRESSOR_INACTIVE`. Persisted saved-kit intent is not modified; applying one is denied until the perk is active. Battlefield pickups are intentionally outside this managed-loadout rule.

@@ -25,6 +25,10 @@ sizing regardless of team-selection state; the existing team-selected UID path
 continues to own voting and deployment eligibility. The round system retains
 valid published candidates and reconciles them only when current connected-human
 population invalidates an option, with a final resolution-time defence.
+For beta vehicle testing only, a disabled-by-default server missionNamespace
+override may substitute the population at that reconciliation boundary. It does
+not mutate the connected-human UID owner or any other population consumer and
+is explicitly cleared by round-server initialization.
 
 Location vehicle capability is derived centrally from actual convention-resolved
 Eden spawn roles. UI and vehicle systems consume the same side-specific free,
@@ -384,7 +388,7 @@ mission's readiness flags and progression maps are recreated on mission load.
 The persistence adapter therefore recognizes extDB3's exact duplicate database
 and protocol responses on same-process mission reload, then proves the
 configured SQL_CUSTOM protocol with a read-only `healthCheck` query against the
-canonical table before publishing readiness. The returned BN KOTH schema-v3
+canonical table before publishing readiness. The returned BN KOTH schema-v4
 marker also identifies the expected protocol file contract. A duplicate
 response alone never makes the backend ready.
 
@@ -591,11 +595,16 @@ transactions never auto-equip a weapon.
 
 14. Vehicle Progression Boundary
 
-`CfgBnKothVehicles >> Metadata >> Vehicles` owns human-authored vehicle
-progression and provisional economy policy. Canonical roots own side, level,
-price, Store category and role fields; an explicitly authored structural
+`config/vehicles.hpp`, under `CfgBnKothVehicles >> Metadata >> Vehicles`, is the
+authoritative human-authored vehicle progression catalogue. Validation of this
+config is strictly read-only. Canonical physical roots map to stable
+logical family and loadout IDs and own side, level, purchase/rental/replacement prices,
+Store category, capability sets and prerequisite fields; an explicitly authored structural
 variant may contain only `variantOf` and inherits the root policy. Runtime must
-not infer relationships or Store grouping from classnames.
+not infer relationships or Store grouping from classnames. Logical IDs are
+durable progression/persistence identifiers; classname or ID changes require a
+deliberate migration and compatibility review. Cross-side and visual-profile
+fields remain dormant/default-deny until explicitly enabled by a later design.
 
 The one-time factual source audit is stored in `data/vehicle_inventory.csv`.
 It records public physical EAST/WEST S.O.G. classes and official table facts
@@ -605,16 +614,43 @@ current metadata authors only a curated combat-progression surface and
 declares no vehicle `variantOf` relationships. Paint, faction and support-only
 copies remain audit rows, not progression products.
 
-`functions/vehicles/` owns config lookup, pure side/level/perk eligibility and
-the authoritative one-life rental lifecycle. RENT is the complete transaction:
+`functions/vehicles/` owns config lookup, pure side/level/perk/family/loadout
+eligibility and the authoritative personal paid-vehicle lifecycle. RENT,
+PURCHASE and SPAWN reuse one transaction and one active-life map:
 it requires the current server-owned representation to be alive and actively
 deployed at its team mapboard, validates eligibility and affordability, reserves an authored paid pad,
-creates and sanitizes the exact curated vehicle, registers UID-owned access
-state, and only then charges cash exactly once. One UID may hold at most one
-active rented vehicle at a time; there is no pending/requisition stage. Rental
-state never persists. The managed free-vehicle and command-vehicle lifecycles
-remain separate, and a
-rented M577 receives no managed command capability.
+creates and sanitizes the exact curated vehicle, and charges cash exactly once.
+PURCHASE atomically persists family ownership and consumed included-first-spawn
+state with the charge; SPAWN uses the authored replacement price. A failed
+spawn or durable save rolls back the entity, charge and ownership mutation.
+One UID may hold at most one active rented or owned life. Physical entities and
+rentals never persist. Logical ownership, first-spawn use and family mastery do.
+The single shared vehicle monitor owns abandonment, disconnect, deletion and
+cleanup. Its life-ending owner applies replacement cooldown only to genuine
+loss (including destruction, attributable deletion, abandonment and owner
+disconnect). Forced AO, round, mission and return-to-lobby cleanup removes the
+active personal vehicle and record without starting a replacement-loss cooldown.
+Managed free and command vehicles remain separate team assets.
+
+The vehicle Store derives an aggregate presentation of all currently unmet
+requirements from targeted state and authored metadata; it does not grant or
+override entitlement. Families are grouped by their base loadout's minimum
+level, remain contiguous, and then follow authored prerequisite depth. The
+requester-only transaction result invalidates that presentation cache and is
+shown inline so a server rejection cannot disappear behind an unchanged card.
+
+Loadout unlocks are deterministically derived from family ownership and the
+config-authored prerequisite graph, so no duplicate persisted unlock list exists.
+Server-evidenced vehicle infantry kills and validated transport insertions,
+passengers and distance mutate family mastery through one owner. Authored
+requirements use only counters with such current evidence. Specialist AA, AT,
+CAP, SEAD and armour steps remain explicitly provisional rather than presenting
+an unrelated infantry-kill task. Capability sets replace the former exclusive
+role: all 24 curated non-Cobra helicopters have exactly `TRANSPORT`, `COMBAT`
+and `CAS`; all five AH-1Gs have exactly `COMBAT` and `CAS`.
+Transport rewards consume the capability set and retain their existing abuse
+checks. Cross-side and visual-profile metadata are dormant/default-deny. The
+spawn hook accepts only the empty native visual profile and applies no texture.
 
 ## Round accounting and results
 
@@ -644,7 +680,7 @@ untrusted intent when the durable set is empty. Persistence never grants
 equipment entitlement. A saved Unit Loadout is revalidated through the normal
 side, level, ownership, mastery, perk, and rental checks every time it is
 loaded or selected for spawn. Fixed GPS/NVG assigned slots are normalized inside
-that validation before saved assigned entries are checked. The schema-v3 extDB3
+that validation before saved assigned entries are checked. The schema-v4 extDB3
 codec is data-only and is decoded with `parseSimpleArray`, never `compile`.
 
 The saved-kit blob also preserves whether that one-time legacy import has been
@@ -656,7 +692,7 @@ server session cannot suppress a legitimate first import on another database.
 A malformed saved-kit blob is dropped to an empty saved set without discarding
 otherwise valid persistent XP, cash, ownership, perks, or mastery. The server
 marks that record dirty so the normal persistence owner rewrites a canonical
-schema-v3 representation.
+schema-v4 representation.
 
 ## Assist and teamkill consequences
 
@@ -671,8 +707,8 @@ owners. Replay maps are round-bounded. Reward and penalty values live in
 
 Configured streak milestones are presentation-only and are emitted exactly
 once as the existing server-owned current streak crosses each threshold.
-Vehicle rentals are inspected by the single server vehicle-manager loop at a
-configured cadence; no monitor script is spawned per rental.
+Personal paid vehicles are inspected by the single server vehicle-manager loop
+at a configured cadence; no monitor script is spawned per vehicle.
 
 # Perk ownership and activation
 

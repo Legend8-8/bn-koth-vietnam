@@ -291,6 +291,12 @@ server-only. Store capability display is client presentation derived from the
 active location, while free slots, rentals and command teleport independently
 enforce the same spawn-role capability on the server.
 
+The temporary beta AO population override is a private server-console function,
+is not RemoteExec allowlisted, and substitutes only the population consumed by
+AO vote-candidate reconciliation. Connected-human identity/count, team caps,
+readiness, balance, scoring, rewards and progression continue to consume their
+normal authoritative state.
+
 10. Performance
 
 Do not use "eachFrame" for zone control, scoring or database activity.
@@ -356,17 +362,26 @@ existing server-only acquisition API, targets the result to that owner, and
 publishes changed cash/ownership/rental state through the existing player-only
 progression update. Store requests never broadcast and never equip equipment.
 
-14. Vehicle Rental Requests
+14. Personal Paid-Vehicle Requests
 
-Clients submit only RENT or owner access-mode intent. The server derives the
+Clients submit only RENT, PURCHASE, SPAWN or owner access-mode intent. The server derives the
 UID from `remoteExecutedOwner`, requires the current authoritative representation
 to be alive and deployed in `ACTIVE` at its team mapboard, validates current
-side/level/perks, cash and active-rental state, selects/reserves a cached authored paid pad, creates the
-vehicle server-local, and only then deducts cash — all as one transaction with
-no separate requisition step. The active rental map is server-only; only the
+side/level/perks, family/loadout entitlement, cash and shared active-life state,
+selects/reserves a cached authored paid pad, creates the vehicle server-local,
+then commits cash and durable ownership through the persistence owner. Spawn
+failure occurs before charging. A failed immediate save restores session state,
+refunds through the cash owner and verifies a compensating save; failure to
+confirm that save is separately reported as durable state requiring operator
+inspection. The active personal map is server-only; only the
 requesting client receives their projected state. Get-in authorization is
 checked from server-owned UID/access data. A narrowly allowlisted
 server-to-owner endpoint performs locality-sensitive ejection.
+
+Every active-life ending path routes through the same server owner. Destruction,
+attributable deletion, abandonment, owner disconnect and unknown genuine-loss
+reasons start replacement cooldown. Forced AO, round, mission and return-to-lobby
+cleanup removes the entity and active record without applying loss cooldown.
 
 14.1 Tactical Air Insertion
 

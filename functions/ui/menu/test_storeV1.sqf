@@ -85,19 +85,174 @@ private _pictureFallbackCount = {(_x getOrDefault ["previewSource", "NONE"]) isE
 private _missingPreviewCount = {(_x getOrDefault ["previewSource", "NONE"]) isEqualTo "NONE"} count _vehicleEntries;
 ["Every curated vehicle has one explicit preview source", (_editorPreviewCount + _pictureFallbackCount + _missingPreviewCount) isEqualTo (count _vehicleEntries)] call _check;
 diag_log format ["[BN_KOTH][STORE_TEST] VEHICLE_PREVIEWS editorPreview=%1 pictureFallback=%2 neither=%3", _editorPreviewCount, _pictureFallbackCount, _missingPreviewCount];
-private _vehicleSortKeys = _vehicleEntries apply {format ["%1|%2", toLower (_x getOrDefault ["displayName", ""]), _x getOrDefault ["vehicleClass", ""]]};
+private _vehicleSortKeys = _vehicleEntries apply {
+    private _levelText = str (_x getOrDefault ["familyBaseMinLevel", 999]);
+    format [
+        "%1|%2|%3|%4|%5|%6",
+        _x getOrDefault ["storeCategory", ""],
+        ("000000" + _levelText) select [(count _levelText), 6],
+        toLower (_x getOrDefault ["familyDisplayName", ""]),
+        1000 + (_x getOrDefault ["familyProgressionOrder", 999]),
+        toLower (_x getOrDefault ["displayName", ""]),
+        _x getOrDefault ["vehicleClass", ""]
+    ]
+};
 private _sortedVehicleKeys = +_vehicleSortKeys;
 _sortedVehicleKeys sort true;
-["Vehicle Store ordering is deterministic", _vehicleSortKeys isEqualTo _sortedVehicleKeys] call _check;
+["Vehicle Store family/progression ordering is deterministic", _vehicleSortKeys isEqualTo _sortedVehicleKeys] call _check;
 private _configuredVehicleClasses = ("true" configClasses (missionConfigFile >> "CfgBnKothVehicles" >> "Metadata" >> "Vehicles")) apply {toLower (configName _x)};
 ["Vehicle Store uses only configured curated products", (_vehicleClasses findIf {!(_x in _configuredVehicleClasses)}) < 0] call _check;
 
+private _vehicleByLoadout = createHashMap;
+private _vehicleFamilies = createHashMap;
+{
+    private _entry = _x;
+    private _metadata = _entry getOrDefault ["metadata", createHashMap];
+    private _loadoutId = _metadata getOrDefault ["loadoutId", ""];
+    private _familyId = _metadata getOrDefault ["familyId", ""];
+    _vehicleByLoadout set [_loadoutId, _entry];
+    private _familyRows = _vehicleFamilies getOrDefault [_familyId, []];
+    _familyRows pushBack [_forEachIndex, _entry];
+    _vehicleFamilies set [_familyId, _familyRows];
+    [format ["%1 has a human family name", _entry getOrDefault ["vehicleClass", ""]],
+        !((_entry getOrDefault ["familyDisplayName", ""]) in ["", _familyId, _loadoutId])] call _check;
+    if (_metadata getOrDefault ["baseLoadout", false]) then {
+        [format ["%1 base has no displayed prerequisite", _entry getOrDefault ["vehicleClass", ""]],
+            (_entry getOrDefault ["requiredLoadoutDisplayName", "__missing__"]) isEqualTo ""] call _check;
+    };
+} forEach _vehicleEntries;
+{
+    private _entry = _x;
+    private _metadata = _entry getOrDefault ["metadata", createHashMap];
+    private _requiredLoadout = _metadata getOrDefault ["requiredLoadout", ""];
+    if !(_requiredLoadout isEqualTo "") then {
+        private _requiredEntry = _vehicleByLoadout getOrDefault [_requiredLoadout, createHashMap];
+        [format ["%1 resolves prerequisite display name", _entry getOrDefault ["vehicleClass", ""]],
+            !(_requiredEntry isEqualTo createHashMap) &&
+            {(_entry getOrDefault ["requiredLoadoutDisplayName", ""]) isEqualTo (_requiredEntry getOrDefault ["displayName", "__missing__"])} &&
+            {!((_entry getOrDefault ["requiredLoadoutDisplayName", ""]) isEqualTo _requiredLoadout)}] call _check;
+    };
+} forEach _vehicleEntries;
+{
+    private _rows = _vehicleFamilies get _x;
+    private _indices = _rows apply {_x select 0};
+    private _firstEntry = (_rows select 0) select 1;
+    [format ["%1 family is contiguous", _x], ((_indices select ((count _indices) - 1)) - (_indices select 0) + 1) isEqualTo count _indices] call _check;
+    [format ["%1 family begins with base loadout", _x], ((_firstEntry getOrDefault ["metadata", createHashMap]) getOrDefault ["baseLoadout", false])] call _check;
+    [format ["%1 family uses its base minimum level for ordering", _x],
+        (_firstEntry getOrDefault ["familyBaseMinLevel", -1]) isEqualTo (((_firstEntry getOrDefault ["metadata", createHashMap]) getOrDefault ["minLevel", 1]) max 1) &&
+        {(_rows findIf {((_x select 1) getOrDefault ["familyBaseMinLevel", -1]) isNotEqualTo (_firstEntry getOrDefault ["familyBaseMinLevel", -1])}) < 0}] call _check;
+    {
+        private _entry = _x select 1;
+        [format ["%1 family progression order is sequential", _entry getOrDefault ["vehicleClass", ""]],
+            (_entry getOrDefault ["familyProgressionOrder", -1]) isEqualTo _forEachIndex] call _check;
+    } forEach _rows;
+} forEach (keys _vehicleFamilies);
+private _rotaryFamilyOrder = [];
+{
+    private _familyId = (_x getOrDefault ["metadata", createHashMap]) getOrDefault ["familyId", ""];
+    _rotaryFamilyOrder pushBackUnique _familyId;
+} forEach (_vehicleEntries select {(_x getOrDefault ["storeCategory", ""]) isEqualTo "ROTARY"});
+["Rotary families follow base-level progression order", _rotaryFamilyOrder isEqualTo ["OH6", "MI2", "UH34", "UH1", "CH47", "AH1G"]] call _check;
+
+private _refreshStoreSource = preprocessFileLineNumbers "functions\ui\menu\fn_menu_refreshStore.sqf";
+["Base vehicle detail uses purchase ownership wording", (_refreshStoreSource find '"BASE LOADOUT"') >= 0 && {(_refreshStoreSource find '"PURCHASE TO OWN FAMILY"') >= 0}] call _check;
+["Advanced vehicle detail labels human prerequisite", (_refreshStoreSource find '"REQUIRED LOADOUT: %1"') >= 0] call _check;
+["Vehicle detail separates mastery progress", (_refreshStoreSource find '"MASTERY PROGRESS: %1"') >= 0] call _check;
+["Vehicle detail separates ownership and transaction concepts",
+    (_refreshStoreSource find '"OWNERSHIP: %1"') >= 0 &&
+    {(_refreshStoreSource find '"PURCHASE"') >= 0} &&
+    {(_refreshStoreSource find '"REPLACEMENT"') >= 0} &&
+    {(_refreshStoreSource find '"RENTAL"') >= 0} &&
+    {(_refreshStoreSource find '"MASTERY EXCLUSIVE"') >= 0}] call _check;
+["Vehicle detail does not expose legacy prerequisite wording", (_refreshStoreSource find '"PREREQUISITE: %1"') < 0 && {(_refreshStoreSource find '"BASE FAMILY"') < 0}] call _check;
+["Vehicle detail does not read internal logical IDs",
+    (_refreshStoreSource find 'getOrDefault ["familyId"') < 0 &&
+    {(_refreshStoreSource find 'getOrDefault ["loadoutId"') < 0} &&
+    {(_refreshStoreSource find 'getOrDefault ["requiredLoadout"') < 0}] call _check;
+["Vehicle cards use a dimmed LOCKED overlay", (_refreshStoreSource find '_overlay ctrlShow _showVehicleLock') >= 0 && {(_refreshStoreSource find '_lock ctrlSetText (if (_showVehicleLock) then {"LOCKED"}') >= 0}] call _check;
+["Vehicle detail presents aggregate unmet requirements", (_refreshStoreSource find '"UNMET REQUIREMENTS"') >= 0 && {(_refreshStoreSource find 'getOrDefault ["lockReasons"') >= 0}] call _check;
+["Vehicle PURCHASE and RENT buttons invoke the authoritative request path",
+    (_refreshStoreSource find "['PURCHASE',%1,''] call bn_koth_fnc_vehicles_requestRental") >= 0 &&
+    {(_refreshStoreSource find "['RENT',%1,''] call bn_koth_fnc_vehicles_requestRental") >= 0}] call _check;
+private _vehicleReceiverSource = preprocessFileLineNumbers "functions\vehicles\fn_receiveRentalResult.sqf";
+["Vehicle result invalidates cached presentation and exposes inline feedback",
+    (_vehicleReceiverSource find 'uiNamespace setVariable ["BN_KOTH_menuStoreEntriesRoute", ""]') >= 0 &&
+    {(_vehicleReceiverSource find 'uiNamespace setVariable ["BN_KOTH_menuVehicleTransactionResult", _result]') >= 0}] call _check;
+
 private _vehicleProjectionEntry = createHashMapFromArray [
-    ["metadata", createHashMapFromArray [["minLevel", 25], ["purchasePrice", 18000], ["rentalPrice", 3600]]],
-    ["eligibility", createHashMapFromArray [["code", "LOCKED_LEVEL"], ["eligible", false]]]
+    ["displayName", "M151A1 Jeep"],
+    ["familyDisplayName", "M151A1 Jeep"],
+    ["requiredLoadoutDisplayName", ""],
+    ["playerSide", "WEST"], ["playerLevel", 10], ["playerPerks", []],
+    ["metadata", createHashMapFromArray [["minLevel", 25], ["allowedSides", ["WEST"]], ["requiredPerks", []], ["purchasePrice", 15000], ["rentalPrice", 2400], ["replacementPrice", 1200], ["baseLoadout", true], ["rentable", true]]],
+    ["eligibility", createHashMapFromArray [["code", "LOCKED_LEVEL"], ["eligible", false]]],
+    ["loadoutEligibility", createHashMapFromArray [["owned", false], ["unlocked", false], ["purchaseEligible", true]]],
+    ["rentalEligibility", createHashMapFromArray [["unlocked", true]]]
 ];
+private _savedProgressionLocal = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
+private _savedVehiclePersonalLocal = missionNamespace getVariable ["BN_KOTH_vehiclePersonalStateLocal", createHashMap];
+missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", createHashMapFromArray [["cash", 10000]]];
+missionNamespace setVariable ["BN_KOTH_vehiclePersonalStateLocal", createHashMap];
 private _vehicleProjection = [_vehicleProjectionEntry] call bn_koth_fnc_menu_projectStoreVehicleState;
-["Vehicle level lock projects without enabling actions", (_vehicleProjection getOrDefault ["stateLabel", ""]) isEqualTo "LOCKED - LEVEL 25" && {!(_vehicleProjection getOrDefault ["actionsAvailable", true])}] call _check;
+["Vehicle level lock projects all current blocking state without enabling actions",
+    (_vehicleProjection getOrDefault ["stateLabel", ""]) isEqualTo "LOCKED" &&
+    {"LEVEL 25" in (_vehicleProjection getOrDefault ["lockReasons", []])} &&
+    {_vehicleProjection getOrDefault ["blocking", false]} &&
+    {!(_vehicleProjection getOrDefault ["canPurchase", true])} &&
+    {!(_vehicleProjection getOrDefault ["canRent", true])}] call _check;
+
+private _aggregateEntry = createHashMapFromArray [
+    ["vehicleClass", "test_aggregate"], ["displayName", "Test Gunship"],
+    ["familyDisplayName", "OH-6A Cayuse"], ["requiredLoadoutDisplayName", "OH-6A Cayuse Gunship"],
+    ["playerSide", "EAST"], ["playerLevel", 12], ["playerPerks", []],
+    ["metadata", createHashMapFromArray [
+        ["minLevel", 48], ["allowedSides", ["WEST"]], ["requiredPerks", ["medic"]],
+        ["purchasePrice", 30000], ["rentalPrice", 6000], ["replacementPrice", 3000], ["baseLoadout", false], ["rentable", true]
+    ]],
+    ["eligibility", createHashMapFromArray [["code", "LOCKED_SIDE"]]],
+    ["loadoutEligibility", createHashMapFromArray [["owned", false], ["unlocked", false], ["purchaseEligible", false], ["missingMastery", createHashMap]]],
+    ["rentalEligibility", createHashMapFromArray [["unlocked", false], ["missingMastery", createHashMapFromArray [["insertions", [0, 5]]]]]]
+];
+missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", createHashMapFromArray [["cash", 0]]];
+missionNamespace setVariable ["BN_KOTH_vehiclePersonalStateLocal", createHashMapFromArray [["activeClass", "another_vehicle"], ["cooldownRemaining", 42]]];
+private _aggregateState = [_aggregateEntry] call bn_koth_fnc_menu_projectStoreVehicleState;
+private _aggregateReasons = _aggregateState getOrDefault ["lockReasons", []];
+["Vehicle lock presentation aggregates side, level, ownership, loadout, mastery, perk, active life, cooldown and cash",
+    "WEST FACTION ONLY" in _aggregateReasons &&
+    {"LEVEL 48" in _aggregateReasons} &&
+    {"PURCHASE OH-6A CAYUSE" in _aggregateReasons} &&
+    {"REQUIRED LOADOUT OH-6A CAYUSE GUNSHIP" in _aggregateReasons} &&
+    {"INSERTIONS 0/5" in _aggregateReasons} &&
+    {"PERK MEDIC" in _aggregateReasons} &&
+    {"PERSONAL VEHICLE ACTIVE" in _aggregateReasons} &&
+    {"COOLDOWN 42S" in _aggregateReasons} &&
+    {"INSUFFICIENT CASH" in _aggregateReasons}] call _check;
+["Aggregate vehicle lock text exposes no logical family/loadout IDs",
+    ((_aggregateState getOrDefault ["lockSummary", ""]) find "TEST_") < 0 &&
+    {((_aggregateState getOrDefault ["lockSummary", ""]) find "OH6_") < 0}] call _check;
+
+private _exclusiveEntry = createHashMapFromArray ((keys _aggregateEntry) apply {[_x, _aggregateEntry get _x]});
+private _exclusiveMetadata = createHashMapFromArray ((keys (_aggregateEntry get "metadata")) apply {[_x, (_aggregateEntry get "metadata") get _x]});
+_exclusiveMetadata set ["rentable", false];
+_exclusiveEntry set ["metadata", _exclusiveMetadata];
+private _exclusiveState = [_exclusiveEntry] call bn_koth_fnc_menu_projectStoreVehicleState;
+["Unowned non-rentable advanced vehicle is clearly mastery exclusive", "MASTERY EXCLUSIVE" in (_exclusiveState getOrDefault ["lockReasons", []])] call _check;
+
+private _advancedRentalEntry = createHashMapFromArray [
+    ["vehicleClass", "test_advanced_rental"],
+    ["playerSide", "WEST"], ["playerLevel", 99], ["playerPerks", []], ["familyDisplayName", "Test Family"], ["requiredLoadoutDisplayName", "Test Base"],
+    ["metadata", createHashMapFromArray [["minLevel", 1], ["allowedSides", ["WEST"]], ["requiredPerks", []], ["purchasePrice", 35000], ["rentalPrice", 5600], ["replacementPrice", 2800], ["baseLoadout", false], ["rentable", true]]],
+    ["eligibility", createHashMapFromArray [["code", "ELIGIBLE"], ["eligible", true]]],
+    ["loadoutEligibility", createHashMapFromArray [["owned", false], ["unlocked", false], ["purchaseEligible", false]]],
+    ["rentalEligibility", createHashMapFromArray [["unlocked", true], ["missingMastery", createHashMap]]]
+];
+missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", createHashMapFromArray [["cash", 10000]]];
+missionNamespace setVariable ["BN_KOTH_vehiclePersonalStateLocal", createHashMap];
+private _advancedRentalState = [_advancedRentalEntry] call bn_koth_fnc_menu_projectStoreVehicleState;
+["Unowned mastery-qualified advanced vehicle projects RENT", (_advancedRentalState getOrDefault ["canRent", false]) && {!(_advancedRentalState getOrDefault ["canPurchase", true])} && {(_advancedRentalState getOrDefault ["stateLabel", ""]) isEqualTo "AVAILABLE TO RENT"}] call _check;
+missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", _savedProgressionLocal];
+missionNamespace setVariable ["BN_KOTH_vehiclePersonalStateLocal", _savedVehiclePersonalLocal];
 
 private _metadata = createHashMapFromArray [
     ["minLevel", 10], ["allowedSides", ["WEST"]], ["masteryKillsRequired", 50],

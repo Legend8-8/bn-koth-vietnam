@@ -24,7 +24,7 @@ missionNamespace setVariable ["BN_KOTH_transportConfirmationWindow", (["confirma
 missionNamespace setVariable ["BN_KOTH_transportMaximumBoardedSeconds", (["maximumBoardedSeconds", 900] call _readNumber) max 1];
 missionNamespace setVariable ["BN_KOTH_transportPairCooldown", (["samePairCooldownSeconds", 600] call _readNumber) max 0];
 missionNamespace setVariable ["BN_KOTH_transportEligibleCategories", if (isArray (_cfg >> "eligibleStoreCategories")) then {(getArray (_cfg >> "eligibleStoreCategories")) apply {toUpper _x}} else {["ROTARY"]}];
-missionNamespace setVariable ["BN_KOTH_transportEligibleRoles", if (isArray (_cfg >> "eligibleVehicleRoles")) then {(getArray (_cfg >> "eligibleVehicleRoles")) apply {toUpper _x}} else {["TRANSPORT"]}];
+missionNamespace setVariable ["BN_KOTH_transportEligibleCapabilities", if (isArray (_cfg >> "eligibleVehicleCapabilities")) then {(getArray (_cfg >> "eligibleVehicleCapabilities")) apply {toUpper _x}} else {["TRANSPORT"]}];
 private _economyCfg = missionConfigFile >> "CfgBnKothScoring" >> "economy";
 missionNamespace setVariable ["BN_KOTH_transportInsertionCash", if (isNumber (_economyCfg >> "cashPerTransportPassenger")) then {(getNumber (_economyCfg >> "cashPerTransportPassenger")) max 0} else {25}];
 missionNamespace setVariable ["BN_KOTH_transportCandidates", createHashMap];
