@@ -51,16 +51,16 @@ missionNamespace setVariable ["BN_KOTH_vehicleRespawnCooldownSeaSeconds", _coold
 
 missionNamespace setVariable ["BN_KOTH_vehicleManagedSlots", createHashMap];
 missionNamespace setVariable ["BN_KOTH_vehicleManagedSlotIds", []];
-missionNamespace setVariable ["BN_KOTH_vehicleActiveRentals", createHashMap];
-missionNamespace setVariable ["BN_KOTH_vehicleRentalCooldowns", createHashMap];
+missionNamespace setVariable ["BN_KOTH_vehicleActivePersonal", createHashMap];
+missionNamespace setVariable ["BN_KOTH_vehiclePersonalCooldowns", createHashMap];
 missionNamespace setVariable ["BN_KOTH_vehiclePaidPadReservations", createHashMap];
-missionNamespace setVariable ["BN_KOTH_vehicleRentalLastSweepAt", -1];
+missionNamespace setVariable ["BN_KOTH_vehiclePersonalLastSweepAt", -1];
 private _rentalMonitorInterval = if (isNumber (_vehicleCfg >> "rentalMonitorIntervalSeconds")) then {
     (getNumber (_vehicleCfg >> "rentalMonitorIntervalSeconds")) max 5
 } else {
     30
 };
-missionNamespace setVariable ["BN_KOTH_vehicleRentalMonitorIntervalSeconds", _rentalMonitorInterval];
+missionNamespace setVariable ["BN_KOTH_vehiclePersonalMonitorIntervalSeconds", _rentalMonitorInterval];
 
 private _paidPads = [];
 {
@@ -107,4 +107,4 @@ if !(missionNamespace getVariable ["BN_KOTH_vehicleMonitorRunning", false]) then
     _cooldownAir,
     _cooldownSea
 ], "INFO"] call bn_koth_fnc_common_log;
-[format ["Paid vehicle rental pads cached: %1", count _paidPads], "INFO"] call bn_koth_fnc_common_log;
+[format ["Paid personal vehicle pads cached: %1", count _paidPads], "INFO"] call bn_koth_fnc_common_log;

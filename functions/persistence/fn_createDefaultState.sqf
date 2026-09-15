@@ -24,5 +24,8 @@ createHashMapFromArray [
     ["preferredSavedKitId", ""],
     ["savedKitsInitialized", false],
     ["rentedWeapons", []],
-    ["weaponKills", createHashMap]
+    ["weaponKills", createHashMap],
+    ["ownedVehicleFamilies", []],
+    ["vehicleFirstSpawnsUsed", []],
+    ["vehicleMastery", createHashMap]
 ]

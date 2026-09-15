@@ -43,7 +43,7 @@ if (_probeElapsed > _probeTimeout) exitWith {
     createHashMapFromArray [["success", false], ["code", "DATABASE_PROTOCOL_PROBE_TIMEOUT"], ["databaseState", _databaseState], ["protocolState", "FAILED"]]
 };
 
-private _probeResult = [_probeRaw, "BN_KOTH_PERSISTENCE_V3"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _probeResult = [_probeRaw, "BN_KOTH_PERSISTENCE_V4"] call bn_koth_fnc_persistence_parseExtdbResponse;
 if !(_probeResult getOrDefault ["success", false]) exitWith {
     [format ["Persistence extDB3 protocol verification failed protocol=%1 registrationCode=%2 registrationMessage=%3 probeCode=%4", _protocol, _protocolResult getOrDefault ["code", "UNKNOWN"], _protocolResult getOrDefault ["message", ""], _probeResult getOrDefault ["code", "UNKNOWN"]], "ERROR"] call bn_koth_fnc_common_log;
     createHashMapFromArray [["success", false], ["code", "DATABASE_PROTOCOL_UNUSABLE"], ["databaseState", _databaseState], ["protocolState", "FAILED"]]

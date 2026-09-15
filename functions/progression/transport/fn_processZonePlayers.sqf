@@ -95,6 +95,14 @@ private _maximumBoarded = missionNamespace getVariable ["BN_KOTH_transportMaximu
                         private _cashResult = [_pilotUid, _cash, "transport"] call bn_koth_fnc_progression_cash_addCash;
                         _cashSucceeded = _cashResult isEqualType createHashMap && {_cashResult getOrDefault ["success", false]};
                     };
+                    private _vehicleMetadata = [typeOf (_candidate getOrDefault ["vehicle", objNull])] call bn_koth_fnc_vehicles_getProgressionMetadata;
+                    if (_vehicleMetadata getOrDefault ["success", false]) then {
+                        private _familyId = _vehicleMetadata getOrDefault ["familyId", ""];
+                        [_pilotUid, _familyId, "insertions", 1, "transport_insertion"] call bn_koth_fnc_vehicles_awardMastery;
+                        [_pilotUid, _familyId, "passengersDelivered", 1, "transport_insertion"] call bn_koth_fnc_vehicles_awardMastery;
+                        private _distance = floor ((_candidate getOrDefault ["distance", 0]) max 0);
+                        if (_distance > 0) then {[_pilotUid, _familyId, "transportDistance", _distance, "transport_insertion"] call bn_koth_fnc_vehicles_awardMastery};
+                    };
                     _awarded = _awarded + 1;
                     private _level = if (_xpSucceeded && {_cashSucceeded}) then {"INFO"} else {"WARN"};
                     [format ["Transport insertion validated pilot=%1 passenger=%2 vehicle=%3 ao=%4 xp=%5 xpOk=%6 cash=%7 cashOk=%8", _pilotUid, _passengerUid, _candidate getOrDefault ["vehicleNetId", ""], _aoId, _xp, _xpSucceeded, _cash, _cashSucceeded], _level] call bn_koth_fnc_common_log;

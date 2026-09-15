@@ -119,6 +119,24 @@ private _weaponKills = createHashMap;
     };
 } forEach (keys _rawKills);
 
+private _vehicleCandidate = createHashMapFromArray [
+    ["ownedVehicleFamilies", _raw getOrDefault ["ownedVehicleFamilies", []]],
+    ["vehicleFirstSpawnsUsed", _raw getOrDefault ["vehicleFirstSpawnsUsed", []]],
+    ["vehicleMastery", _raw getOrDefault ["vehicleMastery", createHashMap]]
+];
+private _vehicleSerialized = [_vehicleCandidate] call bn_koth_fnc_persistence_serializeVehicleProgression;
+if !(_vehicleSerialized getOrDefault ["success", false]) then {
+    _vehicleCandidate = createHashMapFromArray [["ownedVehicleFamilies", []], ["vehicleFirstSpawnsUsed", []], ["vehicleMastery", createHashMap]];
+    _warnings pushBack "NORMALIZED_VEHICLE_PROGRESSION";
+} else {
+    private _vehicleCanonical = [_vehicleSerialized get "value"] call bn_koth_fnc_persistence_deserializeVehicleProgression;
+    _vehicleCandidate = createHashMapFromArray [
+        ["ownedVehicleFamilies", _vehicleCanonical getOrDefault ["owned", []]],
+        ["vehicleFirstSpawnsUsed", _vehicleCanonical getOrDefault ["used", []]],
+        ["vehicleMastery", _vehicleCanonical getOrDefault ["mastery", createHashMap]]
+    ];
+};
+
 private _state = createHashMapFromArray [
     ["schemaVersion", _currentVersion],
     ["uid", _uid],
@@ -132,7 +150,10 @@ private _state = createHashMapFromArray [
     ["preferredSavedKitId", _preferredSavedKitId],
     ["savedKitsInitialized", _savedKitsInitialized],
     ["rentedWeapons", []],
-    ["weaponKills", _weaponKills]
+    ["weaponKills", _weaponKills],
+    ["ownedVehicleFamilies", +(_vehicleCandidate getOrDefault ["ownedVehicleFamilies", []])],
+    ["vehicleFirstSpawnsUsed", +(_vehicleCandidate getOrDefault ["vehicleFirstSpawnsUsed", []])],
+    ["vehicleMastery", _vehicleCandidate getOrDefault ["vehicleMastery", createHashMap]]
 ];
 
 createHashMapFromArray [

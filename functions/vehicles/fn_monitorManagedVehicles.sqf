@@ -96,23 +96,23 @@ while {missionNamespace getVariable ["BN_KOTH_vehicleMonitorRunning", false]} do
 
     missionNamespace setVariable ["BN_KOTH_vehicleManagedSlots", _slots];
 
-    private _rentalSweepInterval = missionNamespace getVariable ["BN_KOTH_vehicleRentalMonitorIntervalSeconds", 30];
-    private _lastRentalSweep = missionNamespace getVariable ["BN_KOTH_vehicleRentalLastSweepAt", -1];
+    private _rentalSweepInterval = missionNamespace getVariable ["BN_KOTH_vehiclePersonalMonitorIntervalSeconds", 30];
+    private _lastRentalSweep = missionNamespace getVariable ["BN_KOTH_vehiclePersonalLastSweepAt", -1];
     if (_lastRentalSweep < 0 || {(serverTime - _lastRentalSweep) >= _rentalSweepInterval}) then {
-        missionNamespace setVariable ["BN_KOTH_vehicleRentalLastSweepAt", serverTime];
+        missionNamespace setVariable ["BN_KOTH_vehiclePersonalLastSweepAt", serverTime];
         private _connectedUids = [];
         {_connectedUids pushBackUnique (getPlayerUID _x)} forEach allPlayers;
-        private _rentals = missionNamespace getVariable ["BN_KOTH_vehicleActiveRentals", createHashMap];
+        private _rentals = missionNamespace getVariable ["BN_KOTH_vehicleActivePersonal", createHashMap];
         private _emptyLimit = (getNumber (missionConfigFile >> "CfgBnKothVehicles" >> "rentedAbandonmentSeconds")) max 60;
         private _disconnectLimit = (getNumber (missionConfigFile >> "CfgBnKothVehicles" >> "rentedOwnerDisconnectCleanupSeconds")) max 60;
         {
             private _uid = _x;
             private _rental = _rentals getOrDefault [_uid, createHashMap];
             if !(_rental isEqualType createHashMap) then {
-                private _currentRentals = missionNamespace getVariable ["BN_KOTH_vehicleActiveRentals", createHashMap];
+                private _currentRentals = missionNamespace getVariable ["BN_KOTH_vehicleActivePersonal", createHashMap];
                 if (_currentRentals isEqualType createHashMap) then {
                     _currentRentals deleteAt _uid;
-                    missionNamespace setVariable ["BN_KOTH_vehicleActiveRentals", _currentRentals];
+                    missionNamespace setVariable ["BN_KOTH_vehicleActivePersonal", _currentRentals];
                 };
                 continue;
             };
@@ -138,11 +138,11 @@ while {missionNamespace getVariable ["BN_KOTH_vehicleMonitorRunning", false]} do
             } else {
                 _rental set ["emptySince", _emptySince];
                 _rental set ["disconnectedSince", _disconnectedSince];
-                private _currentRentals = missionNamespace getVariable ["BN_KOTH_vehicleActiveRentals", createHashMap];
+                private _currentRentals = missionNamespace getVariable ["BN_KOTH_vehicleActivePersonal", createHashMap];
                 private _currentRental = _currentRentals getOrDefault [_uid, createHashMap];
                 if (_currentRental isEqualType createHashMap && {(_currentRental getOrDefault ["vehicle", objNull]) isEqualTo _vehicle}) then {
                     _currentRentals set [_uid, _rental];
-                    missionNamespace setVariable ["BN_KOTH_vehicleActiveRentals", _currentRentals];
+                    missionNamespace setVariable ["BN_KOTH_vehicleActivePersonal", _currentRentals];
                 };
             };
         } forEach +(keys _rentals);

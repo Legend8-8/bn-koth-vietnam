@@ -95,19 +95,41 @@ protocol strings, serialization, and extension calls stay inside persistence.
 Apply numbered `database/migrations/` files and follow
 `docs/deployment-extdb3.md`; never put database credentials in mission config.
 
-Vehicle progression metadata is separately human-authored under
-`CfgBnKothVehicles >> Metadata >> Vehicles`. Its explicit `storeCategory`
-(`GROUND`, `SEA`, `ROTARY`, or `FIXED_WING`) and `vehicleRole` fields prepare
-future Store grouping without classname heuristics. Vehicle progression does
-not use weapon mastery. Levels and prices are provisional; an authoritative
-one-life RENT transaction exists (see `functions/vehicles/fn_rentVehicle.sqf`),
-but persistence does not. The existing managed free-vehicle system is
-unchanged and does not treat these prices as a spawn requirement.
+Vehicle progression metadata is human-authored directly in
+`config/vehicles.hpp` under `CfgBnKothVehicles >> Metadata >> Vehicles`; this is
+the sole maintained catalogue for the 84 curated products. Each canonical
+product defines its family/loadout IDs, purchase/rental/replacement prices,
+capabilities, prerequisites and mastery policy there. Stable `familyId` and
+`loadoutId` values—not physical classnames—own
+durable progression and must not be renamed casually. Physical classname
+changes require deliberate persistence migration and compatibility review.
+`capabilities[]` gives
+all 24 non-Cobra rotary products exactly `TRANSPORT`, `COMBAT` and `CAS`, while
+the five AH-1G products remain exactly `COMBAT` and `CAS`. Purchase grants permanent family ownership
+and includes the first base-loadout spawn; later owned lives use the authored
+replacement price/cooldown. Configured rentals remain one-life access and use
+the same prerequisite graph without requiring family ownership; `rentable = 0`
+still denies rental. Stronger owned spawns require both ownership and the graph.
+The existing
+managed free and command vehicle systems remain separate team assets.
+
+Schema v4 persists family IDs, included-first-spawn use and mastery counters
+through the existing adapter. Apply `004_add_vehicle_progression.sql` and the
+matching SQL_CUSTOM file before deployment. `crossSideEligible`, captured
+requirements and visual profiles are reserved but inactive/default-deny; the
+current spawn hook applies no textures and current `allowedSides[]` remains
+authoritative. Edit policy directly in the config and run the focused metadata
+tests and read-only audits against that config.
+
+Vehicle mastery requirements may use only counters with a current authoritative
+award path. Non-Cobra rotary chains use validated insertions and suitable
+infantry-facing combat chains use valid PvP infantry kills. Specialist AA, AT,
+CAP, SEAD and armour steps remain provisional and add no unrelated kill task.
 
 `data/vehicle_inventory.csv` is a one-time factual audit of the official S.O.G.
 EAST/WEST CfgVehicles tables, not a maintained scraper output. Factual side,
 faction, subcategory and vehicle weapons in that file must never be treated as
-KOTH policy. Human-authored side, level, price, Store category and role remain
+KOTH policy. Human-authored side, level, price, Store category and capabilities remain
 in `config/vehicles.hpp`, which intentionally selects only the combat-relevant
 progression products planned for the Store. No vehicle relationship may be
 inferred from a classname or from a similar display name.

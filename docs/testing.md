@@ -576,9 +576,15 @@ global WEST/EAST/BOTH weapon visibility, level/mastery/perk
 locks, unconfigured-price safety, buy/rent outcomes, rental-to-owned upgrade,
 requester-only results, targeted progression repaint, the exact curated vehicle
 surface (37 Ground, 29 Rotary Wing, 18 Fixed Wing, no SEA), real config pictures,
-disabled vehicle actions while locked, four-card pagination, Store-only operator
-panel collapse/restoration, Primary/Handgun/Launcher Arsenal handoff with target
-page snap/highlight, and tab transitions without stale controls.
+family grouping ordered by each family's base-loadout minimum level, with every
+family contiguous, its base first and advanced products in prerequisite order;
+human-readable family/required-loadout names; base purchase/ownership wording
+with no fabricated prerequisite; aggregate side, level, family, loadout, mastery,
+perk, active-life, cooldown, cash and mastery-exclusive lock reasons; dimmed
+`LOCKED` vehicle cards; visible requester-only transaction failures; distinct
+mastery/purchase/replacement/rental detail; disabled vehicle actions while locked; four-card pagination,
+Store-only operator panel collapse/restoration, Primary/Handgun/Launcher Arsenal
+handoff with target page snap/highlight, and tab transitions without stale controls.
 
 Also cycle Store -> Loadout -> Arsenal -> Configure -> Saved Loadouts several
 times and verify canonical title/subtitle/BACK/action/pagination geometry is
@@ -599,14 +605,24 @@ After mission functions and S.O.G. configuration initialize, run:
 call compile preprocessFileLineNumbers "functions\vehicles\test_progressionMetadata.sqf"
 ```
 
-An empty array is a pass. The focused check verifies valid explicit Store
-categories, roles, sides, finite non-negative levels/prices, resolvable and
-acyclic canonical links, policy-free structural entries, deterministic Store
-projection, curated product count, the reserved SEA category boundary,
-side/level eligibility and absence of weapon mastery policy.
+This is a read-only audit of the authoritative metadata in
+`config/vehicles.hpp`; the catalogue remains untouched. An
+empty array is a pass. The focused check verifies 84 unique logical loadouts,
+one base per family, prerequisite references, native-side enforcement, purchase/
+rental/replacement price relationships, dormant future metadata, all 29 curated
+rotary products, `TRANSPORT` on every non-Cobra helicopter, and its absence on
+all five AH-1G products. More specifically, it requires exactly 24 non-Cobra
+rotary products with exactly `TRANSPORT`, `COMBAT` and `CAS`, plus exactly five
+AH-1G products with exactly `COMBAT` and `CAS`.
+
+Run the vehicle persistence/derived-unlock codec checks:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\persistence\test_vehicleProgression.sqf"
+```
 
 Hosted and dedicated testing must confirm that existing managed free and
-command vehicles still spawn and recycle exactly as before. For paid rentals,
+command vehicles still spawn and recycle exactly as before. For personal paid vehicles,
 run:
 
 ```sqf
@@ -620,10 +636,34 @@ successful RENT immediately spawns the active vehicle in the same request,
 with no separate requisition/pending step); cash is deducted exactly once and
 only after the vehicle exists; a blocked spawn (occupied pads and no safe
 fallback) leaves no vehicle, no active record and no charge, and the player
-remains `AVAILABLE TO RENT`; destroyed/cleaned vehicles restore nothing and
-begin cooldown; cargo is empty while mounted armament remains; owner/group/
+remains `AVAILABLE TO RENT`; destruction, attributable deletion, abandonment
+and owner disconnect restore nothing and begin cooldown, while forced AO/round/
+mission/return-to-lobby cleanup removes the active life without cooldown; cargo is empty while mounted armament remains; owner/group/
 public access is enforced; occupied pads cannot collide; disconnect does not
-instantly delete occupied vehicles; and restart clears all rental state.
+instantly delete occupied vehicles; and restart clears all physical/rental state.
+
+Dedicated-server acceptance requires real clients and both server/client RPTs:
+
+1. Purchase a base family; confirm one purchase charge, durable ownership, and the included first spawn.
+2. Block the pad/fallback and retry a fresh purchase; confirm no charge, ownership, or first-spawn consumption.
+3. Replay/rapidly retry purchase; confirm duplicate ownership and charge are rejected.
+4. Destroy the owned life; confirm the authored cooldown, then the exact replacement charge.
+5. Attempt replacement without cash and with a blocked spawn; confirm fail-closed behavior and rollback.
+6. Rent an unowned rentable base product, then an unowned rentable advanced product after meeting its authored mastery chain; confirm each grants one life, no ownership/first-spawn mutation, and rental above replacement price.
+7. Attempt a non-rentable mastery loadout and a mastery-incomplete advanced rental; confirm both server rejections.
+8. Mix RENT/PURCHASE/SPAWN attempts; confirm one active personal vehicle total per UID.
+9. Exercise kill, attributable deletion, abandonment and owner disconnect; confirm one cooldown. Exercise return-to-lobby, AO reset and round reset cleanup; confirm no cooldown. All paths must leave no orphaned record, entity, handler or pad reservation.
+10. Reconnect, reload the mission, and fully restart the server; confirm family ownership, first-spawn use and mastery survive while the physical vehicle does not.
+11. Use an AO without the required paid category/pad; confirm ownership does not bypass AO capability.
+12. Verify OWNER ONLY, GROUP and PUBLIC access modes on rented and owned lives.
+13. Complete a qualifying insertion in an armed troop-carrying non-Cobra helicopter; confirm reward plus insertion/passenger/distance mastery exactly once.
+14. Repeat in AH-1G; confirm no insertion candidate/reward/mastery.
+15. Score a valid active-round infantry kill while operating a curated family; confirm one family `infantryKills` increment. Confirm suicide/teamkill/on-foot kills do not increment it.
+16. Attempt a locked loadout directly; confirm server rejection and visible current/required progress.
+17. Complete the configured prerequisite graph; confirm the loadout becomes derived-unlocked without a duplicate persisted unlock record.
+18. Spawn the newly unlocked loadout; confirm its authored replacement fee and shared active-life enforcement.
+19. Confirm EAST cannot spawn WEST products and WEST cannot spawn EAST products even with dormant future fields present.
+20. Compare appearance before/after every transaction; confirm native textures are unchanged and no reskin command runs.
 
 18. Development Progression Debug Script
 
@@ -673,7 +713,10 @@ endpoint Store uses. Verify:
 
 20. Vehicle Rental RPT Audit Trail
 
-`functions/vehicles/fn_rentVehicle.sqf` logs every RENT outcome to RPT. A
+`functions/vehicles/fn_rentVehicle.sqf` logs every vehicle transaction outcome
+to RPT. The targeted client result invalidates the cached vehicle catalogue,
+repaints current personal/ownership state, and remains visible in the selected
+Store detail as well as the normal notification feed. A
 successful RENT logs UID, canonical class, pad id (or `FALLBACK`), spawn
 position, `netId` and cash charged; a failed RENT logs UID, requested class,
 code and exact reason, with no charge. Verify the Store card only ever shows
@@ -880,6 +923,17 @@ call compile preprocessFileLineNumbers "functions\zone\test_vehicleCapabilities.
 ```
 
 Both return `[]` on success. On a hosted and dedicated server also verify:
+
+Temporary beta vehicle-test AO eligibility override checks:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\round\test_aoPopulationOverride.sqf"
+```
+
+Run that check in the server debug console. The private server-only command is
+`[true, 32] call bn_koth_fnc_round_debugSetAoPopulationOverride;` and clearing
+it is `[false] call bn_koth_fnc_round_debugSetAoPopulationOverride;`. This state
+must never be used as evidence for any non-AO population consumer.
 
 - 1-3 connected humans receive only population-eligible choices;
 - 60 humans joining but remaining in LOBBY count immediately for AO sizing;
@@ -1368,7 +1422,7 @@ scoreboard viewport and verify:
 4. A JIP client entering during `ENDING` or `RESETTING` receives the same result and the result clears on the normal next-round boundary.
 5. With configured streak milestones, each threshold produces one feed entry per streak, death permits that threshold in a later streak, and suicide/teamkill never advances it.
 6. Mastery feed entries use the canonical weapon display name and kill threshold; completion does not claim purchase/rental availability while level, perk, side, or acquisition policy still blocks it.
-7. Vehicle Store categories and cards explain active-AO capability, side, level, perk, cash, active-rental, cooldown, and unconfigured-rental blocks using server projection state.
+7. Vehicle Store categories and cards explain active-AO capability, side, level, perk, cash, ownership/loadout, active personal life, cooldown, replacement, and rental blocks using server projection state.
 8. Multiple simultaneous rentals are reclaimed by the one shared vehicle-manager sweep after configured abandonment/disconnect timeouts, with no per-rental monitor scripts or duplicate cooldowns.
 9. SOLO/GROUP insertion prompts, countdown, successful-departure charge wording, invitation/join state, boarding, egress, closure, and backpack restoration each appear once through the normal notification owner.
 

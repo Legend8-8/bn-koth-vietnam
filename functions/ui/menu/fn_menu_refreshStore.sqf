@@ -277,14 +277,20 @@ if (_selectedOnPage < 0 && {(count _pageEntries) > 0}) then {
     _imageArea ctrlSetBackgroundColor [0.025,0.025,0.022,0.92];
     _image ctrlSetText (_entry getOrDefault ["picture", ""]);
     _name ctrlSetText (_entry getOrDefault ["displayName", "UNKNOWN"]);
-    _status ctrlSetText (_state getOrDefault ["stateLabel", "UNAVAILABLE"]);
     private _blocking = _state getOrDefault ["blocking", false];
+    _status ctrlSetText (if (_blocking && {_entryKind isEqualTo "VEHICLE"}) then {
+        _state getOrDefault ["lockSummary", "LOCKED"]
+    } else {
+        _state getOrDefault ["stateLabel", "UNAVAILABLE"]
+    });
     private _statusColor = if (_blocking) then {[0.94, 0.80, 0.34, 1]} else {[0.84, 0.82, 0.78, 0.92]};
     private _statusFontHeight = (if (_blocking) then {0.020} else {0.017}) * safeZoneH;
     _status ctrlSetTextColor _statusColor;
     _status ctrlSetFontHeight _statusFontHeight;
-    _overlay ctrlShow false;
-    _lock ctrlShow false;
+    private _showVehicleLock = _blocking && {_entryKind isEqualTo "VEHICLE"};
+    _overlay ctrlShow _showVehicleLock;
+    _lock ctrlSetText (if (_showVehicleLock) then {"LOCKED"} else {""});
+    _lock ctrlShow _showVehicleLock;
     _unused ctrlShow false;
     if (_entryKind isEqualTo "CATEGORY") then {
         private _nextRoute = _entry getOrDefault ["route", "ROOT"];
@@ -353,23 +359,81 @@ switch (_entryKind) do {
         private _metadata = _selected getOrDefault ["metadata",createHashMap];
         private _state = [_selected] call bn_koth_fnc_menu_projectStoreVehicleState;
         private _allowedSides = _metadata getOrDefault ["allowedSides",[]];
+        private _purchasePrice = _state getOrDefault ["purchasePrice",-1];
         private _rentalPrice = _state getOrDefault ["rentalPrice",-1];
+        private _replacementPrice = _state getOrDefault ["replacementPrice",-1];
+        private _purchaseText=if (_purchasePrice>=0) then {[_purchasePrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
         private _rentalText=if (_rentalPrice>=0) then {[_rentalPrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
+        private _replacementText=if (_replacementPrice>=0) then {[_replacementPrice] call bn_koth_fnc_ui_formatCash} else {"NOT CONFIGURED"};
         private _missingPerks = _state getOrDefault ["missingPerks", []];
-        [[
+        private _missingMastery = _state getOrDefault ["missingMastery", createHashMap];
+        if !(_state getOrDefault ["owned", false]) then {_missingMastery = _state getOrDefault ["missingRentalMastery", createHashMap]};
+        private _masteryText = if ((count _missingMastery) isEqualTo 0) then {"READY"} else {((keys _missingMastery) apply {
+            private _progress = _missingMastery get _x;
+            private _counterLabel = switch (_x) do {
+                case "infantryKills": {"INFANTRY KILLS"};
+                case "insertions": {"INSERTIONS"};
+                case "passengersDelivered": {"PASSENGERS DELIVERED"};
+                case "transportDistance": {"TRANSPORT DISTANCE"};
+                default {"MASTERY"};
+            };
+            format ["%1 %2/%3", _counterLabel, _progress select 0, _progress select 1]
+        }) joinString ", "};
+        private _baseLoadout = _state getOrDefault ["baseLoadout", false];
+        private _familyDisplayName = _state getOrDefault ["familyDisplayName", _selected getOrDefault ["displayName", "VEHICLE FAMILY"]];
+        private _requiredDisplayName = _state getOrDefault ["requiredLoadoutDisplayName", ""];
+        private _ownershipText = if (_state getOrDefault ["owned", false]) then {"FAMILY OWNED"} else {
+            if (_baseLoadout) then {"PURCHASE TO OWN FAMILY"} else {"PURCHASE BASE LOADOUT TO OWN FAMILY"}
+        };
+        private _detailLines = [
             _selected getOrDefault ["displayName","VEHICLE"],"",
             format ["CATEGORY: %1",_metadata getOrDefault ["storeCategory",""]],
-            format ["ROLE: %1",_metadata getOrDefault ["vehicleRole",""]],
+            format ["FAMILY: %1",_familyDisplayName],
+            format ["CAPABILITIES: %1",(_metadata getOrDefault ["capabilities",[]]) joinString " / "],
             format ["KOTH AVAILABILITY: %1",if ((count _allowedSides)>0) then {_allowedSides joinString " / "} else {"UNCONFIGURED"}],
             format ["LEVEL: %1 / %2",_progression getOrDefault ["level",1],_metadata getOrDefault ["minLevel",1]],
-            format ["PERKS: %1",if ((count _missingPerks)>0) then {_missingPerks joinString ", "} else {"READY"}],"",
-            "RENTAL",_rentalText,"","ACCESS","ONE VEHICLE LIFE","","STATUS",_state getOrDefault ["stateLabel","UNAVAILABLE"]
-        ]] call _setPlainDetail;
-        if (_state getOrDefault ["canRent",false]) then {
-            _primaryAction ctrlShow true;_primaryAction ctrlEnable (_state getOrDefault ["canAffordRental",false]);_primaryAction ctrlSetText format ["RENT %1",_rentalText];
-            _primaryAction buttonSetAction format ["['RENT',%1,''] call bn_koth_fnc_vehicles_requestRental;",str _vehicleClass];
+            format ["PERKS: %1",if ((count _missingPerks)>0) then {_missingPerks joinString ", "} else {"READY"}]
+        ];
+        if (_baseLoadout) then {
+            _detailLines append ["BASE LOADOUT", format ["OWNERSHIP: %1", _ownershipText]];
         } else {
-            if (_state getOrDefault ["active",false]) then {_primaryAction ctrlShow true;_primaryAction ctrlEnable false;_primaryAction ctrlSetText "VEHICLE ACTIVE"};
+            _detailLines append [format ["REQUIRED LOADOUT: %1", _requiredDisplayName], format ["OWNERSHIP: %1", _ownershipText]];
+        };
+        _detailLines append [
+            format ["MASTERY PROGRESS: %1", if (_baseLoadout) then {"NOT REQUIRED FOR BASE LOADOUT"} else {_masteryText}], "",
+            "PURCHASE", if (_baseLoadout) then {format ["%1 - OWNS FAMILY / INCLUDES FIRST BASE SPAWN", _purchaseText]} else {"BASE LOADOUT ONLY"},
+            "REPLACEMENT", _replacementText,
+            "RENTAL", if (_state getOrDefault ["rentable",false]) then {_rentalText} else {"MASTERY EXCLUSIVE"},
+            "", "STATUS", _state getOrDefault ["stateLabel","UNAVAILABLE"]
+        ];
+        private _lockReasons = _state getOrDefault ["lockReasons", []];
+        if ((count _lockReasons) > 0) then {
+            _detailLines append ["UNMET REQUIREMENTS", _lockReasons joinString " • "];
+        };
+        private _transactionResult = uiNamespace getVariable ["BN_KOTH_menuVehicleTransactionResult", createHashMap];
+        if (_transactionResult isEqualType createHashMap && {
+            toLower (_transactionResult getOrDefault ["vehicleClass", ""]) isEqualTo toLower _vehicleClass
+        }) then {
+            private _resultOperation = toUpper (_transactionResult getOrDefault ["operation", "VEHICLE"]);
+            private _resultState = if (_transactionResult getOrDefault ["success", false]) then {"COMPLETE"} else {"FAILED"};
+            _detailLines append ["", format ["%1 %2", _resultOperation, _resultState], _transactionResult getOrDefault ["message", "Vehicle request completed."]];
+        };
+        [_detailLines] call _setPlainDetail;
+        if (_state getOrDefault ["active",false]) then {
+            _primaryAction ctrlShow true;_primaryAction ctrlEnable false;_primaryAction ctrlSetText "VEHICLE ACTIVE";
+        } else {
+            if (_state getOrDefault ["owned",false]) then {
+                _primaryAction ctrlShow true; _primaryAction ctrlEnable (_state getOrDefault ["canSpawn",false]);
+                _primaryAction ctrlSetText (if (_state getOrDefault ["unlocked",false]) then {format ["REPLACEMENT %1",_replacementText]} else {"LOADOUT LOCKED"});
+                _primaryAction buttonSetAction format ["['SPAWN',%1,''] call bn_koth_fnc_vehicles_requestRental;",str _vehicleClass];
+            } else {
+                if (_metadata getOrDefault ["baseLoadout",false]) then {
+                    _primaryAction ctrlShow true; _primaryAction ctrlEnable (_state getOrDefault ["canPurchase",false]); _primaryAction ctrlSetText format ["PURCHASE %1",_purchaseText];
+                    _primaryAction buttonSetAction format ["['PURCHASE',%1,''] call bn_koth_fnc_vehicles_requestRental;",str _vehicleClass];
+                };
+                _secondaryAction ctrlShow (_state getOrDefault ["rentable",false]); _secondaryAction ctrlEnable (_state getOrDefault ["canRent",false]); _secondaryAction ctrlSetText format ["RENT %1",_rentalText];
+                _secondaryAction buttonSetAction format ["['RENT',%1,''] call bn_koth_fnc_vehicles_requestRental;",str _vehicleClass];
+            };
         };
     };
 };

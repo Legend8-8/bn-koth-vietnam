@@ -37,8 +37,9 @@ the `callExtension` return value. The adapter accepts only those exact
 source-defined duplicate responses; `Failed to Load Protocol`, unknown-protocol,
 other rejection, and malformed responses fail immediately. A reuse candidate
 must still complete the existing read-only `healthCheck` query against
-`bn_koth_player_progression` and return the exact BN KOTH schema-v3 protocol
-marker before publishing readiness.
+`bn_koth_player_progression` and return the exact BN KOTH schema-v4 protocol
+marker before publishing readiness. The query references `vehicle_progression`,
+so readiness also fails closed when migration 004 has not been applied.
 This probe is also required after cold registration, so a registered but stale,
 wrong, or unusable SQL_CUSTOM path fails closed. It does not log credentials or
 raw query parameters.
@@ -62,6 +63,11 @@ empty tokens. `saved_kits` contains a bounded decimal-byte encoding of up to
 against current side, level, ownership, mastery, perk, and rental entitlement
 every time it is loaded or used for spawn. Database text is parsed as data only; it is never passed to
 `compile`.
+`vehicle_progression` is a bounded fixed-width decimal-byte encoding of a
+data-only array containing logical owned family IDs, first-spawn-used family
+IDs, and sorted family/counter rows. This survives SQL_CUSTOM's restricted
+input character policy, never contains physical objects or runtime net IDs,
+and is decoded with `parseSimpleArray`, never `compile`.
 
 ## Failure policy
 
@@ -70,7 +76,7 @@ duplicate rows, invalid UID, invalid authoritative progression fields, and query
 the configured threshold are explicit failures. A malformed `saved_kits` blob
 is the narrow exception: it is discarded as untrusted intent while valid
 XP/cash/ownership/perk/mastery fields load, then the record is scheduled for a
-canonical schema-v3 repair save. The existing configured
+canonical schema-v4 repair save. The existing configured
 session fallback may let the player continue with a server-owned default state,
 but it does not claim durability. A session created from any failed/malformed or
 future-schema load is write-blocked for the rest of that mission session, so its
@@ -104,10 +110,12 @@ server. Saves remain event-driven and debounced.
 14. Restart the entire server and confirm `COLD_INIT` and the durable values
     restore again.
 
-For the schema-v3 saved-kit deployment specifically: apply
-`003_add_saved_kits.sql`, copy the updated `bn_koth.ini` SQL_CUSTOM file, then
-restart and execute the reconnect/server-restart checks above. No repository-side
-statement or serializer work remains for the operator to author.
+For schema-v4 deployment from schema v2 or earlier, apply
+`003_add_saved_kits.sql` and then `004_add_vehicle_progression.sql`. From schema
+v3, apply only migration 004. Copy the updated SQL_CUSTOM file, restart the
+server, then verify saved kits plus vehicle ownership, first-spawn use and
+mastery through reconnect, mission reload and a full process restart. No
+repository-side statement or serializer work remains for the operator to author.
 
 The operator must supply privately: server OS/architecture, extDB3 build and
 install path, exact `-serverMod` configuration, MariaDB/MySQL host/port/database,

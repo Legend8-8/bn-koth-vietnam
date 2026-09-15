@@ -1,6 +1,6 @@
 class CfgBnKothPersistence
 {
-    schemaVersion = 3;
+    schemaVersion = 4;
     backend = "EXTDB3";
     saveDebounceSeconds = 15;
     sessionFallbackOnFailure = 1;
@@ -13,4 +13,5 @@ class CfgBnKothPersistence
     savedKitMaxNameLength = 32;
     savedKitMaxLoadoutCharacters = 60000;
     savedKitMaxSerializedCharacters = 500000;
+    vehicleProgressionMaxSerializedCharacters = 250000;
 };
