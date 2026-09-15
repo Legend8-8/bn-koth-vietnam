@@ -23,6 +23,9 @@ Run build.py to export trimmed mission folders for all maps under maps/<map_name
 - Map-specific overrides go in maps/<map_name>/ (for example maps/cam_lao_nam/mission.sqm).
 - Terrain AO/location runtime config is owned by maps/<map_name>/map_config/locations.hpp.
 - Root config/locations.hpp is non-authoritative and must not contain live AO definitions.
+- Normal AOs keep the existing spatial static-prop workflow. Use optional
+  <locationId>_ Eden variable names (longest configured prefix wins) or
+  objects[] only to disambiguate exceptional overlapping/nested ownership.
 - Target mission folders are named as <MISSION_STEM>.<map_name>.
 
 5. Notes

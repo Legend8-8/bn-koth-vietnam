@@ -24,7 +24,7 @@ A location now only needs the short display metadata in config:
 - displayName
 - description
 - image
-- objects[] (optional explicit list; prefix-based detection is preferred)
+- objects[] (optional exceptional explicit assignment)
 - optional explicit override values for exceptional Eden naming breaks
 - optional inclusive minPlayers / maxPlayers AO population bounds (maxPlayers = -1 means unlimited)
 
@@ -50,17 +50,30 @@ In mission.sqm, marker names are what gameplay code uses, for example:
 
 Numeric marker id values in mission.sqm (for example id=0, id=2, id=3) are editor-internal and should not be used for runtime game logic.
 
-5. Object Grouping by Zone
+5. Static Object Ownership by Zone
 
-If an object belongs to a specific location, give it an Eden variable name with prefix <locationId>_.
+Ordinary unnamed static props inside one location's WEST/EAST base-zone markers
+continue to be discovered spatially. This remains the standard workflow for
+existing and future normal AOs; they do not require Eden object names or
+objects[] entries.
+
+When overlapping or nested locations need exclusive ownership, give the object
+an Eden variable name with prefix <locationId>_. A recognised configured prefix
+owns the object before spatial discovery. If configured IDs overlap, the longest
+matching ID wins, so saigon_tower_cover_01 belongs to saigon_tower rather than
+saigon.
 
 Example naming pattern:
 
 - saigon_cover_01
-- saigon_tower_01
+- saigon_tower_cover_01
 - hue_cover_01
 
-You can still use objects[] for explicit object names, but it is optional.
+You can still use objects[] for exceptional explicit assignments. It has the
+highest precedence, but remains optional. The same object must not be listed by
+multiple locations; conflicting authored claims are logged and excluded from
+the cache. Units, vehicles and Logic/module helpers remain ineligible for static
+hide/show ownership even when their variable names use a location prefix.
 
 At location activation time:
 
@@ -81,7 +94,7 @@ That function:
 - publishes BN_KOTH_activeLocationId;
 - publishes BN_KOTH_activeZoneMarker, active respawn markers and active safe-zone markers;
 - hides inactive location markers;
-- deactivates non-active static location objects using the location base-zone spatial ownership plus objects[] entries if provided, while keeping them reactivatable.
+- deactivates non-active static location objects from the single exclusive ownership cache while keeping them reactivatable.
 
 Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
 
@@ -95,7 +108,7 @@ Configured vs activatable is intentionally different:
 1. Add zone, respawn and side-specific base-zone markers in mission.sqm (via Eden).
 2. Name markers to the convention, for example hue_zone, hue_respawn_west, hue_respawn_east, hue_west_base_zone and hue_east_base_zone.
 3. Add a short class hue in maps/<map_name>/map_config/locations.hpp with displayName, description and image.
-4. Give zone-specific objects Eden variable names with prefix <locationId>_ (for example hue_...).
+4. Place ordinary base props inside the relevant base-zone marker; spatial discovery owns them automatically. Use <locationId>_ Eden names or objects[] only when exceptional overlapping/nested ownership must be explicit.
 5. Set defaultLocationId to hue for testing.
 6. Start mission and verify only hue markers/objects are active.
 
