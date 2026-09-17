@@ -6,8 +6,11 @@ Apply them in ascending order. Mission persistence schema version `3` uses
 table `bn_koth_player_progression`.
 
 `uid` is the Steam UID primary key. `schema_version`, `xp`, `cash`,
-`owned_weapons`, `weapon_kills`, `owned_perks`, `active_perks`, and bounded saved-loadout intent are durable. `created_at` and `updated_at`
-are database audit timestamps. Level is derived from XP; rentals and round
+`owned_weapons`, `weapon_kills`, `owned_perks`, and `active_perks` are durable. The
+legacy `saved_kits` column remains in the V3 SQL contract but is always written
+as `-`; kits and the preferred kit ID are stored in client `profileNamespace`.
+`created_at` and `updated_at` are database audit timestamps. Level is derived
+from XP; rentals and round
 statistics are not stored.
 
 The durable collection text columns use restricted deterministic codecs documented in

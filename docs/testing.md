@@ -1340,19 +1340,22 @@ On a dedicated server with at least three players, verify:
 10. A JIP client during `ENDING`/`RESETTING` receives the same immutable result projection.
 11. The lobby exposes only the score limit; no round time-limit setting or timer is presented.
 
-### Persistent saved-loadout acceptance
+### Local saved-loadout acceptance
 
-After applying migration `003_add_saved_kits.sql` and deploying the updated
-extDB3 SQL_CUSTOM file:
-
-1. Create, rename, update, delete, and select a default saved loadout at the active team mapboard.
-2. Confirm server restart and reconnect restore the bounded saved set and preferred ID.
-3. Begin with legacy `profileNamespace` kits and an empty durable set; the next save/update must migrate valid local entries once without granting equipment.
-4. Attempt CRUD away from the mapboard, undeployed, from the wrong current representation, and with malformed IDs/names/loadout shapes; all must fail closed.
-5. Save a loadout containing a current rental, expire/remove the rental, then load and respawn; the old saved intent must not recreate entitlement.
-6. Repeat with a battlefield pickup, cross-side item, locked level/mastery item, and inactive perk item; every application must pass the current canonical validator or fall back safely.
-7. Corrupt only `saved_kits` in the database and verify the invalid kit set is dropped, valid progression remains loaded, and the next canonical save repairs the row without granting equipment.
-8. Review server/client RPT for duplicate writes, oversize codec rejection, malformed extDB rows, stale preference state, and RemoteExec direction failures.
+1. Create, rename, overwrite, delete, and select a default saved loadout. Close
+   and reopen the menu, reconnect, and restart the client with the same profile;
+   the local set and preferred ID must remain correct.
+2. Confirm those local operations do not schedule a `savePlayer` write and that
+   ordinary XP/cash/ownership/mastery/perk saves still work. The V3 database
+   `saved_kits` field remains `-` and is ignored on load.
+3. Save a loadout containing a current rental, expire/remove the rental, then
+   load and respawn; the old saved intent must not recreate entitlement.
+4. Repeat with edited profile data, a battlefield pickup, cross-side item,
+   locked level/mastery item, and inactive perk item. Every application must
+   pass the current server validator or fall back safely on spawn.
+5. Confirm LOAD/EDIT still require the active team mapboard and the current
+   representation. SET DEFAULT submits intent through the preference validator
+   and does not equip a loadout by itself.
 
 The AO validator, not the mission exporter, owns these repository checks.
 `build.py` remains limited to assembling exportable mission folders.

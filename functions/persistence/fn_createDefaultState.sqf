@@ -20,9 +20,6 @@ createHashMapFromArray [
     ["ownedWeapons", []],
     ["ownedPerks", []],
     ["activePerks", []],
-    ["savedKits", []],
-    ["preferredSavedKitId", ""],
-    ["savedKitsInitialized", false],
     ["rentedWeapons", []],
     ["weaponKills", createHashMap]
 ]
