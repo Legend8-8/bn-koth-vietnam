@@ -32,7 +32,6 @@ if (_operation isEqualTo "UPDATE") exitWith {
     _kits set [_index, _record];
     profileNamespace setVariable ["BN_KOTH_savedKits_v2", _kits];
     saveProfileNamespace;
-    [createHashMapFromArray [["savedKitOperation", "UPDATE"], ["savedKitId", _kitId]]] call bn_koth_fnc_loadouts_request;
     uiNamespace setVariable ["BN_KOTH_menuKitEditId", ""];
     uiNamespace setVariable ["BN_KOTH_menuKitEditName", ""];
     if (_kitId isEqualTo (profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""])) then {
@@ -67,7 +66,6 @@ if !(_kitId isEqualTo "") exitWith {
     _kits set [_index, _record];
     profileNamespace setVariable ["BN_KOTH_savedKits_v2", _kits];
     saveProfileNamespace;
-    [createHashMapFromArray [["savedKitOperation", "RENAME"], ["savedKitId", _kitId], ["savedKitName", _name]]] call bn_koth_fnc_loadouts_request;
     ["LOCAL KIT RENAMED."] call bn_koth_fnc_ui_notify;
     ["LOADOUT_KITS"] call bn_koth_fnc_menu_refresh;
     true
@@ -81,7 +79,6 @@ private _newId = format ["kit_%1_%2", floor diag_tickTime, floor (random 1000000
 _kits pushBack [_newId, _name, +_loadout];
 profileNamespace setVariable ["BN_KOTH_savedKits_v2", _kits];
 saveProfileNamespace;
-[createHashMapFromArray [["savedKitOperation", "CREATE"], ["savedKitId", _newId], ["savedKitName", _name]]] call bn_koth_fnc_loadouts_request;
 uiNamespace setVariable ["BN_KOTH_menuKitSelectedId", _newId];
 ["KIT SAVED LOCALLY."] call bn_koth_fnc_ui_notify;
 ["LOADOUT_KITS"] call bn_koth_fnc_menu_refresh;

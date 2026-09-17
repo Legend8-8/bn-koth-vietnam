@@ -671,28 +671,17 @@ status, K/D/A, objective contribution, best streak, and canonical round reward
 deltas, so death, disconnect and JIP presentation do not require the original
 unit to remain alive.
 
-## Persistent saved loadouts
+## Locally saved loadouts
 
-Saved loadouts are bounded intent inside the existing player progression
-record and persistence adapter. Server create/update operations capture the
-canonical intended loadout; legacy profile kits may be imported once as
-untrusted intent when the durable set is empty. Persistence never grants
-equipment entitlement. A saved Unit Loadout is revalidated through the normal
-side, level, ownership, mastery, perk, and rental checks every time it is
-loaded or selected for spawn. Fixed GPS/NVG assigned slots are normalized inside
-that validation before saved assigned entries are checked. The schema-v4 extDB3
-codec is data-only and is decoded with `parseSimpleArray`, never `compile`.
-
-The saved-kit blob also preserves whether that one-time legacy import has been
-initialized. An initialized empty set is therefore an authoritative deletion,
-not an invitation to restore stale `profileNamespace` entries after reconnect.
-The client/server synchronization flag is mission-connection-local so a prior
-server session cannot suppress a legitimate first import on another database.
-
-A malformed saved-kit blob is dropped to an empty saved set without discarding
-otherwise valid persistent XP, cash, ownership, perks, or mastery. The server
-marks that record dirty so the normal persistence owner rewrites a canonical
-schema-v4 representation.
+Saved loadouts and the preferred kit ID are client-owned `profileNamespace`
+intent. Local create, rename, overwrite, delete, and preference changes do not
+mutate server progression or schedule database writes. A saved Unit Loadout is
+untrusted and passes the normal server side, level, ownership, mastery, perk,
+and rental checks every time it is loaded or selected for spawn. Fixed GPS/NVG
+assigned slots are normalized inside that validation before saved assigned
+entries are checked. An invalid spawn candidate falls back to the faction
+starter. The V4 persistence statement still sends `-` for the legacy
+`saved_kits` column and ignores that column on load.
 
 ## Assist and teamkill consequences
 

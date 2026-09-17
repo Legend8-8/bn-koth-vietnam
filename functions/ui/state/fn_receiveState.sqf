@@ -72,21 +72,6 @@ private _keyMap = createHashMapFromArray [
     };
 } forEach (keys _payload);
 
-private _savedKitState = _payload getOrDefault ["playerProgression", createHashMap];
-if (_savedKitState isEqualType createHashMap && {_savedKitState getOrDefault ["savedKitsAuthoritative", false]}) then {
-    private _serverKits = _savedKitState getOrDefault ["savedKits", []];
-    private _localKits = profileNamespace getVariable ["BN_KOTH_savedKits_v2", []];
-    private _serverInitialized = _savedKitState getOrDefault ["savedKitsInitialized", false];
-    // A non-empty durable set wins. An empty first-time set deliberately keeps
-    // legacy profile kits usable until the player next creates/updates them.
-    if (_serverInitialized || {(count _serverKits) > 0} || {!(_localKits isEqualType [])} || {(count _localKits) isEqualTo 0}) then {
-        profileNamespace setVariable ["BN_KOTH_savedKits_v2", +_serverKits];
-        profileNamespace setVariable ["BN_KOTH_preferredSpawnKitId", _savedKitState getOrDefault ["preferredSavedKitId", ""]];
-        uiNamespace setVariable ["BN_KOTH_savedKitsServerSynced", true];
-        saveProfileNamespace;
-    };
-};
-
 [] call bn_koth_fnc_progression_perks_applyMedicTraitLocal;
 [] call bn_koth_fnc_ui_evaluateStateReadiness;
 [] call bn_koth_fnc_ui_results_update;
