@@ -57,12 +57,10 @@ otherwise entries sorted by classname and encoded as
 `classname=non_negative_integer`, joined with commas. Tokens permit only ASCII
 lowercase letters, digits, and underscore. Parsing rejects duplicates,
 unexpected delimiters, invalid characters, negative/non-integral counts, and
-empty tokens. `saved_kits` contains a bounded decimal-byte encoding of up to
-12 canonical Unit Loadout arrays plus the preferred kit ID. Its decoder uses
-`parseSimpleArray`, never `compile`, and the complete loadout is still checked
-against current side, level, ownership, mastery, perk, and rental entitlement
-every time it is loaded or used for spawn. Database text is parsed as data only; it is never passed to
-`compile`.
+empty tokens. The legacy `saved_kits` field remains in the V4 statement and is
+written as `-`. Saved loadouts and their preferred ID live in client
+`profileNamespace`; their content passes server validation on load and spawn.
+
 `vehicle_progression` is a bounded fixed-width decimal-byte encoding of a
 data-only array containing logical owned family IDs, first-spawn-used family
 IDs, and sorted family/counter rows. This survives SQL_CUSTOM's restricted
@@ -73,11 +71,9 @@ and is decoded with `parseSimpleArray`, never `compile`.
 
 Missing extension, connection/protocol failure, malformed/error response,
 duplicate rows, invalid UID, invalid authoritative progression fields, and query duration beyond
-the configured threshold are explicit failures. A malformed `saved_kits` blob
-is the narrow exception: it is discarded as untrusted intent while valid
-XP/cash/ownership/perk/mastery fields load, then the record is scheduled for a
-canonical schema-v4 repair save. The existing configured
-session fallback may let the player continue with a server-owned default state,
+the configured threshold are explicit failures. Legacy `saved_kits` text is
+ignored on load so it cannot block XP/cash/ownership/perk/vehicle progression.
+The existing configured session fallback may let the player continue with a server-owned default state,
 but it does not claim durability. A session created from any failed/malformed or
 future-schema load is write-blocked for the rest of that mission session, so its
 defaults cannot overwrite the durable row. Failed saves remain dirty. Future
@@ -86,7 +82,8 @@ schema rows are rejected and are not automatically overwritten.
 `callExtension` is synchronous and cannot be interrupted by SQF. The configured
 threshold therefore detects and rejects an over-time response after control
 returns; database/driver connection timeouts must also be configured on the
-server. Saves remain event-driven and debounced.
+server. Progression saves remain event-driven and debounced. Local saved-kit
+changes do not schedule database writes.
 
 ## TCAdmin-oriented verification checklist
 
@@ -100,9 +97,10 @@ server. Saves remain event-driven and debounced.
 7. Confirm the TCAdmin/Arma service account can read and load those files.
 8. Restart and verify `EXTDB_READY` in the server RPT and extDB3's own log.
 9. Join with a first-time Steam UID and verify one row is created.
-10. Earn XP/cash/mastery, acquire a weapon, and save a named loadout; then disconnect and verify the
-    save-success RPT marker.
-11. Reconnect and confirm the values and saved loadout restore and remain entitlement-validated.
+10. Earn XP/cash/mastery, acquire a weapon and a vehicle family, then disconnect
+    and verify the progression save-success RPT marker. Save a named loadout locally.
+11. Reconnect and confirm progression restores from the database while the saved
+    loadout remains in the same client profile and remains entitlement-validated.
 12. Reload the mission without stopping `arma3server_x64.exe`; confirm
     `MISSION_RELOAD_REUSE`, `EXTDB_READY`, durable values, subsequent saves, and
     statistics/leaderboard queries all remain available without session fallback.
@@ -113,8 +111,9 @@ server. Saves remain event-driven and debounced.
 For schema-v4 deployment from schema v2 or earlier, apply
 `003_add_saved_kits.sql` and then `004_add_vehicle_progression.sql`. From schema
 v3, apply only migration 004. Copy the updated SQL_CUSTOM file, restart the
-server, then verify saved kits plus vehicle ownership, first-spawn use and
-mastery through reconnect, mission reload and a full process restart. No
+server, then verify vehicle ownership, first-spawn use and mastery through
+reconnect, mission reload and a full process restart. Saved-kit data needs no
+database migration or restoration; use the same client profile. No
 repository-side statement or serializer work remains for the operator to author.
 
 The operator must supply privately: server OS/architecture, extDB3 build and

@@ -27,16 +27,10 @@ if (_backend isEqualTo "EXTDB3") exitWith {
     private _kills = [_projection getOrDefault ["weaponKills", createHashMap]] call bn_koth_fnc_persistence_serializeWeaponKills;
     private _ownedPerks = [_projection getOrDefault ["ownedPerks", []]] call bn_koth_fnc_persistence_serializePerkIds;
     private _activePerks = [_projection getOrDefault ["activePerks", []]] call bn_koth_fnc_persistence_serializePerkIds;
-    private _savedKits = [
-        _projection getOrDefault ["savedKits", []],
-        _projection getOrDefault ["preferredSavedKitId", ""],
-        _projection getOrDefault ["savedKitsInitialized", false]
-    ] call bn_koth_fnc_persistence_serializeSavedKits;
     private _vehicleProgression = [_projection] call bn_koth_fnc_persistence_serializeVehicleProgression;
     if !(_owned getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _owned getOrDefault ["code", "SERIALIZATION_FAILED"]], ["uid", _uid]]};
     if !(_kills getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _kills getOrDefault ["code", "SERIALIZATION_FAILED"]], ["uid", _uid]]};
     if !(_ownedPerks getOrDefault ["success", false] && {_activePerks getOrDefault ["success", false]}) exitWith {createHashMapFromArray [["success", false], ["code", "PERK_SERIALIZATION_FAILED"], ["uid", _uid]]};
-    if !(_savedKits getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _savedKits getOrDefault ["code", "SAVED_KIT_SERIALIZATION_FAILED"]], ["uid", _uid]]};
     if !(_vehicleProgression getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _vehicleProgression getOrDefault ["code", "VEHICLE_PROGRESSION_SERIALIZATION_FAILED"]], ["uid", _uid]]};
     private _query = ["savePlayer", [
         _uid,
@@ -47,7 +41,7 @@ if (_backend isEqualTo "EXTDB3") exitWith {
         _kills get "value",
         _ownedPerks get "value",
         _activePerks get "value",
-        _savedKits get "value",
+        "-",
         _vehicleProgression get "value"
     ]] call bn_koth_fnc_persistence_extdbCall;
     if !(_query getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _query getOrDefault ["code", "BACKEND_SAVE_FAILED"]], ["uid", _uid]]};

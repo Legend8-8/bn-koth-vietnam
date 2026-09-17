@@ -18,11 +18,6 @@ params [
 if (hasInterface && {!isServer}) exitWith {
     if (_request isEqualType createHashMap) then {
         _request set ["arsenalBoardNetId", uiNamespace getVariable ["BN_KOTH_menuArsenalBoardNetId", ""]];
-        if (!((_request getOrDefault ["savedKitOperation", ""]) isEqualTo "")
-            && {!(uiNamespace getVariable ["BN_KOTH_savedKitsServerSynced", false])}) then {
-            _request set ["legacySavedKits", profileNamespace getVariable ["BN_KOTH_savedKits_v2", []]];
-            _request set ["legacyPreferredSavedKitId", profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""]];
-        };
     };
     [_request] remoteExecCall ["bn_koth_fnc_loadouts_request", 2];
 };
@@ -32,11 +27,6 @@ if (hasInterface && {!isServer}) exitWith {
 if (hasInterface && {isServer} && {remoteExecutedOwner <= 0}) exitWith {
     if (_request isEqualType createHashMap) then {
         _request set ["arsenalBoardNetId", uiNamespace getVariable ["BN_KOTH_menuArsenalBoardNetId", ""]];
-        if (!((_request getOrDefault ["savedKitOperation", ""]) isEqualTo "")
-            && {!(uiNamespace getVariable ["BN_KOTH_savedKitsServerSynced", false])}) then {
-            _request set ["legacySavedKits", profileNamespace getVariable ["BN_KOTH_savedKits_v2", []]];
-            _request set ["legacyPreferredSavedKitId", profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""]];
-        };
     };
     [_request] remoteExecCall ["bn_koth_fnc_loadouts_request", 2];
 };
@@ -101,43 +91,16 @@ if (_preference in ["SET", "CLEAR"]) exitWith {
 
     _record deleteAt "preferredSpawnCandidate";
     private _result = createHashMapFromArray [["success", true]];
-    private _preferredPersistedId = "";
-    private _preferenceStateChanged = false;
-    private _progressionByUid = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
-    private _progression = _progressionByUid getOrDefault [_uid, createHashMap];
     if (_preference isEqualTo "SET") then {
         private _mutation = _request getOrDefault ["mutation", createHashMap];
         // Do not accept a client-selected validation operation in this branch.
         private _saved = if (_mutation isEqualType createHashMap) then {_mutation getOrDefault ["savedLoadout", []]} else {[]};
-        private _kitId = if (_mutation isEqualType createHashMap) then {_mutation getOrDefault ["kitId", ""]} else {""};
-        if (_progression isEqualType createHashMap) then {
-            private _serverKits = _progression getOrDefault ["savedKits", []];
-            private _serverIndex = _serverKits findIf {_x isEqualType [] && {count _x >= 3} && {(_x select 0) isEqualTo _kitId}};
-            if (_serverIndex >= 0) then {
-                _saved = +((_serverKits select _serverIndex) select 2);
-                _preferredPersistedId = _kitId;
-            };
-        };
         _result = [_playerObj, createHashMapFromArray [["mutation", createHashMapFromArray [
             ["op", "load_local_kit"], ["savedLoadout", _saved]
         ]]]] call bn_koth_fnc_loadouts_validateLoadout;
         if (_result getOrDefault ["success", false]) then {
             _record set ["preferredSpawnCandidate", +(_result get "validatedLoadout")];
-            if (_progression isEqualType createHashMap && {!(_preferredPersistedId isEqualTo "")}) then {
-                _preferenceStateChanged = !((_progression getOrDefault ["preferredSavedKitId", ""]) isEqualTo _preferredPersistedId);
-                _progression set ["preferredSavedKitId", _preferredPersistedId];
-            };
         };
-    } else {
-        if (_progression isEqualType createHashMap) then {
-            _preferenceStateChanged = !((_progression getOrDefault ["preferredSavedKitId", ""]) isEqualTo "");
-            _progression set ["preferredSavedKitId", ""];
-        };
-    };
-    if (_preferenceStateChanged) then {
-        _progressionByUid set [_uid, _progression];
-        missionNamespace setVariable ["BN_KOTH_playerProgression", _progressionByUid];
-        [_uid, "saved_kit_preference"] call bn_koth_fnc_persistence_markDirty;
     };
     _records set [_uid, _record];
     missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
@@ -163,9 +126,6 @@ missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
 // authoritative access at the player's active team mapboard. The client-side
 // menu capability flag is presentation only and is never trusted here.
 private _requiresArsenalAccess = true;
-private _savedKitOperation = if (_request isEqualType createHashMap) then {
-    toUpper (_request getOrDefault ["savedKitOperation", ""])
-} else {""};
 
 // Snapshot intent contains no client inventory. The server reads the player
 // object and returns that observation without applying equipment.
@@ -295,35 +255,6 @@ if !(_arsenalAccessFailure isEqualTo "") exitWith {
             ["loadoutId", ""]
         ]
     ] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
-};
-
-if !(_savedKitOperation isEqualTo "") exitWith {
-    private _savedResult = [
-        _uid,
-        _savedKitOperation,
-        _request getOrDefault ["savedKitId", ""],
-        _request getOrDefault ["savedKitName", ""],
-        _request getOrDefault ["legacySavedKits", []],
-        _request getOrDefault ["legacyPreferredSavedKitId", ""]
-    ] call bn_koth_fnc_loadouts_manageSavedKits;
-    [_savedResult] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
-};
-
-// Prefer the persisted server copy when a stable saved-kit ID is known. Local
-// profile kits remain a backward-compatible untrusted fallback and still pass
-// the same complete entitlement validator below.
-if (_request isEqualType createHashMap) then {
-    private _mutation = _request getOrDefault ["mutation", createHashMap];
-    if (_mutation isEqualType createHashMap && {(toLower (_mutation getOrDefault ["op", ""])) isEqualTo "load_local_kit"}) then {
-        private _kitId = _mutation getOrDefault ["kitId", ""];
-        private _progression = (missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap]) getOrDefault [_uid, createHashMap];
-        private _serverKits = _progression getOrDefault ["savedKits", []];
-        private _serverIndex = _serverKits findIf {_x isEqualType [] && {count _x >= 3} && {(_x select 0) isEqualTo _kitId}};
-        if (_serverIndex >= 0) then {
-            _mutation set ["savedLoadout", +((_serverKits select _serverIndex) select 2)];
-            _request set ["mutation", _mutation];
-        };
-    };
 };
 
 private _validation = [

@@ -199,9 +199,6 @@ class CfgFunctions
             class persistence_deserializePerkIds {file = "functions\persistence\fn_deserializePerkIds.sqf";};
             class persistence_serializeWeaponKills {file = "functions\persistence\fn_serializeWeaponKills.sqf";};
             class persistence_deserializeWeaponKills {file = "functions\persistence\fn_deserializeWeaponKills.sqf";};
-            class persistence_normalizeSavedKits {file = "functions\persistence\fn_normalizeSavedKits.sqf";};
-            class persistence_serializeSavedKits {file = "functions\persistence\fn_serializeSavedKits.sqf";};
-            class persistence_deserializeSavedKits {file = "functions\persistence\fn_deserializeSavedKits.sqf";};
             class persistence_serializeVehicleProgression {file = "functions\persistence\fn_serializeVehicleProgression.sqf";};
             class persistence_deserializeVehicleProgression {file = "functions\persistence\fn_deserializeVehicleProgression.sqf";};
             class persistence_parseExtdbSystemResponse {file = "functions\persistence\fn_parseExtdbSystemResponse.sqf";};
@@ -300,7 +297,6 @@ class CfgFunctions
             class loadouts_buildWeaponSlot {file = "functions\loadouts\fn_buildWeaponSlot.sqf";};
             class loadouts_getSpawnLoadout {file = "functions\loadouts\fn_getSpawnLoadout.sqf";};
             class loadouts_buildValidatedLoadout {file = "functions\loadouts\fn_buildValidatedLoadout.sqf";};
-            class loadouts_manageSavedKits {file = "functions\loadouts\fn_manageSavedKits.sqf";};
             class loadouts_applyLoadout {file = "functions\loadouts\fn_applyLoadout.sqf";};
             class loadouts_request {file = "functions\loadouts\fn_request.sqf";};
             class loadouts_receiveValidatedLoadout {file = "functions\loadouts\fn_receiveValidatedLoadout.sqf";};

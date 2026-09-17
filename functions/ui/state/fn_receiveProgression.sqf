@@ -108,26 +108,6 @@ if (_oldLevel isEqualType 0 && {_oldLevel >= 1} && {_level > _oldLevel}) then {
     } forEach _unlockEntries;
 };
 
-if (_progression getOrDefault ["savedKitsAuthoritative", false]) then {
-    private _serverKits = _progression getOrDefault ["savedKits", []];
-    private _localKits = profileNamespace getVariable ["BN_KOTH_savedKits_v2", []];
-    private _serverPreferred = _progression getOrDefault ["preferredSavedKitId", ""];
-    private _serverInitialized = _progression getOrDefault ["savedKitsInitialized", false];
-    private _serverSynced = uiNamespace getVariable ["BN_KOTH_savedKitsServerSynced", false];
-    private _shouldSync = if (_serverSynced) then {
-        !(_localKits isEqualTo _serverKits)
-            || {!((profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""]) isEqualTo _serverPreferred)}
-    } else {
-        _serverInitialized || {(count _serverKits) > 0} || {!(_localKits isEqualType [])} || {(count _localKits) isEqualTo 0}
-    };
-    if (_shouldSync) then {
-        profileNamespace setVariable ["BN_KOTH_savedKits_v2", +_serverKits];
-        profileNamespace setVariable ["BN_KOTH_preferredSpawnKitId", _serverPreferred];
-        uiNamespace setVariable ["BN_KOTH_savedKitsServerSynced", true];
-        saveProfileNamespace;
-    };
-};
-
 private _rewardAmount = _progression getOrDefault ["rewardAmount", _progression getOrDefault ["amount", 0]];
 private _rewardReason = _progression getOrDefault ["rewardReason", _progression getOrDefault ["reason", ""]];
 private _rewardType = toLower (_progression getOrDefault ["rewardType", "xp"]);

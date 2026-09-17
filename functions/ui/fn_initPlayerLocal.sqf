@@ -27,9 +27,6 @@ uiNamespace setVariable ["BN_KOTH_downedActionBinding", [objNull, []]];
 uiNamespace setVariable ["BN_KOTH_casualtyHelpOwnRequestActive", false];
 uiNamespace setVariable ["BN_KOTH_casualtyHelpRequestPending", false];
 uiNamespace setVariable ["BN_KOTH_casualtyHelpRequestPendingAt", -1];
-// Connection-local handshake only. The saved kits themselves remain in
-// profileNamespace for one-time migration and offline presentation.
-uiNamespace setVariable ["BN_KOTH_savedKitsServerSynced", false];
 
 addMissionEventHandler [
     "PreloadFinished",
@@ -141,6 +138,3 @@ if (_existingLifecycleLoop isEqualTo scriptNull || {scriptDone _existingLifecycl
 
     missionNamespace setVariable ["BN_KOTH_lobbyLifecycleLoopHandle", _lifecycleHandle];
 };
-
-// One reconnect/startup submission; rejection leaves the local preference intact.
-[] call bn_koth_fnc_menu_setSpawnKit;

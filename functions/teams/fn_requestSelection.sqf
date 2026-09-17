@@ -5,19 +5,40 @@
     Execution: Client/Server
     Parameters:
         0: Requested side name or lobby-return semantic (WEST/EAST/LOBBY) <STRING>
+        1: Preferred local saved loadout as untrusted intent <ARRAY> (optional)
     Returns:
         None
     Public: Yes
 */
 
-params [["_requestedSideName", "", [""]]];
+params [["_requestedSideName", "", [""]], ["_preferredSavedLoadout", [], [[]]]];
+
+if (hasInterface && {remoteExecutedOwner <= 0} && {!((toUpper _requestedSideName) isEqualTo "LOBBY")}) then {
+    private _preferredId = profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""];
+    private _kits = profileNamespace getVariable ["BN_KOTH_savedKits_v2", []];
+    if !(_preferredId isEqualType "") then {
+        _preferredId = "";
+        profileNamespace setVariable ["BN_KOTH_preferredSpawnKitId", ""];
+        saveProfileNamespace;
+    };
+    if !(_kits isEqualType []) then {_kits = []};
+    if !(_preferredId isEqualTo "") then {
+        private _index = _kits findIf {_x isEqualType [] && {count _x >= 3} && {(_x select 0) isEqualTo _preferredId}};
+        if (_index < 0 || {!(((_kits select _index) select 2) isEqualType [])}) then {
+            profileNamespace setVariable ["BN_KOTH_preferredSpawnKitId", ""];
+            saveProfileNamespace;
+        } else {
+            _preferredSavedLoadout = +((_kits select _index) select 2);
+        };
+    };
+};
 
 if (hasInterface && {!isServer}) exitWith {
-    [_requestedSideName] remoteExecCall ["bn_koth_fnc_teams_requestSelection", 2];
+    [_requestedSideName, _preferredSavedLoadout] remoteExecCall ["bn_koth_fnc_teams_requestSelection", 2];
 };
 
 if (hasInterface && {isServer} && {remoteExecutedOwner <= 0}) exitWith {
-    [_requestedSideName] remoteExecCall ["bn_koth_fnc_teams_requestSelection", 2];
+    [_requestedSideName, _preferredSavedLoadout] remoteExecCall ["bn_koth_fnc_teams_requestSelection", 2];
 };
 
 if (!isServer) exitWith {};
@@ -176,8 +197,21 @@ if (abs (_requestedCount - _opposingCount) > _maxDiff) exitWith {
 
 _record set ["assignedSide", _requestedSide];
 _record set ["state", "TEAM_SELECTED"];
+_record deleteAt "preferredSpawnCandidate";
 _records set [_uid, _record];
 missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+
+// Side assignment and validation complete before ACTIVE JIP can deploy.
+if !(_preferredSavedLoadout isEqualTo []) then {
+    private _preferenceResult = [_playerObj, createHashMapFromArray [["mutation", createHashMapFromArray [
+        ["op", "load_local_kit"], ["savedLoadout", _preferredSavedLoadout]
+    ]]]] call bn_koth_fnc_loadouts_validateLoadout;
+    if (_preferenceResult getOrDefault ["success", false]) then {
+        _record set ["preferredSpawnCandidate", +(_preferenceResult get "validatedLoadout")];
+        _records set [_uid, _record];
+        missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+    };
+};
 
 [] call bn_koth_fnc_teams_publishState;
 

@@ -37,8 +37,7 @@ if !(_targetProgression isEqualType createHashMap) then {
 
 private _playerProgressionPayload = [
     _targetUid,
-    _targetProgression,
-    true
+    _targetProgression
 ] call bn_koth_fnc_progression_buildPresentationState;
 
 private _payload = createHashMapFromArray [
