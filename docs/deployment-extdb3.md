@@ -56,21 +56,17 @@ otherwise entries sorted by classname and encoded as
 `classname=non_negative_integer`, joined with commas. Tokens permit only ASCII
 lowercase letters, digits, and underscore. Parsing rejects duplicates,
 unexpected delimiters, invalid characters, negative/non-integral counts, and
-empty tokens. `saved_kits` contains a bounded decimal-byte encoding of up to
-12 canonical Unit Loadout arrays plus the preferred kit ID. Its decoder uses
-`parseSimpleArray`, never `compile`, and the complete loadout is still checked
-against current side, level, ownership, mastery, perk, and rental entitlement
-every time it is loaded or used for spawn. Database text is parsed as data only; it is never passed to
-`compile`.
+empty tokens. The legacy `saved_kits` field remains in the V3 statement and is
+always written as `-`; saved loadouts and the preferred kit ID are stored in
+client `profileNamespace` and validated by the server when used.
 
 ## Failure policy
 
 Missing extension, connection/protocol failure, malformed/error response,
 duplicate rows, invalid UID, invalid authoritative progression fields, and query duration beyond
-the configured threshold are explicit failures. A malformed `saved_kits` blob
-is the narrow exception: it is discarded as untrusted intent while valid
-XP/cash/ownership/perk/mastery fields load, then the record is scheduled for a
-canonical schema-v3 repair save. The existing configured
+the configured threshold are explicit failures. The legacy `saved_kits` text
+is ignored on load so it cannot block XP/cash/ownership/perk/mastery state.
+The existing configured
 session fallback may let the player continue with a server-owned default state,
 but it does not claim durability. A session created from any failed/malformed or
 future-schema load is write-blocked for the rest of that mission session, so its
@@ -80,7 +76,8 @@ schema rows are rejected and are not automatically overwritten.
 `callExtension` is synchronous and cannot be interrupted by SQF. The configured
 threshold therefore detects and rejects an over-time response after control
 returns; database/driver connection timeouts must also be configured on the
-server. Saves remain event-driven and debounced.
+server. Progression saves remain event-driven and debounced. Local saved-kit
+changes do not issue or schedule database writes.
 
 ## TCAdmin-oriented verification checklist
 
@@ -94,9 +91,10 @@ server. Saves remain event-driven and debounced.
 7. Confirm the TCAdmin/Arma service account can read and load those files.
 8. Restart and verify `EXTDB_READY` in the server RPT and extDB3's own log.
 9. Join with a first-time Steam UID and verify one row is created.
-10. Earn XP/cash/mastery, acquire a weapon, and save a named loadout; then disconnect and verify the
-    save-success RPT marker.
-11. Reconnect and confirm the values and saved loadout restore and remain entitlement-validated.
+10. Earn XP/cash/mastery and acquire a weapon; then disconnect and verify the
+    progression save-success RPT marker. Save a named loadout to the local profile.
+11. Reconnect and confirm progression restores from the database and the saved
+    loadout remains in the same client profile and remains entitlement-validated.
 12. Reload the mission without stopping `arma3server_x64.exe`; confirm
     `MISSION_RELOAD_REUSE`, `EXTDB_READY`, durable values, subsequent saves, and
     statistics/leaderboard queries all remain available without session fallback.
@@ -104,10 +102,26 @@ server. Saves remain event-driven and debounced.
 14. Restart the entire server and confirm `COLD_INIT` and the durable values
     restore again.
 
-For the schema-v3 saved-kit deployment specifically: apply
-`003_add_saved_kits.sql`, copy the updated `bn_koth.ini` SQL_CUSTOM file, then
-restart and execute the reconnect/server-restart checks above. No repository-side
-statement or serializer work remains for the operator to author.
+For a V3 deployment, retain the existing `saved_kits` column and nine-field
+SQL_CUSTOM contract. The mission writes `-` and ignores the column on load.
+Saved loadouts need no database migration.
+
+If a public-beta V3 mission must temporarily run against a table that already
+has the V4 `vehicle_progression MEDIUMTEXT NOT NULL` column, its nine-parameter
+`savePlayer` insert fails for new UIDs because that column has no default. In
+that specific deployment only, change the live `bn_koth.ini` `savePlayer` lines
+to include `vehicle_progression` in the INSERT column list and the literal `'-'`
+as its tenth VALUES entry. Keep `SQL1_INPUTS = 1,2,3,4,5,6,7,8,9`, the V3
+health marker, nine-field `loadPlayer`, and the existing ON DUPLICATE KEY UPDATE
+list unchanged. The literal initializes only new rows; existing vehicle data is
+not overwritten. Do not deploy this variant against a V3 table without that
+column. Restart the server so extDB3 registers the changed SQL_CUSTOM protocol,
+then verify first-time and existing-UID saves in both server RPT and extDB3 logs.
+
+```ini
+SQL1_2 = (uid, schema_version, xp, cash, owned_weapons, weapon_kills, owned_perks, active_perks, saved_kits, vehicle_progression)
+SQL1_3 = VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '-')
+```
 
 The operator must supply privately: server OS/architecture, extDB3 build and
 install path, exact `-serverMod` configuration, MariaDB/MySQL host/port/database,

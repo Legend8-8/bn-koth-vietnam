@@ -26,6 +26,10 @@ bn_koth_fnc_ui_notify = {};
 private _kit = [[], [], [], ["", []], ["", []], ["", []], "", "", [], []];
 profileNamespace setVariable ["BN_KOTH_savedKits_v2", [["a", "A", +_kit], ["b", "B", +_kit]]];
 uiNamespace setVariable ["BN_KOTH_menuIntendedLoadout", +_kit];
+private _requestsBeforeSave = count _sent;
+["C"] call bn_koth_fnc_menu_saveSessionKit;
+["Create stores kit in local profile", ((profileNamespace getVariable ["BN_KOTH_savedKits_v2", []]) findIf {(_x select 1) isEqualTo "C"}) >= 0] call _check;
+["Create sends no database or loadout request", (count _sent) isEqualTo _requestsBeforeSave] call _check;
 ["a", "SET"] call bn_koth_fnc_menu_setSpawnKit;
 private _oldRevision = (missionNamespace getVariable "BN_KOTH_spawnKitResponse") select 0;
 ["b", "SET"] call bn_koth_fnc_menu_setSpawnKit;
@@ -33,6 +37,7 @@ private _oldRevision = (missionNamespace getVariable "BN_KOTH_spawnKitResponse")
 ["Preference does not change intended view", (uiNamespace getVariable "BN_KOTH_menuIntendedLoadout") isEqualTo _kit] call _check;
 ["Renamed B", "b", "RENAME"] call bn_koth_fnc_menu_saveSessionKit;
 ["Rename preserves preference", (profileNamespace getVariable "BN_KOTH_preferredSpawnKitId") isEqualTo "b"] call _check;
+["Rename stores local name", (((profileNamespace getVariable ["BN_KOTH_savedKits_v2", []]) select 1) select 1) isEqualTo "Renamed B"] call _check;
 // Exercise the actual response branch, excluding only its remote-origin guard.
 private _source = loadFile "functions\loadouts\fn_receiveValidatedLoadout.sqf";
 private _start = _source find "if (_validationResult getOrDefault [""spawnPreference"", false]) exitWith {";
@@ -54,6 +59,7 @@ _validationResult set ["preferenceRevision", (missionNamespace getVariable "BN_K
 call _receive;
 ["Restore failure preserves temporary side preference", (profileNamespace getVariable "BN_KOTH_preferredSpawnKitId") isEqualTo "a"] call _check;
 ["", "a", "UPDATE"] call bn_koth_fnc_menu_saveSessionKit;
+["Overwrite stores local loadout", (((profileNamespace getVariable ["BN_KOTH_savedKits_v2", []]) select 0) select 2) isEqualTo _kit] call _check;
 ["Overwrite resubmits replacement array", (((_sent select ((count _sent) - 1)) get "mutation") get "savedLoadout") isEqualTo _kit] call _check;
 ["", "RESUBMIT"] call bn_koth_fnc_menu_setSpawnKit;
 _validationResult set ["preferenceRevision", (missionNamespace getVariable "BN_KOTH_spawnKitResponse") select 0];
@@ -61,6 +67,7 @@ call _receive;
 ["Resubmission does not hide rejected overwrite", (profileNamespace getVariable "BN_KOTH_preferredSpawnKitId") isEqualTo ""] call _check;
 ["a", "SET"] call bn_koth_fnc_menu_setSpawnKit;
 ["a"] call bn_koth_fnc_menu_deleteSessionKit;
+["Delete removes local kit", ((profileNamespace getVariable ["BN_KOTH_savedKits_v2", []]) findIf {(_x select 0) isEqualTo "a"}) < 0] call _check;
 ["Delete clears preference", (profileNamespace getVariable "BN_KOTH_preferredSpawnKitId") isEqualTo ""] call _check;
 ["Delete sends only candidate clear", ((_sent select ((count _sent) - 1)) get "spawnPreference") isEqualTo "CLEAR"] call _check;
 profileNamespace setVariable ["BN_KOTH_savedKits_v2", _oldKits];
