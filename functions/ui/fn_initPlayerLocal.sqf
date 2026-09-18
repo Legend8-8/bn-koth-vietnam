@@ -13,6 +13,7 @@
 */
 
 if (!hasInterface) exitWith {};
+disableSerialization;
 
 missionNamespace setVariable ["BN_KOTH_spawnKitResponse", [0, "", false]];
 missionNamespace setVariable ["BN_KOTH_groupStateLocal", createHashMap];
@@ -69,8 +70,22 @@ uiNamespace setVariable ["BN_KOTH_lobbyContainedUnit", objNull];
 uiNamespace setVariable ["BN_KOTH_lobbyContainmentApplied", false];
 uiNamespace setVariable ["BN_KOTH_hudVisible", false];
 uiNamespace setVariable ["BN_KOTH_hudDisplay", displayNull];
-if (isNil {uiNamespace getVariable "BN_KOTH_notificationQueue"}) then {uiNamespace setVariable ["BN_KOTH_notificationQueue", []]};
-if (isNil {uiNamespace getVariable "BN_KOTH_notificationVisible"}) then {uiNamespace setVariable ["BN_KOTH_notificationVisible", []]};
+// uiNamespace outlives a mission. Discard card controls and scheduler closures
+// from the previous run before the first state snapshot can enqueue new cards.
+{
+    private _ctrl = _x select 0;
+    if (!isNull _ctrl) then {ctrlDelete _ctrl};
+} forEach (uiNamespace getVariable ["BN_KOTH_notificationVisible", []]);
+{
+    private _ctrl = if (_x isEqualType createHashMap) then {_x getOrDefault ["control", controlNull]} else {_x select 0};
+    if (!isNull _ctrl) then {ctrlDelete _ctrl};
+} forEach (uiNamespace getVariable ["BN_KOTH_rewardFeedEntries", []]);
+uiNamespace setVariable ["BN_KOTH_menuDisplay", displayNull];
+uiNamespace setVariable ["BN_KOTH_rewardFeedDisplay", displayNull];
+uiNamespace setVariable ["BN_KOTH_notificationQueue", []];
+uiNamespace setVariable ["BN_KOTH_notificationVisible", []];
+uiNamespace setVariable ["BN_KOTH_notificationPump", nil];
+uiNamespace setVariable ["BN_KOTH_rewardFeedEntries", []];
 if (isNil {uiNamespace getVariable "BN_KOTH_mapInitialFocusNeeded"}) then {uiNamespace setVariable ["BN_KOTH_mapInitialFocusNeeded", false]};
 if (isNil {uiNamespace getVariable "BN_KOTH_mapLifecycleWasDeployed"}) then {uiNamespace setVariable ["BN_KOTH_mapLifecycleWasDeployed", false]};
 
@@ -130,6 +145,7 @@ if (_existingLifecycleLoop isEqualTo scriptNull || {scriptDone _existingLifecycl
         while {hasInterface} do {
             [] call bn_koth_fnc_respawn_updateDownedPresentation;
             [] call bn_koth_fnc_ui_updateLobbyLifecycle;
+            call (uiNamespace getVariable ["BN_KOTH_notificationPump", {}]);
             sleep 0.25;
         };
 

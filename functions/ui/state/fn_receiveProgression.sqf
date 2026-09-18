@@ -101,6 +101,7 @@ if (_oldLevel isEqualType 0 && {_oldLevel >= 1} && {_level > _oldLevel}) then {
     _unlockEntries sort true;
     {
         [createHashMapFromArray [
+            ["category", "PROGRESSION"],
             ["title", "NEW EQUIPMENT AVAILABLE"],
             ["body", _x select 1],
             ["footer", "Level requirement met"]

@@ -1462,6 +1462,32 @@ are visible, oldest cards expire first, and no message claims ownership. Send
 overlapping group invites and confirm their cards share the queue while the
 server invite expiry remains unchanged.
 
+Open Arsenal, Store, and Loadout while a card is active, then close and reopen
+the menu. Confirm cards stay visible above the menu, retain their remaining
+duration, do not duplicate, and do not block clicks. Generate equipment unlock
+cards outside the friendly safe zone and inside the enemy safe zone: they must
+wait. Leave the friendly zone mid-card and return: pending cards must resume in
+order within the four-card stack. While unlocks wait, trigger a general message
+and a Saigon Tower Priority notice; both must display immediately above the
+menu. Confirm XP/cash reward-feed entries stay off the menu and are still
+visible normally when the menu is closed. Check client RPT for display/control
+errors and orphaned controls.
+
+For renderer-only checks, run these from the CLIENT debug console without
+changing progression or persistence:
+
+`[createHashMapFromArray [["category","PROGRESSION"],["title","NEW EQUIPMENT AVAILABLE"],["body","TEST UNLOCK"],["footer","Level requirement met"]]] call bn_koth_fnc_ui_notify;`
+
+`[createHashMapFromArray [["title","NOTICE"],["body","TEST GENERAL"]]] call bn_koth_fnc_ui_notify;`
+
+`["xp", 25, "TEST REWARD"] call bn_koth_fnc_ui_addRewardFeedEntry;`
+
+Check `player getVariable ["BN_KOTH_safeZoneProtected", false]` on the client
+as it changes true, false, true across friendly-zone exit and re-entry. Run
+`test_setProgression.sqf` once only in a disposable development progression
+context to verify the real unlock producer; it changes server XP/cash and
+marks persistence dirty.
+
 Verify baseline faction grenades/smoke remain uncontrolled and available managed
 consumables become usable once their level, side and perk gates pass, without
 purchase, rental, ownership, or persisted quantities. Verify cargo preserves
