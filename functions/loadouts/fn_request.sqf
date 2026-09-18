@@ -107,7 +107,9 @@ if (_preference in ["SET", "CLEAR"]) exitWith {
     [createHashMapFromArray [
         ["spawnPreference", true], ["preferenceRevision", _correlation],
         ["success", _result getOrDefault ["success", false]],
-        ["message", _result getOrDefault ["message", ""]]
+        ["message", _result getOrDefault ["message", ""]],
+        ["code", _result getOrDefault ["code", ""]],
+        ["rejectedClass", _result getOrDefault ["rejectedClass", ""]]
     ]] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
 };
 
@@ -278,7 +280,8 @@ if !(_validation getOrDefault ["success", false]) exitWith {
             ["success", false],
             ["code", _validation getOrDefault ["code", "ERR_VALIDATION"]],
             ["message", _validation getOrDefault ["message", "Loadout validation failed."]],
-            ["loadoutId", _validation getOrDefault ["loadoutId", ""]]
+            ["loadoutId", _validation getOrDefault ["loadoutId", ""]],
+            ["rejectedClass", _validation getOrDefault ["rejectedClass", ""]]
         ]
     ] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
 };

@@ -82,6 +82,22 @@ if (isNull _player || {!isPlayer _player} || {(getPlayerUID _player) isEqualTo "
             {(_normalizedAssigned param [1, ""]) isEqualTo "itemgps"} &&
             {(_normalizedAssigned param [5, "invalid"]) isEqualTo ""}] call _check;
 
+        private _unavailable = +_baseline;
+        private _unavailableVest = +(_unavailable select 4);
+        private _unavailableCargo = +(_unavailableVest select 1);
+        _unavailableCargo pushBack ["vn_m34_grenade_mag", 1, 1];
+        _unavailableVest set [1, _unavailableCargo];
+        _unavailable set [4, _unavailableVest];
+        private _unavailableResult = [_player, createHashMapFromArray [["mutation", createHashMapFromArray [
+            ["op", "load_local_kit"], ["savedLoadout", _unavailable]
+        ]]]] call bn_koth_fnc_loadouts_validateLoadout;
+        ["Unavailable saved magazine fails closed with its classname",
+            !(_unavailableResult getOrDefault ["success", true]) &&
+            {(_unavailableResult getOrDefault ["code", ""]) isEqualTo "NOT_AVAILABLE"} &&
+            {(_unavailableResult getOrDefault ["rejectedClass", ""]) isEqualTo "vn_m34_grenade_mag"} &&
+            {(_unavailableResult getOrDefault ["validatedLoadout", []]) isEqualTo []}
+        ] call _check;
+
         private _gpsMutation = [
             _player,
             createHashMapFromArray [["op", "set_assigned"], ["assignedIndex", 1], ["itemClass", ""]],
