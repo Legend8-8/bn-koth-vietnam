@@ -15,14 +15,15 @@ private _check = {params ["_label", "_ok"]; if (!_ok) then {_failures pushBack _
 private _oldKits = profileNamespace getVariable ["BN_KOTH_savedKits_v2", []];
 private _oldPreference = profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""];
 private _oldResponse = missionNamespace getVariable ["BN_KOTH_spawnKitResponse", [0, "", false]];
-private _uiKeys = ["BN_KOTH_menuIntendedLoadout", "BN_KOTH_menuKitEditId", "BN_KOTH_menuKitEditName", "BN_KOTH_menuKitSelectedId"];
+private _uiKeys = ["BN_KOTH_menuIntendedLoadout", "BN_KOTH_menuKitEditId", "BN_KOTH_menuKitEditName", "BN_KOTH_menuKitSelectedId", "BN_KOTH_menuPendingKitOperation", "BN_KOTH_menuPendingKitId", "BN_KOTH_menuPendingKitName"];
 private _oldUi = _uiKeys apply {uiNamespace getVariable [_x, ""]};
 private _functions = ["bn_koth_fnc_loadouts_request", "bn_koth_fnc_menu_refresh", "bn_koth_fnc_ui_notify"];
 private _oldFunctions = _functions apply {missionNamespace getVariable _x};
 private _sent = [];
+private _notices = [];
 bn_koth_fnc_loadouts_request = {_sent pushBack (_this select 0)};
 bn_koth_fnc_menu_refresh = {};
-bn_koth_fnc_ui_notify = {};
+bn_koth_fnc_ui_notify = {_notices pushBack (_this select 0)};
 private _kit = [[], [], [], ["", []], ["", []], ["", []], "", "", [], []];
 profileNamespace setVariable ["BN_KOTH_savedKits_v2", [["a", "A", +_kit], ["b", "B", +_kit]]];
 uiNamespace setVariable ["BN_KOTH_menuIntendedLoadout", +_kit];
@@ -40,10 +41,37 @@ private _oldRevision = (missionNamespace getVariable "BN_KOTH_spawnKitResponse")
 ["Rename stores local name", (((profileNamespace getVariable ["BN_KOTH_savedKits_v2", []]) select 1) select 1) isEqualTo "Renamed B"] call _check;
 // Exercise the actual response branch, excluding only its remote-origin guard.
 private _source = loadFile "functions\loadouts\fn_receiveValidatedLoadout.sqf";
-private _start = _source find "if (_validationResult getOrDefault [""spawnPreference"", false]) exitWith {";
+private _rejectionStart = _source find "private _rejectionMessage =";
 private _end = _source find "if !(_validationResult getOrDefault [""success"", false]) exitWith {";
-private _receive = compile (_source select [_start, _end - _start]);
-private _validationResult = createHashMapFromArray [["spawnPreference", true], ["success", false], ["preferenceRevision", _oldRevision]];
+private _receive = compile (_source select [_rejectionStart, _end - _rejectionStart]);
+private _rejectionEnd = _source find "if (isNull player) exitWith {};";
+private _receiveRejection = compile (_source select [_rejectionStart, _rejectionEnd - _rejectionStart]);
+private _magazineClass = "vn_m34_grenade_mag";
+private _magazineName = getText (configFile >> "CfgMagazines" >> _magazineClass >> "displayName");
+uiNamespace setVariable ["BN_KOTH_menuPendingKitOperation", "LOAD"];
+private _validationResult = createHashMapFromArray [["success", false], ["code", "NOT_AVAILABLE"], ["message", "Item is not available in the KOTH Arsenal."], ["rejectedClass", _magazineClass]];
+call _receiveRejection;
+["Unavailable item notification resolves magazine displayName",
+    !(_magazineName isEqualTo "") &&
+    {(_notices select ((count _notices) - 1)) isEqualTo format ["Saved loadout rejected: %1 is not available in the KOTH Arsenal.", _magazineName]}
+] call _check;
+uiNamespace setVariable ["BN_KOTH_menuPendingKitOperation", "LOAD"];
+_validationResult set ["rejectedClass", "vn_missing_display_name"];
+call _receiveRejection;
+["Unknown displayName falls back to classname",
+    (_notices select ((count _notices) - 1)) isEqualTo "Saved loadout rejected: vn_missing_display_name is not available in the KOTH Arsenal."
+] call _check;
+uiNamespace setVariable ["BN_KOTH_menuPendingKitOperation", "LOAD"];
+_validationResult set ["code", "LOCKED_LEVEL"];
+_validationResult set ["message", "Requires level 175."];
+_validationResult set ["rejectedClass", "vn_m3carbine"];
+call _receiveRejection;
+private _weaponName = getText (configFile >> "CfgWeapons" >> "vn_m3carbine" >> "displayName");
+if (_weaponName isEqualTo "") then {_weaponName = "vn_m3carbine"};
+["Unavailable saved weapon notification names the weapon",
+    (_notices select ((count _notices) - 1)) isEqualTo format ["Saved loadout rejected: %1: Requires level 175.", _weaponName]
+] call _check;
+_validationResult = createHashMapFromArray [["spawnPreference", true], ["success", false], ["preferenceRevision", _oldRevision]];
 call _receive;
 ["Old failure cannot clear newer preference", (profileNamespace getVariable "BN_KOTH_preferredSpawnKitId") isEqualTo "b"] call _check;
 _validationResult set ["preferenceRevision", (missionNamespace getVariable "BN_KOTH_spawnKitResponse") select 0];
