@@ -20,10 +20,10 @@ class EditorData
 	};
 	class Camera
 	{
-		pos[]={16546.779,52.822643,3685.8733};
-		dir[]={-0.19935051,-0.96860808,0.14885312};
-		up[]={-0.77606881,0.24879238,0.57948518};
-		aside[]={0.59833789,4.8323272e-06,0.80131388};
+		pos[]={16593.889,51.824539,3616.2407};
+		dir[]={-0.65586358,-0.35835639,0.66440386};
+		up[]={-0.25175261,0.9335838,0.25503126};
+		aside[]={0.71166933,1.367589e-07,0.70252109};
 	};
 };
 binarizationWanted=0;
@@ -641,7 +641,7 @@ class Mission
 			fillName="SolidBorder";
 			a=290.548;
 			b=356.32901;
-			angle=154.13399;
+			angle=154.13397;
 			drawBorder=1;
 			id=71;
 			atlOffset=17.672001;
@@ -6112,7 +6112,7 @@ class Mission
 			name="saigon_east_free_ground_spawnpoint";
 			type="Empty";
 			colorName="ColorOrange";
-			angle=55.644306;
+			angle=55.644302;
 			id=293;
 		};
 		class Item128
@@ -6121,7 +6121,7 @@ class Mission
 			position[]={16585.176,26.379999,3929.8657};
 			name="saigon_west_free_ground_spawnpoint";
 			type="Empty";
-			angle=209.98868;
+			angle=209.98866;
 			id=294;
 		};
 		class Item129
@@ -6159,7 +6159,7 @@ class Mission
 			position[]={16616.922,26.472284,3981.1145};
 			name="saigon_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=212.73077;
+			angle=212.73076;
 			id=298;
 		};
 		class Item133
@@ -6428,7 +6428,7 @@ class Mission
 			position[]={17110,6.1479955,9266};
 			name="hue_west_free_sea_spawnpoint";
 			type="Empty";
-			angle=55.462601;
+			angle=55.462597;
 			id=310;
 		};
 		class Item145
@@ -7029,7 +7029,7 @@ class Mission
 			name="hanoi_west_command_spawnpoint";
 			type="Empty";
 			colorName="ColorGreen";
-			angle=7.1569934;
+			angle=7.1569929;
 			id=339;
 			atlOffset=6.4373016e-06;
 		};
@@ -9548,7 +9548,7 @@ class Mission
 			fillName="SolidBorder";
 			a=168.01489;
 			b=149.59349;
-			angle=180.13383;
+			angle=180.13382;
 			drawBorder=1;
 			id=420;
 			atlOffset=-3.8562927;
@@ -9560,7 +9560,7 @@ class Mission
 			name="bao_ve_respawn_west";
 			text="bao_ve_respawn_west";
 			type="Empty";
-			angle=197.99997;
+			angle=197.99995;
 			id=421;
 			atlOffset=3.8146973e-06;
 		};
@@ -9954,7 +9954,7 @@ class Mission
 			fillName="SolidBorder";
 			a=48.951;
 			b=34.771999;
-			angle=32.838997;
+			angle=32.838993;
 			drawBorder=1;
 			id=430;
 			atlOffset=0.72500038;
@@ -9966,7 +9966,7 @@ class Mission
 			name="saigon_tower_respawn_west";
 			text="saigon_tower_respawn_west";
 			type="Empty";
-			angle=197.99998;
+			angle=197.99997;
 			id=431;
 		};
 		class Item256
@@ -10023,7 +10023,7 @@ class Mission
 			class PositionInfo
 			{
 				position[]={16630.018,28.40394,3627.0164};
-				angles[]={-0,5.5407324,0};
+				angles[]={0,5.5407324,0};
 			};
 			side="Empty";
 			flags=5;
@@ -10056,7 +10056,7 @@ class Mission
 		class Item259
 		{
 			dataType="Marker";
-			position[]={16462.945,26.379999,3710.1333};
+			position[]={16464.076,26.379999,3711.7673};
 			name="saigon_tower_respawn_east";
 			text="saigon_tower_respawn_east";
 			type="Empty";
@@ -10066,14 +10066,14 @@ class Mission
 		class Item260
 		{
 			dataType="Marker";
-			position[]={16464.898,26.379999,3711.1721};
+			position[]={16466.029,26.379999,3712.8062};
 			name="saigon_tower_east_base_zone";
 			markerType="ELLIPSE";
 			type="";
 			colorName="ColorRed";
 			a=20;
 			b=20;
-			angle=220.47134;
+			angle=220.47133;
 			id=436;
 		};
 		class Item261
@@ -10081,7 +10081,7 @@ class Mission
 			dataType="Object";
 			class PositionInfo
 			{
-				position[]={16460.209,26.493782,3708.0989};
+				position[]={16461.34,26.493782,3709.7329};
 				angles[]={-0,4.2745204,0};
 			};
 			side="Empty";
@@ -10117,8 +10117,8 @@ class Mission
 			dataType="Object";
 			class PositionInfo
 			{
-				position[]={16464.316,28.385777,3710.4229};
-				angles[]={0.13382612,5.2223582,6.2220354};
+				position[]={16465.447,28.385777,3712.0569};
+				angles[]={-0,5.2223582,0};
 			};
 			side="Empty";
 			flags=5;
@@ -10224,12 +10224,12 @@ class Mission
 			dataType="Logic";
 			class PositionInfo
 			{
-				position[]={16544.525,51.890671,3688.5039};
+				position[]={16544.525,51.059349,3688.5039};
 			};
 			name="saigon_tower_floor_roof";
 			id=452;
 			type="Logic";
-			atlOffset=0.91547394;
+			atlOffset=0.084152222;
 		};
 		class Item270
 		{
@@ -10242,7 +10242,7 @@ class Mission
 			alpha=0;
 			a=34.943001;
 			b=12.948;
-			angle=33.199997;
+			angle=33.199993;
 			id=453;
 			atlOffset=4.343996;
 		};
