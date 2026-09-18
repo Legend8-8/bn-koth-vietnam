@@ -70,6 +70,23 @@ uiNamespace setVariable ["BN_KOTH_lobbyContainedUnit", objNull];
 uiNamespace setVariable ["BN_KOTH_lobbyContainmentApplied", false];
 uiNamespace setVariable ["BN_KOTH_hudVisible", false];
 uiNamespace setVariable ["BN_KOTH_hudDisplay", displayNull];
+uiNamespace setVariable ["BN_KOTH_minimapRestoredUnit", objNull];
+// Mission namespace ends with this client session; the first gameplay deployment defaults open.
+if (isNil {missionNamespace getVariable "BN_KOTH_minimapVisible"}) then {
+    missionNamespace setVariable ["BN_KOTH_minimapVisible", true];
+};
+if !(missionNamespace getVariable ["BN_KOTH_minimapToggleHookAdded", false]) then {
+    addUserActionEventHandler ["MiniMapToggle", "Activate", {
+        [] spawn {
+            // Read the native result after its action has changed the GPS panel.
+            uiSleep 0;
+            if (uiNamespace getVariable ["BN_KOTH_hudVisible", false]) then {
+                missionNamespace setVariable ["BN_KOTH_minimapVisible", visibleGPS];
+            };
+        };
+    }];
+    missionNamespace setVariable ["BN_KOTH_minimapToggleHookAdded", true];
+};
 // uiNamespace outlives a mission. Discard card controls and scheduler closures
 // from the previous run before the first state snapshot can enqueue new cards.
 {
