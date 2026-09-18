@@ -228,6 +228,34 @@ The zone system also supports a moving priority area inside the active AO.
   Priority objective. Its destination follows the same global marker, owns no
   geometry or gameplay state, and is removed with the deployed HUD/objective.
 
+Saigon Tower uses the optional `VERTICAL_FLOORS` Priority profile. Its invisible
+authored rectangle fixes the X/Y footprint; ordered Logic anchors mark walkable
+floor surfaces in ASL. Each occupied volume begins just below its surface by
+`priorityFloorSurfaceTolerance` and ends at the midpoint to the next anchor;
+the roof volume extends upward by half the preceding spacing. Missing or nonascending
+anchors, invalid footprint geometry, or mismatched labels invalidate the location.
+The server dwells for `priorityDwellSeconds`, then moves to one adjacent floor over
+`priorityTransitionSeconds`. The authoritative control pass interpolates the
+vertical bounds during travel, so players inside the moving volume retain
+Priority weight and rewards.
+The client interpolates the Simple Task destination from replicated floor
+geometry and server timestamps. Its destination height sits just above the
+interpolated floor surface, clamped inside the authoritative occupied bounds.
+JIP receives the latest state.
+`priorityContinueChance` controls interior direction, while the end floors force
+reversal. The global Priority marker stays visible on the map and supplies the
+normal Priority ownership color and contested brush. The Simple Task keeps the
+floor label, and the existing notification card briefly announces floor arrival
+and movement. The bottom-right HUD keeps Priority occupancy only. Ordinary locations
+default to the existing roaming 2D marker and need no extra authoring.
+
+Optional location fields `maximumControlHeight`, `battlefieldPickupsEnabled`
+and `airInsertionEnabled` default to the existing global height and enabled
+behaviour. Tower sets a 35-metre ATL control ceiling, disables battlefield
+pickups and air insertion, and has no vehicle spawn roles. Its command mapboards
+still provide the deployed menu. The Tower lobby image is empty until an authored
+image is available; the existing lobby hides empty image controls.
+
 The same active-AO lifecycle owns a small config-driven set of physical battlefield
 weapon holders. The server performs a bounded placement search inside the active
 marker, resolves ammunition from factual compatibility data, tracks every holder,

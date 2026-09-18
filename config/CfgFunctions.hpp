@@ -120,6 +120,7 @@ class CfgFunctions
             class zone_spawnBattlefieldPickups {file = "functions\zone\fn_spawnBattlefieldPickups.sqf";};
             class zone_evaluateControl {file = "functions\zone\fn_evaluateControl.sqf";};
             class zone_updatePriorityZone {file = "functions\zone\fn_updatePriorityZone.sqf";};
+            class zone_resolveVerticalPriorityGeometry {file = "functions\zone\fn_resolveVerticalPriorityGeometry.sqf";};
         };
 
         class scoring

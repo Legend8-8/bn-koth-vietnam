@@ -55,6 +55,17 @@ _locationData set ["description", getText (_cfg >> "description")];
 _locationData set ["image", getText (_cfg >> "image")];
 _locationData set ["minPlayers", if (isNumber (_cfg >> "minPlayers")) then {(getNumber (_cfg >> "minPlayers")) max 0} else {0}];
 _locationData set ["maxPlayers", if (isNumber (_cfg >> "maxPlayers")) then {getNumber (_cfg >> "maxPlayers")} else {-1}];
+_locationData set ["battlefieldPickupsEnabled", !isNumber (_cfg >> "battlefieldPickupsEnabled") || {getNumber (_cfg >> "battlefieldPickupsEnabled") > 0}];
+_locationData set ["airInsertionEnabled", !isNumber (_cfg >> "airInsertionEnabled") || {getNumber (_cfg >> "airInsertionEnabled") > 0}];
+_locationData set ["maximumControlHeight", if (isNumber (_cfg >> "maximumControlHeight")) then {getNumber (_cfg >> "maximumControlHeight")} else {getNumber (missionConfigFile >> "CfgBnKothZone" >> "maximumControlHeight")}];
+_locationData set ["priorityMode", if (isText (_cfg >> "priorityMode")) then {getText (_cfg >> "priorityMode")} else {"ROAMING_2D"}];
+_locationData set ["priorityFootprintMarker", getText (_cfg >> "priorityFootprintMarker")];
+_locationData set ["priorityFloorAnchors", getArray (_cfg >> "priorityFloorAnchors")];
+_locationData set ["priorityFloorLabels", getArray (_cfg >> "priorityFloorLabels")];
+_locationData set ["priorityFloorSurfaceTolerance", if (isNumber (_cfg >> "priorityFloorSurfaceTolerance")) then {getNumber (_cfg >> "priorityFloorSurfaceTolerance")} else {0.35}];
+_locationData set ["priorityDwellSeconds", if (isNumber (_cfg >> "priorityDwellSeconds")) then {getNumber (_cfg >> "priorityDwellSeconds")} else {25}];
+_locationData set ["priorityTransitionSeconds", if (isNumber (_cfg >> "priorityTransitionSeconds")) then {getNumber (_cfg >> "priorityTransitionSeconds")} else {8}];
+_locationData set ["priorityContinueChance", if (isNumber (_cfg >> "priorityContinueChance")) then {getNumber (_cfg >> "priorityContinueChance")} else {0.75}];
 
 _locationData set ["zoneMarker", [_cfg, "zoneMarker", _derivedZoneMarker] call _resolveRoleValue];
 _locationData set ["respawnWestMarker", [_cfg, "respawnWestMarker", _derivedWestRespawn] call _resolveRoleValue];

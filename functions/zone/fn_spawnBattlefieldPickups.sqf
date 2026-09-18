@@ -12,6 +12,10 @@ if (!isServer) exitWith {0};
 
 [] call bn_koth_fnc_zone_cleanupBattlefieldPickups;
 
+private _locationId = missionNamespace getVariable ["BN_KOTH_activeLocationId", ""];
+private _locationData = [_locationId] call bn_koth_fnc_zone_getLocationData;
+if !(_locationData getOrDefault ["battlefieldPickupsEnabled", true]) exitWith {0};
+
 private _zoneCfg = missionConfigFile >> "CfgBnKothZone";
 private _activeMarker = missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""];
 if (!isClass _zoneCfg || {_activeMarker isEqualTo ""} || {(markerShape _activeMarker) isEqualTo ""}) exitWith {
