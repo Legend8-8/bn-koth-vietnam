@@ -25,6 +25,8 @@ if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo 2}) exitWith {};
 
 private _type = toLower _rewardType;
 if !(_type in ["xp", "cash", "mastery", "acquisition", "perk_purchase", "perk_activation", "level_up", "teamkill", "streak"]) exitWith {};
+// The reward feed is transient gameplay presentation, not a menu notification.
+if (!isNull (uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull])) exitWith {};
 
 #define BN_KOTH_RF_MAX_ENTRIES 10
 #define BN_KOTH_RF_LIFETIME    6
