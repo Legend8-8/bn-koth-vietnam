@@ -51,10 +51,14 @@ if (hasInterface && {_person isEqualTo player}) then {
         private _cooldown = missionNamespace getVariable ["BN_KOTH_safeZoneMessageCooldownSeconds", 1];
         uiNamespace setVariable ["BN_KOTH_safeZoneNextBlockedMessageAt", _now + _cooldown];
 
-        private _message = if (_intruder || {_restrictedVehicle}) then {
-            "Enemy safe zone: weapons and vehicles are disabled."
+        private _message = if (_protectedPerson) then {
+            "Friendly safe zone: weapons and vehicles are disabled."
         } else {
-            "Safe zone protection active: weapons are disabled."
+            if (_intruder || {_restrictedVehicle}) then {
+                "Enemy safe zone: weapons and vehicles are disabled."
+            } else {
+                "Safe zone protection active: weapons are disabled."
+            }
         };
         [_message] call bn_koth_fnc_ui_notify;
     };

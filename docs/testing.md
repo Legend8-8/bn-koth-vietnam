@@ -187,6 +187,10 @@ Respawn-related changes must verify:
   does not leave or create a false exit message;
 - protected players cannot fire, cause damage, or receive damage;
 - an enemy intruder cannot fire, cause damage, or enter a vehicle but remains damageable;
+- blocked firing shows `Friendly safe zone: weapons and vehicles are disabled.`
+  for WEST in WEST and EAST in EAST, and
+  `Enemy safe zone: weapons and vehicles are disabled.` for WEST in EAST and
+  EAST in WEST;
 - entering an opposing safe zone shows the exact persistent warning
   `ENEMY SAFE ZONE LEAVE NOW` in red text in the same centered,
   half-screen-width banner position, and leaving removes it;
