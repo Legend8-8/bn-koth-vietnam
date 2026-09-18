@@ -106,6 +106,19 @@ uiNamespace setVariable ["BN_KOTH_rewardFeedEntries", []];
 if (isNil {uiNamespace getVariable "BN_KOTH_mapInitialFocusNeeded"}) then {uiNamespace setVariable ["BN_KOTH_mapInitialFocusNeeded", false]};
 if (isNil {uiNamespace getVariable "BN_KOTH_mapLifecycleWasDeployed"}) then {uiNamespace setVariable ["BN_KOTH_mapLifecycleWasDeployed", false]};
 
+if (isNil {missionNamespace getVariable "BN_KOTH_mapCenterEh"}) then {
+    private _mapCenterEh = addMissionEventHandler ["Map", {
+        params ["_mapIsOpened"];
+        if !(_mapIsOpened) exitWith {};
+
+        [] spawn {
+            sleep 0.02;
+            if (visibleMap) then {[] call bn_koth_fnc_ui_centerMapOnPlayer;};
+        };
+    }];
+    missionNamespace setVariable ["BN_KOTH_mapCenterEh", _mapCenterEh];
+};
+
 [_debugEnabled] call bn_koth_fnc_ui_toggleDebugDisplay;
 [] call bn_koth_fnc_ui_updateLobbyBlackout;
 [] call bn_koth_fnc_ui_updateLobbyRepresentationContainment;

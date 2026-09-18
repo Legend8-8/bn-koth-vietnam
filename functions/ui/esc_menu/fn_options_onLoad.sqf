@@ -20,12 +20,36 @@ disableSerialization;
 private _groundSlider = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_GROUND_SLIDER;
 private _vehicleSlider = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_SLIDER;
 private _player3DValueCtrl = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_VALUE;
+private _centerMapValueCtrl = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_CENTERMAP_VALUE;
 private _player3DAlphaSlider = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_ALPHA_SLIDER;
 
 private _groundCfg = missionConfigFile >> "CfgBnKothEscMenuOptions" >> "earplugVolumeGround";
 private _vehicleCfg = missionConfigFile >> "CfgBnKothEscMenuOptions" >> "earplugVolumeVehicle";
 private _player3DCfg = missionConfigFile >> "CfgBnKothEscMenuOptions" >> "player3DIconsEnabled";
+private _centerMapCfg = missionConfigFile >> "CfgBnKothEscMenuOptions" >> "centerMapOnOpen";
 private _player3DAlphaCfg = missionConfigFile >> "CfgBnKothEscMenuOptions" >> "player3DIconsAlpha";
+
+private _bindToggleButton = {
+    params ["_buttonCtrl", "_optionName"];
+
+    _buttonCtrl setVariable ["BN_KOTH_escMenuOption", _optionName];
+    _buttonCtrl ctrlAddEventHandler ["ButtonClick", {
+        params ["_control"];
+        private _display = ctrlParent _control;
+        if (isNull _display) exitWith {};
+
+        private _option = _control getVariable ["BN_KOTH_escMenuOption", ""];
+        if (_option isEqualTo "") exitWith {};
+
+        private _pending = _display getVariable ["BN_KOTH_escMenuPendingOptions", createHashMap];
+        private _currentValue = _pending getOrDefault [_option, 1];
+        private _newValue = if (_currentValue > 0.5) then {0} else {1};
+        _pending set [_option, _newValue];
+        _display setVariable ["BN_KOTH_escMenuPendingOptions", _pending];
+
+        _control ctrlSetText (if (_newValue > 0.5) then {"ON"} else {"OFF"});
+    }];
+};
 
 private _groundRange = getArray (_groundCfg >> "range");
 private _vehicleRange = getArray (_vehicleCfg >> "range");
@@ -38,6 +62,7 @@ private _player3DAlphaStep = getNumber (_player3DAlphaCfg >> "step");
 private _groundValue = ["earplugVolumeGround"] call bn_koth_fnc_escMenu_options_getValue;
 private _vehicleValue = ["earplugVolumeVehicle"] call bn_koth_fnc_escMenu_options_getValue;
 private _player3DValue = ["player3DIconsEnabled"] call bn_koth_fnc_escMenu_options_getValue;
+private _centerMapValue = ["centerMapOnOpen"] call bn_koth_fnc_escMenu_options_getValue;
 private _player3DAlphaValue = ["player3DIconsAlpha"] call bn_koth_fnc_escMenu_options_getValue;
 
 _groundSlider sliderSetRange _groundRange;
@@ -58,24 +83,11 @@ _vehicleSlider ctrlAddEventHandler ["SliderPosChanged", {
     _this call bn_koth_fnc_escMenu_options_onSliderPosChanged;
 }];
 
-_player3DValueCtrl setVariable ["BN_KOTH_escMenuOption", "player3DIconsEnabled"];
+[_player3DValueCtrl, "player3DIconsEnabled"] call _bindToggleButton;
 _player3DValueCtrl setVariable ["BN_KOTH_escMenuValueIdc", BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_VALUE];
-_player3DValueCtrl ctrlAddEventHandler ["ButtonClick", {
-    params ["_control"];
-    private _display = ctrlParent _control;
-    if (isNull _display) exitWith {};
 
-    private _option = _control getVariable ["BN_KOTH_escMenuOption", ""];
-    if (_option isEqualTo "") exitWith {};
-
-    private _pending = _display getVariable ["BN_KOTH_escMenuPendingOptions", createHashMap];
-    private _currentValue = _pending getOrDefault [_option, 1];
-    private _newValue = if (_currentValue > 0.5) then {0} else {1};
-    _pending set [_option, _newValue];
-    _display setVariable ["BN_KOTH_escMenuPendingOptions", _pending];
-
-    _control ctrlSetText (if (_newValue > 0.5) then {"ON"} else {"OFF"});
-}];
+[_centerMapValueCtrl, "centerMapOnOpen"] call _bindToggleButton;
+_centerMapValueCtrl setVariable ["BN_KOTH_escMenuValueIdc", BN_KOTH_IDC_ESC_OPTIONS_CENTERMAP_VALUE];
 
 _player3DAlphaSlider sliderSetRange _player3DAlphaRange;
 _player3DAlphaSlider sliderSetSpeed [_player3DAlphaStep, _player3DAlphaStep];
@@ -89,12 +101,14 @@ _player3DAlphaSlider ctrlAddEventHandler ["SliderPosChanged", {
 (_display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_GROUND_VALUE) ctrlSetText format ["%1%%", round (_groundValue * 100)];
 (_display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_VALUE) ctrlSetText format ["%1%%", round (_vehicleValue * 100)];
 (_display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_VALUE) ctrlSetText (if (_player3DValue > 0.5) then {"ON"} else {"OFF"});
+(_display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_CENTERMAP_VALUE) ctrlSetText (if (_centerMapValue > 0.5) then {"ON"} else {"OFF"});
 (_display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_ALPHA_VALUE) ctrlSetText format ["%1%%", round (_player3DAlphaValue * 100)];
 
 private _pending = createHashMapFromArray [
     ["earplugVolumeGround", _groundValue],
     ["earplugVolumeVehicle", _vehicleValue],
     ["player3DIconsEnabled", _player3DValue],
+    ["centerMapOnOpen", _centerMapValue],
     ["player3DIconsAlpha", _player3DAlphaValue]
 ];
 _display setVariable ["BN_KOTH_escMenuPendingOptions", _pending];

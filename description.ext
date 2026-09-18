@@ -17,7 +17,7 @@
 #include "config\persistence.hpp"
 #include "config\career.hpp"
 #include "config\traversal.hpp"
-#include "config\esc_menu.hpp"
+#include "config\esc_menu\esc_menu_init.hpp"
 #include "config\announcements.hpp"
 #include "ui\ui.hpp"
 #include "config\CfgFunctions.hpp"

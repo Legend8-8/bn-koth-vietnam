@@ -416,6 +416,7 @@ class CfgFunctions
             class ui_formatCash {file = "functions\ui\state\fn_formatCash.sqf";};
             class ui_toggleDebugDisplay {file = "functions\ui\debug\fn_toggleDebugDisplay.sqf";};
             class ui_debugDisplayLoop {file = "functions\ui\debug\fn_debugDisplayLoop.sqf";};
+            class ui_centerMapOnPlayer {file = "functions\ui\fn_centerMapOnPlayer.sqf";};
             class ui_selectControlledUnit {file = "functions\ui\state\fn_selectControlledUnit.sqf";};
             class ui_notify {file = "functions\ui\fn_notify.sqf";};
             class ui_addKillFeedEntry {file = "functions\ui\fn_addKillFeedEntry.sqf";};

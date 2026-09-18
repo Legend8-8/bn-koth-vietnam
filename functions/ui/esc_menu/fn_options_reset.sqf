@@ -35,16 +35,19 @@ _display setVariable ["BN_KOTH_escMenuPendingOptions", _pending];
 private _groundValue = _pending getOrDefault ["earplugVolumeGround", 1];
 private _vehicleValue = _pending getOrDefault ["earplugVolumeVehicle", 1];
 private _player3DValue = _pending getOrDefault ["player3DIconsEnabled", 1];
+private _centerMapValue = _pending getOrDefault ["centerMapOnOpen", 1];
 private _player3DAlphaValue = _pending getOrDefault ["player3DIconsAlpha", 1];
 
 private _groundSlider = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_GROUND_SLIDER;
 private _vehicleSlider = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_VEHICLE_SLIDER;
-private _player3DCheckBox = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_CHECKBOX;
+private _player3DValueCtrl = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_VALUE;
+private _centerMapValueCtrl = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_CENTERMAP_VALUE;
 private _player3DAlphaSlider = _display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_ALPHA_SLIDER;
 
 _groundSlider sliderSetPosition _groundValue;
 _vehicleSlider sliderSetPosition _vehicleValue;
-_player3DCheckBox ctrlSetChecked (_player3DValue > 0);
+_player3DValueCtrl ctrlSetText (if (_player3DValue > 0.5) then {"ON"} else {"OFF"});
+_centerMapValueCtrl ctrlSetText (if (_centerMapValue > 0.5) then {"ON"} else {"OFF"});
 _player3DAlphaSlider sliderSetPosition _player3DAlphaValue;
 
 (_display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_GROUND_VALUE)
@@ -55,6 +58,9 @@ _player3DAlphaSlider sliderSetPosition _player3DAlphaValue;
 
 (_display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_VALUE)
     ctrlSetText (if (_player3DValue > 0.5) then {"ON"} else {"OFF"});
+
+(_display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_CENTERMAP_VALUE)
+    ctrlSetText (if (_centerMapValue > 0.5) then {"ON"} else {"OFF"});
 
 (_display displayCtrl BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_ALPHA_VALUE)
     ctrlSetText format ["%1%%", round (_player3DAlphaValue * 100)];
