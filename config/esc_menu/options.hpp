@@ -28,14 +28,6 @@ class CfgBnKothEscMenuOptions
         onChange = "missionNamespace setVariable ['BN_KOTH_player3DIconsEnabled', _newValue > 0];";
     };
 
-    class centerMapOnOpen
-    {
-        name = "Center Map On Open";
-        type = "Toggle";
-        default = 1;
-        onChange = "missionNamespace setVariable ['BN_KOTH_centerMapOnOpen', _newValue > 0];";
-    };
-
     class player3DIconsAlpha
     {
         name = "Player 3D Icons Alpha";

@@ -160,29 +160,6 @@ class BN_KOTH_RscEscMenuOptions
                     h = safeZoneH * 0.03;
                 };
 
-                class CenterMapLabel: BN_KOTH_RscText
-                {
-                    idc = BN_KOTH_IDC_ESC_OPTIONS_CENTERMAP_LABEL;
-                    text = "Center Map On Open";
-                    x = BN_KOTH_ESC_MENU_LABEL_X;
-                    y = BN_KOTH_ESC_MENU_ROW_LABEL_Y(4);
-                    w = safeZoneW * 0.23;
-                    h = safeZoneH * 0.035;
-                };
-
-                class CenterMapValue: BN_KOTH_RscButton
-                {
-                    idc = BN_KOTH_IDC_ESC_OPTIONS_CENTERMAP_VALUE;
-                    text = "ON";
-                    x = BN_KOTH_ESC_MENU_TOGGLE_X;
-                    y = BN_KOTH_ESC_MENU_ROW_LABEL_Y(4);
-                    w = safeZoneW * 0.08;
-                    h = BN_KOTH_ESC_MENU_TOGGLE_H;
-                    style = 2;
-                    colorBackground[] = {0.08, 0.08, 0.08, 0.85};
-                    colorBackgroundActive[] = {0.15, 0.15, 0.15, 1};
-                    colorFocused[] = {0.15, 0.15, 0.15, 1};
-                };
             };
         };
 
