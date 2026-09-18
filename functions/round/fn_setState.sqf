@@ -155,6 +155,12 @@ switch (_newState) do {
         } forEach _activeParticipants;
 
         missionNamespace setVariable ["BN_KOTH_playerRecords", _records];
+        {
+            private _record = _records getOrDefault [_x, createHashMap];
+            if (_record isEqualType createHashMap) then {
+                [_record getOrDefault ["currentUnit", objNull]] call bn_koth_fnc_round_resetPlayerVanillaScores;
+            };
+        } forEach _activeParticipants;
         {[_x] call bn_koth_fnc_roundStats_registerParticipant} forEach _activeParticipants;
         [] call bn_koth_fnc_teams_publishState;
     };

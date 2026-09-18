@@ -38,6 +38,7 @@ class CfgFunctions
             class round_getState {file = "functions\round\fn_getState.sqf";};
             class round_endWithWinner {file = "functions\round\fn_endWithWinner.sqf";};
             class round_resetRound {file = "functions\round\fn_resetRound.sqf";};
+            class round_resetPlayerVanillaScores {file = "functions\round\fn_resetPlayerVanillaScores.sqf";};
             class round_openVote {file = "functions\round\fn_openVote.sqf";};
             class round_maybeShortenVoteDeadline {file = "functions\round\fn_maybeShortenVoteDeadline.sqf";};
             class round_prepareVoteCandidates {file = "functions\round\fn_prepareVoteCandidates.sqf";};
