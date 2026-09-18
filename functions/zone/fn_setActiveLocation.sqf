@@ -38,6 +38,12 @@ if !([_locationId] call bn_koth_fnc_zone_validateLocation) exitWith {
     false
 };
 
+if ((missionNamespace getVariable ["BN_KOTH_activeLocationId", ""]) isNotEqualTo _locationId) then {
+    ["BN_KOTH_verticalPriorityState", createHashMap] call bn_koth_fnc_common_publicState;
+    ["BN_KOTH_verticalPriorityGeometry", createHashMap] call bn_koth_fnc_common_publicState;
+    missionNamespace setVariable ["BN_KOTH_priorityZoneActive", false];
+};
+
 // Candidates are tied to one validated AO identity and never cross an
 // accepted AO change. Pair cooldown history deliberately survives.
 [] call bn_koth_fnc_progression_transport_cleanup;
@@ -85,6 +91,7 @@ private _applyNativeRespawnMarker = {
 };
 
 ["BN_KOTH_activeLocationId", _locationId] call bn_koth_fnc_common_publicState;
+missionNamespace setVariable ["BN_KOTH_activePriorityMode", _activeLocationData getOrDefault ["priorityMode", "ROAMING_2D"]];
 ["BN_KOTH_activeZoneMarker", _activeZoneMarker] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeRespawnWestMarker", _activeWestRespawn] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeRespawnEastMarker", _activeEastRespawn] call bn_koth_fnc_common_publicState;

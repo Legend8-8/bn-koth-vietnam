@@ -6,7 +6,7 @@
         and footer without creating a separate presentation path.
     Execution: Client
     Parameters:
-        0: Message text <STRING> or notification fields <HASHMAP>
+        0: Message text <STRING> or notification fields <HASHMAP> (optional duration seconds)
     Returns:
         None
     Public: Yes
@@ -28,7 +28,8 @@ private _entry = if (_notification isEqualType "") then {
     createHashMapFromArray [
         ["title", _notification getOrDefault ["title", "NOTICE"]],
         ["body", _notification getOrDefault ["body", ""]],
-        ["footer", _notification getOrDefault ["footer", ""]]
+        ["footer", _notification getOrDefault ["footer", ""]],
+        ["duration", _notification getOrDefault ["duration", 5]]
     ]
 };
 if ((count _entry) isEqualTo 0 || {(_entry getOrDefault ["body", ""]) isEqualTo ""}) exitWith {};
@@ -124,9 +125,9 @@ if (isNil {uiNamespace getVariable "BN_KOTH_notificationPump"}) then {
             _group ctrlCommit 0.15;
             _visible pushBack [_group];
 
-            [_group] spawn {
-                params ["_group"];
-                uiSleep 5;
+            [_group, ((_next getOrDefault ["duration", 5]) max 1) min 10] spawn {
+                params ["_group", "_duration"];
+                uiSleep _duration;
                 if (!isNull _group) then {
                     _group ctrlSetFade 1;
                     _group ctrlCommit 1;

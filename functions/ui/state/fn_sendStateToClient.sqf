@@ -58,6 +58,8 @@ private _payload = createHashMapFromArray [
     ["previousLocationId", missionNamespace getVariable ["BN_KOTH_previousLocationId", ""]],
     ["activeLocationId", missionNamespace getVariable ["BN_KOTH_activeLocationId", ""]],
     ["activeZoneMarker", missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""]],
+    ["BN_KOTH_verticalPriorityState", missionNamespace getVariable ["BN_KOTH_verticalPriorityState", createHashMap]],
+    ["BN_KOTH_verticalPriorityGeometry", missionNamespace getVariable ["BN_KOTH_verticalPriorityGeometry", createHashMap]],
     ["activeRespawnWestMarker", missionNamespace getVariable ["BN_KOTH_activeRespawnWestMarker", ""]],
     ["activeRespawnEastMarker", missionNamespace getVariable ["BN_KOTH_activeRespawnEastMarker", ""]],
     ["activeWestBaseZoneMarker", missionNamespace getVariable ["BN_KOTH_activeWestBaseZoneMarker", ""]],

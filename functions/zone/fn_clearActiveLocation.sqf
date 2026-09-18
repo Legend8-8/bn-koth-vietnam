@@ -65,6 +65,7 @@ if (_cache isEqualType createHashMap) then {
 } forEach ["respawn_west", "respawn_east"];
 
 ["BN_KOTH_activeLocationId", ""] call bn_koth_fnc_common_publicState;
+missionNamespace setVariable ["BN_KOTH_activePriorityMode", "ROAMING_2D"];
 ["BN_KOTH_activeZoneMarker", ""] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeRespawnWestMarker", ""] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeRespawnEastMarker", ""] call bn_koth_fnc_common_publicState;
@@ -78,6 +79,8 @@ if (_priorityZoneWasActive && {!((markerShape _priorityMarker) isEqualTo "")}) t
 };
 
 missionNamespace setVariable ["BN_KOTH_priorityZoneActive", false];
+["BN_KOTH_verticalPriorityState", createHashMap] call bn_koth_fnc_common_publicState;
+["BN_KOTH_verticalPriorityGeometry", createHashMap] call bn_koth_fnc_common_publicState;
 missionNamespace setVariable ["BN_KOTH_priorityZoneAoMarker", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneHeading", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneLastUpdateAt", nil];

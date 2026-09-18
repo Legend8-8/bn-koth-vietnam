@@ -127,6 +127,10 @@ Zone-related changes must verify:
 - the Priority client-local Simple Task is created once without notification,
   follows the global moving marker, and is removed outside ACTIVE state or when
   the deployed HUD/AO/Priority marker is absent;
+- for Tower only, the existing notification card announces each server-published
+  floor arrival or movement once; the permanent HUD retains Priority counts
+  without a floor label; the Simple Task destination rises or falls smoothly
+  during travel, while the map/minimap Priority area retains its colour and brush;
 - friendly 3D icons bypass geometry LOS only within the configured 25-metre
   proximity threshold; maximum range and beyond-threshold LOS remain unchanged.
 

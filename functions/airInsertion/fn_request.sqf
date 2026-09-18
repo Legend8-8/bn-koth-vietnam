@@ -68,6 +68,7 @@ if (_operation in ["START_SOLO", "START_GROUP"]) exitWith {
     private _side = _eligibility get "side";
     private _activeLocationId = missionNamespace getVariable ["BN_KOTH_activeLocationId", ""];
     private _locationData = [_activeLocationId] call bn_koth_fnc_zone_getLocationData;
+    if !(_locationData getOrDefault ["airInsertionEnabled", true]) exitWith {["Air insertion is unavailable at this location."] call _notify};
     private _boardRef = if (_side isEqualTo west) then {_locationData getOrDefault ["westCommand_mapboard", ""]} else {_locationData getOrDefault ["eastCommand_mapboard", ""]};
     private _board = missionNamespace getVariable [_boardRef, objNull];
     if (isNull _board && {!(_boardRef isEqualTo "")} && {!((markerShape _boardRef) isEqualTo "")}) then {

@@ -65,4 +65,13 @@ private _valid = true;
     };
 } forEach _requiredRoles;
 
+private _priorityMode = _locationData getOrDefault ["priorityMode", "ROAMING_2D"];
+if !(_priorityMode in ["ROAMING_2D", "VERTICAL_FLOORS"]) then {
+    [format ["Location '%1' failed validation: unknown Priority mode '%2'.", _locationId, _priorityMode], "ERROR"] call bn_koth_fnc_common_log;
+    _valid = false;
+};
+if (_valid && {_priorityMode isEqualTo "VERTICAL_FLOORS"}) then {
+    _valid = (count ([_locationData] call bn_koth_fnc_zone_resolveVerticalPriorityGeometry)) > 0;
+};
+
 _valid
