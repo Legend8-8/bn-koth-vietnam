@@ -25,6 +25,8 @@ _weaponSlot = toUpper _weaponSlot;
 if !(_weaponSlot in ["PRIMARY", "HANDGUN", "LAUNCHER"]) exitWith {_entries};
 
 private _sourceWeaponsCfg = _compatibilityCfg >> "SourceWeapons";
+private _sourceMagazinesCfg = _compatibilityCfg >> "SourceMagazines";
+private _weaponMagazinesCfg = _compatibilityCfg >> "WeaponMagazines";
 if !(isClass _sourceWeaponsCfg) exitWith {_entries};
 
 private _seenTechnicalClasses = [];
@@ -49,6 +51,26 @@ private _cfgWeaponType = switch (_weaponSlot) do {
     private _metadata = [_weaponClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
     if !(_metadata getOrDefault ["success", false]) then {continue;};
 
+    private _compatibleCfg = _weaponMagazinesCfg >> _weaponClass;
+    if !(isClass _compatibleCfg && {isArray (_compatibleCfg >> "values")}) then {continue;};
+    private _compatibleMagazines = (getArray (_compatibleCfg >> "values")) apply {toLower _x};
+    private _policyCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment" >> "Metadata" >> "Weapons" >> _weaponClass;
+    private _defaultMagazine = toLower (getText (_policyCfg >> "defaultMagazine"));
+    if (_defaultMagazine isEqualTo "") then {
+        _defaultMagazine = toLower (getText (_x >> "baseMagazine"));
+    };
+    if (_defaultMagazine isEqualTo "" && {(count _compatibleMagazines) isEqualTo 1}) then {
+        _defaultMagazine = _compatibleMagazines select 0;
+    };
+    private _requiresMagazine = (count _compatibleMagazines) > 0;
+    private _defaultValid = if (_requiresMagazine) then {
+        (_defaultMagazine in _compatibleMagazines) &&
+        {isClass (_sourceMagazinesCfg >> _defaultMagazine)} &&
+        {isClass (configFile >> "CfgMagazines" >> _defaultMagazine)}
+    } else {
+        _defaultMagazine isEqualTo ""
+    };
+
     private _technicalClass = _metadata getOrDefault ["technicalClass", _weaponClass];
     if (_technicalClass isEqualTo "" || {_technicalClass in _seenTechnicalClasses}) then {continue;};
 
@@ -70,7 +92,9 @@ private _cfgWeaponType = switch (_weaponSlot) do {
         ["weaponClass", _technicalClass],
         ["displayName", _displayName],
         ["picture", getText (_weaponCfg >> "picture")],
-        ["metadata", _metadata]
+        ["metadata", _metadata],
+        ["defaultMagazine", _defaultMagazine],
+        ["defaultValid", _defaultValid]
     ];
 
     _sortable pushBack [

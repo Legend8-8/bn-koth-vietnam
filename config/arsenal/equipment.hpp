@@ -135,6 +135,7 @@ class CfgBnKothArsenal
 
                 class vn_ak_01
                 {
+                    defaultMagazine = "vn_type56_mag";
                     allowedSides[] = {"EAST"};
                     crossSideAllowed = 1;
                     minLevel = 30;
@@ -173,6 +174,7 @@ class CfgBnKothArsenal
 
                 class vn_gau5a
                 {
+                    defaultMagazine = "vn_m16_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 55;
@@ -213,6 +215,7 @@ class CfgBnKothArsenal
 
                 class vn_k50m
                 {
+                    defaultMagazine = "vn_ppsh41_35_mag";
                     allowedSides[] = {"EAST"};
                     crossSideAllowed = 1;
                     minLevel = 20;
@@ -231,6 +234,7 @@ class CfgBnKothArsenal
 
                 class vn_kbkg
                 {
+                    defaultMagazine = "vn_kbkg_mag";
                     allowedSides[] = {"EAST"};
                     crossSideAllowed = 1;
                     minLevel = 38;
@@ -241,6 +245,7 @@ class CfgBnKothArsenal
 
                 class vn_l1a1_01
                 {
+                    defaultMagazine = "vn_l1a1_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 5;
@@ -251,6 +256,7 @@ class CfgBnKothArsenal
 
                 class vn_l2a1_01
                 {
+                    defaultMagazine = "vn_l1a1_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 65;
@@ -281,6 +287,7 @@ class CfgBnKothArsenal
 
                 class vn_l4
                 {
+                    defaultMagazine = "vn_l1a1_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 80;
@@ -301,6 +308,7 @@ class CfgBnKothArsenal
 
                 class vn_m127
                 {
+                    defaultMagazine = "vn_m127_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 25;
@@ -311,6 +319,7 @@ class CfgBnKothArsenal
 
                 class vn_m14
                 {
+                    defaultMagazine = "vn_m14_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 40;
@@ -321,6 +330,7 @@ class CfgBnKothArsenal
 
                 class vn_m14a1
                 {
+                    defaultMagazine = "vn_m14_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 58;
@@ -331,6 +341,7 @@ class CfgBnKothArsenal
 
                 class vn_m16
                 {
+                    defaultMagazine = "vn_m16_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 35;
@@ -341,6 +352,7 @@ class CfgBnKothArsenal
 
                 class vn_m16_usaf
                 {
+                    defaultMagazine = "vn_m16_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 45;
@@ -371,6 +383,7 @@ class CfgBnKothArsenal
 
                 class vn_m1897
                 {
+                    defaultMagazine = "vn_m1897_buck_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 30;
@@ -407,6 +420,7 @@ class CfgBnKothArsenal
 
                 class vn_m1928_tommy
                 {
+                    defaultMagazine = "vn_m1a1_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 18;
@@ -417,6 +431,7 @@ class CfgBnKothArsenal
 
                 class vn_m1928a1_tommy
                 {
+                    defaultMagazine = "vn_m1a1_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 30;
@@ -437,6 +452,7 @@ class CfgBnKothArsenal
 
                 class vn_m1a1_tommy
                 {
+                    defaultMagazine = "vn_m1a1_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 42;
@@ -447,6 +463,7 @@ class CfgBnKothArsenal
 
                 class vn_m1carbine
                 {
+                    defaultMagazine = "vn_carbine_15_mag";
                     allowedSides[] = {"WEST", "EAST"};
                     minLevel = 10;
                     purchasePrice = 750;
@@ -465,6 +482,7 @@ class CfgBnKothArsenal
 
                 class vn_m20a1b1_01
                 {
+                    defaultMagazine = "vn_m20a1b1_heat_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 180;
@@ -475,6 +493,7 @@ class CfgBnKothArsenal
 
                 class vn_m21
                 {
+                    defaultMagazine = "vn_m14_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 150;
@@ -485,6 +504,7 @@ class CfgBnKothArsenal
 
                 class vn_m2carbine
                 {
+                    defaultMagazine = "vn_carbine_15_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 25;
@@ -523,6 +543,7 @@ class CfgBnKothArsenal
 
                 class vn_m3carbine
                 {
+                    defaultMagazine = "vn_carbine_15_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 175;
@@ -583,6 +604,7 @@ class CfgBnKothArsenal
 
                 class vn_m63a_cdo
                 {
+                    defaultMagazine = "vn_m63a_150_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 100;
@@ -593,6 +615,7 @@ class CfgBnKothArsenal
 
                 class vn_m63a_lmg
                 {
+                    defaultMagazine = "vn_m63a_100_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 135;
@@ -623,6 +646,7 @@ class CfgBnKothArsenal
 
                 class vn_m79
                 {
+                    defaultMagazine = "vn_40mm_m381_he_mag";
                     allowedSides[] = {"WEST", "EAST"};
                     minLevel = 45;
                     purchasePrice = 2500;
@@ -651,6 +675,7 @@ class CfgBnKothArsenal
 
                 class vn_mat49_vc
                 {
+                    defaultMagazine = "vn_mat49_vc_mag";
                     allowedSides[] = {"EAST"};
                     crossSideAllowed = 1;
                     minLevel = 28;
@@ -671,6 +696,7 @@ class CfgBnKothArsenal
 
                 class vn_mg42
                 {
+                    defaultMagazine = "vn_mg42_50_mag";
                     allowedSides[] = {"EAST"};
                     crossSideAllowed = 1;
                     minLevel = 95;
@@ -797,6 +823,7 @@ class CfgBnKothArsenal
 
                 class vn_ppsh41
                 {
+                    defaultMagazine = "vn_ppsh41_35_mag";
                     allowedSides[] = {"EAST"};
                     crossSideAllowed = 1;
                     minLevel = 22;
@@ -807,6 +834,7 @@ class CfgBnKothArsenal
 
                 class vn_rpd
                 {
+                    defaultMagazine = "vn_rpd_100_mag";
                     allowedSides[] = {"WEST", "EAST"};
                     minLevel = 70;
                     purchasePrice = 3500;
@@ -815,6 +843,7 @@ class CfgBnKothArsenal
 
                 class vn_rpg2
                 {
+                    defaultMagazine = "vn_rpg2_mag";
                     allowedSides[] = {"WEST", "EAST"};
                     minLevel = 55;
                     purchasePrice = 3000;
@@ -893,6 +922,7 @@ class CfgBnKothArsenal
 
                 class vn_type56
                 {
+                    defaultMagazine = "vn_type56_mag";
                     allowedSides[] = {"WEST", "EAST"};
                     minLevel = 28;
                     purchasePrice = 1500;
@@ -954,6 +984,7 @@ class CfgBnKothArsenal
 
                 class vn_xm16e1
                 {
+                    defaultMagazine = "vn_m16_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 28;
@@ -964,6 +995,7 @@ class CfgBnKothArsenal
 
                 class vn_xm177
                 {
+                    defaultMagazine = "vn_m16_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 60;
@@ -974,6 +1006,7 @@ class CfgBnKothArsenal
 
                 class vn_xm177e1
                 {
+                    defaultMagazine = "vn_m16_20_mag";
                     allowedSides[] = {"WEST"};
                     crossSideAllowed = 1;
                     minLevel = 50;

@@ -87,11 +87,7 @@ if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) > _loadoutSlo
             private _appliedMagazine = _appliedMagazineSlot select 0;
             private _appliedMetadata = [toLower _appliedClass] call bn_koth_fnc_loadouts_getWeaponMetadata;
 
-            if (
-                (_appliedMagazine isEqualType "") &&
-                {!(_appliedMagazine isEqualTo "")} &&
-                {_appliedMetadata getOrDefault ["success", false]}
-            ) then {
+            if ((_appliedMagazine isEqualType "") && {_appliedMetadata getOrDefault ["success", false]}) then {
                 private _canonicalAppliedClass = _appliedMetadata getOrDefault ["canonicalClass", ""];
                 private _canonicalAppliedMagazine = toLower _appliedMagazine;
                 private _sourceMagazinesCfg = _compatibilityCfg >> "SourceMagazines";
@@ -105,9 +101,15 @@ if ((_intendedLoadout isEqualType []) && {(count _intendedLoadout) > _loadoutSlo
 
                 if (
                     !(_canonicalAppliedClass isEqualTo "") &&
-                    {_canonicalAppliedMagazine in _compatibleMagazines} &&
-                    {isClass (_sourceMagazinesCfg >> _canonicalAppliedMagazine)} &&
-                    {isClass (configFile >> "CfgMagazines" >> _canonicalAppliedMagazine)}
+                    {
+                        if (_canonicalAppliedMagazine isEqualTo "") then {
+                            (count _compatibleMagazines) isEqualTo 0
+                        } else {
+                            (_canonicalAppliedMagazine in _compatibleMagazines) &&
+                            {isClass (_sourceMagazinesCfg >> _canonicalAppliedMagazine)} &&
+                            {isClass (configFile >> "CfgMagazines" >> _canonicalAppliedMagazine)}
+                        }
+                    }
                 ) then {
                     _intendedWeaponClass = _canonicalAppliedClass;
                     _intendedMagazine = _canonicalAppliedMagazine;
@@ -196,6 +198,8 @@ private _entries = [];
         ["picture", _x getOrDefault ["picture", ""]],
         ["metadata", _metadata],
         ["entitlement", _entitlement],
+        ["defaultMagazine", _x getOrDefault ["defaultMagazine", ""]],
+        ["defaultValid", _x getOrDefault ["defaultValid", false]],
         ["clearSlot", _clearSlot]
     ]);
 } forEach _catalogue;
@@ -316,16 +320,37 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
         };
     };
 
+    if !(_draftWeaponClass isEqualTo _entryWeaponClass) then {
+        _draftAttachments = [];
+        _draftWeaponClass = _entryWeaponClass;
+        _draftMagazineClass = "";
+    };
+    if (_draftMagazineClass isEqualTo "") then {
+        _draftMagazineClass = _entry getOrDefault ["defaultMagazine", ""];
+    };
+
+    private _magazineEntitled = true;
+    if !(_draftMagazineClass isEqualTo "") then {
+        private _magazineMetadata = ["Consumables", _draftMagazineClass] call bn_koth_fnc_loadouts_getItemMetadata;
+        private _magazineEntitlement = [
+            _progression, _magazineMetadata, _draftMagazineClass, _sideToken, false
+        ] call bn_koth_fnc_progression_evaluateItemEntitlementRules;
+        _magazineEntitled = _magazineEntitlement getOrDefault ["entitled", false];
+    };
+
     private _draftIsValid = false;
     private _hasAttachmentDraft = (_draftWeaponClass isEqualTo _entryWeaponClass) && {(count _draftAttachments) > 0};
     if (
         (_draftWeaponClass isEqualTo _entryWeaponClass) &&
-        {!(_draftMagazineClass isEqualTo "")}
+        {(_entry getOrDefault ["defaultValid", false]) || {!(_draftMagazineClass isEqualTo "")}}
     ) then {
-        private _draftEvaluation = [_draftWeaponClass, _draftAttachments, [_draftMagazineClass], _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
+        private _draftMagazines = if (_draftMagazineClass isEqualTo "") then {[]} else {[_draftMagazineClass]};
+        private _draftEvaluation = [_draftWeaponClass, _draftAttachments, _draftMagazines, _compatibilityCfg] call bn_koth_fnc_menu_evaluateWeaponComposition;
         _draftIsValid =
             (_draftEvaluation getOrDefault ["available", false]) &&
-            {_draftEvaluation getOrDefault ["complete", false]};
+            {_draftEvaluation getOrDefault ["complete", false]} &&
+            {_magazineEntitled} &&
+            {(_entry getOrDefault ["defaultValid", false]) || {!(_draftMagazineClass isEqualTo "")}};
     };
     private _draftMatchesIntended =
         _draftIsValid &&
@@ -392,6 +417,17 @@ _next buttonSetAction "private _page = uiNamespace getVariable ['BN_KOTH_menuBro
 
     if (_hasAccess && {_hasPendingAttachmentDraft}) then {
         _status = "ATTACHMENT APPLY PENDING";
+    };
+    if (_hasAccess && {!_clearSlot} && {!_draftIsValid}) then {
+        _status = if (!_magazineEntitled) then {
+            "MAGAZINE UNAVAILABLE"
+        } else {
+            if (_draftMagazineClass isEqualTo "") then {
+                "NO VALID DEFAULT MAGAZINE - USE CONFIGURE"
+            } else {
+                "CONFIGURATION INCOMPLETE - USE CONFIGURE"
+            }
+        };
     };
 
     private _background = _display displayCtrl (_controls select 0);

@@ -30,8 +30,14 @@ _magazineClass = toLower _magazineClass;
 if !(_weaponSlot in ["primary", "handgun", "launcher"]) exitWith {false};
 
 private _isOptionalSlotClear = (_weaponSlot in ["handgun", "launcher"]) && {_weaponClass isEqualTo ""};
-if (!_isOptionalSlotClear && {_weaponClass isEqualTo "" || {_magazineClass isEqualTo ""}}) exitWith {false};
+if (!_isOptionalSlotClear && {_weaponClass isEqualTo ""}) exitWith {false};
 if (_isOptionalSlotClear && {!(_magazineClass isEqualTo "") || {(count _attachments) > 0}}) exitWith {false};
+private _emptyMagazineValid = true;
+if (!_isOptionalSlotClear && {_magazineClass isEqualTo ""}) then {
+    private _magazineCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment" >> "Compatibility" >> "WeaponMagazines" >> _weaponClass;
+    _emptyMagazineValid = isClass _magazineCfg && {isArray (_magazineCfg >> "values")} && {(count (getArray (_magazineCfg >> "values"))) isEqualTo 0};
+};
+if !_emptyMagazineValid exitWith {false};
 
 private _canonicalAttachments = [];
 {
@@ -44,7 +50,7 @@ private _canonicalAttachments = [];
 } forEach _attachments;
 _canonicalAttachments sort true;
 
-private _magazines = if (_isOptionalSlotClear) then {[]} else {[_magazineClass]};
+private _magazines = if (_magazineClass isEqualTo "") then {[]} else {[_magazineClass]};
 private _weapons = createHashMap;
 _weapons set [_weaponSlot, createHashMapFromArray [
     ["weaponClass", _weaponClass],

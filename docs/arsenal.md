@@ -1200,9 +1200,16 @@ client-selected composition for its explicit weapon slot:
 
 ```text
 canonical base weapon
-+ one compatible magazine
++ one compatible magazine when the weapon has compatible magazines
 + zero or more compatible attachments
 ```
+
+The browser's Apply action uses an existing Configure draft when present.
+Otherwise it proposes the human-authored `defaultMagazine` from weapon metadata,
+then the generated `baseMagazine`, or the sole compatible magazine. Ambiguous
+weapons without an authored default cannot quick apply. The browser checks
+factual compatibility and projected magazine entitlement before enabling Apply;
+the server repeats validation using authoritative progression and side state.
 
 The client draft is presentation and intent only. The server independently:
 
