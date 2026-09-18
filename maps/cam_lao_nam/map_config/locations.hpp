@@ -47,7 +47,7 @@ class CfgBnKothLocations
         description = "Compact courtyard and seven-level tower fighting.";
         image = "";
         minPlayers = 0;
-        maxPlayers = 10;
+        maxPlayers = 20;
         objects[] = {};
         battlefieldPickupsEnabled = 0;
         airInsertionEnabled = 0;
