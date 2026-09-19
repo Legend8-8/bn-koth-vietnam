@@ -14,6 +14,11 @@
 
 if (!isServer) exitWith {};
 
+private _terrainSnapshot = missionNamespace getVariable ["BN_KOTH_terrainSnapshot", createHashMap];
+if (_terrainSnapshot isEqualType createHashMap && {(count _terrainSnapshot) > 0}) then {
+    [format ["Discarding unprocessed terrain snapshot for AO=%1", _terrainSnapshot getOrDefault ["locationId", ""]], "WARN"] call bn_koth_fnc_common_log;
+};
+missionNamespace setVariable ["BN_KOTH_terrainSnapshot", nil];
 [] call bn_koth_fnc_progression_transport_cleanup;
 
 private _locationsCfg = missionConfigFile >> "CfgBnKothLocations";

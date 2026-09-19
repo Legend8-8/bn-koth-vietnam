@@ -30,6 +30,7 @@ if !(_activeLocationId isEqualTo "") then {
 };
 
 [] call bn_koth_fnc_teams_returnAllToLobby;
+[_activeLocationId] call bn_koth_fnc_zone_restoreTerrain;
 [] call bn_koth_fnc_zone_clearActiveLocation;
 [] call bn_koth_fnc_scoring_resetProgress;
 
