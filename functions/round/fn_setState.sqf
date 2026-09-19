@@ -85,7 +85,11 @@ switch (_newState) do {
             ["WAITING"] call bn_koth_fnc_round_setState;
         };
 
-        [_selectedLocationId] call bn_koth_fnc_zone_setActiveLocation;
+        if !([_selectedLocationId] call bn_koth_fnc_zone_setActiveLocation) exitWith {
+            [format ["PREPARING aborted: AO '%1' activation failed", _selectedLocationId], "ERROR"] call bn_koth_fnc_common_log;
+            [] call bn_koth_fnc_zone_clearActiveLocation;
+            ["WAITING"] call bn_koth_fnc_round_setState;
+        };
 
         private _deployedCount = [] call bn_koth_fnc_teams_deployRoundParticipants;
         if (_deployedCount <= 0) exitWith {

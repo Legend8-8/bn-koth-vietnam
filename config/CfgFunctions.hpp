@@ -115,6 +115,8 @@ class CfgFunctions
             class zone_validateLocation {file = "functions\zone\fn_validateLocation.sqf";};
             class zone_setActiveLocation {file = "functions\zone\fn_setActiveLocation.sqf";};
             class zone_clearActiveLocation {file = "functions\zone\fn_clearActiveLocation.sqf";};
+            class zone_snapshotTerrain {file = "functions\zone\fn_snapshotTerrain.sqf";};
+            class zone_restoreTerrain {file = "functions\zone\fn_restoreTerrain.sqf";};
             class zone_cacheStaticObjects {file = "functions\zone\fn_cacheStaticObjects.sqf";};
             class zone_cleanupRuntimeObjects {file = "functions\zone\fn_cleanupRuntimeObjects.sqf";};
             class zone_cleanupBattlefieldPickups {file = "functions\zone\fn_cleanupBattlefieldPickups.sqf";};

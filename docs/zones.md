@@ -98,6 +98,20 @@ That function:
 
 Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
 
+On activation, the server retains original references and ATL transforms for
+restorable AO terrain inside the capture marker, including structural objects
+and vegetation classified as `TREE`, `SMALL TREE`, or `BUSH`. During RESETTING,
+after the return-to-lobby pass and only if no player remains in the capture
+marker, it repairs damaged originals and discards the snapshot before normal AO
+teardown.
+For fully destroyed originals, the saved reference and transform are restored
+regardless of ruin metadata. If one visible ruin has a class named by the
+original's inherited CfgVehicles DestructionEffects and matches its saved
+position and orientation, the server hides it globally first. Missing or
+ambiguous ruin matches are logged without hiding another object or blocking
+original restoration. Hidden ruins are excluded from later snapshots. This does
+not own editor-placed static AO props or static geography such as roads and rocks.
+
 Configured vs activatable is intentionally different:
 
 - configured means the class exists under CfgBnKothLocations for voting/listing;

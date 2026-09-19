@@ -49,6 +49,7 @@ if ((missionNamespace getVariable ["BN_KOTH_activeLocationId", ""]) isNotEqualTo
 [] call bn_koth_fnc_progression_transport_cleanup;
 
 private _activeZoneMarker = _activeLocationData get "zoneMarker";
+if !([_locationId, _activeZoneMarker] call bn_koth_fnc_zone_snapshotTerrain) exitWith {false};
 private _activeWestRespawn = _activeLocationData get "respawnWestMarker";
 private _activeEastRespawn = _activeLocationData get "respawnEastMarker";
 private _activeWestBaseZone = _activeLocationData get "westBaseZoneMarker";
