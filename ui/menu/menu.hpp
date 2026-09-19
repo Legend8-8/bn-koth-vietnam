@@ -1637,7 +1637,7 @@ class BN_KOTH_RscMenu
             x = safeZoneX + safeZoneW * 0.018;
             y = safeZoneY + safeZoneH * 0.085;
             w = safeZoneW * 0.255;
-            h = safeZoneH * 0.334;
+            h = safeZoneH * 0.570;
             scrolling = 0;
             onLoad = "(_this select 0) ctrlEnable false;";
             class controls {};
