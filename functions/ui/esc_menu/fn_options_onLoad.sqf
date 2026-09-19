@@ -27,6 +27,28 @@ private _vehicleCfg = missionConfigFile >> "CfgBnKothEscMenuOptions" >> "earplug
 private _player3DCfg = missionConfigFile >> "CfgBnKothEscMenuOptions" >> "player3DIconsEnabled";
 private _player3DAlphaCfg = missionConfigFile >> "CfgBnKothEscMenuOptions" >> "player3DIconsAlpha";
 
+private _bindToggleButton = {
+    params ["_buttonCtrl", "_optionName"];
+
+    _buttonCtrl setVariable ["BN_KOTH_escMenuOption", _optionName];
+    _buttonCtrl ctrlAddEventHandler ["ButtonClick", {
+        params ["_control"];
+        private _display = ctrlParent _control;
+        if (isNull _display) exitWith {};
+
+        private _option = _control getVariable ["BN_KOTH_escMenuOption", ""];
+        if (_option isEqualTo "") exitWith {};
+
+        private _pending = _display getVariable ["BN_KOTH_escMenuPendingOptions", createHashMap];
+        private _currentValue = _pending getOrDefault [_option, 1];
+        private _newValue = if (_currentValue > 0.5) then {0} else {1};
+        _pending set [_option, _newValue];
+        _display setVariable ["BN_KOTH_escMenuPendingOptions", _pending];
+
+        _control ctrlSetText (if (_newValue > 0.5) then {"ON"} else {"OFF"});
+    }];
+};
+
 private _groundRange = getArray (_groundCfg >> "range");
 private _vehicleRange = getArray (_vehicleCfg >> "range");
 private _player3DAlphaRange = getArray (_player3DAlphaCfg >> "range");
@@ -58,24 +80,8 @@ _vehicleSlider ctrlAddEventHandler ["SliderPosChanged", {
     _this call bn_koth_fnc_escMenu_options_onSliderPosChanged;
 }];
 
-_player3DValueCtrl setVariable ["BN_KOTH_escMenuOption", "player3DIconsEnabled"];
+[_player3DValueCtrl, "player3DIconsEnabled"] call _bindToggleButton;
 _player3DValueCtrl setVariable ["BN_KOTH_escMenuValueIdc", BN_KOTH_IDC_ESC_OPTIONS_PLAYER3D_VALUE];
-_player3DValueCtrl ctrlAddEventHandler ["ButtonClick", {
-    params ["_control"];
-    private _display = ctrlParent _control;
-    if (isNull _display) exitWith {};
-
-    private _option = _control getVariable ["BN_KOTH_escMenuOption", ""];
-    if (_option isEqualTo "") exitWith {};
-
-    private _pending = _display getVariable ["BN_KOTH_escMenuPendingOptions", createHashMap];
-    private _currentValue = _pending getOrDefault [_option, 1];
-    private _newValue = if (_currentValue > 0.5) then {0} else {1};
-    _pending set [_option, _newValue];
-    _display setVariable ["BN_KOTH_escMenuPendingOptions", _pending];
-
-    _control ctrlSetText (if (_newValue > 0.5) then {"ON"} else {"OFF"});
-}];
 
 _player3DAlphaSlider sliderSetRange _player3DAlphaRange;
 _player3DAlphaSlider sliderSetSpeed [_player3DAlphaStep, _player3DAlphaStep];
