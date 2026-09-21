@@ -4,8 +4,8 @@
     Description: Existing paid-vehicle transaction owner generalized for RENT,
         PURCHASE (durable family ownership plus included first spawn), and
         SPAWN (paid owned replacement). Cash and ownership share one persisted
-        projection; failed saves restore session state and require a confirmed
-        compensating save before rollback is reported as durable.
+        projection. Failed saves require a confirmed compensating save before
+        rollback is durable.
     Execution: Server
     Parameters: 0: UID <STRING>, 1: vehicle classname <STRING>,
         2: RENT | PURCHASE | SPAWN <STRING>
@@ -21,7 +21,6 @@ private _fail = {
 };
 if (!isServer) exitWith {["NOT_SERVER", "Server authority required."] call _fail};
 if !(_operation in ["RENT", "PURCHASE", "SPAWN"]) exitWith {["INVALID_OPERATION", "Invalid vehicle transaction."] call _fail};
-
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
 private _record = _records getOrDefault [_uid, createHashMap];
 if !(_record isEqualType createHashMap) exitWith {["PLAYER_NOT_REGISTERED", "Player state is not ready."] call _fail};
@@ -38,6 +37,7 @@ if (serverTime < _cooldown) exitWith {["VEHICLE_COOLDOWN", format ["Available in
 private _metadata = [_vehicleClass] call bn_koth_fnc_vehicles_getProgressionMetadata;
 if !(_metadata getOrDefault ["success", false]) exitWith {["INVALID_VEHICLE", "Vehicle product is invalid."] call _fail};
 private _canonical = _metadata getOrDefault ["canonicalClass", ""];
+private _displayName = _metadata getOrDefault ["displayName", _canonical];
 private _familyId = _metadata getOrDefault ["familyId", ""];
 private _loadoutId = _metadata getOrDefault ["loadoutId", ""];
 private _sideToken = if ((_record getOrDefault ["assignedSide", sideUnknown]) isEqualTo west) then {"WEST"} else {if ((_record getOrDefault ["assignedSide", sideUnknown]) isEqualTo east) then {"EAST"} else {""}};
@@ -89,32 +89,59 @@ if !(((_sideCaps getOrDefault ["families", createHashMap]) getOrDefault [_catego
 private _reservations = missionNamespace getVariable ["BN_KOTH_vehiclePaidPadReservations", createHashMap];
 private _radius = (getNumber (missionConfigFile >> "CfgBnKothVehicles" >> "paidSpawnClearanceMeters")) max 1;
 private _allPads = (missionNamespace getVariable ["BN_KOTH_vehiclePaidPads", []]) select {(_x getOrDefault ["side", ""]) isEqualTo _sideToken && {(_x getOrDefault ["category", ""]) isEqualTo _padCategory} && {(_x getOrDefault ["location", ""]) isEqualTo _activeLocation}};
-private _pads = _allPads select {isNil {_reservations get (_x getOrDefault ["id", ""])}};
-private _chosen = createHashMap;
-{private _check = [_x getOrDefault ["position", [0,0,0]], _radius, objNull, true, true] call bn_koth_fnc_vehicles_isSpawnAreaClear; if (_check getOrDefault ["isClear", false]) exitWith {_chosen = _x}} forEach _pads;
-private _spawnPos = []; private _spawnDir = 0; private _reservationId = "";
-if ((count _chosen) > 0) then {_spawnPos = _chosen get "position"; _spawnDir = _chosen get "direction"; _reservationId = _chosen get "id"} else {
-    private _anchor = if ((count _allPads) > 0) then {(_allPads select 0) getOrDefault ["position", []]} else {[]};
-    if ((count _anchor) > 0) then {
-        _spawnPos = _anchor findEmptyPosition [_radius, (getNumber (missionConfigFile >> "CfgBnKothVehicles" >> "paidFallbackSpawnRadiusMeters")) max 1, _canonical];
-        private _minNormal = (getNumber (missionConfigFile >> "CfgBnKothVehicles" >> "paidSpawnMinimumSurfaceNormalZ")) max 0 min 1;
-        if ((count _spawnPos) > 0 && {!surfaceIsWater _spawnPos} && {(surfaceNormal _spawnPos select 2) >= _minNormal}) then {private _check = [_spawnPos, _radius, objNull, true, true] call bn_koth_fnc_vehicles_isSpawnAreaClear; if !(_check getOrDefault ["isClear", false]) then {_spawnPos = []}} else {_spawnPos = []};
+private _servicePadPosition = if ((count _allPads) > 0) then {+((_allPads select 0) getOrDefault ["position", []])} else {[]};
+private _spawnMode = _metadata getOrDefault ["spawnMode", "GROUND"];
+private _spawnPos = []; private _spawnAsl = []; private _spawnDir = 0; private _reservationId = "";
+if (_spawnMode isEqualTo "AIRBORNE") then {
+    private _activeMarker = missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""];
+    if (_category isEqualTo "FIXED_WING" && {!(_activeMarker isEqualTo "")} && {!((markerShape _activeMarker) isEqualTo "")}) then {
+        private _transform = [markerPos _activeMarker, _metadata getOrDefault ["airSpawnDistanceMin", 0], _metadata getOrDefault ["airSpawnDistanceMax", 0], _metadata getOrDefault ["airSpawnAltitudeAGL", 0], (getNumber (missionConfigFile >> "CfgBnKothVehicles" >> "airborneVehicleClearanceMeters")) max 0] call bn_koth_fnc_vehicles_findAirPosition;
+        if ((count _transform) > 0) then {_spawnAsl = _transform get "positionASL"; _spawnPos = ASLToATL _spawnAsl; _spawnDir = _transform get "heading"};
+    };
+} else {
+    private _pads = _allPads select {isNil {_reservations get (_x getOrDefault ["id", ""])}};
+    private _chosen = createHashMap;
+    {private _check = [_x getOrDefault ["position", [0,0,0]], _radius, objNull, true, true] call bn_koth_fnc_vehicles_isSpawnAreaClear; if (_check getOrDefault ["isClear", false]) exitWith {_chosen = _x}} forEach _pads;
+    if ((count _chosen) > 0) then {_spawnPos = _chosen get "position"; _spawnDir = _chosen get "direction"; _reservationId = _chosen get "id"} else {
+        private _anchor = if ((count _allPads) > 0) then {(_allPads select 0) getOrDefault ["position", []]} else {[]};
+        if ((count _anchor) > 0) then {
+            _spawnPos = _anchor findEmptyPosition [_radius, (getNumber (missionConfigFile >> "CfgBnKothVehicles" >> "paidFallbackSpawnRadiusMeters")) max 1, _canonical];
+            private _minNormal = (getNumber (missionConfigFile >> "CfgBnKothVehicles" >> "paidSpawnMinimumSurfaceNormalZ")) max 0 min 1;
+            if ((count _spawnPos) > 0 && {!surfaceIsWater _spawnPos} && {(surfaceNormal _spawnPos select 2) >= _minNormal}) then {private _check = [_spawnPos, _radius, objNull, true, true] call bn_koth_fnc_vehicles_isSpawnAreaClear; if !(_check getOrDefault ["isClear", false]) then {_spawnPos = []}} else {_spawnPos = []};
+        };
     };
 };
 if ((count _spawnPos) isEqualTo 0) exitWith {["NO_SAFE_SPAWN", "No safe paid-vehicle position is currently available."] call _fail};
 if !(_reservationId isEqualTo "") then {_reservations set [_reservationId, _uid]; missionNamespace setVariable ["BN_KOTH_vehiclePaidPadReservations", _reservations]};
 private _releaseReservation = {if !(_reservationId isEqualTo "") then {_reservations deleteAt _reservationId; missionNamespace setVariable ["BN_KOTH_vehiclePaidPadReservations", _reservations]}};
 
-private _vehicle = createVehicle [_canonical, _spawnPos, [], 0, "NONE"];
+private _vehicle = createVehicle [_canonical, _spawnPos, [], 0, if (_spawnMode isEqualTo "AIRBORNE") then {"FLY"} else {"NONE"}];
 if (isNull _vehicle) exitWith {call _releaseReservation; ["SPAWN_FAILED", "Vehicle creation failed; no charge was made."] call _fail};
-_vehicle setDir _spawnDir; _vehicle setPosATL _spawnPos;
+_vehicle setDir _spawnDir;
+if (_spawnMode isEqualTo "AIRBORNE") then {_vehicle setPosASL _spawnAsl; _vehicle engineOn true; _vehicle setVelocityModelSpace [0, _metadata getOrDefault ["airSpawnInitialSpeed", 0], 0]} else {_vehicle setPosATL _spawnPos};
 if !([_vehicle, _metadata] call bn_koth_fnc_vehicles_applyVisualProfile) exitWith {deleteVehicle _vehicle; call _releaseReservation; ["VISUAL_PROFILE_REJECTED", "Vehicle visual policy rejected the spawn; no charge was made."] call _fail};
 clearWeaponCargoGlobal _vehicle; clearMagazineCargoGlobal _vehicle; clearItemCargoGlobal _vehicle; clearBackpackCargoGlobal _vehicle;
+private _serviceAmmoTotals = createHashMap;
+{
+    private _key = format ["%1|%2", toLower (_x select 0), _x select 1];
+    _serviceAmmoTotals set [_key, (_serviceAmmoTotals getOrDefault [_key, 0]) + (_x select 2)];
+} forEach (magazinesAllTurrets _vehicle);
+_vehicle setVariable ["BN_KOTH_personalServiceAmmoBaseline", (keys _serviceAmmoTotals) apply {[_x, _serviceAmmoTotals get _x]}];
+private _pylonBaseline = [];
+for "_pylonIndex" from 1 to (count (getPylonMagazines _vehicle)) do {
+    _pylonBaseline pushBack [_pylonIndex, _vehicle ammoOnPylon _pylonIndex];
+};
+_vehicle setVariable ["BN_KOTH_personalServicePylonBaseline", _pylonBaseline];
 
 private _oldOwned = +(_progression getOrDefault ["ownedVehicleFamilies", []]);
 private _oldUsed = +(_progression getOrDefault ["vehicleFirstSpawnsUsed", []]);
 private _oldCash = _progression getOrDefault ["cash", -1];
-private _spent = [_uid, _price, format ["vehicle_%1:%2", toLower _operation, _loadoutId]] call bn_koth_fnc_progression_cash_spendCash;
+private _spendReason = switch (_operation) do {
+    case "PURCHASE": {format ["Vehicle purchase: %1", _displayName]};
+    case "SPAWN": {format ["Vehicle replacement: %1", _displayName]};
+    default {format ["Vehicle rental: %1", _displayName]};
+};
+private _spent = [_uid, _price, _spendReason] call bn_koth_fnc_progression_cash_spendCash;
 if !(_spent getOrDefault ["success", false]) exitWith {deleteVehicle _vehicle; call _releaseReservation; [_spent getOrDefault ["code", "INSUFFICIENT_CASH"], "Vehicle cash transaction failed."] call _fail};
 if (_operation isEqualTo "PURCHASE") then {
     private _ownedFamilies = +_oldOwned; _ownedFamilies pushBackUnique _familyId;
@@ -129,7 +156,7 @@ if !(_save getOrDefault ["success", false]) exitWith {
     _progressions = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap]; _progression = _progressions getOrDefault [_uid, createHashMap];
     _progression set ["ownedVehicleFamilies", _oldOwned]; _progression set ["vehicleFirstSpawnsUsed", _oldUsed];
     _progressions set [_uid, _progression]; missionNamespace setVariable ["BN_KOTH_playerProgression", _progressions];
-    private _refund = [_uid, _price, format ["vehicle_%1_rollback:%2", toLower _operation, _loadoutId], false, false] call bn_koth_fnc_progression_cash_addCash;
+    private _refund = [_uid, _price, format ["Vehicle transaction rollback: %1", _displayName], false, false] call bn_koth_fnc_progression_cash_addCash;
     private _refundSucceeded = _refund getOrDefault ["success", false];
     private _refundCash = _refund getOrDefault ["cash", -1];
     private _cashRestored = _refundSucceeded && {_refundCash isEqualTo _oldCash};
@@ -154,17 +181,28 @@ if !(_save getOrDefault ["success", false]) exitWith {
 _vehicle setVariable ["BN_KOTH_isPersonalPaidVehicle", true, true];
 _vehicle setVariable ["BN_KOTH_personalOwnerUid", _uid, true];
 _vehicle setVariable ["BN_KOTH_personalVehicleClass", _canonical, true];
+_vehicle setVariable ["BN_KOTH_personalDisplayName", _displayName, true];
 _vehicle setVariable ["BN_KOTH_personalFamilyId", _familyId, true];
 _vehicle setVariable ["BN_KOTH_personalLoadoutId", _loadoutId, true];
 _vehicle setVariable ["BN_KOTH_personalLifeType", _operation, true];
 _vehicle setVariable ["BN_KOTH_personalAccessMode", "OWNER_ONLY", true];
+_vehicle setVariable ["BN_KOTH_personalServiceEnabled", _metadata getOrDefault ["serviceEnabled", false], true];
+_vehicle setVariable ["BN_KOTH_personalServiceMode", _metadata getOrDefault ["serviceMode", "NONE"], true];
+_vehicle setVariable ["BN_KOTH_personalReturnEnabled", _metadata getOrDefault ["returnEnabled", false], true];
+_vehicle setVariable ["BN_KOTH_personalReturnMode", _metadata getOrDefault ["returnMode", "NONE"], true];
+_vehicle setVariable ["BN_KOTH_personalServicePrice", _metadata getOrDefault ["repairRearmPrice", -1], true];
+_vehicle setVariable ["BN_KOTH_personalServicePadPosition", _servicePadPosition, true];
+_vehicle setVariable ["BN_KOTH_personalServiceAreaRadius", _metadata getOrDefault ["serviceAreaRadius", 35], true];
+_vehicle setVariable ["BN_KOTH_personalServiceMaxSpeed", _metadata getOrDefault ["serviceMaxSpeed", 5], true];
+_vehicle setVariable ["BN_KOTH_personalServiceRequireEngineOff", _metadata getOrDefault ["serviceRequireEngineOff", false], true];
+_vehicle setVariable ["BN_KOTH_personalServiceActive", false, true];
 _vehicle addEventHandler ["Killed", {params ["_vehicle"]; [_vehicle getVariable ["BN_KOTH_personalOwnerUid", ""], _vehicle, "DESTROYED"] call bn_koth_fnc_vehicles_endRentalLife; private _delay = (getNumber (missionConfigFile >> "CfgBnKothVehicles" >> "rentedWreckCleanupSeconds")) max 0; [_vehicle, _delay] spawn {params ["_wreck", "_delay"]; sleep _delay; if (!isNull _wreck) then {deleteVehicle _wreck}}}];
 _vehicle addEventHandler ["Deleted", {params ["_vehicle"]; [_vehicle getVariable ["BN_KOTH_personalOwnerUid", ""], _vehicle, "DELETED"] call bn_koth_fnc_vehicles_endRentalLife}];
 _vehicle addEventHandler ["GetIn", {params ["_vehicle", "_role", "_unit"]; if (!isPlayer _unit) exitWith {}; private _ownerUid = _vehicle getVariable ["BN_KOTH_personalOwnerUid", ""]; private _mode = _vehicle getVariable ["BN_KOTH_personalAccessMode", "OWNER_ONLY"]; private _allowed = (getPlayerUID _unit) isEqualTo _ownerUid; if (_mode isEqualTo "PUBLIC") then {_allowed = true}; if (_mode isEqualTo "GROUP") then {private _ownerObj = objNull; {if (getPlayerUID _x isEqualTo _ownerUid) exitWith {_ownerObj = _x}} forEach allPlayers; _allowed = _allowed || {!isNull _ownerObj && {group _unit isEqualTo group _ownerObj}}}; if (!_allowed) then {[_vehicle] remoteExecCall ["bn_koth_fnc_vehicles_forceOutRentalVehicle", owner _unit]}}];
 
 _activeMap set [_uid, createHashMapFromArray [["vehicle", _vehicle], ["vehicleClass", _canonical], ["familyId", _familyId], ["loadoutId", _loadoutId], ["lifeType", _operation], ["accessMode", "OWNER_ONLY"], ["spawnedAt", serverTime], ["ownerUid", _uid], ["cooldownSeconds", _metadata getOrDefault ["replacementCooldownSeconds", 90]], ["emptySince", -1], ["disconnectedSince", -1]]];
 missionNamespace setVariable ["BN_KOTH_vehicleActivePersonal", _activeMap];
-if (owner _playerObj > 0) then {[_vehicle] remoteExecCall ["bn_koth_fnc_vehicles_addRentalOwnerActions", owner _playerObj]};
+if (owner _playerObj > 0) then {[_vehicle, _spawnMode isEqualTo "AIRBORNE", _category, _spawnPos, _servicePadPosition] remoteExecCall ["bn_koth_fnc_vehicles_addRentalOwnerActions", owner _playerObj]};
 call _releaseReservation;
-[format ["Personal vehicle SUCCESS UID=%1 operation=%2 family=%3 loadout=%4 class=%5 price=%6", _uid, _operation, _familyId, _loadoutId, _canonical, _price], "INFO"] call bn_koth_fnc_common_log;
+[format ["Personal vehicle SUCCESS UID=%1 operation=%2 family=%3 loadout=%4 class=%5 price=%6 spawnMode=%7 position=%8", _uid, _operation, _familyId, _loadoutId, _canonical, _price, _spawnMode, if (_spawnMode isEqualTo "AIRBORNE") then {_spawnAsl} else {_spawnPos}], "INFO"] call bn_koth_fnc_common_log;
 createHashMapFromArray [["success", true], ["code", format ["VEHICLE_%1", _operation]], ["message", if (_operation isEqualTo "PURCHASE") then {"Vehicle family purchased; first spawn included."} else {if (_operation isEqualTo "SPAWN") then {"Replacement vehicle requisitioned."} else {"Vehicle rented for one life."}}], ["operation", _operation], ["vehicleClass", _canonical], ["familyId", _familyId], ["loadoutId", _loadoutId], ["price", _price], ["cash", _spent getOrDefault ["cash", -1]], ["personalVehicleState", [_uid] call bn_koth_fnc_vehicles_getRentalState]]

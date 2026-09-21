@@ -672,6 +672,27 @@ Dedicated-server acceptance requires real clients and both server/client RPTs:
 18. Spawn the newly unlocked loadout; confirm its authored replacement fee and shared active-life enforcement.
 19. Confirm EAST cannot spawn WEST products and WEST cannot spawn EAST products even with dormant future fields present.
 20. Compare appearance before/after every transaction; confirm native textures are unchanged and no reskin command runs.
+21. For all 18 fixed-wing products, confirm purchase, rental and replacement spawn airborne at the resolved AGL/distance with forward speed and the owner in the pilot seat; all 29 rotary products must retain pad spawn.
+22. For each fixed-wing family, first request service at full health/ammunition and confirm `No repair or rearm is currently required.` with no gate and no charge. Then expend ammunition and take damage, request service, confirm no request-time charge, fly the registered jet through the personal gate, then confirm one exact charge, full repair, authored-ammo refill and local presentation removal.
+23. Cancel jet service by destruction, deletion, pilot exit, disconnect, timeout, AO reset and round reset; confirm no charge and no orphan session/presentation. Confirm the high-contrast concentric gate is visible at approach speed and no custom AIR_GATE map/minimap marker appears. Reject a second gate, wrong vehicle, non-owner, non-pilot, insufficient request/completion cash and a different aircraft crossing the gate.
+24. For every rotary family, confirm `YOUR HELICOPTER` marks the actual spawn locally, clears when the owner enters (or after five minutes), and is replaced by an owner-local paid-air area whose radius matches `serviceAreaRadius`. Confirm its 3D label is absent outside the friendly safe zone and appears inside it. Confirm the service action is absent away from the friendly paid-air area and above the configured service speed, remains available with the engine running once inside the area, and returns no-service-required without charge at full health/ammunition. After damage/ammunition expenditure, confirm one exact configured charge plus repair/ammo refill. Confirm pylons/loadout selections do not change.
+25. For successful fixed-wing purchase, rental and replacement, confirm the central BN KOTH menu closes immediately before pilot-seat transfer. A rejected or failed transaction must leave the menu open. No deployment transition/typewriter or input-blocking sequence should start.
+26. Destroy a personal vehicle, leave its vehicle Store category open and confirm the displayed cooldown updates about once per second. At zero, confirm the card/actions refresh without closing the menu, then confirm the server still rejects any premature request.
+27. Return a rotary aircraft from inside the configured friendly paid-air radius at or below the configured speed. Confirm `RETURN VEHICLE` is absent elsewhere, no engine-off requirement is added, the pilot exits safely, the entity and active record clear, no refund/cooldown occurs, and another vehicle can be requested.
+28. Start a fixed-wing return, confirm the gate says `RETURN VEHICLE`, uses the reinforced in-world presentation without a map/minimap ring, and crossing it returns the pilot to the friendly paid-air position before retiring the jet. Confirm cash, persistence, ownership and mastery do not change.
+29. Cancel fixed-wing return through pilot exit, destruction, disconnect, timeout and AO/round reset. Confirm no orphan session/presentation; cancellation alone leaves the active vehicle unchanged, while genuine loss retains its normal cooldown and forced lifecycle cleanup retains its no-cooldown policy.
+30. Complete purchase/rental/replacement/service cash events and confirm the bottom-right progression feed uses the configured human vehicle display name, never `familyId`, `loadoutId`, session ID or normalized classname.
+
+For a one-shot client-side explanation of the current service action state, run
+this while looking at the aircraft or sitting in it:
+
+```sqf
+[vehicle player] call bn_koth_fnc_vehicles_debugReportServiceAction;
+```
+
+The result is printed once to system chat and client RPT. It reports owner,
+pilot, managed-vehicle, alive, service mode, active-session, round, pad, speed,
+engine, price and cached cash inputs. It does not mutate state or use RemoteExec.
 
 18. Development Progression Debug Script
 

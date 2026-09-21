@@ -37,6 +37,79 @@ class CfgBnKothVehicles
     paidFallbackSpawnRadiusMeters = 50;
     paidSpawnMinimumSurfaceNormalZ = 0.85;
     vehicleRentalRequestCooldownSeconds = 0.5;
+    vehicleServiceRequestCooldownSeconds = 0.5;
+    airbornePlacementAttempts = 24;
+    airborneWorldEdgeMarginMeters = 500;
+    airborneVehicleClearanceMeters = 250;
+
+    // Category defaults are merged with optional family/product overrides by
+    // the vehicle metadata owner. Ground service remains disabled in this pass.
+    class ServiceDefaults
+    {
+        class GROUND
+        {
+            spawnMode = "GROUND";
+            serviceEnabled = 0;
+            serviceMode = "NONE";
+            returnEnabled = 0;
+            returnMode = "NONE";
+            serviceCategory = "NONE";
+            repairRearmPrice = -1;
+            serviceAreaRadius = 35;
+            serviceMaxSpeed = 5;
+            serviceRequireEngineOff = 1;
+        };
+        class SEA: GROUND {};
+        class ROTARY: GROUND
+        {
+            serviceEnabled = 1;
+            serviceMode = "SERVICE_PAD";
+            returnEnabled = 1;
+            returnMode = "SERVICE_PAD";
+            serviceCategory = "AIR";
+            repairRearmPrice = 400;
+            serviceRequireEngineOff = 0;
+        };
+        class FIXED_WING
+        {
+            spawnMode = "AIRBORNE";
+            airSpawnAltitudeAGL = 850;
+            airSpawnDistanceMin = 2500;
+            airSpawnDistanceMax = 3500;
+            airSpawnInitialSpeed = 180;
+            serviceEnabled = 1;
+            serviceMode = "AIR_GATE";
+            returnEnabled = 1;
+            returnMode = "AIR_GATE";
+            serviceCategory = "AIR";
+            repairRearmPrice = 750;
+            serviceGateAltitudeAGL = 850;
+            serviceGateDistanceMin = 3500;
+            serviceGateDistanceMax = 4500;
+            serviceGateRadius = 140;
+            serviceGateVerticalTolerance = 170;
+            serviceGateTimeout = 300;
+            serviceAreaRadius = 35;
+            serviceMaxSpeed = 5;
+            serviceRequireEngineOff = 1;
+        };
+    };
+
+    // Family-level balance overrides. Every physical loadout inherits its
+    // category behavior and its family's authored service price.
+    class ServiceFamilies
+    {
+        class MI2 {repairRearmPrice = 350;};
+        class OH6 {repairRearmPrice = 250;};
+        class UH34 {repairRearmPrice = 400;};
+        class UH1 {repairRearmPrice = 450;};
+        class CH47 {repairRearmPrice = 600;};
+        class AH1G {repairRearmPrice = 700;};
+        class MIG19 {repairRearmPrice = 700;};
+        class MIG21 {repairRearmPrice = 850;};
+        class F100D {repairRearmPrice = 750;};
+        class F4 {repairRearmPrice = 950;};
+    };
 
     // Default vehicle classes per category.
     groundVehicleClass = "vn_b_wheeled_m54_02_sog";
@@ -81,6 +154,8 @@ class CfgBnKothVehicles
     //   crossSideEligible = 0; // dormant/default-deny in this release
     //   capturedRequirement = ""; // reserved, dormant
     //   visualProfile = ""; // inert hook; no texture application in this release
+    //   spawnMode/serviceMode/serviceCategory/tuning fields may override the
+    //   category/family defaults above.
     //
     // Progression policy belongs only to canonical physical roots. A structural
     // entry may declare variantOf only and inherits every policy field from its

@@ -14,10 +14,11 @@ private _record=_active getOrDefault [_uid,createHashMap];
 // Identity, not existence: a vehicle deleted during fn_rentVehicle.sqf's pre-commit rollback (spendCash failed before
 // this UID was ever registered here) can never match, so its Deleted/Killed EH becomes an inert no-op below.
 if !((_record getOrDefault ["vehicle",objNull]) isEqualTo _vehicle) exitWith {false};
+[_uid, _reason] call bn_koth_fnc_vehicles_cancelService;
 _active deleteAt _uid; missionNamespace setVariable ["BN_KOTH_vehicleActivePersonal",_active];
 private _seconds=(_record getOrDefault ["cooldownSeconds",90]) max 0;
 private _cooldowns=missionNamespace getVariable ["BN_KOTH_vehiclePersonalCooldowns",createHashMap];
-private _forcedCleanupReasons=["AO_RESET","ROUND_RESET","RETURNED_TO_LOBBY","MISSION_RESET","MISSION_END"];
+private _forcedCleanupReasons=["AO_RESET","ROUND_RESET","RETURNED_TO_LOBBY","MISSION_RESET","MISSION_END","VOLUNTARY_RETURN"];
 private _startsCooldown=!(toUpper _reason in _forcedCleanupReasons);
 if (_startsCooldown) then {
     _cooldowns set [_uid,serverTime+_seconds];
@@ -29,7 +30,15 @@ missionNamespace setVariable ["BN_KOTH_vehiclePersonalCooldowns",_cooldowns];
 private _ownerPlayer=objNull;
 {if (getPlayerUID _x isEqualTo _uid) exitWith {_ownerPlayer=_x}} forEach allPlayers;
 if (!isNull _ownerPlayer) then {
-    private _result=createHashMapFromArray [["success",true],["code","VEHICLE_LIFE_ENDED"],["message",if (_startsCooldown) then {"Personal vehicle life ended; replacement cooldown started."} else {"Personal vehicle removed for mission lifecycle cleanup; no cooldown applied."}],["personalVehicleState",[_uid] call bn_koth_fnc_vehicles_getRentalState]];
+    private _returned=(toUpper _reason) isEqualTo "VOLUNTARY_RETURN";
+    private _result=createHashMapFromArray [
+        ["success",true],
+        ["code","VEHICLE_LIFE_ENDED"],
+        ["operation",if (_returned) then {"RETURN"} else {"VEHICLE"}],
+        ["title",if (_returned) then {"VEHICLE RETURNED"} else {""}],
+        ["message",if (_returned) then {"Your vehicle has been returned. You may request another vehicle."} else {if (_startsCooldown) then {"Personal vehicle life ended; replacement cooldown started."} else {"Personal vehicle removed for mission lifecycle cleanup; no cooldown applied."}}],
+        ["personalVehicleState",[_uid] call bn_koth_fnc_vehicles_getRentalState]
+    ];
     [_result] remoteExecCall ["bn_koth_fnc_vehicles_receiveRentalResult",owner _ownerPlayer];
 };
 true

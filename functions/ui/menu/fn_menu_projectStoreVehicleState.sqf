@@ -20,7 +20,12 @@ private _personal = missionNamespace getVariable ["BN_KOTH_vehiclePersonalStateL
 if !(_personal isEqualType createHashMap) then {_personal = createHashMap};
 private _active = (_personal getOrDefault ["activeClass", ""]) isEqualTo _vehicleClass;
 private _anyActive = !((_personal getOrDefault ["activeClass", ""]) isEqualTo "");
-private _cooldown = ceil ((_personal getOrDefault ["cooldownRemaining", 0]) max 0);
+private _cooldownUntil = _personal getOrDefault ["cooldownUntil", -1];
+private _cooldown = if (_cooldownUntil >= 0) then {
+    ceil ((_cooldownUntil - serverTime) max 0)
+} else {
+    ceil ((_personal getOrDefault ["cooldownRemaining", 0]) max 0)
+};
 private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
 private _cash = if (_progression isEqualType createHashMap) then {_progression getOrDefault ["cash", 0]} else {0};
 private _owned = _loadout getOrDefault ["owned", false];

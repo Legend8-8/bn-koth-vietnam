@@ -13,6 +13,7 @@ private _entries = "true" configClasses _cfg;
 private _loadoutIds = [];
 private _families = createHashMap;
 private _rotaryCount = 0;
+private _fixedWingCount = 0;
 private _cobraCount = 0;
 private _nonCobraAllCapabilitiesCount = 0;
 private _cobraWithoutTransportCount = 0;
@@ -35,6 +36,9 @@ private _cobraWithoutTransportCount = 0;
         ((keys _masteryRequirements) findIf {!(_x in ["infantryKills", "insertions", "passengersDelivered", "transportDistance"])}) < 0] call _check;
     if ((_metadata getOrDefault ["storeCategory", ""]) isEqualTo "ROTARY") then {
         _rotaryCount = _rotaryCount + 1;
+        [format ["%1 rotary uses ground spawn", _class], (_metadata getOrDefault ["spawnMode", ""]) isEqualTo "GROUND"] call _check;
+        [format ["%1 rotary uses service pad", _class], (_metadata getOrDefault ["serviceEnabled", false]) && {(_metadata getOrDefault ["serviceMode", ""]) isEqualTo "SERVICE_PAD"} && {(_metadata getOrDefault ["serviceCategory", ""]) isEqualTo "AIR"} && {(_metadata getOrDefault ["repairRearmPrice", -1]) > 0} && {!(_metadata getOrDefault ["serviceRequireEngineOff", true])}] call _check;
+        [format ["%1 rotary return uses service pad", _class], (_metadata getOrDefault ["returnEnabled", false]) && {(_metadata getOrDefault ["returnMode", ""]) isEqualTo "SERVICE_PAD"}] call _check;
         if (_family isEqualTo "AH1G") then {
             _cobraCount = _cobraCount + 1;
             private _correctCobraCapabilities = !("TRANSPORT" in _caps) && {"COMBAT" in _caps} && {"CAS" in _caps} && {(count _caps) isEqualTo 2};
@@ -46,9 +50,17 @@ private _cobraWithoutTransportCount = 0;
             [format ["%1 non-Cobra rotary has TRANSPORT/COMBAT/CAS", _class], _correctMultiCapabilities] call _check;
         };
     };
+    if ((_metadata getOrDefault ["storeCategory", ""]) isEqualTo "FIXED_WING") then {
+        _fixedWingCount = _fixedWingCount + 1;
+        [format ["%1 fixed wing spawns airborne", _class], (_metadata getOrDefault ["spawnMode", ""]) isEqualTo "AIRBORNE"] call _check;
+        [format ["%1 fixed wing uses air gate", _class], (_metadata getOrDefault ["serviceEnabled", false]) && {(_metadata getOrDefault ["serviceMode", ""]) isEqualTo "AIR_GATE"} && {(_metadata getOrDefault ["serviceCategory", ""]) isEqualTo "AIR"} && {(_metadata getOrDefault ["repairRearmPrice", -1]) > 0}] call _check;
+        [format ["%1 fixed-wing return uses air gate", _class], (_metadata getOrDefault ["returnEnabled", false]) && {(_metadata getOrDefault ["returnMode", ""]) isEqualTo "AIR_GATE"}] call _check;
+        [format ["%1 fixed wing airborne tuning valid", _class], (_metadata getOrDefault ["airSpawnAltitudeAGL", 0]) >= 50 && {(_metadata getOrDefault ["airSpawnDistanceMax", 0]) >= (_metadata getOrDefault ["airSpawnDistanceMin", 1])} && {(_metadata getOrDefault ["airSpawnInitialSpeed", 0]) > 0}] call _check;
+    };
 } forEach _entries;
 ["Curated 84-product surface retained", (count _entries) isEqualTo 84] call _check;
 ["All 29 curated rotary products audited", _rotaryCount isEqualTo 29] call _check;
+["All 18 curated fixed-wing products audited", _fixedWingCount isEqualTo 18] call _check;
 ["Five Cobra loadouts audited", _cobraCount isEqualTo 5] call _check;
 ["Exactly 24 non-Cobra rotary products have all three capabilities", _nonCobraAllCapabilitiesCount isEqualTo 24] call _check;
 ["Exactly five Cobra products exclude TRANSPORT", _cobraWithoutTransportCount isEqualTo 5] call _check;
@@ -65,10 +77,12 @@ private _westOnly = ["vn_b_air_oh6a_01"] call bn_koth_fnc_vehicles_getProgressio
 private _wrongSide = ["EAST", 270, [], _westOnly] call bn_koth_fnc_vehicles_evaluateProgressionRules;
 ["Native side enforced", (_wrongSide getOrDefault ["code", ""]) isEqualTo "LOCKED_SIDE"] call _check;
 private _chico = ["vn_b_air_f4c_chico"] call bn_koth_fnc_vehicles_getProgressionMetadata;
+["Vehicle metadata exposes configured human display name", !((_chico getOrDefault ["displayName", ""]) isEqualTo "") && {!((_chico getOrDefault ["displayName", ""]) isEqualTo (_chico getOrDefault ["loadoutId", ""]))}] call _check;
 private _emptyF4State = createHashMapFromArray [["ownedVehicleFamilies", ["F4"]], ["vehicleMastery", createHashMap]];
 private _chicoRules = [_emptyF4State, _chico, true] call bn_koth_fnc_vehicles_evaluateLoadoutRules;
 private _chicoMissing = _chicoRules getOrDefault ["missingMastery", createHashMap];
 ["Cumulative mastery reports the highest required threshold",
     (_chicoMissing getOrDefault ["infantryKills", [-1, -1]]) isEqualTo [0, 15]] call _check;
+
 diag_log format ["[BN_KOTH_TEST] Vehicle progression metadata: %1 failure(s): %2", count _failures, _failures];
 _failures
