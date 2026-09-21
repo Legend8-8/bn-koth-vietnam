@@ -54,6 +54,8 @@ missionNamespace setVariable ["BN_KOTH_vehicleManagedSlotIds", []];
 missionNamespace setVariable ["BN_KOTH_vehicleActivePersonal", createHashMap];
 missionNamespace setVariable ["BN_KOTH_vehiclePersonalCooldowns", createHashMap];
 missionNamespace setVariable ["BN_KOTH_vehiclePaidPadReservations", createHashMap];
+missionNamespace setVariable ["BN_KOTH_vehicleServiceSessions", createHashMap];
+missionNamespace setVariable ["BN_KOTH_vehicleServiceCounter", 0];
 missionNamespace setVariable ["BN_KOTH_vehiclePersonalLastSweepAt", -1];
 private _rentalMonitorInterval = if (isNumber (_vehicleCfg >> "rentalMonitorIntervalSeconds")) then {
     (getNumber (_vehicleCfg >> "rentalMonitorIntervalSeconds")) max 5

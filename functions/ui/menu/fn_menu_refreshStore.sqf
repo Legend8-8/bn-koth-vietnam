@@ -123,6 +123,29 @@ if (_route in ["GROUND", "ROTARY", "FIXED_WING"] && {!([_route] call _vehicleRou
 };
 uiNamespace setVariable ["BN_KOTH_menuStoreRoute", _route];
 
+private _personalState = missionNamespace getVariable ["BN_KOTH_vehiclePersonalStateLocal", createHashMap];
+private _cooldownUntil = if (_personalState isEqualType createHashMap) then {_personalState getOrDefault ["cooldownUntil", 0]} else {0};
+private _cooldownRefreshScript = uiNamespace getVariable ["BN_KOTH_menuVehicleCooldownRefreshScript", scriptNull];
+if (_route in ["GROUND", "ROTARY", "FIXED_WING"] && {_cooldownUntil > serverTime} && {scriptDone _cooldownRefreshScript}) then {
+    _cooldownRefreshScript = [] spawn {
+        disableSerialization;
+        private _vehicleRoutes = ["GROUND", "ROTARY", "FIXED_WING"];
+        while {true} do {
+            uiSleep 1;
+            private _display = uiNamespace getVariable ["BN_KOTH_menuDisplay", displayNull];
+            private _route = toUpper (uiNamespace getVariable ["BN_KOTH_menuStoreRoute", "ROOT"]);
+            if (isNull _display || {!((uiNamespace getVariable ["BN_KOTH_menuActivePage", ""]) isEqualTo "STORE")} || {!(_route in _vehicleRoutes)}) exitWith {};
+
+            private _state = missionNamespace getVariable ["BN_KOTH_vehiclePersonalStateLocal", createHashMap];
+            private _expiresAt = if (_state isEqualType createHashMap) then {_state getOrDefault ["cooldownUntil", 0]} else {0};
+            [_display] call bn_koth_fnc_menu_refreshStore;
+            if (_expiresAt <= serverTime) exitWith {};
+        };
+        uiNamespace setVariable ["BN_KOTH_menuVehicleCooldownRefreshScript", scriptNull];
+    };
+    uiNamespace setVariable ["BN_KOTH_menuVehicleCooldownRefreshScript", _cooldownRefreshScript];
+};
+
 private _makeCategory = {
     params ["_routeId", "_displayName", "_description", ["_enabled", true, [true]]];
     createHashMapFromArray [

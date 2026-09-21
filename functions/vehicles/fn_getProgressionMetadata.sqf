@@ -75,6 +75,8 @@ if !(_resolutionCode isEqualTo "OK") exitWith {
 };
 
 private _metadataCfg = _vehiclesCfg >> _canonicalClass;
+private _displayName = getText (configFile >> "CfgVehicles" >> _canonicalClass >> "displayName");
+if (_displayName isEqualTo "") then {_displayName = _canonicalClass};
 private _validCategories = ["GROUND", "SEA", "ROTARY", "FIXED_WING"];
 private _validCapabilities = ["TRANSPORT", "LOGISTICS", "COMMAND", "COMBAT", "CAS"];
 if (
@@ -148,11 +150,93 @@ if (isArray (_metadataCfg >> "requiredPerks")) then {
     _requiredPerks = getArray (_metadataCfg >> "requiredPerks");
 };
 
-createHashMapFromArray [
+private _serviceDefaultsCfg = missionConfigFile >> "CfgBnKothVehicles" >> "ServiceDefaults" >> _storeCategory;
+private _serviceFamilyCfg = missionConfigFile >> "CfgBnKothVehicles" >> "ServiceFamilies" >> _familyId;
+private _resolveServiceText = {
+    params ["_field", "_fallback"];
+    if (isText (_metadataCfg >> _field)) exitWith {getText (_metadataCfg >> _field)};
+    if (isText (_serviceFamilyCfg >> _field)) exitWith {getText (_serviceFamilyCfg >> _field)};
+    if (isText (_serviceDefaultsCfg >> _field)) exitWith {getText (_serviceDefaultsCfg >> _field)};
+    _fallback
+};
+private _resolveServiceNumber = {
+    params ["_field", "_fallback"];
+    if (isNumber (_metadataCfg >> _field)) exitWith {getNumber (_metadataCfg >> _field)};
+    if (isNumber (_serviceFamilyCfg >> _field)) exitWith {getNumber (_serviceFamilyCfg >> _field)};
+    if (isNumber (_serviceDefaultsCfg >> _field)) exitWith {getNumber (_serviceDefaultsCfg >> _field)};
+    _fallback
+};
+private _spawnMode = toUpper (["spawnMode", "GROUND"] call _resolveServiceText);
+private _serviceEnabled = (["serviceEnabled", 0] call _resolveServiceNumber) > 0;
+private _serviceMode = toUpper (["serviceMode", "NONE"] call _resolveServiceText);
+private _returnEnabled = (["returnEnabled", 0] call _resolveServiceNumber) > 0;
+private _returnMode = toUpper (["returnMode", "NONE"] call _resolveServiceText);
+private _serviceCategory = toUpper (["serviceCategory", "NONE"] call _resolveServiceText);
+private _repairRearmPrice = ["repairRearmPrice", -1] call _resolveServiceNumber;
+private _airSpawnAltitudeAGL = ["airSpawnAltitudeAGL", 0] call _resolveServiceNumber;
+private _airSpawnDistanceMin = ["airSpawnDistanceMin", 0] call _resolveServiceNumber;
+private _airSpawnDistanceMax = ["airSpawnDistanceMax", 0] call _resolveServiceNumber;
+private _airSpawnInitialSpeed = ["airSpawnInitialSpeed", 0] call _resolveServiceNumber;
+private _serviceGateAltitudeAGL = ["serviceGateAltitudeAGL", 0] call _resolveServiceNumber;
+private _serviceGateDistanceMin = ["serviceGateDistanceMin", 0] call _resolveServiceNumber;
+private _serviceGateDistanceMax = ["serviceGateDistanceMax", 0] call _resolveServiceNumber;
+private _serviceGateRadius = ["serviceGateRadius", 0] call _resolveServiceNumber;
+private _serviceGateVerticalTolerance = ["serviceGateVerticalTolerance", 0] call _resolveServiceNumber;
+private _serviceGateTimeout = ["serviceGateTimeout", 0] call _resolveServiceNumber;
+private _serviceAreaRadius = ["serviceAreaRadius", 0] call _resolveServiceNumber;
+private _serviceMaxSpeed = ["serviceMaxSpeed", 0] call _resolveServiceNumber;
+private _serviceRequireEngineOff = (["serviceRequireEngineOff", 0] call _resolveServiceNumber) > 0;
+private _servicePolicyValid = _spawnMode in ["GROUND", "AIRBORNE"]
+    && {_serviceMode in ["NONE", "AIR_GATE", "SERVICE_PAD"]}
+    && {_returnMode in ["NONE", "AIR_GATE", "SERVICE_PAD"]}
+    && {_serviceCategory in ["NONE", "GROUND", "AIR", "SEA"]}
+    && {!_serviceEnabled || {!(_serviceCategory isEqualTo "NONE")}}
+    && {!_serviceEnabled || {_repairRearmPrice > 0}}
+    && {!(_spawnMode isEqualTo "AIRBORNE") || {
+        _storeCategory isEqualTo "FIXED_WING"
+        && {_airSpawnAltitudeAGL >= 50}
+        && {_airSpawnDistanceMin > 0}
+        && {_airSpawnDistanceMax >= _airSpawnDistanceMin}
+        && {_airSpawnInitialSpeed > 0}
+    }}
+    && {!(_serviceMode isEqualTo "AIR_GATE") || {
+        _serviceEnabled
+        && {_serviceGateAltitudeAGL >= 50}
+        && {_serviceGateDistanceMin > 0}
+        && {_serviceGateDistanceMax >= _serviceGateDistanceMin}
+        && {_serviceGateRadius > 0}
+        && {_serviceGateVerticalTolerance > 0}
+        && {_serviceGateTimeout > 0}
+    }}
+    && {!(_serviceMode isEqualTo "SERVICE_PAD") || {
+        _serviceEnabled && {_serviceAreaRadius > 0} && {_serviceMaxSpeed >= 0}
+    }}
+    && {!_returnEnabled || {
+        _returnMode in ["AIR_GATE", "SERVICE_PAD"]
+        && {_storeCategory in ["ROTARY", "FIXED_WING"]}
+    }}
+    && {!(_returnMode isEqualTo "AIR_GATE") || {
+        _returnEnabled
+        && {_serviceGateAltitudeAGL >= 50}
+        && {_serviceGateDistanceMin > 0}
+        && {_serviceGateDistanceMax >= _serviceGateDistanceMin}
+        && {_serviceGateRadius > 0}
+        && {_serviceGateVerticalTolerance > 0}
+        && {_serviceGateTimeout > 0}
+    }}
+    && {!(_returnMode isEqualTo "SERVICE_PAD") || {
+        _returnEnabled && {_serviceAreaRadius > 0} && {_serviceMaxSpeed >= 0}
+    }};
+if (!_servicePolicyValid) exitWith {
+    ["ERR_VEHICLE_SERVICE_POLICY", _canonicalClass] call _finishFailure
+};
+
+private _result = createHashMapFromArray [
     ["success", true],
     ["code", "OK"],
     ["requestedClass", _requestedClass],
     ["canonicalClass", _canonicalClass],
+    ["displayName", _displayName],
     ["familyId", _familyId],
     ["loadoutId", _loadoutId],
     ["baseLoadout", (getNumber (_metadataCfg >> "baseLoadout")) > 0],
@@ -173,5 +257,26 @@ createHashMapFromArray [
     ["capturedRequirement", toUpper (getText (_metadataCfg >> "capturedRequirement"))],
     ["visualProfile", getText (_metadataCfg >> "visualProfile")],
     ["requiredPerks", _requiredPerks],
+    ["spawnMode", _spawnMode],
+    ["serviceEnabled", _serviceEnabled],
+    ["serviceMode", _serviceMode],
+    ["returnEnabled", _returnEnabled],
+    ["returnMode", _returnMode],
+    ["serviceCategory", _serviceCategory],
+    ["repairRearmPrice", _repairRearmPrice],
+    ["airSpawnAltitudeAGL", _airSpawnAltitudeAGL],
+    ["airSpawnDistanceMin", _airSpawnDistanceMin],
+    ["airSpawnDistanceMax", _airSpawnDistanceMax],
+    ["airSpawnInitialSpeed", _airSpawnInitialSpeed],
+    ["serviceGateAltitudeAGL", _serviceGateAltitudeAGL],
+    ["serviceGateDistanceMin", _serviceGateDistanceMin],
+    ["serviceGateDistanceMax", _serviceGateDistanceMax],
+    ["serviceGateRadius", _serviceGateRadius],
+    ["serviceGateVerticalTolerance", _serviceGateVerticalTolerance],
+    ["serviceGateTimeout", _serviceGateTimeout],
+    ["serviceAreaRadius", _serviceAreaRadius],
+    ["serviceMaxSpeed", _serviceMaxSpeed],
+    ["serviceRequireEngineOff", _serviceRequireEngineOff],
     ["resolutionPath", +_visited]
-]
+];
+_result

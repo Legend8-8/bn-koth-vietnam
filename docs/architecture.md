@@ -632,12 +632,55 @@ disconnect). Forced AO, round, mission and return-to-lobby cleanup removes the
 active personal vehicle and record without starting a replacement-loss cooldown.
 Managed free and command vehicles remain separate team assets.
 
+The same catalogue resolver supplies config-driven personal-aircraft spawn and
+repair/rearm policy. Curated fixed-wing products use AO-relative, terrain-aware
+airborne placement and immediate owner-pilot control while remaining inside the
+existing paid transaction, active-life map and rollback path; the owning client
+closes the central deployed menu immediately before that server-authorized seat
+transfer. Rotary products continue to use the authored paid-air pad. Their
+owning client receives temporary local-only spawn guidance, followed by a local
+map area using the configured service radius plus nearby 3D guidance for the
+same friendly paid-air service location. The presentation owns no vehicle or
+service truth and clears through vehicle entry, loss, replacement and mission
+lifecycle cleanup. The map area remains owner-local for the active life; its 3D
+label is shown only while the owner has the existing friendly safe-zone
+protection state.
+
+Repair/rearm remains part of `functions/vehicles/`. Only the owner in the pilot
+seat may request it, and the server re-derives the active vehicle, product,
+price, AO, cash and service geometry. Rotary service completes at the friendly
+paid-air area after the configured radius and low-speed checks. Fixed-wing
+service creates one temporary server-only session per UID; the shared vehicle manager
+tests the registered aircraft's swept server positions against the AO-relative
+gate and charges only after validated completion. The requesting client alone
+draws a high-contrast concentric in-world gate; no custom AIR_GATE map/minimap
+marker is created. Service state is session-only and adds no
+ownership, mastery or persistence schema. The action remains visible when its
+mode-specific location checks pass even if no work is needed; activation compares
+damage plus turret/pylon ammunition with the server-captured post-spawn baseline
+and returns without charge when repair and rearm would be pointless.
+
+The same request/session owner also handles config-enabled voluntary aircraft
+return with purpose `RETURN`. Rotary return is revalidated at the friendly paid
+air area under the configured radius and speed. Fixed-wing return uses the same
+AO-relative gate placement, swept crossing and cancellation lifecycle as
+service, but performs no cash or repair path. Successful return uses the
+central life-ending owner with reason `VOLUNTARY_RETURN`, returns the pilot to
+the friendly paid-air position, deletes the physical vehicle, clears the one
+active record and applies no cooldown, refund, persistence, mastery or reward.
+The existing server-authorized local exit endpoint handles pilot locality; no
+new RemoteExec endpoint or active registry exists.
+
 The vehicle Store derives an aggregate presentation of all currently unmet
 requirements from targeted state and authored metadata; it does not grant or
 override entitlement. Families are grouped by their base loadout's minimum
 level, remain contiguous, and then follow authored prerequisite depth. The
 requester-only transaction result invalidates that presentation cache and is
 shown inline so a server rejection cannot disappear behind an unchanged card.
+While an open vehicle category has a server-supplied cooldown expiry, one
+bounded client presentation script refreshes the cached Store view about once
+per second and stops on expiry, category/page exit or display close. It never
+mutates or replaces the server-owned cooldown.
 
 Loadout unlocks are deterministically derived from family ownership and the
 config-authored prerequisite graph, so no duplicate persisted unlock list exists.

@@ -17,6 +17,7 @@ if (!isServer) exitWith {};
 if (_uid isEqualTo "") exitWith {};
 
 [_uid, "PLAYER_DISCONNECTED"] call bn_koth_fnc_airInsertion_cleanupPlayer;
+[_uid, "PLAYER_DISCONNECTED"] call bn_koth_fnc_vehicles_cancelService;
 [_uid] call bn_koth_fnc_progression_transport_cleanup;
 [_uid] call bn_koth_fnc_combat_cleanupAssistUid;
 

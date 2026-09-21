@@ -254,6 +254,11 @@ private _advancedRentalState = [_advancedRentalEntry] call bn_koth_fnc_menu_proj
 missionNamespace setVariable ["BN_KOTH_playerProgressionLocal", _savedProgressionLocal];
 missionNamespace setVariable ["BN_KOTH_vehiclePersonalStateLocal", _savedVehiclePersonalLocal];
 
+private _vehicleProjectionSource = preprocessFileLineNumbers "functions\ui\menu\fn_menu_projectStoreVehicleState.sqf";
+private _storeRefreshSource = preprocessFileLineNumbers "functions\ui\menu\fn_menu_refreshStore.sqf";
+["Vehicle cooldown presentation derives live remaining time from the authoritative expiry", (_vehicleProjectionSource find 'cooldownUntil') >= 0 && {(_vehicleProjectionSource find 'serverTime') >= 0}] call _check;
+["Open vehicle Store cooldown refresh is bounded and lifecycle-aware", (_storeRefreshSource find 'BN_KOTH_menuVehicleCooldownRefreshScript') >= 0 && {(_storeRefreshSource find 'uiSleep 1') >= 0} && {(_storeRefreshSource find 'BN_KOTH_menuActivePage') >= 0} && {(_storeRefreshSource find '_expiresAt <= serverTime') >= 0}] call _check;
+
 private _metadata = createHashMapFromArray [
     ["minLevel", 10], ["allowedSides", ["WEST"]], ["masteryKillsRequired", 50],
     ["crossSideAllowed", true], ["purchasePrice", 400], ["rentalPrice", 100]

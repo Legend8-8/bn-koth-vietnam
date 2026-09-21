@@ -378,10 +378,44 @@ requesting client receives their projected state. Get-in authorization is
 checked from server-owned UID/access data. A narrowly allowlisted
 server-to-owner endpoint performs locality-sensitive ejection.
 
+Fixed-wing paid vehicles are created by the server at a config-resolved ASL
+position and given server-authored direction and velocity. The existing
+owner-targeted vehicle initializer performs only the locality-sensitive
+central-menu close, `moveInDriver` and action creation after verifying that the
+server-authored owner UID matches the local player. For rotary products, that
+same verified owner-local initializer invokes a private presentation owner with
+server-resolved spawn and service positions. It creates only local markers and
+a local Draw3D label; it owns no spawn or service eligibility and is not a
+RemoteExec endpoint.
+
+Vehicle repair/rearm requests carry only the vehicle object as intent. The
+server derives the caller from `remoteExecutedOwner`, confirms the one active
+personal record and resolves all price, mode, AO and geometry from config and
+server state. Air-gate completion is never client-reported: the shared server
+vehicle manager validates the registered vehicle's movement. The service
+presentation endpoint accepts gate data only from the server and creates only
+client-local Draw3D state; AIR_GATE creates no custom map/minimap marker. Rotary
+guidance creates an owner-local map area from the configured server-resolved
+service position and radius; its 3D label additionally consumes the existing
+server-owned friendly safe-zone protection projection. After the server commits payment and repair,
+one narrow server-to-all endpoint runs `setVehicleAmmo 1` on each machine so
+each locally-owned turret is refilled without changing pylon or magazine
+selection.
+
 Every active-life ending path routes through the same server owner. Destruction,
 attributable deletion, abandonment, owner disconnect and unknown genuine-loss
 reasons start replacement cooldown. Forced AO, round, mission and return-to-lobby
 cleanup removes the entity and active record without applying loss cooldown.
+Config-enabled voluntary return reuses the same request endpoint, one-per-UID
+session map, gate placement, crossing monitor and cancellation owner. The
+server revalidates owner, pilot, active record, round and pad/gate geometry.
+`VOLUNTARY_RETURN` routes through the central life-ending owner as a no-cooldown
+reason, performs no economy/persistence mutation, and uses the existing
+server-to-owner force-exit endpoint to place the local pilot at the authoritative
+friendly paid-air position before entity deletion.
+The open Store derives its displayed seconds from the server-supplied expiry
+and may refresh that presentation once per second; it does not decrement or
+authorize the server-owned cooldown.
 
 14.1 Tactical Air Insertion
 

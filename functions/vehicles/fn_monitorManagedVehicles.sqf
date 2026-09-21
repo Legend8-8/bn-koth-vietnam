@@ -148,6 +148,11 @@ while {missionNamespace getVariable ["BN_KOTH_vehicleMonitorRunning", false]} do
         } forEach +(keys _rentals);
     };
 
+    // Personal air-service gates reuse this one shared lifecycle loop. The
+    // service pass uses swept movement segments so a fast jet cannot skip a
+    // gate between one-second manager ticks.
+    [] call bn_koth_fnc_vehicles_monitorServiceSessions;
+
     private _interval = (missionNamespace getVariable ["BN_KOTH_vehicleMonitorIntervalSeconds", 1]) max 1;
     sleep _interval;
 };

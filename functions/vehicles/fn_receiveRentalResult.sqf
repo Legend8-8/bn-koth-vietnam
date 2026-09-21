@@ -19,8 +19,13 @@ uiNamespace setVariable ["BN_KOTH_menuStoreEntriesRoute", ""];
 private _message = _result getOrDefault ["message", "Vehicle request completed."];
 private _operation = toUpper (_result getOrDefault ["operation", "VEHICLE"]);
 private _success = _result getOrDefault ["success", false];
+private _title = _result getOrDefault ["title", ""];
+if (_title isEqualTo "") then {_title = format ["VEHICLE %1 %2", _operation, if (_success) then {"COMPLETE"} else {"FAILED"}]};
+if ((_result getOrDefault ["code", ""]) isEqualTo "VEHICLE_LIFE_ENDED") then {
+    ["CLEAR"] call bn_koth_fnc_vehicles_setPersonalGuidance;
+};
 [createHashMapFromArray [
-    ["title", format ["VEHICLE %1 %2", _operation, if (_success) then {"COMPLETE"} else {"FAILED"}]],
+    ["title", _title],
     ["body", _message],
     ["footer", ""]
 ]] call bn_koth_fnc_ui_notify;

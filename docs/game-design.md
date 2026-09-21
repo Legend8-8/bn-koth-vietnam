@@ -230,6 +230,28 @@ authored mastery prerequisite chain is satisfied; rental evaluation does not
 require family ownership. One UID may have only one active personal paid vehicle
 life across both paths.
 
+Curated fixed-wing paid vehicles spawn in flight at a config-authored distance
+and altitude relative to the current AO; rotary products retain paid-air-pad
+spawn. Supported aircraft offer refill-only repair/rearm without loadout or
+pylon editing. Helicopters service within their configured radius (currently
+35 metres) of the friendly paid-air location while moving no faster than the
+configured service speed; the engine may remain running.
+The owner receives local spawn guidance and the configured service radius
+remains marked as an area for the active helicopter life. A fully repaired and fully armed aircraft keeps
+the understandable service action but receives a no-service-required response
+without charge. Jets receive a personal AO-relative airborne gate and pay only
+when the server verifies that the same owned personal aircraft crosses it.
+That gate is rendered in world only; it does not add a custom map/minimap ring.
+Loss, pilot exit, timeout, disconnect or AO/round teardown cancels an unfinished
+gate without charge.
+
+Curated rotary and fixed-wing aircraft may be voluntarily returned without a
+refund or loss cooldown. Helicopters must physically be at their friendly paid
+air area within the configured radius and speed. Jets must cross a separate
+personal `RETURN VEHICLE` air gate, after which the pilot is placed at the
+friendly paid-air position and the aircraft is retired. A cancelled return
+leaves the active vehicle unchanged; return never grants cash, XP or mastery.
+
 Vehicle economy values are authored per product rather than derived from one
 formula. Family purchase prices reflect durable ownership, loadout replacement
 prices reflect recurring life cost, and configured rentals remain above
