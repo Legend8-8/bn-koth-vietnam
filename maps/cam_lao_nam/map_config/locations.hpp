@@ -11,12 +11,34 @@ class CfgBnKothSettings
 	    "hue",
 	    "hanoi",
         "bao_ve",
-        "son_tay_pow"
+        "son_tay_pow",
+        "xom_ram",
+        "tieng_tai"
     };
 };
 
 class CfgBnKothLocations
 {
+    class xom_ram
+    {
+        displayName = "Xom Ram";
+        description = "Compact fighting around Xom Ram.";
+        image = "";
+        minPlayers = 0;
+        maxPlayers = 20;
+        objects[] = {};
+    };
+
+    class tieng_tai
+    {
+        displayName = "Tieng Tai";
+        description = "Compact fighting around Tieng Tai.";
+        image = "";
+        minPlayers = 0;
+        maxPlayers = 20;
+        objects[] = {};
+    };
+
     class son_tay_pow
     {
         displayName = "Son Tay POW Camp";

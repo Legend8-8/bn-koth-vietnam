@@ -126,6 +126,70 @@ Configured vs activatable is intentionally different:
 5. Set defaultLocationId to hue for testing.
 6. Start mission and verify only hue markers/objects are active.
 
+Cam Lao Nam beta 2 locations and reusable defaults
+
+Xom Ram (`xom_ram`) and Tieng Tai (`tieng_tai`) are registered in
+`maps/cam_lao_nam/map_config/locations.hpp` and included in rotation with the
+existing low-population band of 0–20 connected human players. Both have their
+capture marker, WEST/EAST respawns, 50-metre-radius base markers, command
+mapboards and spawn tents. Their physical base props have 100% presence and
+use the existing exclusive static-object ownership and activation lifecycle.
+Neither currently has vehicle spawn roles; those capabilities remain unavailable.
+Lobby images are empty until authored images are supplied.
+
+Reusable off-map defaults
+
+`maps/cam_lao_nam/mission.sqm` retains the `AO DEFAULT TEMPLATES - NEVER
+REGISTER` layer with three permanent copy-only masters. The earlier fifteen
+staged setups have been removed.
+
+| Master ID | Capture footprint | Centre (X, Y) |
+| --- | --- | --- |
+| `default_small` | 300 x 300 metres | 2000, -2000 |
+| `default_medium` | 600 x 600 metres | 4200, -2000 |
+| `default_large` | 900 x 900 metres | 6400, -2000 |
+
+Each master contains a capture marker and separate WEST BASE / EAST BASE layers.
+Each base has its respawn and safe-zone markers, command mapboard, spawn tent,
+command vehicle marker, free ground/air markers, and paid ground/air helipads.
+Its nested SEA layer holds the free sea marker and paid sea helipad; move these
+to suitable water or delete that sublayer for a land-only AO.
+
+All masters remain south of the map at negative Y. Their props retain 0%
+Probability of Presence and their markers retain zero alpha. None has a
+`CfgBnKothLocations` class or rotation entry: lobby candidates enumerate that
+configuration and activation rejects unconfigured IDs. Do not register the
+master IDs or enable their props. Presence is evaluated at mission start, so
+0% presence does not prevent editing the templates in Eden.
+
+To author another location:
+
+1. Duplicate an entire master layer, keeping the original off-map. Give the
+   copy a new unique location ID and update every copied marker name and object
+   variable to that ID. Eden's automatic duplicate suffixes do not satisfy the
+   runtime role conventions; changing only the layer label is insufficient.
+2. Move the copy and its base layers to the destination. Snap physical objects
+   to the surface and check tent entrances, spawn headings, board access,
+   vehicle clearance and safe-zone coverage. The master is a flat composition,
+   not a terrain-fitted destination.
+3. Resize/rotate the capture and safe-zone markers as needed, keeping the bases
+   outside the capture area. Marker A/B values are half-sizes: the masters start
+   at 150, 300 and 450 metres for the capture area and 100 metres for the bases.
+4. Set Probability of Presence to 100% on the copy's physical objects. Keep
+   simulation and damage disabled, matching existing AO props.
+5. Add the location class to this map's `CfgBnKothLocations` and its ID to
+   `locationRotation[]`. Author its display name, description, image and
+   population bounds. Physical size does not automatically determine population
+   suitability. Leave unfinished locations unregistered and their props disabled.
+6. Run `python tools/validate_ao_config.py`, then test activation, boards,
+   deployment/respawn, applicable vehicle roles and inactive-object hiding in
+   Eden/hosted and dedicated multiplayer. The active-location owner sets the
+   five main marker alphas; invisible `Empty` spawn markers can remain at zero.
+
+Unregistered unfinished AO markers are not automatically hidden by the active
+location lifecycle. Set their alpha to zero if they should not appear on player
+maps during authoring.
+
 8. Extending the Location Schema
 
 If a new location feature needs additional runtime markers, objects or spawn references, keep it in the same pattern: the resolver owns the naming, while the config file only declares exceptional overrides.
