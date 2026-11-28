@@ -13,12 +13,10 @@ if (!isServer || {isNull _player}) exitWith {createHashMap};
 private _uid = getPlayerUID _player;
 private _record = (missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap]) getOrDefault [_uid, createHashMap];
 private _side = _record getOrDefault ["assignedSide", sideUnknown];
-private _candidate = _record getOrDefault ["preferredSpawnCandidate", []];
+private _candidate = _record getOrDefault ["preferredSpawnCandidate", createHashMap];
 private _result = createHashMap;
-if ((_record getOrDefault ["ownerId", -1]) isEqualTo (owner _player) && {!(_candidate isEqualTo [])}) then {
-    _result = [_player, createHashMapFromArray [["mutation", createHashMapFromArray [
-        ["op", "load_local_kit"], ["savedLoadout", +_candidate]
-    ]]]] call bn_koth_fnc_loadouts_validateLoadout;
+if ((_record getOrDefault ["ownerId", -1]) isEqualTo (owner _player) && {_candidate isEqualType createHashMap} && {(count _candidate) > 0}) then {
+    _result = [_player, createHashMapFromArray [["mutation", _candidate]]] call bn_koth_fnc_loadouts_validateLoadout;
 };
 if (_result getOrDefault ["success", false]) exitWith {
     _result set ["loadout", +(_result get "validatedLoadout")];

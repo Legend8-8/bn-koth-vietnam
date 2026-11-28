@@ -37,9 +37,9 @@ the `callExtension` return value. The adapter accepts only those exact
 source-defined duplicate responses; `Failed to Load Protocol`, unknown-protocol,
 other rejection, and malformed responses fail immediately. A reuse candidate
 must still complete the existing read-only `healthCheck` query against
-`bn_koth_player_progression` and return the exact BN KOTH schema-v4 protocol
-marker before publishing readiness. The query references `vehicle_progression`,
-so readiness also fails closed when migration 004 has not been applied.
+`bn_koth_player_progression` and return the exact BN KOTH schema-v5 protocol
+marker before publishing readiness. The query references `unlocked_loadout_slots`,
+so readiness also fails closed when migration 005 has not been applied.
 This probe is also required after cold registration, so a registered but stale,
 wrong, or unusable SQL_CUSTOM path fails closed. It does not log credentials or
 raw query parameters.
@@ -57,7 +57,7 @@ otherwise entries sorted by classname and encoded as
 `classname=non_negative_integer`, joined with commas. Tokens permit only ASCII
 lowercase letters, digits, and underscore. Parsing rejects duplicates,
 unexpected delimiters, invalid characters, negative/non-integral counts, and
-empty tokens. The legacy `saved_kits` field remains in the V4 statement and is
+empty tokens. The legacy `saved_kits` field remains in the V5 statement and is
 written as `-`. Saved loadouts and their preferred ID live in client
 `profileNamespace`; their content passes server validation on load and spawn.
 
@@ -108,13 +108,20 @@ changes do not schedule database writes.
 14. Restart the entire server and confirm `COLD_INIT` and the durable values
     restore again.
 
-For schema-v4 deployment from schema v2 or earlier, apply
-`003_add_saved_kits.sql` and then `004_add_vehicle_progression.sql`. From schema
-v3, apply only migration 004. Copy the updated SQL_CUSTOM file, restart the
-server, then verify vehicle ownership, first-spawn use and mastery through
-reconnect, mission reload and a full process restart. Saved-kit data needs no
-database migration or restoration; use the same client profile. No
-repository-side statement or serializer work remains for the operator to author.
+For schema-v5 deployment, apply all missing migrations through
+`005_add_loadout_slots.sql` in order. Migration 005 adds the shared permanent
+slot count with a default of one; existing XP, cash and equipment progression
+remain intact. Copy the updated SQL_CUSTOM file and restart the whole server
+process before running the v5 mission. Verify slot purchases, cash and slot
+ownership through reconnect, mission reload and a full process restart.
+Local kits are not moved into SQL: existing unassigned kits remain preserved
+in the same client profile and can be copied into unlocked team slots.
+
+Permanent slot purchases are rejected for session-fallback player records or
+when the persistence backend is unavailable. Successful purchases use the
+existing coalesced progression save (including disconnect/mission-end flush),
+so a purchase response confirms the session mutation, not a synchronous disk
+commit. Failed saves remain dirty under the existing persistence policy.
 
 The operator must supply privately: server OS/architecture, extDB3 build and
 install path, exact `-serverMod` configuration, MariaDB/MySQL host/port/database,

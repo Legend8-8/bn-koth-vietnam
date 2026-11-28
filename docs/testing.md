@@ -1523,3 +1523,46 @@ button centre must match the LOADOUT column centre and its complete two-line tex
 block must remain horizontally centred with the menu-only downward inset applied.
 Open the native pause menu and confirm its announcement text remains visible at
 the existing position without inheriting the main-menu inset.
+
+### Purchasable loadout slots
+
+In an isolated test mission, run these focused checks (expected result: `[]`):
+
+- Server: `call compile preprocessFileLineNumbers "functions\progression\test_loadoutSlots.sqf"`.
+- Server: `call compile preprocessFileLineNumbers "functions\persistence\test_persistence.sqf"`.
+- Server with a connected WEST starter-entitled player: `[testPlayer] call compile preprocessFileLineNumbers "functions\loadouts\test_spawnPreference.sqf"` and the existing `test_weaponChangeCargo.sqf`.
+- Client, menu closed: `call compile preprocessFileLineNumbers "functions\ui\menu\test_spawnPreference.sqf"`.
+
+Dedicated and hosted verification with migration 005 and the v5 SQL_CUSTOM file:
+
+The focused purchase script derives its starting cash and expected charges from
+`CfgBnKothPersistence.savedKitSlotPrices[]`, so price tuning does not require
+changing the test. The current paid slots total $310,000. For the manual purchase
+sequence, use a test player with at least that balance to cover all five unlocks.
+
+1. New and legacy UIDs receive one free slot on both teams. Six slots are shown;
+   slots 2-6 cost $10,000, $20,000, $40,000, $80,000 and $160,000 respectively.
+2. Buy slot 2 on WEST, switch to EAST and buy slot 3. Both teams have three
+   unlocked slots and independent contents/defaults. Reconnect, reload the
+   mission and restart the server; the same shared count and cash restore.
+3. Duplicate/stale requests, skipped slots, slot 7, fractional/missing slot IDs,
+   forged price/UID/side fields and insufficient cash cannot grant slots or charge.
+   Purchase attempts away from the current team mapboard, dead, in the lobby,
+   on a stale representation or outside the active round fail before mutation.
+4. Preserve a profile with more than six old kits. All originals remain archived;
+   copying into an empty current-team unlocked slot leaves its source intact.
+   Import grants no entitlement. Delete/rename/update one team's kit and verify
+   the opposite team and purchased capacity do not change.
+5. LOAD/EDIT/default/team selection/spawn reject locked, missing, invalid or
+   wrong-team slot identity. Invalid spawn intent falls back to the faction
+   starter without delaying deployment. Repeat current rental, perk, ownership,
+   mastery and side regressions; profile edits never grant equipment.
+6. Unlock while the manager is open, verify immediate cash/slot repaint, and
+   cycle pages and default selections on both teams. Verify one visible default
+   per team, archive copy availability, empty-slot save, rename, update and delete.
+7. Session fallback/unready persistence rejects permanent purchases without a
+   charge. Review server and both clients' RPT, including persistence failures.
+
+Slot purchase success uses the existing debounced durability policy; also
+verify disconnect and mission-end flushes. These static/focused checks do not
+replace dedicated multi-client gameplay or durable database testing.

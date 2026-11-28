@@ -590,6 +590,16 @@ private _mutationCaseResult = switch (_op) do {
     };
 
     case "load_local_kit": {
+        private _slot = _mutation getOrDefault ["kitSlot", 0];
+        private _kitSide = _mutation getOrDefault ["kitSide", ""];
+        private _progression = (missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap]) getOrDefault [_uid, createHashMap];
+        private _unlocked = _progression getOrDefault ["unlockedLoadoutSlots", 1];
+        private _maximum = getNumber (missionConfigFile >> "CfgBnKothPersistence" >> "savedKitMaxCount");
+        if !(_slot isEqualType 0 && {finite _slot} && {_slot isEqualTo floor _slot} && {_slot >= 1} && {_slot <= _maximum}
+            && {_unlocked isEqualType 0} && {finite _unlocked} && {_unlocked isEqualTo floor _unlocked} && {_slot <= _unlocked}
+            && {_kitSide isEqualTo _authoritativeSideToken}) exitWith {
+            ["ERR_SAVED_KIT_SLOT", "That saved loadout slot is locked, invalid, or belongs to another team.", _baseLoadoutId] call _resultFail
+        };
         // Local profile data is untrusted. It enters only as intent and passes
         // every canonical, entitlement, compatibility and capacity check below.
         private _savedLoadout = _mutation getOrDefault ["savedLoadout", []];

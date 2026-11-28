@@ -143,3 +143,13 @@ valid matching `appearanceSide` before it can enter an authoritative loadout.
 # Adding perks
 
 Author perk identity, display text, availability, and price under `CfgBnKothPerks`; runtime code must not infer effects from display names. Persistent IDs are lowercase stable tokens. New effects should consume `activePerks`, never ownership alone, and must attach to an existing authoritative gameplay boundary rather than introduce inventory polling or client authority.
+
+### Saved loadout slot prices
+
+Edit `config/persistence.hpp`: `savedKitMaxCount = 6` and
+`savedKitSlotPrices[] = {0, 10000, 20000, 40000, 80000, 160000}` define the six
+total slots and per-slot unlock prices. The array includes the free first slot; paid entries
+must be positive whole dollars. Change this array to author production prices
+without changing SQF. Keep its length equal to the maximum. Slot ownership is
+UID-wide; contents/defaults remain local and team-specific. Deploy migration
+005 and the v5 SQL_CUSTOM file together; see `docs/deployment-extdb3.md`.

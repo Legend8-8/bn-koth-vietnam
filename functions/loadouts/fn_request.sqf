@@ -93,13 +93,18 @@ if (_preference in ["SET", "CLEAR"]) exitWith {
     private _result = createHashMapFromArray [["success", true]];
     if (_preference isEqualTo "SET") then {
         private _mutation = _request getOrDefault ["mutation", createHashMap];
+        if !(_mutation isEqualType createHashMap) then {_mutation = createHashMap};
         // Do not accept a client-selected validation operation in this branch.
         private _saved = if (_mutation isEqualType createHashMap) then {_mutation getOrDefault ["savedLoadout", []]} else {[]};
-        _result = [_playerObj, createHashMapFromArray [["mutation", createHashMapFromArray [
-            ["op", "load_local_kit"], ["savedLoadout", _saved]
-        ]]]] call bn_koth_fnc_loadouts_validateLoadout;
+        private _candidate = createHashMapFromArray [
+            ["op", "load_local_kit"], ["savedLoadout", _saved],
+            ["kitSlot", _mutation getOrDefault ["kitSlot", 0]],
+            ["kitSide", _mutation getOrDefault ["kitSide", ""]]
+        ];
+        _result = [_playerObj, createHashMapFromArray [["mutation", _candidate]]] call bn_koth_fnc_loadouts_validateLoadout;
         if (_result getOrDefault ["success", false]) then {
-            _record set ["preferredSpawnCandidate", +(_result get "validatedLoadout")];
+            _candidate set ["savedLoadout", +(_result get "validatedLoadout")];
+            _record set ["preferredSpawnCandidate", _candidate];
         };
     };
     _records set [_uid, _record];
@@ -257,6 +262,23 @@ if !(_arsenalAccessFailure isEqualTo "") exitWith {
             ["loadoutId", ""]
         ]
     ] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
+};
+
+// Reuse the existing access boundary; progression owns the economy mutation.
+private _mutation = if (_request isEqualType createHashMap) then {_request getOrDefault ["mutation", createHashMap]} else {createHashMap};
+if (_mutation isEqualType createHashMap && {(_mutation getOrDefault ["op", ""]) isEqualTo "purchase_kit_slot"}) exitWith {
+    if !((_record getOrDefault ["ownerId", -1]) isEqualTo _ownerId
+        && {(_record getOrDefault ["currentUnit", objNull]) isEqualTo _playerObj}
+        && {(missionNamespace getVariable ["BN_KOTH_roundState", ""]) isEqualTo "ACTIVE"}) exitWith {
+        [createHashMapFromArray [
+            ["success", false], ["slotPurchase", true], ["code", "ERR_SLOT_ACCESS"],
+            ["message", "Slot purchases require your current active-round representation."]
+        ]] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
+    };
+    private _slot = _mutation getOrDefault ["kitSlot", -1];
+    if !(_slot isEqualType 0) then {_slot = -1};
+    private _result = [_uid, _slot] call bn_koth_fnc_progression_purchaseLoadoutSlot;
+    [_result] remoteExecCall ["bn_koth_fnc_loadouts_receiveValidatedLoadout", _ownerId];
 };
 
 private _validation = [

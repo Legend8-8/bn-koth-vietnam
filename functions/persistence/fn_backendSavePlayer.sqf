@@ -20,6 +20,10 @@ if (_backend isEqualTo "EXTDB3") exitWith {
     private _schemaVersion = _projection getOrDefault ["schemaVersion", -1];
     private _xp = _projection getOrDefault ["xp", -1];
     private _cash = _projection getOrDefault ["cash", -1];
+    private _slots = _projection getOrDefault ["unlockedLoadoutSlots", -1];
+    if !(_slots isEqualType 0 && {finite _slots} && {_slots >= 1} && {_slots isEqualTo floor _slots}) exitWith {
+        createHashMapFromArray [["success", false], ["code", "INVALID_LOADOUT_SLOTS"], ["uid", _uid]]
+    };
     if !(_schemaVersion isEqualType 0 && {finite _schemaVersion} && {_schemaVersion >= 0} && {_schemaVersion isEqualTo floor _schemaVersion} && {_xp isEqualType 0} && {finite _xp} && {_xp >= 0} && {_xp isEqualTo floor _xp} && {_cash isEqualType 0} && {finite _cash} && {_cash >= 0} && {_cash isEqualTo floor _cash}) exitWith {
         createHashMapFromArray [["success", false], ["code", "INVALID_PERSISTENT_NUMERIC_FIELDS"], ["uid", _uid]]
     };
@@ -42,7 +46,8 @@ if (_backend isEqualTo "EXTDB3") exitWith {
         _ownedPerks get "value",
         _activePerks get "value",
         "-",
-        _vehicleProgression get "value"
+        _vehicleProgression get "value",
+        _slots
     ]] call bn_koth_fnc_persistence_extdbCall;
     if !(_query getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _query getOrDefault ["code", "BACKEND_SAVE_FAILED"]], ["uid", _uid]]};
     createHashMapFromArray [["success", true], ["code", "SAVED"], ["uid", _uid]]

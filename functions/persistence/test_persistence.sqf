@@ -31,7 +31,7 @@ private _backup = createHashMap;
     };
 } forEach _variables;
 
-missionNamespace setVariable ["BN_KOTH_persistenceSchemaVersion", 4];
+missionNamespace setVariable ["BN_KOTH_persistenceSchemaVersion", 5];
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "MEMORY"];
 missionNamespace setVariable ["BN_KOTH_persistenceBackendReady", true];
 missionNamespace setVariable ["BN_KOTH_persistenceSaveDebounceSeconds", 0];
@@ -53,10 +53,12 @@ private _firstState = _first getOrDefault ["state", createHashMap];
 [(count (_firstState getOrDefault ["ownedWeapons", ["bad"]])) isEqualTo 0, "First-time ownership was not empty."] call _assert;
 [(count (_firstState getOrDefault ["ownedPerks", ["bad"]])) isEqualTo 0 && {(count (_firstState getOrDefault ["activePerks", ["bad"]])) isEqualTo 0}, "First-time perk state was not empty."] call _assert;
 
+[(_firstState getOrDefault ["unlockedLoadoutSlots", -1]) isEqualTo 1, "First-time player did not get exactly one free slot."] call _assert;
+
 private _knownUid = "PERSIST_KNOWN";
 private _rawKills = createHashMapFromArray [["VN_M1903", 7]];
 private _raw = createHashMapFromArray [
-    ["schemaVersion", 4], ["uid", _knownUid], ["xp", 12345], ["level", 999], ["cash", 4321],
+    ["schemaVersion", 5], ["unlockedLoadoutSlots", 3], ["uid", _knownUid], ["xp", 12345], ["level", 999], ["cash", 4321],
     ["ownedWeapons", ["VN_M1903"]], ["rentedWeapons", ["vn_m1911"]], ["weaponKills", _rawKills],
     ["ownedPerks", ["SUPPRESSOR", "unknown", "suppressor"]], ["activePerks", ["suppressor", "unknown"]]
 ];
@@ -71,6 +73,8 @@ private _knownState = _known getOrDefault ["state", createHashMap];
 [((_knownState getOrDefault ["weaponKills", createHashMap]) getOrDefault ["vn_m1903", -1]) isEqualTo 7, "Known weapon mastery did not load."] call _assert;
 [(count (_knownState getOrDefault ["rentedWeapons", ["bad"]])) isEqualTo 0, "Session rentals were loaded from persistence."] call _assert;
 [(_knownState getOrDefault ["ownedPerks", []]) isEqualTo ["suppressor"] && {(_knownState getOrDefault ["activePerks", []]) isEqualTo ["suppressor"]}, "Known perk state did not normalize unknown/duplicate IDs."] call _assert;
+
+[(_knownState getOrDefault ["unlockedLoadoutSlots", -1]) isEqualTo 3, "Purchased slots were not restored."] call _assert;
 
 _knownState set ["cash", 9999];
 private _again = [_knownUid] call bn_koth_fnc_persistence_loadPlayer;
@@ -93,6 +97,8 @@ private _projection = [_knownUid, _knownState] call bn_koth_fnc_persistence_proj
 [(_projection getOrDefault ["ownedPerks", []]) isEqualTo ["suppressor"] && {(_projection getOrDefault ["activePerks", []]) isEqualTo ["suppressor"]}, "Save projection omitted persistent perk state."] call _assert;
 [((_projection getOrDefault ["weaponKills", createHashMap]) getOrDefault ["vn_m1903", -1]) isEqualTo 7, "Save projection omitted persistent weapon mastery."] call _assert;
 
+[(_projection getOrDefault ["unlockedLoadoutSlots", -1]) isEqualTo 3, "Save projection omitted slot ownership."] call _assert;
+
 private _schemaTwo = [_knownUid, createHashMapFromArray [
     ["schemaVersion", 2], ["uid", _knownUid], ["xp", 77], ["cash", 88],
     ["ownedWeapons", ["vn_m1903"]], ["weaponKills", createHashMap],
@@ -100,8 +106,16 @@ private _schemaTwo = [_knownUid, createHashMapFromArray [
 ]] call bn_koth_fnc_persistence_normalizePlayerState;
 private _schemaTwoState = _schemaTwo getOrDefault ["state", createHashMap];
 [(_schemaTwo getOrDefault ["code", ""]) isEqualTo "NORMALIZED_LEGACY"
-    && {(_schemaTwoState getOrDefault ["schemaVersion", -1]) isEqualTo 4}
-    && {(_schemaTwoState getOrDefault ["xp", -1]) isEqualTo 77}, "Schema v2 did not normalize to v4 without losing unrelated progression."] call _assert;
+    && {(_schemaTwoState getOrDefault ["schemaVersion", -1]) isEqualTo 5}
+    && {(_schemaTwoState getOrDefault ["xp", -1]) isEqualTo 77}, "Schema v2 did not normalize to v5 without losing unrelated progression."] call _assert;
+
+[(_schemaTwoState getOrDefault ["unlockedLoadoutSlots", -1]) isEqualTo 1, "Legacy state granted paid slots."] call _assert;
+private _legacySlots = [_knownUid, createHashMapFromArray [["schemaVersion", 4], ["uid", _knownUid], ["unlockedLoadoutSlots", 6]]] call bn_koth_fnc_persistence_normalizePlayerState;
+[((_legacySlots get "state") get "unlockedLoadoutSlots") isEqualTo 1, "Pre-v5 record imported an unsupported slot field."] call _assert;
+{
+    private _invalidSlots = [_knownUid, createHashMapFromArray [["schemaVersion", 5], ["uid", _knownUid], ["unlockedLoadoutSlots", _x]]] call bn_koth_fnc_persistence_normalizePlayerState;
+    [((_invalidSlots get "state") get "unlockedLoadoutSlots") isEqualTo 1, "Invalid slot count did not fail closed."] call _assert;
+} forEach [0, -1, 2.5, "6"];
 
 private _ownedSerialized = [["vn_m1911", "VN_M1903"]] call bn_koth_fnc_persistence_serializeOwnedWeapons;
 [_ownedSerialized getOrDefault ["success", false] && {(_ownedSerialized getOrDefault ["value", ""]) isEqualTo "vn_m1903,vn_m1911"}, "Owned weapons did not serialize deterministically."] call _assert;
@@ -123,15 +137,38 @@ private _roundTripKills = _killsParsed getOrDefault ["value", createHashMap];
 
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "EXTDB3"];
 private _invalidNumericSave = ["76561198000000000", createHashMapFromArray [
-    ["schemaVersion", 4], ["xp", "bad"], ["cash", 1000], ["ownedWeapons", []], ["weaponKills", createHashMap], ["ownedPerks", []], ["activePerks", []]
+    ["schemaVersion", 5], ["unlockedLoadoutSlots", 1], ["xp", "bad"], ["cash", 1000], ["ownedWeapons", []], ["weaponKills", createHashMap], ["ownedPerks", []], ["activePerks", []]
 ]] call bn_koth_fnc_persistence_backendSavePlayer;
 [!(_invalidNumericSave getOrDefault ["success", true]) && {(_invalidNumericSave getOrDefault ["code", ""]) isEqualTo "INVALID_PERSISTENT_NUMERIC_FIELDS"}, "Malformed persistent numeric fields reached extDB3."] call _assert;
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "MEMORY"];
 
-private _extdbValid = ["[1,[[""76561198000000000"",4,12,34,""vn_m1903"",""vn_m1903=7"",""suppressor"",""suppressor"",""-"",""-""]]]"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _extdbValid = ["[1,[[""76561198000000000"",5,12,34,""vn_m1903"",""vn_m1903=7"",""suppressor"",""suppressor"",""-"",""-"",3]]]"] call bn_koth_fnc_persistence_parseExtdbResponse;
 [_extdbValid getOrDefault ["success", false] && {(count (_extdbValid getOrDefault ["rows", []])) isEqualTo 1}, "Valid extDB3 response was rejected."] call _assert;
 [!((["[0,""Error MariaDBQueryException Exception""]"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "extDB3 error response was accepted."] call _assert;
 [!((["not an array"] call bn_koth_fnc_persistence_parseExtdbResponse) getOrDefault ["success", true]), "Malformed extDB3 response was accepted."] call _assert;
+private _realExtdbCall = bn_koth_fnc_persistence_extdbCall;
+private _stubRows = [["76561198000000000", 5, 12, 34, "vn_m1903", "vn_m1903=7", "suppressor", "suppressor", "-", "-", 3]];
+private _capturedQuery = [];
+bn_koth_fnc_persistence_extdbCall = {
+    _capturedQuery = +_this;
+    createHashMapFromArray [["success", true], ["rows", _stubRows]]
+};
+missionNamespace setVariable ["BN_KOTH_persistenceBackend", "EXTDB3"];
+private _adapterLoad = ["76561198000000000"] call bn_koth_fnc_persistence_backendLoadPlayer;
+[_adapterLoad getOrDefault ["success", false] && {((_adapterLoad get "record") get "unlockedLoadoutSlots") isEqualTo 3}, "V5 adapter did not load slot column."] call _assert;
+(_stubRows select 0) set [10, -1];
+private _badSlotLoad = ["76561198000000000"] call bn_koth_fnc_persistence_backendLoadPlayer;
+[!(_badSlotLoad getOrDefault ["success", true]) && {(_badSlotLoad get "code") isEqualTo "MALFORMED_LOADOUT_SLOTS"}, "Malformed slot column was accepted."] call _assert;
+(_stubRows select 0) resize 10;
+private _oldShapeLoad = ["76561198000000000"] call bn_koth_fnc_persistence_backendLoadPlayer;
+[!(_oldShapeLoad getOrDefault ["success", true]) && {(_oldShapeLoad get "code") isEqualTo "MALFORMED_LOAD_ROW"}, "Old SQL_CUSTOM row shape was accepted."] call _assert;
+private _adapterSave = ["76561198000000000", _projection] call bn_koth_fnc_persistence_backendSavePlayer;
+[_adapterSave getOrDefault ["success", false] && {count (_capturedQuery select 1) isEqualTo 11}
+    && {((_capturedQuery select 1) select 10) isEqualTo 3}
+    && {((_capturedQuery select 1) select 8) isEqualTo "-"}, "V5 save did not preserve the slot/legacy-kit SQL contract."] call _assert;
+bn_koth_fnc_persistence_extdbCall = _realExtdbCall;
+missionNamespace setVariable ["BN_KOTH_persistenceBackend", "MEMORY"];
+
 private _databaseCold = ["[1]", "DATABASE"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
 private _databaseDuplicate = ["[0,""Already Connected to Database""]", "DATABASE"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
 private _databaseRejected = ["[0,""Database Connection Error""]", "DATABASE"] call bn_koth_fnc_persistence_parseExtdbSystemResponse;
@@ -151,9 +188,9 @@ private _protocolMalformed = ["[1,""unexpected""]", "PROTOCOL"] call bn_koth_fnc
 [(_protocolLoadFailed getOrDefault ["state", ""]) isEqualTo "FAILED" && {(_protocolUnknown getOrDefault ["state", ""]) isEqualTo "FAILED"}, "Known hard protocol failure was accepted as reuse."] call _assert;
 [!(_protocolMalformed getOrDefault ["valid", true]) && {(_protocolMalformed getOrDefault ["state", ""]) isEqualTo "FAILED"}, "Malformed protocol response was accepted."] call _assert;
 
-private _healthValid = ["[1,[[""BN_KOTH_PERSISTENCE_V4"",0]]]", "BN_KOTH_PERSISTENCE_V4"] call bn_koth_fnc_persistence_parseExtdbResponse;
-private _healthWrongMarker = ["[1,[[""OTHER_PROTOCOL"",0]]]", "BN_KOTH_PERSISTENCE_V4"] call bn_koth_fnc_persistence_parseExtdbResponse;
-private _healthWrongShape = ["[1,[]]", "BN_KOTH_PERSISTENCE_V4"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _healthValid = ["[1,[[""BN_KOTH_PERSISTENCE_V5"",0]]]", "BN_KOTH_PERSISTENCE_V5"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _healthWrongMarker = ["[1,[[""OTHER_PROTOCOL"",0]]]", "BN_KOTH_PERSISTENCE_V5"] call bn_koth_fnc_persistence_parseExtdbResponse;
+private _healthWrongShape = ["[1,[]]", "BN_KOTH_PERSISTENCE_V5"] call bn_koth_fnc_persistence_parseExtdbResponse;
 [_healthValid getOrDefault ["success", false], "Valid persistence health response was rejected."] call _assert;
 [!(_healthWrongMarker getOrDefault ["success", true]) && {!(_healthWrongShape getOrDefault ["success", true])}, "Wrong health marker or shape was accepted."] call _assert;
 [(_protocolDuplicate getOrDefault ["state", "FAILED"]) isEqualTo "REUSE_CANDIDATE"
@@ -161,22 +198,22 @@ private _healthWrongShape = ["[1,[]]", "BN_KOTH_PERSISTENCE_V4"] call bn_koth_fn
     "Protocol reuse candidate could become ready without successful health verification."] call _assert;
 private _extdbInitializerSource = preprocessFileLineNumbers "functions\persistence\fn_extdbInitialize.sqf";
 private _sqlCustomSource = preprocessFileLineNumbers "database\extdb3\bn_koth.ini.example";
-private _healthParseAt = _extdbInitializerSource find "private _probeResult = [_probeRaw, ""BN_KOTH_PERSISTENCE_V4""]";
+private _healthParseAt = _extdbInitializerSource find "private _probeResult = [_probeRaw, ""BN_KOTH_PERSISTENCE_V5""]";
 private _healthRejectAt = _extdbInitializerSource find "if !(_probeResult getOrDefault [""success"", false])";
 private _reusePromotionAt = _extdbInitializerSource find "if (_protocolState isEqualTo ""REUSE_CANDIDATE"") then {_protocolState = ""REUSED_EXISTING""}";
 [(_extdbInitializerSource find "healthCheck") >= 0
-    && {(_extdbInitializerSource find "BN_KOTH_PERSISTENCE_V4") >= 0}
+    && {(_extdbInitializerSource find "BN_KOTH_PERSISTENCE_V5") >= 0}
     && {_healthParseAt >= 0}
     && {_healthRejectAt > _healthParseAt}
     && {_reusePromotionAt > _healthRejectAt}
     && {(_sqlCustomSource find "[healthCheck]") >= 0}
-    && {(_sqlCustomSource find "BN_KOTH_PERSISTENCE_V4") >= 0}
+    && {(_sqlCustomSource find "BN_KOTH_PERSISTENCE_V5") >= 0}
     && {(_sqlCustomSource find "bn_koth_player_progression") >= 0},
     "extDB3 initialization is missing its read-only BN KOTH protocol health check contract."] call _assert;
 
 private _legacy = [_knownUid, createHashMapFromArray [["uid", _knownUid], ["xp", 5]]] call bn_koth_fnc_persistence_normalizePlayerState;
 [(_legacy getOrDefault ["code", ""]) isEqualTo "NORMALIZED_LEGACY", "Missing schemaVersion was not handled as legacy."] call _assert;
-private _future = [_knownUid, createHashMapFromArray [["schemaVersion", 5], ["uid", _knownUid]]] call bn_koth_fnc_persistence_normalizePlayerState;
+private _future = [_knownUid, createHashMapFromArray [["schemaVersion", 6], ["uid", _knownUid]]] call bn_koth_fnc_persistence_normalizePlayerState;
 [!(_future getOrDefault ["success", true]) && {(_future getOrDefault ["code", ""]) isEqualTo "UNSUPPORTED_FUTURE_SCHEMA"}, "Future schema did not fail closed."] call _assert;
 private _malformed = [_knownUid, createHashMapFromArray [["schemaVersion", 1], ["uid", _knownUid], ["xp", "bad"], ["cash", -4], ["ownedWeapons", "bad"], ["weaponKills", []]]] call bn_koth_fnc_persistence_normalizePlayerState;
 private _malformedState = _malformed getOrDefault ["state", createHashMap];
@@ -199,6 +236,14 @@ private _failedSave = [_knownUid, "test_failure"] call bn_koth_fnc_persistence_s
 missionNamespace setVariable ["BN_KOTH_persistenceTestFailSave", false];
 private _saved = [_knownUid, "test_success"] call bn_koth_fnc_persistence_savePlayer;
 [_saved getOrDefault ["success", false] && {isNil {(missionNamespace getVariable ["BN_KOTH_persistenceDirtyPlayers", createHashMap]) get _knownUid}}, "Successful save did not clear dirty state."] call _assert;
+
+private _reloadMarkers = missionNamespace getVariable ["BN_KOTH_persistenceLoadedUids", createHashMap];
+_reloadMarkers deleteAt _knownUid;
+private _reloadRegistry = missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap];
+_reloadRegistry deleteAt _knownUid;
+private _reloaded = [_knownUid] call bn_koth_fnc_persistence_loadPlayer;
+[_reloaded getOrDefault ["success", false] && {((_reloaded get "state") get "unlockedLoadoutSlots") isEqualTo 3}
+    && {((_reloaded get "state") get "cash") isEqualTo 9999}, "MEMORY reload lost slot count or associated cash."] call _assert;
 
 private _remoteCfg = missionConfigFile >> "CfgRemoteExec" >> "Functions";
 [!(isClass (_remoteCfg >> "bn_koth_fnc_persistence_loadPlayer")) && {!(isClass (_remoteCfg >> "bn_koth_fnc_persistence_savePlayer"))}, "Persistence functions were exposed to clients through CfgRemoteExec."] call _assert;

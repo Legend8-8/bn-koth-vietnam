@@ -1710,7 +1710,7 @@ non-magazine cargo remain unchanged; weapon-dependent grenade/smoke/flare rounds
 do not receive a category-based exemption. This cleanup applies to managed
 weapon requests only; saved-kit loading continues to reject incompatible cargo.
 
-Saved kits and the preferred kit ID are stored in the client's
+Saved kits and one preferred kit ID per team are stored in the client's
 `profileNamespace`. SAVE and UPDATE capture the server-validated intended
 loadout displayed by the menu; stored content remains untrusted intent. Every
 LOAD/default-spawn use repeats structural
@@ -1721,15 +1721,23 @@ Editing local profile data therefore cannot grant equipment.
 
 Persistent progression contains `schemaVersion`, `uid`, `xp`, `cash`,
 `ownedWeapons`, canonical `weaponKills`, perk ownership/activation, and logical
-vehicle progression. It deliberately excludes saved kits, the preferred kit ID, current
+vehicle progression, and the UID-wide `unlockedLoadoutSlots` count. It deliberately
+excludes saved kits, team preferred kit IDs, current
 physical inventory, picked-up equipment, session rentals, and transient Arsenal
 state. Valid fail-closed canonical combat attribution may still award mastery
 for a picked-up infantry weapon because mastery follows server-observed kill
 evidence, not ownership or rental state.
 
 The Loadout overview exposes `MANAGE LOADOUTS` and `SAVE CURRENT KIT` in its
-centre footer. The manager supports the centrally configured saved-kit limit,
-including load, explicit edit, rename, and delete. LOAD gives feedback only after the
+centre footer. The manager displays six numbered slots per team, with one free slot. Purchases
+unlock the same slot on both teams; contents and defaults remain team-specific.
+`CfgBnKothPersistence.savedKitSlotPrices[] = {0, 10000, 20000, 40000, 80000, 160000}`
+authors the prices, with `savedKitMaxCount = 6`. Both settings must agree. Slots
+are bought in order through the existing mapboard request/access boundary,
+while progression owns the combined cash/ownership mutation. Existing kits
+remain in a preserved archive and may be copied into an empty unlocked team
+slot; this does not equip them or grant equipment entitlement. The manager supports
+load, explicit edit, rename, and delete. LOAD gives feedback only after the
 server-validated loadout has been applied. EDIT submits the same untrusted
 loadout through that validation path and establishes a local edit target only
 after success. The normal Arsenal flow then edits authoritative intended state;
@@ -1749,10 +1757,11 @@ Ordinary saved-kit LOAD/EDIT retains these mapboard/access restrictions.
 SET DEFAULT submit/clear is preference-only intent and may run outside mapboard
 access, including reconnect/menu initialization. It never equips the player or
 changes `intendedLoadout`; clearing removes only the preference/candidate.
-The preferred stable kit ID and saved set remain in client
+Each team's preferred stable kit ID and saved set remain in client
 `profileNamespace`. The submitted array remains untrusted and must pass the
 normal server-owned
-`load_local_kit` validation before becoming a session spawn candidate. Every
+`load_local_kit` slot/team and equipment validation before becoming a session
+spawn candidate. The candidate retains its slot/team identity. Every
 spawn revalidates that candidate against current authoritative state and uses
 the faction starter if absent or invalid. Temporary side invalidity preserves
 the local preference. The validation-bearing SET request has a separate
@@ -1760,7 +1769,7 @@ server-owned per-record throttle; CLEAR remains immediate so deleting a
 preferred kit cannot leave its old candidate active. Disconnect removes the
 session-only candidate with the complete player record, while registration
 retries preserve a candidate already accepted for that record. Team selection
-submits the local preferred loadout after reconnect. The server
+submits the requested team's local preferred loadout and numbered slot after reconnect. The server
 validates it after assigning a side and before immediate active-round deployment.
 An invalid or missing preferred loadout uses the faction starter. Overwriting a
 preferred kit replaces its candidate through validation; rejection clears the
