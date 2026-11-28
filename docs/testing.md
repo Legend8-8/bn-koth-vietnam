@@ -127,6 +127,10 @@ Zone-related changes must verify:
 - the Priority client-local Simple Task is created once without notification,
   follows the global moving marker, and is removed outside ACTIVE state or when
   the deployed HUD/AO/Priority marker is absent;
+- for Tower only, the existing notification card announces each server-published
+  floor arrival or movement once; the permanent HUD retains Priority counts
+  without a floor label; the Simple Task destination rises or falls smoothly
+  during travel, while the map/minimap Priority area retains its colour and brush;
 - friendly 3D icons bypass geometry LOS only within the configured 25-metre
   proximity threshold; maximum range and beyond-threshold LOS remain unchanged.
 
@@ -183,6 +187,10 @@ Respawn-related changes must verify:
   does not leave or create a false exit message;
 - protected players cannot fire, cause damage, or receive damage;
 - an enemy intruder cannot fire, cause damage, or enter a vehicle but remains damageable;
+- blocked firing shows `Friendly safe zone: weapons and vehicles are disabled.`
+  for WEST in WEST and EAST in EAST, and
+  `Enemy safe zone: weapons and vehicles are disabled.` for WEST in EAST and
+  EAST in WEST;
 - entering an opposing safe zone shows the exact persistent warning
   `ENEMY SAFE ZONE LEAVE NOW` in red text in the same centered,
   half-screen-width banner position, and leaving removes it;
@@ -576,9 +584,15 @@ global WEST/EAST/BOTH weapon visibility, level/mastery/perk
 locks, unconfigured-price safety, buy/rent outcomes, rental-to-owned upgrade,
 requester-only results, targeted progression repaint, the exact curated vehicle
 surface (37 Ground, 29 Rotary Wing, 18 Fixed Wing, no SEA), real config pictures,
-disabled vehicle actions while locked, four-card pagination, Store-only operator
-panel collapse/restoration, Primary/Handgun/Launcher Arsenal handoff with target
-page snap/highlight, and tab transitions without stale controls.
+family grouping ordered by each family's base-loadout minimum level, with every
+family contiguous, its base first and advanced products in prerequisite order;
+human-readable family/required-loadout names; base purchase/ownership wording
+with no fabricated prerequisite; aggregate side, level, family, loadout, mastery,
+perk, active-life, cooldown, cash and mastery-exclusive lock reasons; dimmed
+`LOCKED` vehicle cards; visible requester-only transaction failures; distinct
+mastery/purchase/replacement/rental detail; disabled vehicle actions while locked; four-card pagination,
+Store-only operator panel collapse/restoration, Primary/Handgun/Launcher Arsenal
+handoff with target page snap/highlight, and tab transitions without stale controls.
 
 Also cycle Store -> Loadout -> Arsenal -> Configure -> Saved Loadouts several
 times and verify canonical title/subtitle/BACK/action/pagination geometry is
@@ -599,14 +613,24 @@ After mission functions and S.O.G. configuration initialize, run:
 call compile preprocessFileLineNumbers "functions\vehicles\test_progressionMetadata.sqf"
 ```
 
-An empty array is a pass. The focused check verifies valid explicit Store
-categories, roles, sides, finite non-negative levels/prices, resolvable and
-acyclic canonical links, policy-free structural entries, deterministic Store
-projection, curated product count, the reserved SEA category boundary,
-side/level eligibility and absence of weapon mastery policy.
+This is a read-only audit of the authoritative metadata in
+`config/vehicles.hpp`; the catalogue remains untouched. An
+empty array is a pass. The focused check verifies 84 unique logical loadouts,
+one base per family, prerequisite references, native-side enforcement, purchase/
+rental/replacement price relationships, dormant future metadata, all 29 curated
+rotary products, `TRANSPORT` on every non-Cobra helicopter, and its absence on
+all five AH-1G products. More specifically, it requires exactly 24 non-Cobra
+rotary products with exactly `TRANSPORT`, `COMBAT` and `CAS`, plus exactly five
+AH-1G products with exactly `COMBAT` and `CAS`.
+
+Run the vehicle persistence/derived-unlock codec checks:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\persistence\test_vehicleProgression.sqf"
+```
 
 Hosted and dedicated testing must confirm that existing managed free and
-command vehicles still spawn and recycle exactly as before. For paid rentals,
+command vehicles still spawn and recycle exactly as before. For personal paid vehicles,
 run:
 
 ```sqf
@@ -620,10 +644,55 @@ successful RENT immediately spawns the active vehicle in the same request,
 with no separate requisition/pending step); cash is deducted exactly once and
 only after the vehicle exists; a blocked spawn (occupied pads and no safe
 fallback) leaves no vehicle, no active record and no charge, and the player
-remains `AVAILABLE TO RENT`; destroyed/cleaned vehicles restore nothing and
-begin cooldown; cargo is empty while mounted armament remains; owner/group/
+remains `AVAILABLE TO RENT`; destruction, attributable deletion, abandonment
+and owner disconnect restore nothing and begin cooldown, while forced AO/round/
+mission/return-to-lobby cleanup removes the active life without cooldown; cargo is empty while mounted armament remains; owner/group/
 public access is enforced; occupied pads cannot collide; disconnect does not
-instantly delete occupied vehicles; and restart clears all rental state.
+instantly delete occupied vehicles; and restart clears all physical/rental state.
+
+Dedicated-server acceptance requires real clients and both server/client RPTs:
+
+1. Purchase a base family; confirm one purchase charge, durable ownership, and the included first spawn.
+2. Block the pad/fallback and retry a fresh purchase; confirm no charge, ownership, or first-spawn consumption.
+3. Replay/rapidly retry purchase; confirm duplicate ownership and charge are rejected.
+4. Destroy the owned life; confirm the authored cooldown, then the exact replacement charge.
+5. Attempt replacement without cash and with a blocked spawn; confirm fail-closed behavior and rollback.
+6. Rent an unowned rentable base product, then an unowned rentable advanced product after meeting its authored mastery chain; confirm each grants one life, no ownership/first-spawn mutation, and rental above replacement price.
+7. Attempt a non-rentable mastery loadout and a mastery-incomplete advanced rental; confirm both server rejections.
+8. Mix RENT/PURCHASE/SPAWN attempts; confirm one active personal vehicle total per UID.
+9. Exercise kill, attributable deletion, abandonment and owner disconnect; confirm one cooldown. Exercise return-to-lobby, AO reset and round reset cleanup; confirm no cooldown. All paths must leave no orphaned record, entity, handler or pad reservation.
+10. Reconnect, reload the mission, and fully restart the server; confirm family ownership, first-spawn use and mastery survive while the physical vehicle does not.
+11. Use an AO without the required paid category/pad; confirm ownership does not bypass AO capability.
+12. Verify OWNER ONLY, GROUP and PUBLIC access modes on rented and owned lives.
+13. Complete a qualifying insertion in an armed troop-carrying non-Cobra helicopter; confirm reward plus insertion/passenger/distance mastery exactly once.
+14. Repeat in AH-1G; confirm no insertion candidate/reward/mastery.
+15. Score a valid active-round infantry kill while operating a curated family; confirm one family `infantryKills` increment. Confirm suicide/teamkill/on-foot kills do not increment it.
+16. Attempt a locked loadout directly; confirm server rejection and visible current/required progress.
+17. Complete the configured prerequisite graph; confirm the loadout becomes derived-unlocked without a duplicate persisted unlock record.
+18. Spawn the newly unlocked loadout; confirm its authored replacement fee and shared active-life enforcement.
+19. Confirm EAST cannot spawn WEST products and WEST cannot spawn EAST products even with dormant future fields present.
+20. Compare appearance before/after every transaction; confirm native textures are unchanged and no reskin command runs.
+21. For all 18 fixed-wing products, confirm purchase, rental and replacement spawn airborne at the resolved AGL/distance with forward speed and the owner in the pilot seat; all 29 rotary products must retain pad spawn.
+22. For each fixed-wing family, first request service at full health/ammunition and confirm `No repair or rearm is currently required.` with no gate and no charge. Then expend ammunition and take damage, request service, confirm no request-time charge, fly the registered jet through the personal gate, then confirm one exact charge, full repair, authored-ammo refill and local presentation removal.
+23. Cancel jet service by destruction, deletion, pilot exit, disconnect, timeout, AO reset and round reset; confirm no charge and no orphan session/presentation. Confirm the high-contrast concentric gate is visible at approach speed and no custom AIR_GATE map/minimap marker appears. Reject a second gate, wrong vehicle, non-owner, non-pilot, insufficient request/completion cash and a different aircraft crossing the gate.
+24. For every rotary family, confirm `YOUR HELICOPTER` marks the actual spawn locally, clears when the owner enters (or after five minutes), and is replaced by an owner-local paid-air area whose radius matches `serviceAreaRadius`. Confirm its 3D label is absent outside the friendly safe zone and appears inside it. Confirm the service action is absent away from the friendly paid-air area and above the configured service speed, remains available with the engine running once inside the area, and returns no-service-required without charge at full health/ammunition. After damage/ammunition expenditure, confirm one exact configured charge plus repair/ammo refill. Confirm pylons/loadout selections do not change.
+25. For successful fixed-wing purchase, rental and replacement, confirm the central BN KOTH menu closes immediately before pilot-seat transfer. A rejected or failed transaction must leave the menu open. No deployment transition/typewriter or input-blocking sequence should start.
+26. Destroy a personal vehicle, leave its vehicle Store category open and confirm the displayed cooldown updates about once per second. At zero, confirm the card/actions refresh without closing the menu, then confirm the server still rejects any premature request.
+27. Return a rotary aircraft from inside the configured friendly paid-air radius at or below the configured speed. Confirm `RETURN VEHICLE` is absent elsewhere, no engine-off requirement is added, the pilot exits safely, the entity and active record clear, no refund/cooldown occurs, and another vehicle can be requested.
+28. Start a fixed-wing return, confirm the gate says `RETURN VEHICLE`, uses the reinforced in-world presentation without a map/minimap ring, and crossing it returns the pilot to the friendly paid-air position before retiring the jet. Confirm cash, persistence, ownership and mastery do not change.
+29. Cancel fixed-wing return through pilot exit, destruction, disconnect, timeout and AO/round reset. Confirm no orphan session/presentation; cancellation alone leaves the active vehicle unchanged, while genuine loss retains its normal cooldown and forced lifecycle cleanup retains its no-cooldown policy.
+30. Complete purchase/rental/replacement/service cash events and confirm the bottom-right progression feed uses the configured human vehicle display name, never `familyId`, `loadoutId`, session ID or normalized classname.
+
+For a one-shot client-side explanation of the current service action state, run
+this while looking at the aircraft or sitting in it:
+
+```sqf
+[vehicle player] call bn_koth_fnc_vehicles_debugReportServiceAction;
+```
+
+The result is printed once to system chat and client RPT. It reports owner,
+pilot, managed-vehicle, alive, service mode, active-session, round, pad, speed,
+engine, price and cached cash inputs. It does not mutate state or use RemoteExec.
 
 18. Development Progression Debug Script
 
@@ -673,7 +742,10 @@ endpoint Store uses. Verify:
 
 20. Vehicle Rental RPT Audit Trail
 
-`functions/vehicles/fn_rentVehicle.sqf` logs every RENT outcome to RPT. A
+`functions/vehicles/fn_rentVehicle.sqf` logs every vehicle transaction outcome
+to RPT. The targeted client result invalidates the cached vehicle catalogue,
+repaints current personal/ownership state, and remains visible in the selected
+Store detail as well as the normal notification feed. A
 successful RENT logs UID, canonical class, pad id (or `FALLBACK`), spawn
 position, `netId` and cash charged; a failed RENT logs UID, requested class,
 code and exact reason, with no charge. Verify the Store card only ever shows
@@ -880,6 +952,17 @@ call compile preprocessFileLineNumbers "functions\zone\test_vehicleCapabilities.
 ```
 
 Both return `[]` on success. On a hosted and dedicated server also verify:
+
+Temporary beta vehicle-test AO eligibility override checks:
+
+```sqf
+call compile preprocessFileLineNumbers "functions\round\test_aoPopulationOverride.sqf"
+```
+
+Run that check in the server debug console. The private server-only command is
+`[true, 32] call bn_koth_fnc_round_debugSetAoPopulationOverride;` and clearing
+it is `[false] call bn_koth_fnc_round_debugSetAoPopulationOverride;`. This state
+must never be used as evidence for any non-AO population consumer.
 
 - 1-3 connected humans receive only population-eligible choices;
 - 60 humans joining but remaining in LOBBY count immediately for AO sizing;
@@ -1346,7 +1429,8 @@ On a dedicated server with at least three players, verify:
    and reopen the menu, reconnect, and restart the client with the same profile;
    the local set and preferred ID must remain correct.
 2. Confirm those local operations do not schedule a `savePlayer` write and that
-   ordinary XP/cash/ownership/mastery/perk saves still work. The V3 database
+   ordinary XP/cash/ownership/mastery/perk/vehicle progression saves still work.
+   The V5 database
    `saved_kits` field remains `-` and is ignored on load.
 3. Save a loadout containing a current rental, expire/remove the rental, then
    load and respawn; the old saved intent must not recreate entitlement.
@@ -1371,7 +1455,7 @@ scoreboard viewport and verify:
 4. A JIP client entering during `ENDING` or `RESETTING` receives the same result and the result clears on the normal next-round boundary.
 5. With configured streak milestones, each threshold produces one feed entry per streak, death permits that threshold in a later streak, and suicide/teamkill never advances it.
 6. Mastery feed entries use the canonical weapon display name and kill threshold; completion does not claim purchase/rental availability while level, perk, side, or acquisition policy still blocks it.
-7. Vehicle Store categories and cards explain active-AO capability, side, level, perk, cash, active-rental, cooldown, and unconfigured-rental blocks using server projection state.
+7. Vehicle Store categories and cards explain active-AO capability, side, level, perk, cash, ownership/loadout, active personal life, cooldown, replacement, and rental blocks using server projection state.
 8. Multiple simultaneous rentals are reclaimed by the one shared vehicle-manager sweep after configured abandonment/disconnect timeouts, with no per-rental monitor scripts or duplicate cooldowns.
 9. SOLO/GROUP insertion prompts, countdown, successful-departure charge wording, invitation/join state, boarding, egress, closure, and backpack restoration each appear once through the normal notification owner.
 
@@ -1399,6 +1483,32 @@ are visible, oldest cards expire first, and no message claims ownership. Send
 overlapping group invites and confirm their cards share the queue while the
 server invite expiry remains unchanged.
 
+Open Arsenal, Store, and Loadout while a card is active, then close and reopen
+the menu. Confirm cards stay visible above the menu, retain their remaining
+duration, do not duplicate, and do not block clicks. Generate equipment unlock
+cards outside the friendly safe zone and inside the enemy safe zone: they must
+wait. Leave the friendly zone mid-card and return: pending cards must resume in
+order within the four-card stack. While unlocks wait, trigger a general message
+and a Saigon Tower Priority notice; both must display immediately above the
+menu. Confirm XP/cash reward-feed entries stay off the menu and are still
+visible normally when the menu is closed. Check client RPT for display/control
+errors and orphaned controls.
+
+For renderer-only checks, run these from the CLIENT debug console without
+changing progression or persistence:
+
+`[createHashMapFromArray [["category","PROGRESSION"],["title","NEW EQUIPMENT AVAILABLE"],["body","TEST UNLOCK"],["footer","Level requirement met"]]] call bn_koth_fnc_ui_notify;`
+
+`[createHashMapFromArray [["title","NOTICE"],["body","TEST GENERAL"]]] call bn_koth_fnc_ui_notify;`
+
+`["xp", 25, "TEST REWARD"] call bn_koth_fnc_ui_addRewardFeedEntry;`
+
+Check `player getVariable ["BN_KOTH_safeZoneProtected", false]` on the client
+as it changes true, false, true across friendly-zone exit and re-entry. Run
+`test_setProgression.sqf` once only in a disposable development progression
+context to verify the real unlock producer; it changes server XP/cash and
+marks persistence dirty.
+
 Verify baseline faction grenades/smoke remain uncontrolled and available managed
 consumables become usable once their level, side and perk gates pass, without
 purchase, rental, ownership, or persisted quantities. Verify cargo preserves
@@ -1413,3 +1523,46 @@ button centre must match the LOADOUT column centre and its complete two-line tex
 block must remain horizontally centred with the menu-only downward inset applied.
 Open the native pause menu and confirm its announcement text remains visible at
 the existing position without inheriting the main-menu inset.
+
+### Purchasable loadout slots
+
+In an isolated test mission, run these focused checks (expected result: `[]`):
+
+- Server: `call compile preprocessFileLineNumbers "functions\progression\test_loadoutSlots.sqf"`.
+- Server: `call compile preprocessFileLineNumbers "functions\persistence\test_persistence.sqf"`.
+- Server with a connected WEST starter-entitled player: `[testPlayer] call compile preprocessFileLineNumbers "functions\loadouts\test_spawnPreference.sqf"` and the existing `test_weaponChangeCargo.sqf`.
+- Client, menu closed: `call compile preprocessFileLineNumbers "functions\ui\menu\test_spawnPreference.sqf"`.
+
+Dedicated and hosted verification with migration 005 and the v5 SQL_CUSTOM file:
+
+The focused purchase script derives its starting cash and expected charges from
+`CfgBnKothPersistence.savedKitSlotPrices[]`, so price tuning does not require
+changing the test. The current paid slots total $310,000. For the manual purchase
+sequence, use a test player with at least that balance to cover all five unlocks.
+
+1. New and legacy UIDs receive one free slot on both teams. Six slots are shown;
+   slots 2-6 cost $10,000, $20,000, $40,000, $80,000 and $160,000 respectively.
+2. Buy slot 2 on WEST, switch to EAST and buy slot 3. Both teams have three
+   unlocked slots and independent contents/defaults. Reconnect, reload the
+   mission and restart the server; the same shared count and cash restore.
+3. Duplicate/stale requests, skipped slots, slot 7, fractional/missing slot IDs,
+   forged price/UID/side fields and insufficient cash cannot grant slots or charge.
+   Purchase attempts away from the current team mapboard, dead, in the lobby,
+   on a stale representation or outside the active round fail before mutation.
+4. Preserve a profile with more than six old kits. All originals remain archived;
+   copying into an empty current-team unlocked slot leaves its source intact.
+   Import grants no entitlement. Delete/rename/update one team's kit and verify
+   the opposite team and purchased capacity do not change.
+5. LOAD/EDIT/default/team selection/spawn reject locked, missing, invalid or
+   wrong-team slot identity. Invalid spawn intent falls back to the faction
+   starter without delaying deployment. Repeat current rental, perk, ownership,
+   mastery and side regressions; profile edits never grant equipment.
+6. Unlock while the manager is open, verify immediate cash/slot repaint, and
+   cycle pages and default selections on both teams. Verify one visible default
+   per team, archive copy availability, empty-slot save, rename, update and delete.
+7. Session fallback/unready persistence rejects permanent purchases without a
+   charge. Review server and both clients' RPT, including persistence failures.
+
+Slot purchase success uses the existing debounced durability policy; also
+verify disconnect and mission-end flushes. These static/focused checks do not
+replace dedicated multi-client gameplay or durable database testing.

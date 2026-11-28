@@ -19,6 +19,8 @@ if (missionNamespace getVariable ["BN_KOTH_roundManagerRunning", false]) exitWit
 };
 
 missionNamespace setVariable ["BN_KOTH_roundManagerRunning", true];
+// TEMPORARY BETA VEHICLE-TEST AO POPULATION OVERRIDE
+missionNamespace setVariable ["BN_KOTH_debugAoPopulationOverride", nil];
 
 private _playableSides = missionNamespace getVariable ["BN_KOTH_playableSides", [west, east]];
 if ((count _playableSides) < 2) then {

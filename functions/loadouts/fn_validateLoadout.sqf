@@ -23,7 +23,7 @@ params [
 ];
 
 private _fail = {
-    params ["_code", "_message", ["_loadoutId", "", [""]], ["_sideToken", "", [""]]];
+    params ["_code", "_message", ["_loadoutId", "", [""]], ["_sideToken", "", [""]], ["_rejectedClass", "", [""]]];
 
     createHashMapFromArray [
         ["success", false],
@@ -34,7 +34,8 @@ private _fail = {
         ["validatedLoadout", []],
         ["validatedPrimary", createHashMap],
         ["validatedWeapons", createHashMap],
-        ["validatedBy", ""]
+        ["validatedBy", ""],
+        ["rejectedClass", _rejectedClass]
     ]
 };
 
@@ -318,7 +319,8 @@ private _enforceManagedConsumables = {
                             _entitlement getOrDefault ["code", "ERR_CONSUMABLE_ENTITLEMENT"],
                             _entitlement getOrDefault ["message", "Loaded magazine is not entitled."],
                             _result getOrDefault ["loadoutId", ""],
-                            _authoritativeSideToken
+                            _authoritativeSideToken,
+                            _magazineClass
                         ] call _fail;
                     };
                 };

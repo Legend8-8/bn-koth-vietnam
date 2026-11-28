@@ -107,6 +107,26 @@ class CfgRemoteExec
             jip = 0;
         };
 
+        class bn_koth_fnc_vehicles_requestService
+        {
+            allowedTargets = 2;
+            jip = 0;
+        };
+
+        class bn_koth_fnc_vehicles_setServicePresentation
+        {
+            allowedTargets = 1;
+            jip = 0;
+        };
+
+        // Every machine refills only the turrets local to it; the receiver
+        // accepts this narrow vehicle-only instruction from the server.
+        class bn_koth_fnc_vehicles_applyServiceLocal
+        {
+            allowedTargets = 0;
+            jip = 0;
+        };
+
         class bn_koth_fnc_loadouts_receiveValidatedLoadout
         {
             allowedTargets = 1;

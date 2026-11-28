@@ -52,13 +52,13 @@ if !(_state in ["ACTIVE", "DEPLOYING"]) exitWith {
 
 private _groupImpact = [[_uid], []] call bn_koth_fnc_groups_capturePresentationImpact;
 
-// Vehicle rental is one-life-per-UID; end it through its existing owner instead of leaving it orphaned.
-private _activeRentals = missionNamespace getVariable ["BN_KOTH_vehicleActiveRentals", createHashMap];
+// Personal paid vehicles are one-life-per-UID; end through the existing owner.
+private _activeRentals = missionNamespace getVariable ["BN_KOTH_vehicleActivePersonal", createHashMap];
 private _rentalRecord = _activeRentals getOrDefault [_uid, createHashMap];
 private _rentedVehicle = _rentalRecord getOrDefault ["vehicle", objNull];
-if (!isNull _rentedVehicle && {alive _rentedVehicle}) then {
+if (_rentalRecord isEqualType createHashMap && {(count _rentalRecord) > 0}) then {
     [_uid, _rentedVehicle, "RETURNED_TO_LOBBY"] call bn_koth_fnc_vehicles_endRentalLife;
-    deleteVehicle _rentedVehicle;
+    if (!isNull _rentedVehicle) then {deleteVehicle _rentedVehicle};
 };
 
 private _lobbyOk = [_uid] call bn_koth_fnc_teams_assignLobbyRepresentation;

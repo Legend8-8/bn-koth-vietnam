@@ -38,10 +38,12 @@ class CfgFunctions
             class round_getState {file = "functions\round\fn_getState.sqf";};
             class round_endWithWinner {file = "functions\round\fn_endWithWinner.sqf";};
             class round_resetRound {file = "functions\round\fn_resetRound.sqf";};
+            class round_resetPlayerVanillaScores {file = "functions\round\fn_resetPlayerVanillaScores.sqf";};
             class round_openVote {file = "functions\round\fn_openVote.sqf";};
             class round_maybeShortenVoteDeadline {file = "functions\round\fn_maybeShortenVoteDeadline.sqf";};
             class round_prepareVoteCandidates {file = "functions\round\fn_prepareVoteCandidates.sqf";};
             class round_reconcileVoteCandidates {file = "functions\round\fn_reconcileVoteCandidates.sqf";};
+            class round_debugSetAoPopulationOverride {file = "functions\round\fn_debugSetAoPopulationOverride.sqf";};
             class round_requestVote {file = "functions\round\fn_requestVote.sqf";};
             class round_resolveVote {file = "functions\round\fn_resolveVote.sqf";};
             class round_selectVoteCandidates {file = "functions\round\fn_selectVoteCandidates.sqf";};
@@ -113,12 +115,15 @@ class CfgFunctions
             class zone_validateLocation {file = "functions\zone\fn_validateLocation.sqf";};
             class zone_setActiveLocation {file = "functions\zone\fn_setActiveLocation.sqf";};
             class zone_clearActiveLocation {file = "functions\zone\fn_clearActiveLocation.sqf";};
+            class zone_snapshotTerrain {file = "functions\zone\fn_snapshotTerrain.sqf";};
+            class zone_restoreTerrain {file = "functions\zone\fn_restoreTerrain.sqf";};
             class zone_cacheStaticObjects {file = "functions\zone\fn_cacheStaticObjects.sqf";};
             class zone_cleanupRuntimeObjects {file = "functions\zone\fn_cleanupRuntimeObjects.sqf";};
             class zone_cleanupBattlefieldPickups {file = "functions\zone\fn_cleanupBattlefieldPickups.sqf";};
             class zone_spawnBattlefieldPickups {file = "functions\zone\fn_spawnBattlefieldPickups.sqf";};
             class zone_evaluateControl {file = "functions\zone\fn_evaluateControl.sqf";};
             class zone_updatePriorityZone {file = "functions\zone\fn_updatePriorityZone.sqf";};
+            class zone_resolveVerticalPriorityGeometry {file = "functions\zone\fn_resolveVerticalPriorityGeometry.sqf";};
         };
 
         class scoring
@@ -162,6 +167,7 @@ class CfgFunctions
             class progression_rentWeapon {file = "functions\progression\acquisition\fn_rentWeapon.sqf";};
             class progression_requestWeaponAcquisition {file = "functions\progression\acquisition\fn_requestWeapon.sqf";};
             class progression_publishUpdate {file = "functions\progression\fn_publishUpdate.sqf";};
+            class progression_purchaseLoadoutSlot {file = "functions\progression\fn_purchaseLoadoutSlot.sqf";};
             class progression_buildPresentationState {file = "functions\progression\fn_buildPresentationState.sqf";};
             class progression_resolveRankPresentation {file = "functions\progression\fn_resolveRankPresentation.sqf";};
             class progression_evaluateEquipmentSidePolicyRules {file = "functions\progression\fn_evaluateEquipmentSidePolicyRules.sqf";};
@@ -198,6 +204,8 @@ class CfgFunctions
             class persistence_deserializePerkIds {file = "functions\persistence\fn_deserializePerkIds.sqf";};
             class persistence_serializeWeaponKills {file = "functions\persistence\fn_serializeWeaponKills.sqf";};
             class persistence_deserializeWeaponKills {file = "functions\persistence\fn_deserializeWeaponKills.sqf";};
+            class persistence_serializeVehicleProgression {file = "functions\persistence\fn_serializeVehicleProgression.sqf";};
+            class persistence_deserializeVehicleProgression {file = "functions\persistence\fn_deserializeVehicleProgression.sqf";};
             class persistence_parseExtdbSystemResponse {file = "functions\persistence\fn_parseExtdbSystemResponse.sqf";};
             class persistence_parseExtdbResponse {file = "functions\persistence\fn_parseExtdbResponse.sqf";};
             class persistence_extdbCall {file = "functions\persistence\fn_extdbCall.sqf";};
@@ -333,10 +341,14 @@ class CfgFunctions
             class vehicles_spawnManagedSlot {file = "functions\vehicles\fn_spawnManagedSlot.sqf";};
             class vehicles_cleanupManagedWrecks {file = "functions\vehicles\fn_cleanupManagedWrecks.sqf";};
             class vehicles_cleanupManagedVehicles {file = "functions\vehicles\fn_cleanupManagedVehicles.sqf";};
+            class vehicles_cleanupPersonalVehicles {file = "functions\vehicles\fn_cleanupPersonalVehicles.sqf";};
             class vehicles_monitorManagedVehicles {file = "functions\vehicles\fn_monitorManagedVehicles.sqf";};
             class vehicles_requestSpawn {file = "functions\vehicles\fn_requestSpawn.sqf";};
             class vehicles_getProgressionMetadata {file = "functions\vehicles\fn_getProgressionMetadata.sqf";};
             class vehicles_evaluateProgressionRules {file = "functions\vehicles\fn_evaluateProgressionRules.sqf";};
+            class vehicles_evaluateLoadoutRules {file = "functions\vehicles\fn_evaluateLoadoutRules.sqf";};
+            class vehicles_awardMastery {file = "functions\vehicles\fn_awardMastery.sqf";};
+            class vehicles_applyVisualProfile {file = "functions\vehicles\fn_applyVisualProfile.sqf";};
             class vehicles_getRentalState {file = "functions\vehicles\fn_getRentalState.sqf";};
             class vehicles_requestRental {file = "functions\vehicles\fn_requestRental.sqf";};
             class vehicles_rentVehicle {file = "functions\vehicles\fn_rentVehicle.sqf";};
@@ -345,6 +357,15 @@ class CfgFunctions
             class vehicles_receiveRentalResult {file = "functions\vehicles\fn_receiveRentalResult.sqf";};
             class vehicles_forceOutRentalVehicle {file = "functions\vehicles\fn_forceOutRentalVehicle.sqf";};
             class vehicles_addRentalOwnerActions {file = "functions\vehicles\fn_addRentalOwnerActions.sqf";};
+            class vehicles_setPersonalGuidance {file = "functions\vehicles\fn_setPersonalGuidance.sqf";};
+            class vehicles_debugReportServiceAction {file = "functions\vehicles\fn_debugReportServiceAction.sqf";};
+            class vehicles_requiresService {file = "functions\vehicles\fn_requiresService.sqf";};
+            class vehicles_findAirPosition {file = "functions\vehicles\fn_findAirPosition.sqf";};
+            class vehicles_requestService {file = "functions\vehicles\fn_requestService.sqf";};
+            class vehicles_cancelService {file = "functions\vehicles\fn_cancelService.sqf";};
+            class vehicles_monitorServiceSessions {file = "functions\vehicles\fn_monitorServiceSessions.sqf";};
+            class vehicles_setServicePresentation {file = "functions\vehicles\fn_setServicePresentation.sqf";};
+            class vehicles_applyServiceLocal {file = "functions\vehicles\fn_applyServiceLocal.sqf";};
             class vehicles_mobileRespawn_init {file = "functions\vehicles\mobile_respawn\fn_init.sqf";};
             class vehicles_mobileRespawn_monitor {file = "functions\vehicles\mobile_respawn\fn_serverRespawnLoop.sqf";};
             class vehicles_mobileRespawn_initTeleport {file = "functions\vehicles\mobile_respawn\fn_initTeleport.sqf";};
@@ -502,6 +523,7 @@ class CfgFunctions
             class menu_adjustCargo {file = "functions\ui\menu\fn_menu_adjustCargo.sqf";};
             class menu_setSpawnKit {file = "functions\ui\menu\fn_menu_setSpawnKit.sqf";};
             class menu_saveSessionKit {file = "functions\ui\menu\fn_menu_saveSessionKit.sqf";};
+            class menu_getKitContext {file = "functions\ui\menu\fn_menu_getKitContext.sqf";};
             class menu_loadSessionKit {file = "functions\ui\menu\fn_menu_loadSessionKit.sqf";};
             class menu_deleteSessionKit {file = "functions\ui\menu\fn_menu_deleteSessionKit.sqf";};
             class menu_refreshSessionKits {file = "functions\ui\menu\fn_menu_refreshSessionKits.sqf";};

@@ -7,15 +7,38 @@ class CfgBnKothSettings
     locationRotation[] =
     {
 	    "saigon",
+	    "saigon_tower",
 	    "hue",
 	    "hanoi",
         "bao_ve",
-        "son_tay_pow"
+        "son_tay_pow",
+        "xom_ram",
+        "tieng_tai"
     };
 };
 
 class CfgBnKothLocations
 {
+    class xom_ram
+    {
+        displayName = "Xom Ram";
+        description = "Compact fighting around Xom Ram.";
+        image = "";
+        minPlayers = 0;
+        maxPlayers = 20;
+        objects[] = {};
+    };
+
+    class tieng_tai
+    {
+        displayName = "Tieng Tai";
+        description = "Compact fighting around Tieng Tai.";
+        image = "";
+        minPlayers = 0;
+        maxPlayers = 20;
+        objects[] = {};
+    };
+
     class son_tay_pow
     {
         displayName = "Son Tay POW Camp";
@@ -38,6 +61,32 @@ class CfgBnKothLocations
         // Optional explicit object list for this location.
         // Preferred convention is Eden variable names with prefix "saigon_".
         objects[] = {};
+    };
+
+    class saigon_tower
+    {
+        displayName = "Saigon Tower";
+        description = "Compact courtyard and seven-level tower fighting.";
+        image = "";
+        minPlayers = 0;
+        maxPlayers = 20;
+        objects[] = {};
+        battlefieldPickupsEnabled = 0;
+        airInsertionEnabled = 0;
+        maximumControlHeight = 35;
+        priorityMode = "VERTICAL_FLOORS";
+        priorityFootprintMarker = "saigon_tower_priority_zone";
+        priorityFloorAnchors[] = {
+            "saigon_tower_floor_ground", "saigon_tower_floor_01",
+            "saigon_tower_floor_02", "saigon_tower_floor_03",
+            "saigon_tower_floor_04", "saigon_tower_floor_05",
+            "saigon_tower_floor_roof"
+        };
+        priorityFloorLabels[] = {"GROUND", "01", "02", "03", "04", "05", "ROOF"};
+        priorityFloorSurfaceTolerance = 0.35;
+        priorityDwellSeconds = 25;
+        priorityTransitionSeconds = 8;
+        priorityContinueChance = 0.60;
     };
 
     class hue

@@ -25,6 +25,10 @@ sizing regardless of team-selection state; the existing team-selected UID path
 continues to own voting and deployment eligibility. The round system retains
 valid published candidates and reconciles them only when current connected-human
 population invalidates an option, with a final resolution-time defence.
+For beta vehicle testing only, a disabled-by-default server missionNamespace
+override may substitute the population at that reconciliation boundary. It does
+not mutate the connected-human UID owner or any other population consumer and
+is explicitly cleared by round-server initialization.
 
 Location vehicle capability is derived centrally from actual convention-resolved
 Eden spawn roles. UI and vehicle systems consume the same side-specific free,
@@ -384,7 +388,7 @@ mission's readiness flags and progression maps are recreated on mission load.
 The persistence adapter therefore recognizes extDB3's exact duplicate database
 and protocol responses on same-process mission reload, then proves the
 configured SQL_CUSTOM protocol with a read-only `healthCheck` query against the
-canonical table before publishing readiness. The returned BN KOTH schema-v3
+canonical table before publishing readiness. The returned BN KOTH schema-v5
 marker also identifies the expected protocol file contract. A duplicate
 response alone never makes the backend ready.
 
@@ -591,11 +595,16 @@ transactions never auto-equip a weapon.
 
 14. Vehicle Progression Boundary
 
-`CfgBnKothVehicles >> Metadata >> Vehicles` owns human-authored vehicle
-progression and provisional economy policy. Canonical roots own side, level,
-price, Store category and role fields; an explicitly authored structural
+`config/vehicles.hpp`, under `CfgBnKothVehicles >> Metadata >> Vehicles`, is the
+authoritative human-authored vehicle progression catalogue. Validation of this
+config is strictly read-only. Canonical physical roots map to stable
+logical family and loadout IDs and own side, level, purchase/rental/replacement prices,
+Store category, capability sets and prerequisite fields; an explicitly authored structural
 variant may contain only `variantOf` and inherits the root policy. Runtime must
-not infer relationships or Store grouping from classnames.
+not infer relationships or Store grouping from classnames. Logical IDs are
+durable progression/persistence identifiers; classname or ID changes require a
+deliberate migration and compatibility review. Cross-side and visual-profile
+fields remain dormant/default-deny until explicitly enabled by a later design.
 
 The one-time factual source audit is stored in `data/vehicle_inventory.csv`.
 It records public physical EAST/WEST S.O.G. classes and official table facts
@@ -605,16 +614,86 @@ current metadata authors only a curated combat-progression surface and
 declares no vehicle `variantOf` relationships. Paint, faction and support-only
 copies remain audit rows, not progression products.
 
-`functions/vehicles/` owns config lookup, pure side/level/perk eligibility and
-the authoritative one-life rental lifecycle. RENT is the complete transaction:
+`functions/vehicles/` owns config lookup, pure side/level/perk/family/loadout
+eligibility and the authoritative personal paid-vehicle lifecycle. RENT,
+PURCHASE and SPAWN reuse one transaction and one active-life map:
 it requires the current server-owned representation to be alive and actively
 deployed at its team mapboard, validates eligibility and affordability, reserves an authored paid pad,
-creates and sanitizes the exact curated vehicle, registers UID-owned access
-state, and only then charges cash exactly once. One UID may hold at most one
-active rented vehicle at a time; there is no pending/requisition stage. Rental
-state never persists. The managed free-vehicle and command-vehicle lifecycles
-remain separate, and a
-rented M577 receives no managed command capability.
+creates and sanitizes the exact curated vehicle, and charges cash exactly once.
+PURCHASE atomically persists family ownership and consumed included-first-spawn
+state with the charge; SPAWN uses the authored replacement price. A failed
+spawn or durable save rolls back the entity, charge and ownership mutation.
+One UID may hold at most one active rented or owned life. Physical entities and
+rentals never persist. Logical ownership, first-spawn use and family mastery do.
+The single shared vehicle monitor owns abandonment, disconnect, deletion and
+cleanup. Its life-ending owner applies replacement cooldown only to genuine
+loss (including destruction, attributable deletion, abandonment and owner
+disconnect). Forced AO, round, mission and return-to-lobby cleanup removes the
+active personal vehicle and record without starting a replacement-loss cooldown.
+Managed free and command vehicles remain separate team assets.
+
+The same catalogue resolver supplies config-driven personal-aircraft spawn and
+repair/rearm policy. Curated fixed-wing products use AO-relative, terrain-aware
+airborne placement and immediate owner-pilot control while remaining inside the
+existing paid transaction, active-life map and rollback path; the owning client
+closes the central deployed menu immediately before that server-authorized seat
+transfer. Rotary products continue to use the authored paid-air pad. Their
+owning client receives temporary local-only spawn guidance, followed by a local
+map area using the configured service radius plus nearby 3D guidance for the
+same friendly paid-air service location. The presentation owns no vehicle or
+service truth and clears through vehicle entry, loss, replacement and mission
+lifecycle cleanup. The map area remains owner-local for the active life; its 3D
+label is shown only while the owner has the existing friendly safe-zone
+protection state.
+
+Repair/rearm remains part of `functions/vehicles/`. Only the owner in the pilot
+seat may request it, and the server re-derives the active vehicle, product,
+price, AO, cash and service geometry. Rotary service completes at the friendly
+paid-air area after the configured radius and low-speed checks. Fixed-wing
+service creates one temporary server-only session per UID; the shared vehicle manager
+tests the registered aircraft's swept server positions against the AO-relative
+gate and charges only after validated completion. The requesting client alone
+draws a high-contrast concentric in-world gate; no custom AIR_GATE map/minimap
+marker is created. Service state is session-only and adds no
+ownership, mastery or persistence schema. The action remains visible when its
+mode-specific location checks pass even if no work is needed; activation compares
+damage plus turret/pylon ammunition with the server-captured post-spawn baseline
+and returns without charge when repair and rearm would be pointless.
+
+The same request/session owner also handles config-enabled voluntary aircraft
+return with purpose `RETURN`. Rotary return is revalidated at the friendly paid
+air area under the configured radius and speed. Fixed-wing return uses the same
+AO-relative gate placement, swept crossing and cancellation lifecycle as
+service, but performs no cash or repair path. Successful return uses the
+central life-ending owner with reason `VOLUNTARY_RETURN`, returns the pilot to
+the friendly paid-air position, deletes the physical vehicle, clears the one
+active record and applies no cooldown, refund, persistence, mastery or reward.
+The existing server-authorized local exit endpoint handles pilot locality; no
+new RemoteExec endpoint or active registry exists.
+
+The vehicle Store derives an aggregate presentation of all currently unmet
+requirements from targeted state and authored metadata; it does not grant or
+override entitlement. Families are grouped by their base loadout's minimum
+level, remain contiguous, and then follow authored prerequisite depth. The
+requester-only transaction result invalidates that presentation cache and is
+shown inline so a server rejection cannot disappear behind an unchanged card.
+While an open vehicle category has a server-supplied cooldown expiry, one
+bounded client presentation script refreshes the cached Store view about once
+per second and stops on expiry, category/page exit or display close. It never
+mutates or replaces the server-owned cooldown.
+
+Loadout unlocks are deterministically derived from family ownership and the
+config-authored prerequisite graph, so no duplicate persisted unlock list exists.
+Server-evidenced vehicle infantry kills and validated transport insertions,
+passengers and distance mutate family mastery through one owner. Authored
+requirements use only counters with such current evidence. Specialist AA, AT,
+CAP, SEAD and armour steps remain explicitly provisional rather than presenting
+an unrelated infantry-kill task. Capability sets replace the former exclusive
+role: all 24 curated non-Cobra helicopters have exactly `TRANSPORT`, `COMBAT`
+and `CAS`; all five AH-1Gs have exactly `COMBAT` and `CAS`.
+Transport rewards consume the capability set and retain their existing abuse
+checks. Cross-side and visual-profile metadata are dormant/default-deny. The
+spawn hook accepts only the empty native visual profile and applies no texture.
 
 ## Round accounting and results
 
@@ -637,15 +716,37 @@ unit to remain alive.
 
 ## Locally saved loadouts
 
-Saved loadouts and the preferred kit ID are client-owned `profileNamespace`
-intent. Local create, rename, overwrite, delete, and preference changes do not
-mutate server progression or schedule database writes. A saved Unit Loadout is
-untrusted and passes the normal server side, level, ownership, mastery, perk,
-and rental checks every time it is loaded or selected for spawn. Fixed GPS/NVG
-assigned slots are normalized inside that validation before saved assigned
-entries are checked. An invalid spawn candidate falls back to the faction
-starter. The V3 persistence statement still sends `-` for the legacy
-`saved_kits` column and ignores that column on load.
+Saved loadout contents and one preferred kit ID per team are client-owned
+`profileNamespace` intent. Numbered slots contain separate team kits; the
+server-owned `unlockedLoadoutSlots` count belongs to the UID's existing
+progression record and applies to every playable team. Slot 1 is free and
+slots 2-6 are bought sequentially. Authored prices and the maximum live in
+`CfgBnKothPersistence.savedKitSlotPrices[]` and `savedKitMaxCount`.
+The existing loadout request endpoint validates caller/current-representation
+and active-team mapboard access before delegating slot purchases to progression.
+Progression commits cash and the count together, marks persistence dirty and
+publishes the existing targeted projection. No new RemoteExec endpoint or
+spawn handshake is introduced. Session-fallback players cannot buy permanent slots.
+
+Local create, rename, overwrite, delete and preference changes do not schedule
+database writes. Deleting a kit does not remove the purchased slot. Existing
+three-field profile records remain an unassigned archive, including kits beyond
+six; an explicit copy action puts their contents into an empty unlocked current
+team slot without deleting the original or inferring a team from equipment.
+Old single-default metadata is retained but does not select a team default.
+
+A saved Unit Loadout is untrusted. LOAD, EDIT, default selection, team-selection
+submission and every spawn reuse validate numbered slot access and matching
+team through the existing saved-kit validator, then run normal side, level,
+ownership, mastery, perk and rental checks. The session spawn candidate retains
+the validated contents plus slot/team identity, with no second loadout authority.
+Fixed GPS/NVG assigned slots are normalized inside that validation before saved
+assigned entries are checked.
+Invalid spawn candidates fall back to the faction starter. Local files remain
+editable; slot validation cannot prove how many arrays a client stores externally
+or prevent rewriting the contents of an already-unlocked slot.
+Schema v5 persists only slot ownership, not kit contents; `saved_kits` remains
+`-` on save and is ignored on load.
 
 ## Assist and teamkill consequences
 
@@ -660,8 +761,8 @@ owners. Replay maps are round-bounded. Reward and penalty values live in
 
 Configured streak milestones are presentation-only and are emitted exactly
 once as the existing server-owned current streak crosses each threshold.
-Vehicle rentals are inspected by the single server vehicle-manager loop at a
-configured cadence; no monitor script is spawned per rental.
+Personal paid vehicles are inspected by the single server vehicle-manager loop
+at a configured cadence; no monitor script is spawned per vehicle.
 
 # Perk ownership and activation
 

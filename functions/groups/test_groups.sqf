@@ -97,7 +97,7 @@ private _groupUiSource = preprocessFileLineNumbers "functions\ui\groups\fn_refre
 private _groupActionSource = preprocessFileLineNumbers "functions\ui\groups\fn_action.sqf";
 private _deathSource = preprocessFileLineNumbers "functions\respawn\fn_handlePlayerDeath.sqf";
 private _respawnSource = preprocessFileLineNumbers "functions\respawn\fn_handlePlayerRespawn.sqf";
-private _keybindSource = loadFile "config\esc_menu.hpp";
+private _keybindSource = loadFile "config\esc_menu\esc_menu_init.hpp";
 private _gameModeSource = loadFile "config\gameMode.hpp";
 private _localLeadershipStart = _reconcileSource find "if (local _native) then {";
 private _localLeadershipTail = if (_localLeadershipStart >= 0) then {_reconcileSource select [_localLeadershipStart]} else {""};

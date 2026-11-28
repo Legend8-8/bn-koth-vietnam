@@ -14,6 +14,11 @@
 
 if (!isServer) exitWith {};
 
+private _terrainSnapshot = missionNamespace getVariable ["BN_KOTH_terrainSnapshot", createHashMap];
+if (_terrainSnapshot isEqualType createHashMap && {(count _terrainSnapshot) > 0}) then {
+    [format ["Discarding unprocessed terrain snapshot for AO=%1", _terrainSnapshot getOrDefault ["locationId", ""]], "WARN"] call bn_koth_fnc_common_log;
+};
+missionNamespace setVariable ["BN_KOTH_terrainSnapshot", nil];
 [] call bn_koth_fnc_progression_transport_cleanup;
 
 private _locationsCfg = missionConfigFile >> "CfgBnKothLocations";
@@ -65,6 +70,7 @@ if (_cache isEqualType createHashMap) then {
 } forEach ["respawn_west", "respawn_east"];
 
 ["BN_KOTH_activeLocationId", ""] call bn_koth_fnc_common_publicState;
+missionNamespace setVariable ["BN_KOTH_activePriorityMode", "ROAMING_2D"];
 ["BN_KOTH_activeZoneMarker", ""] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeRespawnWestMarker", ""] call bn_koth_fnc_common_publicState;
 ["BN_KOTH_activeRespawnEastMarker", ""] call bn_koth_fnc_common_publicState;
@@ -78,6 +84,8 @@ if (_priorityZoneWasActive && {!((markerShape _priorityMarker) isEqualTo "")}) t
 };
 
 missionNamespace setVariable ["BN_KOTH_priorityZoneActive", false];
+["BN_KOTH_verticalPriorityState", createHashMap] call bn_koth_fnc_common_publicState;
+["BN_KOTH_verticalPriorityGeometry", createHashMap] call bn_koth_fnc_common_publicState;
 missionNamespace setVariable ["BN_KOTH_priorityZoneAoMarker", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneHeading", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneLastUpdateAt", nil];
@@ -88,6 +96,7 @@ missionNamespace setVariable ["BN_KOTH_warnedPriorityZoneTooLarge", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZonePosition", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneMarker", nil];
 missionNamespace setVariable ["BN_KOTH_priorityZoneSize", nil];
+["AO_RESET"] call bn_koth_fnc_vehicles_cleanupPersonalVehicles;
 [] call bn_koth_fnc_vehicles_cleanupManagedVehicles;
 private _pickupCleanupCount = [] call bn_koth_fnc_zone_cleanupBattlefieldPickups;
 private _runtimeCleanupCount = [] call bn_koth_fnc_zone_cleanupRuntimeObjects;

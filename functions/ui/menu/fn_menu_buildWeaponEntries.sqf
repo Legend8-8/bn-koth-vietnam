@@ -110,10 +110,15 @@ private _sortable = [];
     private _magCfg = _weaponMagazinesCfg >> _weaponClass;
     private _magazines = if (isClass _magCfg) then {(getArray (_magCfg >> "values")) apply {toLower _x}} else {[]};
     private _baseMagazine = toLower (getText (_weaponCfg >> "baseMagazine"));
-    private _defaultMagazine = if (_baseMagazine in _magazines) then {_baseMagazine} else {if ((count _magazines) > 0) then {_magazines select 0} else {""}};
+    private _policyCfg = missionConfigFile >> "CfgBnKothArsenal" >> "Equipment" >> "Metadata" >> "Weapons" >> _weaponClass;
+    private _defaultMagazine = toLower (getText (_policyCfg >> "defaultMagazine"));
+    if (_defaultMagazine isEqualTo "") then {_defaultMagazine = _baseMagazine};
+    if (_defaultMagazine isEqualTo "" && {(count _magazines) isEqualTo 1}) then {
+        _defaultMagazine = _magazines select 0;
+    };
 
     private _technicalAvailable =
-        !(_defaultMagazine isEqualTo "") &&
+        (_defaultMagazine in _magazines) &&
         {isClass (configFile >> "CfgMagazines" >> _defaultMagazine)};
 
     private _displayName = getText (_weaponCfg >> "displayName");

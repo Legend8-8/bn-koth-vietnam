@@ -57,6 +57,8 @@ if ((count _playableSides) < 2) then {
 private _sideA = _playableSides select 0;
 private _sideB = _playableSides select 1;
 private _maximumControlHeight = missionNamespace getVariable ["BN_KOTH_maximumControlHeight", 50];
+private _locationData = [missionNamespace getVariable ["BN_KOTH_activeLocationId", ""]] call bn_koth_fnc_zone_getLocationData;
+_maximumControlHeight = _locationData getOrDefault ["maximumControlHeight", _maximumControlHeight];
 
 private _activeParticipants = missionNamespace getVariable ["BN_KOTH_activeParticipants", []];
 private _records = missionNamespace getVariable ["BN_KOTH_playerRecords", createHashMap];
@@ -69,6 +71,31 @@ private _priorityZoneMarker = "BN_KOTH_priorityZoneMarker";
 private _priorityZoneActive = missionNamespace getVariable ["BN_KOTH_priorityZoneActive", false];
 private _priorityZoneControlWeight = missionNamespace getVariable ["BN_KOTH_priorityZoneControlWeight", 2];
 private _priorityZoneAvailable = _priorityZoneActive && {!((markerShape _priorityZoneMarker) isEqualTo "")};
+private _verticalPriority = (_locationData getOrDefault ["priorityMode", "ROAMING_2D"]) isEqualTo "VERTICAL_FLOORS";
+private _verticalState = missionNamespace getVariable ["BN_KOTH_verticalPriorityState", createHashMap];
+private _verticalGeometry = missionNamespace getVariable ["BN_KOTH_verticalPriorityGeometry", createHashMap];
+if (_verticalPriority) then {
+    _priorityZoneAvailable = _priorityZoneActive && {(count (_verticalGeometry getOrDefault ["floors", []])) > 0};
+};
+private _verticalBounds = [];
+private _verticalFootprint = "";
+if (_verticalPriority && {_priorityZoneAvailable}) then {
+    private _floors = _verticalGeometry get "floors";
+    private _sourceIndex = _verticalState getOrDefault ["sourceIndex", -1];
+    private _destinationIndex = _verticalState getOrDefault ["destinationIndex", -1];
+    if (_sourceIndex >= 0 && {_sourceIndex < count _floors} && {_destinationIndex >= 0} && {_destinationIndex < count _floors}) then {
+        private _sourceFloor = _floors select _sourceIndex;
+        private _destinationFloor = _floors select _destinationIndex;
+        private _fraction = if ((_verticalState getOrDefault ["phase", ""]) isEqualTo "MOVING") then {
+            (((serverTime - (_verticalState getOrDefault ["startAt", serverTime])) / (((_verticalState getOrDefault ["endAt", serverTime]) - (_verticalState getOrDefault ["startAt", serverTime])) max 0.1)) max 0) min 1
+        } else {0};
+        _verticalBounds = [
+            (_sourceFloor select 2) + ((_destinationFloor select 2) - (_sourceFloor select 2)) * _fraction,
+            (_sourceFloor select 3) + ((_destinationFloor select 3) - (_sourceFloor select 3)) * _fraction
+        ];
+        _verticalFootprint = _verticalGeometry getOrDefault ["marker", ""];
+    };
+};
 private _players = allPlayers select {
     private _uid = getPlayerUID _x;
     private _record = if (_records isEqualType createHashMap) then {
@@ -128,7 +155,14 @@ private _sideBPriorityUids = [];
     private _player = _x;
     private _side = side group _player;
     private _inPriority = if (_priorityZoneAvailable) then {
-        _player inArea _priorityZoneMarker
+        if (_verticalPriority) then {
+            if ((count _verticalBounds) < 2 || {_verticalFootprint isEqualTo ""}) then {false} else {
+                private _z = (getPosASL _player) select 2;
+                (_player inArea _verticalFootprint) && {_z >= (_verticalBounds select 0)} && {_z < (_verticalBounds select 1)}
+            }
+        } else {
+            _player inArea _priorityZoneMarker
+        }
     } else {
         false
     };
@@ -188,7 +222,7 @@ if (_priorityZoneAvailable) then {
     private _brushChanged = !((markerBrush _priorityZoneMarker) isEqualTo _targetBrush);
 
     if (_colorChanged && {_brushChanged}) then {
-        _priorityZoneMarker setMarkerColorLocal _targetColor;
+        _priorityZoneMarker setMarkerColor _targetColor;
         _priorityZoneMarker setMarkerBrush _targetBrush;
     } else {
         if (_colorChanged) then {

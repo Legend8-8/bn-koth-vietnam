@@ -37,8 +37,9 @@ the `callExtension` return value. The adapter accepts only those exact
 source-defined duplicate responses; `Failed to Load Protocol`, unknown-protocol,
 other rejection, and malformed responses fail immediately. A reuse candidate
 must still complete the existing read-only `healthCheck` query against
-`bn_koth_player_progression` and return the exact BN KOTH schema-v3 protocol
-marker before publishing readiness.
+`bn_koth_player_progression` and return the exact BN KOTH schema-v5 protocol
+marker before publishing readiness. The query references `unlocked_loadout_slots`,
+so readiness also fails closed when migration 005 has not been applied.
 This probe is also required after cold registration, so a registered but stale,
 wrong, or unusable SQL_CUSTOM path fails closed. It does not log credentials or
 raw query parameters.
@@ -56,18 +57,23 @@ otherwise entries sorted by classname and encoded as
 `classname=non_negative_integer`, joined with commas. Tokens permit only ASCII
 lowercase letters, digits, and underscore. Parsing rejects duplicates,
 unexpected delimiters, invalid characters, negative/non-integral counts, and
-empty tokens. The legacy `saved_kits` field remains in the V3 statement and is
-always written as `-`; saved loadouts and the preferred kit ID are stored in
-client `profileNamespace` and validated by the server when used.
+empty tokens. The legacy `saved_kits` field remains in the V5 statement and is
+written as `-`. Saved loadouts and their preferred ID live in client
+`profileNamespace`; their content passes server validation on load and spawn.
+
+`vehicle_progression` is a bounded fixed-width decimal-byte encoding of a
+data-only array containing logical owned family IDs, first-spawn-used family
+IDs, and sorted family/counter rows. This survives SQL_CUSTOM's restricted
+input character policy, never contains physical objects or runtime net IDs,
+and is decoded with `parseSimpleArray`, never `compile`.
 
 ## Failure policy
 
 Missing extension, connection/protocol failure, malformed/error response,
 duplicate rows, invalid UID, invalid authoritative progression fields, and query duration beyond
-the configured threshold are explicit failures. The legacy `saved_kits` text
-is ignored on load so it cannot block XP/cash/ownership/perk/mastery state.
-The existing configured
-session fallback may let the player continue with a server-owned default state,
+the configured threshold are explicit failures. Legacy `saved_kits` text is
+ignored on load so it cannot block XP/cash/ownership/perk/mastery/vehicle progression.
+The existing configured session fallback may let the player continue with a server-owned default state,
 but it does not claim durability. A session created from any failed/malformed or
 future-schema load is write-blocked for the rest of that mission session, so its
 defaults cannot overwrite the durable row. Failed saves remain dirty. Future
@@ -91,9 +97,9 @@ changes do not issue or schedule database writes.
 7. Confirm the TCAdmin/Arma service account can read and load those files.
 8. Restart and verify `EXTDB_READY` in the server RPT and extDB3's own log.
 9. Join with a first-time Steam UID and verify one row is created.
-10. Earn XP/cash/mastery and acquire a weapon; then disconnect and verify the
-    progression save-success RPT marker. Save a named loadout to the local profile.
-11. Reconnect and confirm progression restores from the database and the saved
+10. Earn XP/cash/mastery, acquire a weapon and a vehicle family, then disconnect
+    and verify the progression save-success RPT marker. Save a named loadout locally.
+11. Reconnect and confirm progression restores from the database while the saved
     loadout remains in the same client profile and remains entitlement-validated.
 12. Reload the mission without stopping `arma3server_x64.exe`; confirm
     `MISSION_RELOAD_REUSE`, `EXTDB_READY`, durable values, subsequent saves, and
@@ -101,6 +107,26 @@ changes do not issue or schedule database writes.
 13. Repeat the same-process mission reload at least once more.
 14. Restart the entire server and confirm `COLD_INIT` and the durable values
     restore again.
+
+For schema-v5 deployment, apply all missing migrations through
+`005_add_loadout_slots.sql` in order. Migration 005 adds the shared permanent
+slot count with a default of one; existing XP, cash and equipment progression
+remain intact. Copy the updated SQL_CUSTOM file and restart the whole server
+process before running the v5 mission. Verify slot purchases, cash and slot
+ownership through reconnect, mission reload and a full process restart.
+Local kits are not moved into SQL: existing unassigned kits remain preserved
+in the same client profile and can be copied into unlocked team slots.
+
+Permanent slot purchases are rejected for session-fallback player records or
+when the persistence backend is unavailable. Successful purchases use the
+existing coalesced progression save (including disconnect/mission-end flush),
+so a purchase response confirms the session mutation, not a synchronous disk
+commit. Failed saves remain dirty under the existing persistence policy.
+
+### Legacy v3 mission compatibility
+
+The following compatibility note applies only to older v3 mission deployments.
+Schema-v5 missions require the eleven-field load/save contract documented above.
 
 For a V3 deployment, retain the existing `saved_kits` column and nine-field
 SQL_CUSTOM contract. The mission writes `-` and ignores the column on load.

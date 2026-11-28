@@ -15,6 +15,82 @@ if (!isServer) exitWith {false};
 private _activeMarker = missionNamespace getVariable ["BN_KOTH_activeZoneMarker", ""];
 private _priorityMarker = "BN_KOTH_priorityZoneMarker";
 private _priorityWasActive = missionNamespace getVariable ["BN_KOTH_priorityZoneActive", false];
+if ((missionNamespace getVariable ["BN_KOTH_activePriorityMode", "ROAMING_2D"]) isEqualTo "VERTICAL_FLOORS") exitWith {
+    private _locationId = missionNamespace getVariable ["BN_KOTH_activeLocationId", ""];
+    private _locationData = createHashMap;
+    private _geometry = missionNamespace getVariable ["BN_KOTH_verticalPriorityGeometry", createHashMap];
+    private _state = missionNamespace getVariable ["BN_KOTH_verticalPriorityState", createHashMap];
+    if ((count _geometry) isEqualTo 0) then {
+        _locationData = [_locationId] call bn_koth_fnc_zone_getLocationData;
+        _geometry = [_locationData] call bn_koth_fnc_zone_resolveVerticalPriorityGeometry;
+        if ((count _geometry) > 0) then {
+            ["BN_KOTH_verticalPriorityGeometry", _geometry] call bn_koth_fnc_common_publicState;
+        };
+    };
+    if ((count _geometry) isEqualTo 0) exitWith {false};
+
+    private _footprint = _geometry get "marker";
+    private _floors = _geometry get "floors";
+    if ((count _state) isEqualTo 0) then {
+        if ((count _locationData) isEqualTo 0) then {_locationData = [_locationId] call bn_koth_fnc_zone_getLocationData};
+        if ((markerShape _priorityMarker) isEqualTo "") then {
+            createMarker [_priorityMarker, markerPos _footprint];
+        };
+        _priorityMarker setMarkerShape "RECTANGLE";
+        _priorityMarker setMarkerBrush (missionNamespace getVariable ["BN_KOTH_priorityZoneMarkerBrush", "Solid"]);
+        _priorityMarker setMarkerColor (missionNamespace getVariable ["BN_KOTH_priorityZoneMarkerColor", "ColorGreen"]);
+        _priorityMarker setMarkerSize (markerSize _footprint);
+        _priorityMarker setMarkerDir (markerDir _footprint);
+        _priorityMarker setMarkerPos (markerPos _footprint);
+        _priorityMarker setMarkerText "Priority Zone";
+        _priorityMarker setMarkerAlpha (missionNamespace getVariable ["BN_KOTH_priorityZoneMarkerAlpha", 0.75]);
+        _state = createHashMapFromArray [
+            ["phase", "DWELL"], ["activeIndex", 0], ["sourceIndex", 0],
+            ["destinationIndex", 0], ["startAt", serverTime], ["endAt", serverTime],
+            ["nextMoveAt", serverTime + ((_locationData getOrDefault ["priorityDwellSeconds", 25]) max 1)],
+            ["direction", 1]
+        ];
+        missionNamespace setVariable ["BN_KOTH_priorityZoneActive", true];
+        missionNamespace setVariable ["BN_KOTH_priorityZoneAoMarker", _activeMarker];
+        ["BN_KOTH_verticalPriorityState", _state, true] call bn_koth_fnc_common_publicState;
+        true
+    } else {
+        private _now = serverTime;
+        if ((_state getOrDefault ["phase", ""]) isEqualTo "MOVING") then {
+            if (_now >= (_state getOrDefault ["endAt", _now])) then {
+                _locationData = [_locationId] call bn_koth_fnc_zone_getLocationData;
+                private _destination = _state get "destinationIndex";
+                _state set ["phase", "DWELL"];
+                _state set ["activeIndex", _destination];
+                _state set ["sourceIndex", _destination];
+                _state set ["nextMoveAt", _now + ((_locationData getOrDefault ["priorityDwellSeconds", 25]) max 1)];
+                ["BN_KOTH_verticalPriorityState", _state, true] call bn_koth_fnc_common_publicState;
+            };
+        } else {
+            if (_now >= (_state getOrDefault ["nextMoveAt", _now + 1])) then {
+                _locationData = [_locationId] call bn_koth_fnc_zone_getLocationData;
+                private _current = _state getOrDefault ["activeIndex", 0];
+                private _direction = _state getOrDefault ["direction", 1];
+                if (_current isEqualTo 0) then {_direction = 1} else {
+                    if (_current isEqualTo ((count _floors) - 1)) then {_direction = -1} else {
+                        if ((random 1) > (((_locationData getOrDefault ["priorityContinueChance", 0.75]) max 0) min 1)) then {
+                            _direction = -_direction;
+                        };
+                    };
+                };
+                _state set ["phase", "MOVING"];
+                _state set ["activeIndex", _current];
+                _state set ["sourceIndex", _current];
+                _state set ["destinationIndex", _current + _direction];
+                _state set ["direction", _direction];
+                _state set ["startAt", _now];
+                _state set ["endAt", _now + ((_locationData getOrDefault ["priorityTransitionSeconds", 8]) max 0.1)];
+                ["BN_KOTH_verticalPriorityState", _state, true] call bn_koth_fnc_common_publicState;
+            };
+        };
+        true
+    }
+};
 
 if (_activeMarker isEqualTo "" || {(markerShape _activeMarker) isEqualTo ""}) exitWith {
     if (_priorityWasActive && {!((markerShape _priorityMarker) isEqualTo "")}) then {

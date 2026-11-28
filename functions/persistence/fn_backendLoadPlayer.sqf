@@ -24,22 +24,29 @@ if (_backend isEqualTo "EXTDB3") exitWith {
     if ((count _rows) isEqualTo 0) exitWith {createHashMapFromArray [["success", true], ["code", "NOT_FOUND"], ["uid", _uid], ["found", false]]};
     if ((count _rows) != 1) exitWith {createHashMapFromArray [["success", false], ["code", "DUPLICATE_PLAYER_ROWS"], ["uid", _uid]]};
     private _row = _rows select 0;
-    if !(_row isEqualType [] && {(count _row) isEqualTo 9}) exitWith {createHashMapFromArray [["success", false], ["code", "MALFORMED_LOAD_ROW"], ["uid", _uid]]};
-    _row params ["_recordUid", "_schemaVersion", "_xp", "_cash", "_ownedText", "_killsText", "_ownedPerksText", "_activePerksText", "_legacySavedKitsText"];
-    if !(_recordUid isEqualType "" && {_schemaVersion isEqualType 0} && {_xp isEqualType 0} && {_cash isEqualType 0} && {_ownedText isEqualType ""} && {_killsText isEqualType ""} && {_ownedPerksText isEqualType ""} && {_activePerksText isEqualType ""} && {_legacySavedKitsText isEqualType ""}) exitWith {createHashMapFromArray [["success", false], ["code", "MALFORMED_LOAD_TYPES"], ["uid", _uid]]};
+    if !(_row isEqualType [] && {(count _row) isEqualTo 11}) exitWith {createHashMapFromArray [["success", false], ["code", "MALFORMED_LOAD_ROW"], ["uid", _uid]]};
+    _row params ["_recordUid", "_schemaVersion", "_xp", "_cash", "_ownedText", "_killsText", "_ownedPerksText", "_activePerksText", "_legacySavedKitsText", "_vehicleProgressionText", "_slots"];
+    if !(_slots isEqualType 0 && {finite _slots} && {_slots >= 1} && {_slots isEqualTo floor _slots}) exitWith {createHashMapFromArray [["success", false], ["code", "MALFORMED_LOADOUT_SLOTS"], ["uid", _uid]]};
+    if !(_recordUid isEqualType "" && {_schemaVersion isEqualType 0} && {_xp isEqualType 0} && {_cash isEqualType 0} && {_ownedText isEqualType ""} && {_killsText isEqualType ""} && {_ownedPerksText isEqualType ""} && {_activePerksText isEqualType ""} && {_legacySavedKitsText isEqualType ""} && {_vehicleProgressionText isEqualType ""}) exitWith {createHashMapFromArray [["success", false], ["code", "MALFORMED_LOAD_TYPES"], ["uid", _uid]]};
     if !(_recordUid isEqualTo _uid) exitWith {createHashMapFromArray [["success", false], ["code", "UID_MISMATCH"], ["uid", _uid]]};
     if (!(finite _schemaVersion) || {_schemaVersion < 0} || {_schemaVersion != floor _schemaVersion} || {!(finite _xp)} || {_xp < 0} || {_xp != floor _xp} || {!(finite _cash)} || {_cash < 0} || {_cash != floor _cash}) exitWith {createHashMapFromArray [["success", false], ["code", "MALFORMED_NUMERIC_FIELDS"], ["uid", _uid]]};
     private _owned = [_ownedText] call bn_koth_fnc_persistence_deserializeOwnedWeapons;
     private _kills = [_killsText] call bn_koth_fnc_persistence_deserializeWeaponKills;
     private _ownedPerks = [_ownedPerksText] call bn_koth_fnc_persistence_deserializePerkIds;
     private _activePerks = [_activePerksText] call bn_koth_fnc_persistence_deserializePerkIds;
+    private _vehicleProgression = [_vehicleProgressionText] call bn_koth_fnc_persistence_deserializeVehicleProgression;
     if !(_owned getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _owned getOrDefault ["code", "MALFORMED_OWNED_WEAPONS"]], ["uid", _uid]]};
     if !(_kills getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _kills getOrDefault ["code", "MALFORMED_WEAPON_KILLS"]], ["uid", _uid]]};
     if !(_ownedPerks getOrDefault ["success", false] && {_activePerks getOrDefault ["success", false]}) exitWith {createHashMapFromArray [["success", false], ["code", "MALFORMED_PERK_IDS"], ["uid", _uid]]};
+    if !(_vehicleProgression getOrDefault ["success", false]) exitWith {createHashMapFromArray [["success", false], ["code", _vehicleProgression getOrDefault ["code", "MALFORMED_VEHICLE_PROGRESSION"]], ["uid", _uid]]};
     private _record = createHashMapFromArray [
         ["uid", _recordUid], ["schemaVersion", _schemaVersion], ["xp", _xp], ["cash", _cash],
+        ["unlockedLoadoutSlots", _slots],
         ["ownedWeapons", _owned get "value"], ["weaponKills", _kills get "value"],
-        ["ownedPerks", _ownedPerks get "value"], ["activePerks", _activePerks get "value"]
+        ["ownedPerks", _ownedPerks get "value"], ["activePerks", _activePerks get "value"],
+        ["ownedVehicleFamilies", _vehicleProgression get "owned"],
+        ["vehicleFirstSpawnsUsed", _vehicleProgression get "used"],
+        ["vehicleMastery", _vehicleProgression get "mastery"]
     ];
     createHashMapFromArray [
         ["success", true], ["code", "LOADED"],

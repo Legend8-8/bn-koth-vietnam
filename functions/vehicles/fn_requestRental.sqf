@@ -1,4 +1,4 @@
-/* Author: Legend; Description: Remote intent endpoint for one-step vehicle rental and owner access changes. Execution: Client/Server; Public: Yes */
+/* Author: Legend; Description: Remote intent endpoint for paid personal vehicle transactions and access changes. Execution: Client/Server; Public: Yes */
 params [["_operation","",[""]],["_vehicleClass","",[""]],["_accessMode","",[""]]];
 if (hasInterface && {!isServer}) exitWith {[_operation,_vehicleClass,_accessMode] remoteExecCall ["bn_koth_fnc_vehicles_requestRental",2]};
 if (hasInterface && {isServer} && {remoteExecutedOwner <= 0}) exitWith {[_operation,_vehicleClass,_accessMode] remoteExecCall ["bn_koth_fnc_vehicles_requestRental",2]};
@@ -9,7 +9,9 @@ private _result=if (_uid isEqualTo "") then {createHashMapFromArray [["success",
     private _records=missionNamespace getVariable ["BN_KOTH_playerRecords",createHashMap];private _record=_records getOrDefault [_uid,createHashMap];
     if !(_record isEqualType createHashMap && {(_record getOrDefault ["ownerId",-1]) isEqualTo _ownerId} && {(_record getOrDefault ["currentUnit",objNull]) isEqualTo _playerObj}) then {createHashMapFromArray [["success",false],["code","PLAYER_IDENTITY_MISMATCH"],["message","Player representation is not current."]]} else {
         private _now=serverTime;private _last=_record getOrDefault ["lastVehicleRentalRequestAt",-999];private _threshold=(getNumber (missionConfigFile >> "CfgBnKothVehicles" >> "vehicleRentalRequestCooldownSeconds")) max 0.1;
-        if ((_now-_last)<_threshold) then {createHashMapFromArray [["success",false],["code","THROTTLED"],["message","Vehicle request was sent too quickly."]]} else {_record set ["lastVehicleRentalRequestAt",_now];_records set [_uid,_record];missionNamespace setVariable ["BN_KOTH_playerRecords",_records];switch (toUpper _operation) do {case "RENT":{[_uid,_vehicleClass] call bn_koth_fnc_vehicles_rentVehicle};case "ACCESS":{[_uid,_accessMode] call bn_koth_fnc_vehicles_setRentalAccess};default {createHashMapFromArray [["success",false],["code","INVALID_OPERATION"],["message","Invalid vehicle operation."]]}}}
+        if ((_now-_last)<_threshold) then {createHashMapFromArray [["success",false],["code","THROTTLED"],["message","Vehicle request was sent too quickly."]]} else {_record set ["lastVehicleRentalRequestAt",_now];_records set [_uid,_record];missionNamespace setVariable ["BN_KOTH_playerRecords",_records];switch (toUpper _operation) do {case "RENT":{[_uid,_vehicleClass,"RENT"] call bn_koth_fnc_vehicles_rentVehicle};case "PURCHASE":{[_uid,_vehicleClass,"PURCHASE"] call bn_koth_fnc_vehicles_rentVehicle};case "SPAWN":{[_uid,_vehicleClass,"SPAWN"] call bn_koth_fnc_vehicles_rentVehicle};case "ACCESS":{[_uid,_accessMode] call bn_koth_fnc_vehicles_setRentalAccess};default {createHashMapFromArray [["success",false],["code","INVALID_OPERATION"],["message","Invalid vehicle operation."]]}}}
     }
 };
-_result set ["rentalState",[_uid] call bn_koth_fnc_vehicles_getRentalState];[_result] remoteExecCall ["bn_koth_fnc_vehicles_receiveRentalResult",_ownerId];
+if ((_result getOrDefault ["operation", ""]) isEqualTo "") then {_result set ["operation", toUpper _operation]};
+if ((_result getOrDefault ["vehicleClass", ""]) isEqualTo "") then {_result set ["vehicleClass", toLower _vehicleClass]};
+_result set ["personalVehicleState",[_uid] call bn_koth_fnc_vehicles_getRentalState];[_result] remoteExecCall ["bn_koth_fnc_vehicles_receiveRentalResult",_ownerId];

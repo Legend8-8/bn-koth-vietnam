@@ -36,6 +36,33 @@ if !(remoteExecutedOwner isEqualTo 2) exitWith {
 
 if !(_validationResult isEqualType createHashMap) exitWith {};
 
+private _rejectionMessage = _validationResult getOrDefault ["message", "Request rejected."];
+private _rejectedClass = _validationResult getOrDefault ["rejectedClass", ""];
+if (
+    _rejectedClass isEqualType "" &&
+    {!(_rejectedClass isEqualTo "")}
+) then {
+    private _displayName = "";
+    {
+        private _cfg = configFile >> _x >> _rejectedClass;
+        if (isClass _cfg) then {
+            _displayName = getText (_cfg >> "displayName");
+        };
+        if !(_displayName isEqualTo "") exitWith {};
+    } forEach ["CfgWeapons", "CfgMagazines", "CfgVehicles", "CfgGlasses"];
+    if (_displayName isEqualTo "") then {_displayName = _rejectedClass};
+    _rejectionMessage = if ((_validationResult getOrDefault ["code", ""]) isEqualTo "NOT_AVAILABLE") then {
+        format ["%1 is not available in the KOTH Arsenal.", _displayName]
+    } else {
+        format ["%1: %2", _displayName, _rejectionMessage]
+    };
+};
+
+if (_validationResult getOrDefault ["slotPurchase", false]) exitWith {
+    [_rejectionMessage] call bn_koth_fnc_ui_notify;
+    [] call bn_koth_fnc_menu_refresh;
+};
+
 if (_validationResult getOrDefault ["spawnPreference", false]) exitWith {
     private _current = missionNamespace getVariable ["BN_KOTH_spawnKitResponse", [0, "", false]];
     if !((_validationResult getOrDefault ["preferenceRevision", -1]) isEqualTo (_current select 0)) exitWith {};
@@ -43,10 +70,14 @@ if (_validationResult getOrDefault ["spawnPreference", false]) exitWith {
         _current set [2, false];
         missionNamespace setVariable ["BN_KOTH_spawnKitResponse", _current];
     } else {
-        if ((_current select 2) && {(profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""]) isEqualTo (_current select 1)}) then {
-            profileNamespace setVariable ["BN_KOTH_preferredSpawnKitId", ""];
+        private _preferences = profileNamespace getVariable ["BN_KOTH_preferredSpawnKitIds", createHashMap];
+        if !(_preferences isEqualType createHashMap) then {_preferences = createHashMap};
+        private _sideToken = _current param [3, ""];
+        if ((_current select 2) && {(_preferences getOrDefault [_sideToken, ""]) isEqualTo (_current select 1)}) then {
+            _preferences set [_sideToken, ""];
+            profileNamespace setVariable ["BN_KOTH_preferredSpawnKitIds", _preferences];
             saveProfileNamespace;
-            [format ["SPAWN LOADOUT PREFERENCE CLEARED: %1", _validationResult getOrDefault ["message", "Kit rejected."]]] call bn_koth_fnc_ui_notify;
+            [format ["SPAWN LOADOUT PREFERENCE CLEARED: %1", _rejectionMessage]] call bn_koth_fnc_ui_notify;
         };
     };
     [] call bn_koth_fnc_menu_refresh;
@@ -62,7 +93,7 @@ if !(_validationResult getOrDefault ["success", false]) exitWith {
     [format [
         "%1: %2",
         if !(_pendingKitOperation isEqualTo "") then {"Saved loadout rejected"} else {"Loadout rejected"},
-        _validationResult getOrDefault ["message", "Request rejected."]
+        _rejectionMessage
     ]] call bn_koth_fnc_ui_notify;
 };
 

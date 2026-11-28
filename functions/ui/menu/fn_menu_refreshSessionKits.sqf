@@ -20,21 +20,31 @@ _subtitleControl ctrlSetText "SAVED TO YOUR PROFILE - SERVER VALIDATED ON LOAD";
 _subtitleControl ctrlShow false;
 _pageLabelControl ctrlSetText "PAGE 1 / 1";
 
-private _kits = profileNamespace getVariable ["BN_KOTH_savedKits_v2", []];
-if !(_kits isEqualType []) then {_kits = []};
-if ((count _kits) isEqualTo 0) then {
-    private _oldKits = profileNamespace getVariable ["BN_KOTH_savedKits_v1", createHashMap];
-    if (_oldKits isEqualType createHashMap) then {
-        private _oldLoadout = _oldKits getOrDefault ["slot1", []];
-        if (_oldLoadout isEqualType [] && {(count _oldLoadout) >= 10}) then {
-            _kits pushBack ["kit_migrated_slot1", "MIGRATED KIT", +_oldLoadout];
-            profileNamespace setVariable ["BN_KOTH_savedKits_v2", _kits];
-            profileNamespace setVariable ["BN_KOTH_savedKits_v1", nil];
-            saveProfileNamespace;
-        };
-    };
+private _context = [] call bn_koth_fnc_menu_getKitContext;
+private _sideToken = _context get "sideToken";
+private _kits = (_context get "teamKits") + (_context get "legacyKits");
+private _unlocked = _context get "unlocked";
+private _maximum = _context get "maximum";
+private _prices = _context get "prices";
+private _progression = missionNamespace getVariable ["BN_KOTH_playerProgressionLocal", createHashMap];
+private _cash = _progression getOrDefault ["cash", 0];
+_titleControl ctrlSetText format ["%1 LOADOUTS %2/%3", _sideToken, _unlocked, _maximum];
+private _configureUnlock = {
+    params ["_button", "_slot"];
+    private _price = _prices param [_slot - 1, -1];
+    private _validPrice = _price isEqualType 0 && {finite _price} && {_price > 0} && {_price isEqualTo floor _price};
+    _button ctrlSetText (if (_validPrice) then {format ["UNLOCK %1", [_price] call bn_koth_fnc_ui_formatCash]} else {"UNAVAILABLE"});
+    _button ctrlEnable (_slot isEqualTo (_unlocked + 1) && {_validPrice} && {_cash >= _price});
+    _button buttonSetAction format ["[createHashMapFromArray [['mutation',createHashMapFromArray [['op','purchase_kit_slot'],['kitSlot',%1]]]]] call bn_koth_fnc_loadouts_request;", _slot];
 };
-_kits = _kits select {(_x isEqualType []) && {(count _x) >= 3} && {(_x select 0) isEqualType ""} && {(_x select 1) isEqualType ""} && {(_x select 2) isEqualType []}};
+private _entries = [];
+for "_slot" from 1 to _maximum do {
+    private _index = _kits findIf {count _x >= 5 && {(_x select 4) isEqualTo _slot}};
+    _entries pushBack (if (_index >= 0) then {_kits select _index} else {["", "", [], _sideToken, _slot]});
+};
+// Legacy records retain their original contents, including records beyond six.
+_entries append (_context get "legacyKits");
+private _hasEmpty = (_entries findIf {count _x >= 5 && {(_x select 0) isEqualTo ""} && {(_x select 4) <= _unlocked}}) >= 0;
 
 private _cards = call bn_koth_fnc_menu_getItemCardControls;
 private _defaultActions = [
@@ -80,13 +90,13 @@ private _readLoadoutClass = {
     };
 } forEach _previewBases;
 private _pageSize = count _cards;
-private _pageCount = (ceil ((count _kits) / _pageSize)) max 1;
+private _pageCount = (ceil ((count _entries) / _pageSize)) max 1;
 private _page = uiNamespace getVariable ["BN_KOTH_menuKitPage", 0];
 if !(_page isEqualType 0) then {_page = 0};
 _page = (_page max 0) min (_pageCount - 1);
 uiNamespace setVariable ["BN_KOTH_menuKitPage", _page];
 
-private _preferredId = profileNamespace getVariable ["BN_KOTH_preferredSpawnKitId", ""];
+private _preferredId = _context get "preferredId";
 private _selectedId = uiNamespace getVariable ["BN_KOTH_menuKitSelectedId", ""];
 private _selectedIndex = _kits findIf {(_x select 0) isEqualTo _selectedId};
 private _nameControl = _display displayCtrl BN_KOTH_IDC_MENU_KIT_NAME;
@@ -131,11 +141,30 @@ _next buttonSetAction "private _p=uiNamespace getVariable ['BN_KOTH_menuKitPage'
 {
     private _cardIndex = _forEachIndex;
     private _index = _cardIndex + (_page * _pageSize);
-    if (_index >= (count _kits)) then {continue};
-    private _record = _kits select _index;
+    if (_index >= (count _entries)) then {continue};
+    private _record = _entries select _index;
     _record params ["_kitId", "_kitName", "_savedLoadout"];
     _x params ["_bg", "_area", "_pic", "_name", "_status", "_overlay", "_lock", "_primary", "_secondary"];
     {(_display displayCtrl _x) ctrlShow true} forEach [_bg, _area, _name, _status, _primary, _secondary];
+    private _slot = _record param [4, 0];
+    private _archive = _slot isEqualTo 0;
+    private _canUse = !_archive && {_slot <= _unlocked};
+    if (_kitId isEqualTo "") then {
+        (_display displayCtrl _area) ctrlSetBackgroundColor [0.025, 0.025, 0.022, 0.92];
+        (_display displayCtrl _name) ctrlSetText format ["SLOT %1", _slot];
+        (_display displayCtrl _secondary) ctrlShow false;
+        private _button = _display displayCtrl _primary;
+        if (_canUse) then {
+            (_display displayCtrl _status) ctrlSetText "EMPTY - ENTER A NAME TO SAVE CURRENT KIT";
+            _button ctrlSetText "SAVE CURRENT";
+            _button ctrlEnable true;
+            _button buttonSetAction format ["['','','NEW',%1] call bn_koth_fnc_menu_saveSessionKit;", _slot];
+        } else {
+            (_display displayCtrl _status) ctrlSetText "LOCKED - PURCHASE UNLOCKS BOTH TEAMS";
+            [_button, _slot] call _configureUnlock;
+        };
+        continue
+    };
     private _previewClasses = [
         [_savedLoadout, 0] call _readLoadoutClass,
         [_savedLoadout, 1] call _readLoadoutClass,
@@ -153,24 +182,32 @@ _next buttonSetAction "private _p=uiNamespace getVariable ['BN_KOTH_menuKitPage'
         _control ctrlShow !(_picture isEqualTo "");
     };
     (_display displayCtrl _area) ctrlSetBackgroundColor [0.025, 0.025, 0.022, 0.92];
-    (_display displayCtrl _name) ctrlSetText (toUpper _kitName);
+    (_display displayCtrl _name) ctrlSetText (if (_archive) then {toUpper _kitName} else {format ["%1: %2", _slot, toUpper _kitName]});
     (_display displayCtrl _status) ctrlSetText (if (_kitId isEqualTo _selectedId) then {"SELECTED - LOAD, EDIT, RENAME OR DELETE"} else {"SAVED LOCALLY - VALIDATED WHEN LOADED"});
-    if (_kitId isEqualTo _preferredId) then {
+    if (_archive) then {(_display displayCtrl _status) ctrlSetText "PRESERVED KIT - COPY TO AN EMPTY TEAM SLOT"};
+    if (!_archive && {!_canUse}) then {(_display displayCtrl _status) ctrlSetText "SAVED KIT - SLOT LOCKED"};
+    if (_canUse && {_kitId isEqualTo _preferredId}) then {
         (_display displayCtrl _status) ctrlSetText "DEFAULT SPAWN LOADOUT ✓";
     };
     private _defaultControl = _display displayCtrl (_defaultActions select _cardIndex);
     private _isPreferred = _kitId isEqualTo _preferredId;
     _defaultControl ctrlSetText (if (_isPreferred) then {"DEFAULT ✓"} else {"SET DEFAULT"});
-    _defaultControl ctrlEnable !_isPreferred;
-    _defaultControl ctrlShow true;
+    _defaultControl ctrlEnable (_canUse && {!_isPreferred});
+    _defaultControl ctrlShow !_archive;
     _defaultControl buttonSetAction format ["%1 call bn_koth_fnc_menu_setSpawnKit;", str [_kitId, "SET"]];
-    (_display displayCtrl _primary) ctrlSetText "LOAD";
-    (_display displayCtrl _primary) ctrlEnable true;
+    (_display displayCtrl _primary) ctrlSetText (if (_archive) then {"COPY TO SLOT"} else {"LOAD"});
+    (_display displayCtrl _primary) ctrlEnable (if (_archive) then {_hasEmpty} else {_canUse});
     (_display displayCtrl _primary) buttonSetAction format ["%1 call bn_koth_fnc_menu_loadSessionKit;", str [_kitId, "LOAD"]];
+    if (!_archive && {!_canUse}) then {
+        [_display displayCtrl _primary, _slot] call _configureUnlock;
+    };
+    if (_archive) then {
+        (_display displayCtrl _primary) buttonSetAction format ["['',%1,'IMPORT'] call bn_koth_fnc_menu_saveSessionKit;", str _kitId];
+    };
     private _isSelected = _kitId isEqualTo _selectedId;
-    (_display displayCtrl _secondary) ctrlSetText (if (_isSelected) then {"EDIT"} else {"MANAGE"});
+    (_display displayCtrl _secondary) ctrlSetText (if (_isSelected && {_canUse}) then {"EDIT"} else {"MANAGE"});
     (_display displayCtrl _secondary) ctrlEnable true;
-    private _secondaryAction = if (_isSelected) then {
+    private _secondaryAction = if (_isSelected && {_canUse}) then {
         format ["%1 call bn_koth_fnc_menu_loadSessionKit;", str [_kitId, "EDIT"]]
     } else {
         format ["uiNamespace setVariable ['BN_KOTH_menuKitSelectedId',%1]; ['LOADOUT_KITS'] call bn_koth_fnc_menu_refresh;", str _kitId]

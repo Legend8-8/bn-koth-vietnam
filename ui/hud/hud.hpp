@@ -137,6 +137,18 @@ class BN_KOTH_RscHud
             colorBackground[] = {0, 0, 0, 0};
         };
 
+        class HudPriorityPopulation: BN_KOTH_RscStructuredText
+        {
+            idc = BN_KOTH_IDC_HUD_PRIORITY_POPULATION;
+            text = "";
+            x = BN_KOTH_HUD_X + BN_KOTH_HUD_W * 0.19;
+            y = BN_KOTH_HUD_Y + BN_KOTH_HUD_H * 0.52;
+            w = BN_KOTH_HUD_W * 0.62;
+            h = BN_KOTH_HUD_H * 0.14;
+            size = "0.011 * safeZoneH";
+            colorBackground[] = {0, 0, 0, 0};
+        };
+
         class HudRankIcon: BN_KOTH_RscPicture
         {
             idc = BN_KOTH_IDC_HUD_RANK_ICON;

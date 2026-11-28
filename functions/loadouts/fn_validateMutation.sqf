@@ -27,7 +27,7 @@ params [
 ];
 
 private _resultFail = {
-    params ["_code", "_message", ["_loadoutId", "", [""]]];
+    params ["_code", "_message", ["_loadoutId", "", [""]], ["_rejectedClass", "", [""]]];
 
     createHashMapFromArray [
         ["success", false],
@@ -38,7 +38,8 @@ private _resultFail = {
         ["validatedLoadout", []],
         ["validatedPrimary", createHashMap],
         ["validatedWeapons", createHashMap],
-        ["validatedBy", ""]
+        ["validatedBy", ""],
+        ["rejectedClass", _rejectedClass]
     ]
 };
 
@@ -507,6 +508,7 @@ private _mutatedLoadout = +_baseLoadout;
 private _shouldApply = true;
 private _resultMessage = "Loadout mutation validated.";
 private _resultCode = "OK";
+private _rejectedClass = "";
 
 private _mutationCaseResult = switch (_op) do {
     case "snapshot": {
@@ -588,6 +590,16 @@ private _mutationCaseResult = switch (_op) do {
     };
 
     case "load_local_kit": {
+        private _slot = _mutation getOrDefault ["kitSlot", 0];
+        private _kitSide = _mutation getOrDefault ["kitSide", ""];
+        private _progression = (missionNamespace getVariable ["BN_KOTH_playerProgression", createHashMap]) getOrDefault [_uid, createHashMap];
+        private _unlocked = _progression getOrDefault ["unlockedLoadoutSlots", 1];
+        private _maximum = getNumber (missionConfigFile >> "CfgBnKothPersistence" >> "savedKitMaxCount");
+        if !(_slot isEqualType 0 && {finite _slot} && {_slot isEqualTo floor _slot} && {_slot >= 1} && {_slot <= _maximum}
+            && {_unlocked isEqualType 0} && {finite _unlocked} && {_unlocked isEqualTo floor _unlocked} && {_slot <= _unlocked}
+            && {_kitSide isEqualTo _authoritativeSideToken}) exitWith {
+            ["ERR_SAVED_KIT_SLOT", "That saved loadout slot is locked, invalid, or belongs to another team.", _baseLoadoutId] call _resultFail
+        };
         // Local profile data is untrusted. It enters only as intent and passes
         // every canonical, entitlement, compatibility and capacity check below.
         private _savedLoadout = _mutation getOrDefault ["savedLoadout", []];
@@ -652,6 +664,7 @@ private _mutationCaseResult = switch (_op) do {
 
                             if !(_entitlement getOrDefault ["entitled", false]) then {
                                 _resultCode = _entitlement getOrDefault ["code", "ERR_WEAPON_ENTITLEMENT"];
+                                _rejectedClass = _weaponClass;
                                 _resultMessage = _entitlement getOrDefault [
                                     "message",
                                     format ["Saved %1 weapon is no longer entitled for this player.", toLower _slotLabel]
@@ -666,6 +679,7 @@ private _mutationCaseResult = switch (_op) do {
                                         ] call bn_koth_fnc_progression_evaluateAttachmentEntitlement;
                                         if !(_attachmentEntitlement getOrDefault ["entitled", false]) then {
                                             _attachmentFailure = _attachmentEntitlement;
+                                            _rejectedClass = _x;
                                         };
                                     };
                                 } forEach (_validatedWeapon getOrDefault ["attachments", []]);
@@ -691,7 +705,7 @@ private _mutationCaseResult = switch (_op) do {
         ];
 
         if !(_resultCode isEqualTo "OK") exitWith {
-            [_resultCode, _resultMessage, _baseLoadoutId] call _resultFail
+            [_resultCode, _resultMessage, _baseLoadoutId, _rejectedClass] call _resultFail
         };
 
         private _buildResult = [
@@ -736,6 +750,7 @@ private _mutationCaseResult = switch (_op) do {
                 private _entitlement=[_uid,"Wearables",_itemClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
                 if !(_entitlement getOrDefault ["entitled",false]) exitWith {
                     _resultCode=_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"];
+                    _rejectedClass = _itemClass;
                     _resultMessage=_entitlement getOrDefault ["message","Saved assigned item is not entitled."];
                 };
             };
@@ -743,7 +758,7 @@ private _mutationCaseResult = switch (_op) do {
         };
 
         if !(_resultCode isEqualTo "OK") exitWith {
-            [_resultCode, _resultMessage, _baseLoadoutId] call _resultFail
+            [_resultCode, _resultMessage, _baseLoadoutId, _rejectedClass] call _resultFail
         };
 
         _mutatedLoadout set [9, _assignedSlot];
@@ -779,7 +794,7 @@ private _mutationCaseResult = switch (_op) do {
                     _resultMessage = format ["Saved binocular class '%1' is invalid.", _binocClass];
                 } else {
                     private _entitlement=[_uid,"Wearables",_binocClass] call bn_koth_fnc_progression_evaluateItemEntitlement;
-                    if !(_entitlement getOrDefault ["entitled",false]) then {_resultCode=_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"];_resultMessage=_entitlement getOrDefault ["message","Saved binocular is not entitled."];};
+                    if !(_entitlement getOrDefault ["entitled",false]) then {_resultCode=_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"];_rejectedClass=_binocClass;_resultMessage=_entitlement getOrDefault ["message","Saved binocular is not entitled."];};
                 };
             };
 
@@ -789,7 +804,7 @@ private _mutationCaseResult = switch (_op) do {
         };
 
         if !(_resultCode isEqualTo "OK") exitWith {
-            [_resultCode, _resultMessage, _baseLoadoutId] call _resultFail
+            [_resultCode, _resultMessage, _baseLoadoutId, _rejectedClass] call _resultFail
         };
 
         // Revalidate every wearable class; local profile data may have been edited.
@@ -818,7 +833,7 @@ private _mutationCaseResult = switch (_op) do {
                         } else {
                             private _requireAppearance = !(_kind isEqualTo "facewear");
                             private _entitlement=[_uid,"Wearables",_class,_requireAppearance] call bn_koth_fnc_progression_evaluateItemEntitlement;
-                            if !(_entitlement getOrDefault ["entitled",false]) then {_resultCode=_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"];_resultMessage=_entitlement getOrDefault ["message",format ["Saved %1 is not entitled.",_kind]];};
+                            if !(_entitlement getOrDefault ["entitled",false]) then {_resultCode=_entitlement getOrDefault ["code","ERR_WEARABLE_ENTITLEMENT"];_rejectedClass=_class;_resultMessage=_entitlement getOrDefault ["message",format ["Saved %1 is not entitled.",_kind]];};
                         };
                     };
                 };
@@ -826,7 +841,7 @@ private _mutationCaseResult = switch (_op) do {
         } forEach [[3,"uniform"],[4,"vest"],[5,"backpack"],[6,"headgear"],[7,"facewear"]];
 
         if !(_resultCode isEqualTo "OK") exitWith {
-            [_resultCode, _resultMessage, _baseLoadoutId] call _resultFail
+            [_resultCode, _resultMessage, _baseLoadoutId, _rejectedClass] call _resultFail
         };
 
         // Validate container cargo entries.
@@ -864,6 +879,7 @@ private _mutationCaseResult = switch (_op) do {
                                             ] call bn_koth_fnc_progression_evaluateItemEntitlement;
                                             if !(_cargoEntitlement getOrDefault ["entitled", false]) then {
                                                 _resultCode = _cargoEntitlement getOrDefault ["code", "ERR_CONSUMABLE_ENTITLEMENT"];
+                                                _rejectedClass = _entryClass;
                                                 _resultMessage = _cargoEntitlement getOrDefault ["message", "Saved cargo item is no longer entitled for this player."];
                                             };
                                         };
@@ -908,7 +924,7 @@ private _mutationCaseResult = switch (_op) do {
         ];
 
         if !(_resultCode isEqualTo "OK") exitWith {
-            [_resultCode, _resultMessage, _baseLoadoutId] call _resultFail
+            [_resultCode, _resultMessage, _baseLoadoutId, _rejectedClass] call _resultFail
         };
 
         _resultMessage = format ["Local kit '%1' loaded and revalidated.", _kitId];

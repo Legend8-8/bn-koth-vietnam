@@ -32,7 +32,7 @@ class CfgBnKothScoring
 			maximumBoardedSeconds = 900;
 			samePairCooldownSeconds = 600;
 			eligibleStoreCategories[] = {"ROTARY"};
-			eligibleVehicleRoles[] = {"TRANSPORT"};
+			eligibleVehicleCapabilities[] = {"TRANSPORT"};
 		};
 
 		// XP required for each next level uses:

@@ -24,7 +24,7 @@ A location now only needs the short display metadata in config:
 - displayName
 - description
 - image
-- objects[] (optional explicit list; prefix-based detection is preferred)
+- objects[] (optional exceptional explicit assignment)
 - optional explicit override values for exceptional Eden naming breaks
 - optional inclusive minPlayers / maxPlayers AO population bounds (maxPlayers = -1 means unlimited)
 
@@ -50,17 +50,30 @@ In mission.sqm, marker names are what gameplay code uses, for example:
 
 Numeric marker id values in mission.sqm (for example id=0, id=2, id=3) are editor-internal and should not be used for runtime game logic.
 
-5. Object Grouping by Zone
+5. Static Object Ownership by Zone
 
-If an object belongs to a specific location, give it an Eden variable name with prefix <locationId>_.
+Ordinary unnamed static props inside one location's WEST/EAST base-zone markers
+continue to be discovered spatially. This remains the standard workflow for
+existing and future normal AOs; they do not require Eden object names or
+objects[] entries.
+
+When overlapping or nested locations need exclusive ownership, give the object
+an Eden variable name with prefix <locationId>_. A recognised configured prefix
+owns the object before spatial discovery. If configured IDs overlap, the longest
+matching ID wins, so saigon_tower_cover_01 belongs to saigon_tower rather than
+saigon.
 
 Example naming pattern:
 
 - saigon_cover_01
-- saigon_tower_01
+- saigon_tower_cover_01
 - hue_cover_01
 
-You can still use objects[] for explicit object names, but it is optional.
+You can still use objects[] for exceptional explicit assignments. It has the
+highest precedence, but remains optional. The same object must not be listed by
+multiple locations; conflicting authored claims are logged and excluded from
+the cache. Units, vehicles and Logic/module helpers remain ineligible for static
+hide/show ownership even when their variable names use a location prefix.
 
 At location activation time:
 
@@ -81,9 +94,23 @@ That function:
 - publishes BN_KOTH_activeLocationId;
 - publishes BN_KOTH_activeZoneMarker, active respawn markers and active safe-zone markers;
 - hides inactive location markers;
-- deactivates non-active static location objects using the location base-zone spatial ownership plus objects[] entries if provided, while keeping them reactivatable.
+- deactivates non-active static location objects from the single exclusive ownership cache while keeping them reactivatable.
 
 Zone control/scoring then runs only on BN_KOTH_activeZoneMarker.
+
+On activation, the server retains original references and ATL transforms for
+restorable AO terrain inside the capture marker, including structural objects
+and vegetation classified as `TREE`, `SMALL TREE`, or `BUSH`. During RESETTING,
+after the return-to-lobby pass and only if no player remains in the capture
+marker, it repairs damaged originals and discards the snapshot before normal AO
+teardown.
+For fully destroyed originals, the saved reference and transform are restored
+regardless of ruin metadata. If one visible ruin has a class named by the
+original's inherited CfgVehicles DestructionEffects and matches its saved
+position and orientation, the server hides it globally first. Missing or
+ambiguous ruin matches are logged without hiding another object or blocking
+original restoration. Hidden ruins are excluded from later snapshots. This does
+not own editor-placed static AO props or static geography such as roads and rocks.
 
 Configured vs activatable is intentionally different:
 
@@ -95,9 +122,73 @@ Configured vs activatable is intentionally different:
 1. Add zone, respawn and side-specific base-zone markers in mission.sqm (via Eden).
 2. Name markers to the convention, for example hue_zone, hue_respawn_west, hue_respawn_east, hue_west_base_zone and hue_east_base_zone.
 3. Add a short class hue in maps/<map_name>/map_config/locations.hpp with displayName, description and image.
-4. Give zone-specific objects Eden variable names with prefix <locationId>_ (for example hue_...).
+4. Place ordinary base props inside the relevant base-zone marker; spatial discovery owns them automatically. Use <locationId>_ Eden names or objects[] only when exceptional overlapping/nested ownership must be explicit.
 5. Set defaultLocationId to hue for testing.
 6. Start mission and verify only hue markers/objects are active.
+
+Cam Lao Nam beta 2 locations and reusable defaults
+
+Xom Ram (`xom_ram`) and Tieng Tai (`tieng_tai`) are registered in
+`maps/cam_lao_nam/map_config/locations.hpp` and included in rotation with the
+existing low-population band of 0–20 connected human players. Both have their
+capture marker, WEST/EAST respawns, 50-metre-radius base markers, command
+mapboards and spawn tents. Their physical base props have 100% presence and
+use the existing exclusive static-object ownership and activation lifecycle.
+Neither currently has vehicle spawn roles; those capabilities remain unavailable.
+Lobby images are empty until authored images are supplied.
+
+Reusable off-map defaults
+
+`maps/cam_lao_nam/mission.sqm` retains the `AO DEFAULT TEMPLATES - NEVER
+REGISTER` layer with three permanent copy-only masters. The earlier fifteen
+staged setups have been removed.
+
+| Master ID | Capture footprint | Centre (X, Y) |
+| --- | --- | --- |
+| `default_small` | 300 x 300 metres | 2000, -2000 |
+| `default_medium` | 600 x 600 metres | 4200, -2000 |
+| `default_large` | 900 x 900 metres | 6400, -2000 |
+
+Each master contains a capture marker and separate WEST BASE / EAST BASE layers.
+Each base has its respawn and safe-zone markers, command mapboard, spawn tent,
+command vehicle marker, free ground/air markers, and paid ground/air helipads.
+Its nested SEA layer holds the free sea marker and paid sea helipad; move these
+to suitable water or delete that sublayer for a land-only AO.
+
+All masters remain south of the map at negative Y. Their props retain 0%
+Probability of Presence and their markers retain zero alpha. None has a
+`CfgBnKothLocations` class or rotation entry: lobby candidates enumerate that
+configuration and activation rejects unconfigured IDs. Do not register the
+master IDs or enable their props. Presence is evaluated at mission start, so
+0% presence does not prevent editing the templates in Eden.
+
+To author another location:
+
+1. Duplicate an entire master layer, keeping the original off-map. Give the
+   copy a new unique location ID and update every copied marker name and object
+   variable to that ID. Eden's automatic duplicate suffixes do not satisfy the
+   runtime role conventions; changing only the layer label is insufficient.
+2. Move the copy and its base layers to the destination. Snap physical objects
+   to the surface and check tent entrances, spawn headings, board access,
+   vehicle clearance and safe-zone coverage. The master is a flat composition,
+   not a terrain-fitted destination.
+3. Resize/rotate the capture and safe-zone markers as needed, keeping the bases
+   outside the capture area. Marker A/B values are half-sizes: the masters start
+   at 150, 300 and 450 metres for the capture area and 100 metres for the bases.
+4. Set Probability of Presence to 100% on the copy's physical objects. Keep
+   simulation and damage disabled, matching existing AO props.
+5. Add the location class to this map's `CfgBnKothLocations` and its ID to
+   `locationRotation[]`. Author its display name, description, image and
+   population bounds. Physical size does not automatically determine population
+   suitability. Leave unfinished locations unregistered and their props disabled.
+6. Run `python tools/validate_ao_config.py`, then test activation, boards,
+   deployment/respawn, applicable vehicle roles and inactive-object hiding in
+   Eden/hosted and dedicated multiplayer. The active-location owner sets the
+   five main marker alphas; invisible `Empty` spawn markers can remain at zero.
+
+Unregistered unfinished AO markers are not automatically hidden by the active
+location lifecycle. Set their alpha to zero if they should not appear on player
+maps during authoring.
 
 8. Extending the Location Schema
 
@@ -214,6 +305,34 @@ The zone system also supports a moving priority area inside the active AO.
 - During ACTIVE play, one silent client-local Arma Simple Task identifies the
   Priority objective. Its destination follows the same global marker, owns no
   geometry or gameplay state, and is removed with the deployed HUD/objective.
+
+Saigon Tower uses the optional `VERTICAL_FLOORS` Priority profile. Its invisible
+authored rectangle fixes the X/Y footprint; ordered Logic anchors mark walkable
+floor surfaces in ASL. Each occupied volume begins just below its surface by
+`priorityFloorSurfaceTolerance` and ends at the midpoint to the next anchor;
+the roof volume extends upward by half the preceding spacing. Missing or nonascending
+anchors, invalid footprint geometry, or mismatched labels invalidate the location.
+The server dwells for `priorityDwellSeconds`, then moves to one adjacent floor over
+`priorityTransitionSeconds`. The authoritative control pass interpolates the
+vertical bounds during travel, so players inside the moving volume retain
+Priority weight and rewards.
+The client interpolates the Simple Task destination from replicated floor
+geometry and server timestamps. Its destination height sits just above the
+interpolated floor surface, clamped inside the authoritative occupied bounds.
+JIP receives the latest state.
+`priorityContinueChance` controls interior direction, while the end floors force
+reversal. The global Priority marker stays visible on the map and supplies the
+normal Priority ownership color and contested brush. The Simple Task keeps the
+floor label, and the existing notification card briefly announces floor arrival
+and movement. The bottom-right HUD keeps Priority occupancy only. Ordinary locations
+default to the existing roaming 2D marker and need no extra authoring.
+
+Optional location fields `maximumControlHeight`, `battlefieldPickupsEnabled`
+and `airInsertionEnabled` default to the existing global height and enabled
+behaviour. Tower sets a 35-metre ATL control ceiling, disables battlefield
+pickups and air insertion, and has no vehicle spawn roles. Its command mapboards
+still provide the deployed menu. The Tower lobby image is empty until an authored
+image is available; the existing lobby hides empty image controls.
 
 The same active-AO lifecycle owns a small config-driven set of physical battlefield
 weapon holders. The server performs a bounded placement search inside the active

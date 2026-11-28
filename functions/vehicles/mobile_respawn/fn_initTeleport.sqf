@@ -76,6 +76,7 @@ private _resolveBoardTarget = {
 
             if (_side isEqualTo sideUnknown) then {continue};
 
+            private _activeLocationData = [missionNamespace getVariable ["BN_KOTH_activeLocationId", ""]] call bn_koth_fnc_zone_getLocationData;
             private _board = [_boardRef, _mapboardAccessDistance] call _resolveBoardTarget;
             if (isNull _board) then {continue};
 
@@ -117,7 +118,7 @@ private _resolveBoardTarget = {
             };
 
             private _insertionCfg = missionConfigFile >> "CfgBnKothAirInsertion";
-            if (isClass _insertionCfg && {(getNumber (_insertionCfg >> "enabled")) > 0}) then {
+            if (isClass _insertionCfg && {(getNumber (_insertionCfg >> "enabled")) > 0} && {_activeLocationData getOrDefault ["airInsertionEnabled", true]}) then {
                 private _insertionCost = (getNumber (_insertionCfg >> "cost")) max 1;
                 {
                     _x params ["_mode", "_label"];
@@ -135,6 +136,15 @@ private _resolveBoardTarget = {
                         _board setVariable [_key, _actionId, false];
                     };
                 } forEach [["START_SOLO", "SOLO"], ["START_GROUP", "GROUP"]];
+            } else {
+                {
+                    private _key = format ["BN_KOTH_airInsertionBoardAction_%1_%2", _sideToken, _x];
+                    private _actionId = _board getVariable [_key, -1];
+                    if (_actionId >= 0) then {
+                        _board removeAction _actionId;
+                        _board setVariable [_key, -1, false];
+                    };
+                } forEach ["START_SOLO", "START_GROUP"];
             };
         } forEach _defs;
 

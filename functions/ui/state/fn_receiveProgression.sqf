@@ -101,6 +101,7 @@ if (_oldLevel isEqualType 0 && {_oldLevel >= 1} && {_level > _oldLevel}) then {
     _unlockEntries sort true;
     {
         [createHashMapFromArray [
+            ["category", "PROGRESSION"],
             ["title", "NEW EQUIPMENT AVAILABLE"],
             ["body", _x select 1],
             ["footer", "Level requirement met"]
@@ -121,6 +122,7 @@ if (!(_rewardAmount isEqualTo 0) || {_rewardType in _eventTypes}) then {
             case "priority": {"PRIORITY"};
             case "transport": {"TRANSPORT"};
             case "air_insertion": {"AIR INSERTION"};
+            case "loadout_slot_purchase": {"LOADOUT SLOT PURCHASE"};
             case "round_participation": {"ROUND PARTICIPATION"};
             case "round_winner": {"VICTORY BONUS"};
             case "teamkill": {"TEAMKILL PENALTY"};
@@ -160,6 +162,9 @@ if (!isNull _menuDisplay) then {
     // targeted repaint. Do not rebuild/re-route the entire deployed menu.
     private _activePage = toUpper (uiNamespace getVariable ["BN_KOTH_menuActivePage", "LOADOUT"]);
     switch (_activePage) do {
+        case "LOADOUT_KITS": {
+            [_menuDisplay] call bn_koth_fnc_menu_refreshSessionKits;
+        };
         case "PERKS": {
             [_menuDisplay] call bn_koth_fnc_menu_refreshPerks;
         };

@@ -76,7 +76,8 @@ Air-insertion seat assignment and physical backpack substitution/restoration| Ow
 Local player loadout interface| Owning client
 Loadout entitlement validation| Server
 Traversal input, geometry probing and movement| Owning client
-Named kit profile storage and management| Owning client; stored data remains untrusted intent
+Named kit profile storage and management| Owning client; team-specific contents/defaults remain untrusted intent
+Permanent loadout slot purchases | Server progression through the existing mapboard-gated loadout request; UID-wide persisted count
 Arsenal physical-loadout reconciliation| Server reads the owned player object
 Arsenal preview framework| Owning client; currently disabled
 Safe-zone physical inventory blocking| Owning client
@@ -291,6 +292,12 @@ server-only. Store capability display is client presentation derived from the
 active location, while free slots, rentals and command teleport independently
 enforce the same spawn-role capability on the server.
 
+The temporary beta AO population override is a private server-console function,
+is not RemoteExec allowlisted, and substitutes only the population consumed by
+AO vote-candidate reconciliation. Connected-human identity/count, team caps,
+readiness, balance, scoring, rewards and progression continue to consume their
+normal authoritative state.
+
 10. Performance
 
 Do not use "eachFrame" for zone control, scoring or database activity.
@@ -356,17 +363,60 @@ existing server-only acquisition API, targets the result to that owner, and
 publishes changed cash/ownership/rental state through the existing player-only
 progression update. Store requests never broadcast and never equip equipment.
 
-14. Vehicle Rental Requests
+14. Personal Paid-Vehicle Requests
 
-Clients submit only RENT or owner access-mode intent. The server derives the
+Clients submit only RENT, PURCHASE, SPAWN or owner access-mode intent. The server derives the
 UID from `remoteExecutedOwner`, requires the current authoritative representation
 to be alive and deployed in `ACTIVE` at its team mapboard, validates current
-side/level/perks, cash and active-rental state, selects/reserves a cached authored paid pad, creates the
-vehicle server-local, and only then deducts cash — all as one transaction with
-no separate requisition step. The active rental map is server-only; only the
+side/level/perks, family/loadout entitlement, cash and shared active-life state,
+selects/reserves a cached authored paid pad, creates the vehicle server-local,
+then commits cash and durable ownership through the persistence owner. Spawn
+failure occurs before charging. A failed immediate save restores session state,
+refunds through the cash owner and verifies a compensating save; failure to
+confirm that save is separately reported as durable state requiring operator
+inspection. The active personal map is server-only; only the
 requesting client receives their projected state. Get-in authorization is
 checked from server-owned UID/access data. A narrowly allowlisted
 server-to-owner endpoint performs locality-sensitive ejection.
+
+Fixed-wing paid vehicles are created by the server at a config-resolved ASL
+position and given server-authored direction and velocity. The existing
+owner-targeted vehicle initializer performs only the locality-sensitive
+central-menu close, `moveInDriver` and action creation after verifying that the
+server-authored owner UID matches the local player. For rotary products, that
+same verified owner-local initializer invokes a private presentation owner with
+server-resolved spawn and service positions. It creates only local markers and
+a local Draw3D label; it owns no spawn or service eligibility and is not a
+RemoteExec endpoint.
+
+Vehicle repair/rearm requests carry only the vehicle object as intent. The
+server derives the caller from `remoteExecutedOwner`, confirms the one active
+personal record and resolves all price, mode, AO and geometry from config and
+server state. Air-gate completion is never client-reported: the shared server
+vehicle manager validates the registered vehicle's movement. The service
+presentation endpoint accepts gate data only from the server and creates only
+client-local Draw3D state; AIR_GATE creates no custom map/minimap marker. Rotary
+guidance creates an owner-local map area from the configured server-resolved
+service position and radius; its 3D label additionally consumes the existing
+server-owned friendly safe-zone protection projection. After the server commits payment and repair,
+one narrow server-to-all endpoint runs `setVehicleAmmo 1` on each machine so
+each locally-owned turret is refilled without changing pylon or magazine
+selection.
+
+Every active-life ending path routes through the same server owner. Destruction,
+attributable deletion, abandonment, owner disconnect and unknown genuine-loss
+reasons start replacement cooldown. Forced AO, round, mission and return-to-lobby
+cleanup removes the entity and active record without applying loss cooldown.
+Config-enabled voluntary return reuses the same request endpoint, one-per-UID
+session map, gate placement, crossing monitor and cancellation owner. The
+server revalidates owner, pilot, active record, round and pad/gate geometry.
+`VOLUNTARY_RETURN` routes through the central life-ending owner as a no-cooldown
+reason, performs no economy/persistence mutation, and uses the existing
+server-to-owner force-exit endpoint to place the local pilot at the authoritative
+friendly paid-air position before entity deletion.
+The open Store derives its displayed seconds from the server-supplied expiry
+and may refresh that presentation once per second; it does not decrement or
+authorize the server-owned cooldown.
 
 14.1 Tactical Air Insertion
 

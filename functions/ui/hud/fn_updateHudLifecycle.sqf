@@ -23,6 +23,15 @@ private _visible = uiNamespace getVariable ["BN_KOTH_hudVisible", false];
 private _layer = "BN_KOTH_HUD" call BIS_fnc_rscLayer;
 
 if (_shouldShow) then {
+    private _restoredUnit = uiNamespace getVariable ["BN_KOTH_minimapRestoredUnit", objNull];
+    if ((side group player) in [west, east] && {!_visible || {!(_restoredUnit isEqualTo player)}}) then {
+        private _minimapVisible = missionNamespace getVariable ["BN_KOTH_minimapVisible", true];
+        if (visibleGPS isNotEqualTo _minimapVisible) then {
+            openGPS _minimapVisible;
+        };
+        uiNamespace setVariable ["BN_KOTH_minimapRestoredUnit", player];
+    };
+
     if (!_visible) then {
         _layer cutRsc ["BN_KOTH_RscHud", "PLAIN", 0, false];
         uiNamespace setVariable ["BN_KOTH_hudVisible", true];

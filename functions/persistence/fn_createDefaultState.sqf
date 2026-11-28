@@ -17,9 +17,13 @@ createHashMapFromArray [
     ["xp", _xp],
     ["level", [_xp] call bn_koth_fnc_progression_xp_getLevel],
     ["cash", missionNamespace getVariable ["BN_KOTH_startingCash", 1000]],
+    ["unlockedLoadoutSlots", 1],
     ["ownedWeapons", []],
     ["ownedPerks", []],
     ["activePerks", []],
     ["rentedWeapons", []],
-    ["weaponKills", createHashMap]
+    ["weaponKills", createHashMap],
+    ["ownedVehicleFamilies", []],
+    ["vehicleFirstSpawnsUsed", []],
+    ["vehicleMastery", createHashMap]
 ]

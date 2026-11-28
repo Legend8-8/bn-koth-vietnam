@@ -45,6 +45,7 @@ if (_isEject || {!isTouchingGround _vehicle} || {!_samePilot} || {!_sameAo} || {
 
 _candidate set ["phase", "AWAITING_AO"];
 _candidate set ["exitAt", serverTime];
+_candidate set ["distance", _distance];
 _candidate set ["expiresAt", serverTime + (missionNamespace getVariable ["BN_KOTH_transportConfirmationWindow", 30])];
 _candidates set [_uid, _candidate];
 missionNamespace setVariable ["BN_KOTH_transportCandidates", _candidates];

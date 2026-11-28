@@ -137,7 +137,8 @@ private _aoVisible = _roundActive
     && {!(_activeAoMarker isEqualTo "")}
     && {!((markerShape _activeAoMarker) isEqualTo "")};
 private _priorityMarker = "BN_KOTH_priorityZoneMarker";
-private _priorityVisible = false;
+private _priorityVisible = _aoVisible
+    && {(count (missionNamespace getVariable ["BN_KOTH_verticalPriorityGeometry", createHashMap])) > 0};
 private _priorityCounts = [0, 0];
 private _aoCounts = [0, 0];
 private _zonePopulation = missionNamespace getVariable ["BN_KOTH_zonePopulation", createHashMap];
@@ -301,6 +302,14 @@ if !((uiNamespace getVariable ["BN_KOTH_hudStaticKey", []]) isEqualTo _staticKey
         round (_aoCounts select 1)
     ];
     _weightedPlayerCountEastCtrl ctrlShow _aoVisible;
+
+    private _priorityPopulationCtrl = _display displayCtrl BN_KOTH_IDC_HUD_PRIORITY_POPULATION;
+    _priorityPopulationCtrl ctrlSetStructuredText parseText format [
+        "<t align='center' valign='middle'>PRIORITY  <t color='#73C4FF'>+%1</t>  /  <t color='#FF7A7A'>+%2</t></t>",
+        _priorityCounts select 0,
+        _priorityCounts select 1
+    ];
+    _priorityPopulationCtrl ctrlShow _priorityVisible;
     uiNamespace setVariable ["BN_KOTH_hudStaticKey", _staticKey];
 };
 

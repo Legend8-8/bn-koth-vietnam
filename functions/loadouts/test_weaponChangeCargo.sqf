@@ -74,13 +74,29 @@ if (isNull _player || {!isPlayer _player} || {(getPlayerUID _player) isEqualTo "
         _baselineAssigned set [5, "vn_test_stale_saved_nvg"];
         _baseline set [9, _baselineAssigned];
         private _baselineNormalization = [_player, createHashMapFromArray [["mutation", createHashMapFromArray [
-            ["op", "load_local_kit"], ["savedLoadout", _baseline]
+            ["op", "load_local_kit"], ["kitSlot", 1], ["kitSide", "WEST"], ["savedLoadout", _baseline]
         ]]]] call bn_koth_fnc_loadouts_validateLoadout;
         private _normalizedAssigned = (_baselineNormalization getOrDefault ["validatedLoadout", []]) param [9, []];
         ["Saved-kit LOAD restores baseline GPS and clears stale NVG before apply",
             (_baselineNormalization getOrDefault ["success", false]) &&
             {(_normalizedAssigned param [1, ""]) isEqualTo "itemgps"} &&
             {(_normalizedAssigned param [5, "invalid"]) isEqualTo ""}] call _check;
+
+        private _unavailable = +_baseline;
+        private _unavailableVest = +(_unavailable select 4);
+        private _unavailableCargo = +(_unavailableVest select 1);
+        _unavailableCargo pushBack ["vn_m34_grenade_mag", 1, 1];
+        _unavailableVest set [1, _unavailableCargo];
+        _unavailable set [4, _unavailableVest];
+        private _unavailableResult = [_player, createHashMapFromArray [["mutation", createHashMapFromArray [
+            ["op", "load_local_kit"], ["kitSlot", 1], ["kitSide", "WEST"], ["savedLoadout", _unavailable]
+        ]]]] call bn_koth_fnc_loadouts_validateLoadout;
+        ["Unavailable saved magazine fails closed with its classname",
+            !(_unavailableResult getOrDefault ["success", true]) &&
+            {(_unavailableResult getOrDefault ["code", ""]) isEqualTo "NOT_AVAILABLE"} &&
+            {(_unavailableResult getOrDefault ["rejectedClass", ""]) isEqualTo "vn_m34_grenade_mag"} &&
+            {(_unavailableResult getOrDefault ["validatedLoadout", []]) isEqualTo []}
+        ] call _check;
 
         private _gpsMutation = [
             _player,
@@ -147,7 +163,7 @@ if (isNull _player || {!isPlayer _player} || {(getPlayerUID _player) isEqualTo "
             } forEach [3, 4, 5];
             _savedLoadout set [_slotIndex, +_emptySlot];
             private _savedResult = [_player, createHashMapFromArray [["mutation", createHashMapFromArray [
-                ["op", "load_local_kit"],
+                ["op", "load_local_kit"], ["kitSlot", 1], ["kitSide", "WEST"],
                 ["kitId", format ["test_empty_%1", _slotName]],
                 ["savedLoadout", _savedLoadout]
             ]]]] call bn_koth_fnc_loadouts_validateLoadout;
@@ -190,7 +206,7 @@ if (isNull _player || {!isPlayer _player} || {(getPlayerUID _player) isEqualTo "
         _saved set [4, _vest];
         private _result = [
             _player,
-            createHashMapFromArray [["op", "load_local_kit"], ["kitId", "test_incompatible_cargo"], ["savedLoadout", _saved]],
+            createHashMapFromArray [["op", "load_local_kit"], ["kitSlot", 1], ["kitSide", "WEST"], ["kitId", "test_incompatible_cargo"], ["savedLoadout", _saved]],
             _compatibilityCfg, _arsenalCfg, west, "WEST", _starter get "loadout"
         ] call bn_koth_fnc_loadouts_validateMutation;
         ["Incompatible saved-kit cargo still rejects",

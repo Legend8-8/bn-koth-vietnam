@@ -1,25 +1,39 @@
 /*
     File: fn_reconcileVoteCandidates.sqf
     Author: Legend
-    Description: Reconciles published AO vote candidates with current connected-human population.
+    Description: Reconciles published AO vote candidates with the effective AO
+        eligibility population. A temporary server debug override may replace
+        only this filtering input without changing real population ownership.
     Execution: Server
     Parameters:
         0: Connected-human population, or -1 to resolve it server-side <NUMBER>
+        1: Force candidate reselection even when current candidates remain eligible <BOOL>
     Returns: Reconciliation state <HASHMAP>
     Public: Yes
 */
 
-params [["_population", -1, [0]]];
+params [["_population", -1, [0]], ["_forceRefresh", false, [true]]];
 
-private _result = createHashMapFromArray [["changed", false], ["population", _population], ["candidates", []]];
+private _result = createHashMapFromArray [["changed", false], ["population", _population], ["realPopulation", _population], ["overrideEnabled", false], ["candidates", []]];
 if (!isServer) exitWith {_result};
 if (_population < 0) then {_population = count ([] call bn_koth_fnc_teams_getConnectedHumanUids)};
+private _realPopulation = _population;
+// TEMPORARY BETA VEHICLE-TEST AO POPULATION OVERRIDE
+private _override = missionNamespace getVariable ["BN_KOTH_debugAoPopulationOverride", -1];
+private _overrideValid = _override isEqualType 0
+    && {finite _override}
+    && {_override >= 0}
+    && {_override <= 256}
+    && {(floor _override) isEqualTo _override};
+if (_overrideValid) then {_population = _override};
 _result set ["population", _population];
+_result set ["realPopulation", _realPopulation];
+_result set ["overrideEnabled", _overrideValid];
 
 private _current = missionNamespace getVariable ["BN_KOTH_voteCandidates", []];
 if !(_current isEqualType []) then {_current = []};
 private _invalid = _current select {!([_x, _population] call bn_koth_fnc_round_isLocationPopulationEligible)};
-if ((count _current) > 0 && {(count _invalid) <= 0}) exitWith {
+if (!_forceRefresh && {(count _current) > 0} && {(count _invalid) <= 0}) exitWith {
     _result set ["candidates", _current];
     _result
 };

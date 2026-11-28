@@ -27,7 +27,7 @@ private _keyMap = createHashMapFromArray [
     ["liveLeaders", "BN_KOTH_liveLeaders"],
     ["roundResult", "BN_KOTH_roundResult"],
     ["playerProgression", "BN_KOTH_playerProgressionLocal"],
-    ["vehicleRentalState", "BN_KOTH_vehicleRentalStateLocal"],
+    ["vehiclePersonalState", "BN_KOTH_vehiclePersonalStateLocal"],
     ["playerStates", "BN_KOTH_playerStates"],
     ["playerTeamAssignments", "BN_KOTH_playerTeamAssignments"],
     ["playerNames", "BN_KOTH_playerNames"],

@@ -46,6 +46,13 @@ if !(_cash isEqualType 0 && {finite _cash} && {_cash >= 0}) then {
     _warnings pushBack "NORMALIZED_CASH";
 };
 
+// Older schemas have no paid slots. Invalid current state grants only slot 1.
+private _slots = if (_version < 5) then {1} else {_raw getOrDefault ["unlockedLoadoutSlots", 1]};
+if !(_slots isEqualType 0 && {finite _slots} && {_slots >= 1} && {_slots isEqualTo floor _slots}) then {
+    _slots = 1;
+    _warnings pushBack "NORMALIZED_LOADOUT_SLOTS";
+};
+
 private _owned = _raw getOrDefault ["ownedWeapons", []];
 if !(_owned isEqualType []) then {
     _owned = [];
@@ -102,17 +109,39 @@ private _weaponKills = createHashMap;
     };
 } forEach (keys _rawKills);
 
+private _vehicleCandidate = createHashMapFromArray [
+    ["ownedVehicleFamilies", _raw getOrDefault ["ownedVehicleFamilies", []]],
+    ["vehicleFirstSpawnsUsed", _raw getOrDefault ["vehicleFirstSpawnsUsed", []]],
+    ["vehicleMastery", _raw getOrDefault ["vehicleMastery", createHashMap]]
+];
+private _vehicleSerialized = [_vehicleCandidate] call bn_koth_fnc_persistence_serializeVehicleProgression;
+if !(_vehicleSerialized getOrDefault ["success", false]) then {
+    _vehicleCandidate = createHashMapFromArray [["ownedVehicleFamilies", []], ["vehicleFirstSpawnsUsed", []], ["vehicleMastery", createHashMap]];
+    _warnings pushBack "NORMALIZED_VEHICLE_PROGRESSION";
+} else {
+    private _vehicleCanonical = [_vehicleSerialized get "value"] call bn_koth_fnc_persistence_deserializeVehicleProgression;
+    _vehicleCandidate = createHashMapFromArray [
+        ["ownedVehicleFamilies", _vehicleCanonical getOrDefault ["owned", []]],
+        ["vehicleFirstSpawnsUsed", _vehicleCanonical getOrDefault ["used", []]],
+        ["vehicleMastery", _vehicleCanonical getOrDefault ["mastery", createHashMap]]
+    ];
+};
+
 private _state = createHashMapFromArray [
     ["schemaVersion", _currentVersion],
     ["uid", _uid],
     ["xp", _xp],
     ["level", [_xp] call bn_koth_fnc_progression_xp_getLevel],
     ["cash", _cash],
+    ["unlockedLoadoutSlots", _slots],
     ["ownedWeapons", _normalizedOwned],
     ["ownedPerks", _ownedPerks],
     ["activePerks", _activePerks],
     ["rentedWeapons", []],
-    ["weaponKills", _weaponKills]
+    ["weaponKills", _weaponKills],
+    ["ownedVehicleFamilies", +(_vehicleCandidate getOrDefault ["ownedVehicleFamilies", []])],
+    ["vehicleFirstSpawnsUsed", +(_vehicleCandidate getOrDefault ["vehicleFirstSpawnsUsed", []])],
+    ["vehicleMastery", _vehicleCandidate getOrDefault ["vehicleMastery", createHashMap]]
 ];
 
 createHashMapFromArray [
