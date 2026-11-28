@@ -72,7 +72,7 @@ and is decoded with `parseSimpleArray`, never `compile`.
 Missing extension, connection/protocol failure, malformed/error response,
 duplicate rows, invalid UID, invalid authoritative progression fields, and query duration beyond
 the configured threshold are explicit failures. Legacy `saved_kits` text is
-ignored on load so it cannot block XP/cash/ownership/perk/vehicle progression.
+ignored on load so it cannot block XP/cash/ownership/perk/mastery/vehicle progression.
 The existing configured session fallback may let the player continue with a server-owned default state,
 but it does not claim durability. A session created from any failed/malformed or
 future-schema load is write-blocked for the rest of that mission session, so its
@@ -83,7 +83,7 @@ schema rows are rejected and are not automatically overwritten.
 threshold therefore detects and rejects an over-time response after control
 returns; database/driver connection timeouts must also be configured on the
 server. Progression saves remain event-driven and debounced. Local saved-kit
-changes do not schedule database writes.
+changes do not issue or schedule database writes.
 
 ## TCAdmin-oriented verification checklist
 
@@ -122,6 +122,32 @@ when the persistence backend is unavailable. Successful purchases use the
 existing coalesced progression save (including disconnect/mission-end flush),
 so a purchase response confirms the session mutation, not a synchronous disk
 commit. Failed saves remain dirty under the existing persistence policy.
+
+### Legacy v3 mission compatibility
+
+The following compatibility note applies only to older v3 mission deployments.
+Schema-v5 missions require the eleven-field load/save contract documented above.
+
+For a V3 deployment, retain the existing `saved_kits` column and nine-field
+SQL_CUSTOM contract. The mission writes `-` and ignores the column on load.
+Saved loadouts need no database migration.
+
+If a public-beta V3 mission must temporarily run against a table that already
+has the V4 `vehicle_progression MEDIUMTEXT NOT NULL` column, its nine-parameter
+`savePlayer` insert fails for new UIDs because that column has no default. In
+that specific deployment only, change the live `bn_koth.ini` `savePlayer` lines
+to include `vehicle_progression` in the INSERT column list and the literal `'-'`
+as its tenth VALUES entry. Keep `SQL1_INPUTS = 1,2,3,4,5,6,7,8,9`, the V3
+health marker, nine-field `loadPlayer`, and the existing ON DUPLICATE KEY UPDATE
+list unchanged. The literal initializes only new rows; existing vehicle data is
+not overwritten. Do not deploy this variant against a V3 table without that
+column. Restart the server so extDB3 registers the changed SQL_CUSTOM protocol,
+then verify first-time and existing-UID saves in both server RPT and extDB3 logs.
+
+```ini
+SQL1_2 = (uid, schema_version, xp, cash, owned_weapons, weapon_kills, owned_perks, active_perks, saved_kits, vehicle_progression)
+SQL1_3 = VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '-')
+```
 
 The operator must supply privately: server OS/architecture, extDB3 build and
 install path, exact `-serverMod` configuration, MariaDB/MySQL host/port/database,

@@ -156,6 +156,13 @@ bn_koth_fnc_persistence_extdbCall = {
 missionNamespace setVariable ["BN_KOTH_persistenceBackend", "EXTDB3"];
 private _adapterLoad = ["76561198000000000"] call bn_koth_fnc_persistence_backendLoadPlayer;
 [_adapterLoad getOrDefault ["success", false] && {((_adapterLoad get "record") get "unlockedLoadoutSlots") isEqualTo 3}, "V5 adapter did not load slot column."] call _assert;
+(_stubRows select 0) set [8, "malformed legacy saved-kit blob"];
+private _legacyKitLoad = ["76561198000000000"] call bn_koth_fnc_persistence_backendLoadPlayer;
+[_legacyKitLoad getOrDefault ["success", false]
+    && {((_legacyKitLoad get "record") get "xp") isEqualTo 12}
+    && {((_legacyKitLoad get "record") get "cash") isEqualTo 34}
+    && {isNil {(_legacyKitLoad get "record") get "savedKits"}}, "Legacy saved-kit text interfered with authoritative progression load."] call _assert;
+(_stubRows select 0) set [8, "-"];
 (_stubRows select 0) set [10, -1];
 private _badSlotLoad = ["76561198000000000"] call bn_koth_fnc_persistence_backendLoadPlayer;
 [!(_badSlotLoad getOrDefault ["success", true]) && {(_badSlotLoad get "code") isEqualTo "MALFORMED_LOADOUT_SLOTS"}, "Malformed slot column was accepted."] call _assert;

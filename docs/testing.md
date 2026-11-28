@@ -1430,7 +1430,7 @@ On a dedicated server with at least three players, verify:
    the local set and preferred ID must remain correct.
 2. Confirm those local operations do not schedule a `savePlayer` write and that
    ordinary XP/cash/ownership/mastery/perk/vehicle progression saves still work.
-   The V4 database
+   The V5 database
    `saved_kits` field remains `-` and is ignored on load.
 3. Save a loadout containing a current rental, expire/remove the rental, then
    load and respawn; the old saved intent must not recreate entitlement.
