@@ -388,7 +388,7 @@ mission's readiness flags and progression maps are recreated on mission load.
 The persistence adapter therefore recognizes extDB3's exact duplicate database
 and protocol responses on same-process mission reload, then proves the
 configured SQL_CUSTOM protocol with a read-only `healthCheck` query against the
-canonical table before publishing readiness. The returned BN KOTH schema-v4
+canonical table before publishing readiness. The returned BN KOTH schema-v5
 marker also identifies the expected protocol file contract. A duplicate
 response alone never makes the backend ready.
 
@@ -716,15 +716,35 @@ unit to remain alive.
 
 ## Locally saved loadouts
 
-Saved loadouts and the preferred kit ID are client-owned `profileNamespace`
-intent. Local create, rename, overwrite, delete, and preference changes do not
-mutate server progression or schedule database writes. A saved Unit Loadout is
-untrusted and passes the normal server side, level, ownership, mastery, perk,
-and rental checks every time it is loaded or selected for spawn. Fixed GPS/NVG
-assigned slots are normalized inside that validation before saved assigned
-entries are checked. An invalid spawn candidate falls back to the faction
-starter. The V4 persistence statement still sends `-` for the legacy
-`saved_kits` column and ignores that column on load.
+Saved loadout contents and one preferred kit ID per team are client-owned
+`profileNamespace` intent. Numbered slots contain separate team kits; the
+server-owned `unlockedLoadoutSlots` count belongs to the UID's existing
+progression record and applies to every playable team. Slot 1 is free and
+slots 2-6 are bought sequentially. Authored prices and the maximum live in
+`CfgBnKothPersistence.savedKitSlotPrices[]` and `savedKitMaxCount`.
+The existing loadout request endpoint validates caller/current-representation
+and active-team mapboard access before delegating slot purchases to progression.
+Progression commits cash and the count together, marks persistence dirty and
+publishes the existing targeted projection. No new RemoteExec endpoint or
+spawn handshake is introduced. Session-fallback players cannot buy permanent slots.
+
+Local create, rename, overwrite, delete and preference changes do not schedule
+database writes. Deleting a kit does not remove the purchased slot. Existing
+three-field profile records remain an unassigned archive, including kits beyond
+six; an explicit copy action puts their contents into an empty unlocked current
+team slot without deleting the original or inferring a team from equipment.
+Old single-default metadata is retained but does not select a team default.
+
+A saved Unit Loadout is untrusted. LOAD, EDIT, default selection, team-selection
+submission and every spawn reuse validate numbered slot access and matching
+team through the existing saved-kit validator, then run normal side, level,
+ownership, mastery, perk and rental checks. The session spawn candidate retains
+the validated contents plus slot/team identity, with no second loadout authority.
+Invalid spawn candidates fall back to the faction starter. Local files remain
+editable; slot validation cannot prove how many arrays a client stores externally
+or prevent rewriting the contents of an already-unlocked slot.
+Schema v5 persists only slot ownership, not kit contents; `saved_kits` remains
+`-` on save and is ignored on load.
 
 ## Assist and teamkill consequences
 

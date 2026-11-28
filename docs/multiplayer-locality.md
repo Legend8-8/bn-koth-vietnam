@@ -76,7 +76,8 @@ Air-insertion seat assignment and physical backpack substitution/restoration| Ow
 Local player loadout interface| Owning client
 Loadout entitlement validation| Server
 Traversal input, geometry probing and movement| Owning client
-Named kit profile storage and management| Owning client; stored data remains untrusted intent
+Named kit profile storage and management| Owning client; team-specific contents/defaults remain untrusted intent
+Permanent loadout slot purchases | Server progression through the existing mapboard-gated loadout request; UID-wide persisted count
 Arsenal physical-loadout reconciliation| Server reads the owned player object
 Arsenal preview framework| Owning client; currently disabled
 Safe-zone physical inventory blocking| Owning client

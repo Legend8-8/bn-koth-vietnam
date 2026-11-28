@@ -167,6 +167,7 @@ class CfgFunctions
             class progression_rentWeapon {file = "functions\progression\acquisition\fn_rentWeapon.sqf";};
             class progression_requestWeaponAcquisition {file = "functions\progression\acquisition\fn_requestWeapon.sqf";};
             class progression_publishUpdate {file = "functions\progression\fn_publishUpdate.sqf";};
+            class progression_purchaseLoadoutSlot {file = "functions\progression\fn_purchaseLoadoutSlot.sqf";};
             class progression_buildPresentationState {file = "functions\progression\fn_buildPresentationState.sqf";};
             class progression_resolveRankPresentation {file = "functions\progression\fn_resolveRankPresentation.sqf";};
             class progression_evaluateEquipmentSidePolicyRules {file = "functions\progression\fn_evaluateEquipmentSidePolicyRules.sqf";};
@@ -522,6 +523,7 @@ class CfgFunctions
             class menu_adjustCargo {file = "functions\ui\menu\fn_menu_adjustCargo.sqf";};
             class menu_setSpawnKit {file = "functions\ui\menu\fn_menu_setSpawnKit.sqf";};
             class menu_saveSessionKit {file = "functions\ui\menu\fn_menu_saveSessionKit.sqf";};
+            class menu_getKitContext {file = "functions\ui\menu\fn_menu_getKitContext.sqf";};
             class menu_loadSessionKit {file = "functions\ui\menu\fn_menu_loadSessionKit.sqf";};
             class menu_deleteSessionKit {file = "functions\ui\menu\fn_menu_deleteSessionKit.sqf";};
             class menu_refreshSessionKits {file = "functions\ui\menu\fn_menu_refreshSessionKits.sqf";};

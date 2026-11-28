@@ -745,7 +745,7 @@ class BN_KOTH_RscMenu
             text = "RENAME SELECTED";
             x = BN_KOTH_MENU_BROWSER_X + BN_KOTH_MENU_BROWSER_W * 0.59;
             w = BN_KOTH_MENU_BROWSER_W * 0.20;
-            action = "['', uiNamespace getVariable ['BN_KOTH_menuKitSelectedId', '']] call bn_koth_fnc_menu_saveSessionKit;";
+            action = "['', uiNamespace getVariable ['BN_KOTH_menuKitSelectedId', ''], 'RENAME'] call bn_koth_fnc_menu_saveSessionKit;";
         };
 
         class BrowserBack: BN_KOTH_Menu_BackButton

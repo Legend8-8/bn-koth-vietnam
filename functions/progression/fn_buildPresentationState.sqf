@@ -59,6 +59,7 @@ private _result = createHashMapFromArray [
     ["xp", _xp],
     ["level", _level],
     ["cash", _cash],
+    ["unlockedLoadoutSlots", _progression getOrDefault ["unlockedLoadoutSlots", 1]],
     ["weaponKills", _weaponKills],
     ["ownedWeapons", _ownedWeapons],
     ["rentedWeapons", _rentedWeapons],

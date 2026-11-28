@@ -46,6 +46,13 @@ if !(_cash isEqualType 0 && {finite _cash} && {_cash >= 0}) then {
     _warnings pushBack "NORMALIZED_CASH";
 };
 
+// Older schemas have no paid slots. Invalid current state grants only slot 1.
+private _slots = if (_version < 5) then {1} else {_raw getOrDefault ["unlockedLoadoutSlots", 1]};
+if !(_slots isEqualType 0 && {finite _slots} && {_slots >= 1} && {_slots isEqualTo floor _slots}) then {
+    _slots = 1;
+    _warnings pushBack "NORMALIZED_LOADOUT_SLOTS";
+};
+
 private _owned = _raw getOrDefault ["ownedWeapons", []];
 if !(_owned isEqualType []) then {
     _owned = [];
@@ -126,6 +133,7 @@ private _state = createHashMapFromArray [
     ["xp", _xp],
     ["level", [_xp] call bn_koth_fnc_progression_xp_getLevel],
     ["cash", _cash],
+    ["unlockedLoadoutSlots", _slots],
     ["ownedWeapons", _normalizedOwned],
     ["ownedPerks", _ownedPerks],
     ["activePerks", _activePerks],
