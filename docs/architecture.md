@@ -740,6 +740,8 @@ submission and every spawn reuse validate numbered slot access and matching
 team through the existing saved-kit validator, then run normal side, level,
 ownership, mastery, perk and rental checks. The session spawn candidate retains
 the validated contents plus slot/team identity, with no second loadout authority.
+Fixed GPS/NVG assigned slots are normalized inside that validation before saved
+assigned entries are checked.
 Invalid spawn candidates fall back to the faction starter. Local files remain
 editable; slot validation cannot prove how many arrays a client stores externally
 or prevent rewriting the contents of an already-unlocked slot.
